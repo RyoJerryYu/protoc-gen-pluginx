@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/RyoJerryYu/protoc-gen-plugins/protoc-gen-go-json/gen"
+	"github.com/RyoJerryYu/protoc-gen-plugins/utils/pluginutils"
 	"github.com/golang/glog"
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/types/pluginpb"
@@ -100,10 +101,17 @@ func main() {
 
 			gf := gp.NewGeneratedFile(fmt.Sprintf("%s.pb.json.go", f.GeneratedFilenamePrefix), f.GoImportPath)
 
+			plgOpt := pluginutils.PluginOptions{
+				PluginName:       "protoc-gen-go-json",
+				PluginVersionStr: "v1.0.0-beta",
+				W:                gf,
+				F:                f,
+			}
+			plgOpt.PHeader(gp)
+
 			g := gen.Generator{
-				Options: options,
-				W:       gf,
-				F:       f,
+				Options:       options,
+				PluginOptions: plgOpt,
 			}
 			err := g.ApplyTemplate()
 			if err != nil {
