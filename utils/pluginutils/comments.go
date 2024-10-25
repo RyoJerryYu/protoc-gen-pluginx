@@ -1,17 +1,19 @@
 package pluginutils
 
 import (
+	"bytes"
 	"fmt"
+	"io"
 	"strings"
 
 	"google.golang.org/protobuf/compiler/protogen"
 )
 
 // PComment allows multiple lines string as comment.
-func (opt PluginOptions) PComment(w *protogen.GeneratedFile, comments ...string) {
+func (opt PluginOptions) PComment(comments ...string) {
 	comment := strings.Join(comments, " ")
-	w.P(protogen.Comments(comment))
+	io.Copy(opt.W, bytes.NewBufferString(protogen.Comments(comment).String()))
 }
-func (opt PluginOptions) PCommentf(w *protogen.GeneratedFile, format string, args ...interface{}) {
-	w.P(protogen.Comments(fmt.Sprintf(format, args...)))
+func (opt PluginOptions) PCommentf(format string, args ...interface{}) {
+	io.Copy(opt.W, bytes.NewBufferString(protogen.Comments(fmt.Sprintf(format, args...)).String()))
 }
