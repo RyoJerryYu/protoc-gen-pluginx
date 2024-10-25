@@ -22,6 +22,7 @@ type Generator struct {
 
 // This function is called with a param which contains the entire definition of a method.
 func (g *Generator) ApplyTemplate() error {
+	g.W.P("package ", g.F.GoPackageName)
 	g.applyEnums(g.F.Enums)
 	g.applyMessages(g.F.Messages)
 	return nil
