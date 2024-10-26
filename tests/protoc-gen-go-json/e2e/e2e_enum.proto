@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package e2e;
+
+option go_package = "./e2e;e2e";
+
+enum Enum {
+  A = 0;
+  B = 1;
+  C = 2;
+}
+
+message EnumParent {
+    enum EnumChild {
+        D = 0;
+        E = 1;
+        F = 2;
+    }
+    
+    EnumChild enum = 1;
+}
