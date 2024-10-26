@@ -22,7 +22,8 @@ tag:
 	@echo "Version: $(VERSION)"
 	@git checkout -b release/$(VERSION)
 	@echo $(VERSION) > ./pkg/version/VERSION
-	@git add ./pkg/version/VERSION
+	@$(MAKE) test
+	@git add .
 	@git commit -m "Bump version to $(VERSION)"
 	@git tag -a $(VERSION) -m "Version $(VERSION)"
 	@git push origin release/$(VERSION)
