@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 
-	"github.com/RyoJerryYu/protoc-gen-plugins/cmd/protoc-gen-enumx/gen"
+	"github.com/RyoJerryYu/protoc-gen-plugins/cmd/protoc-gen-go-enumx/gen"
 	"github.com/RyoJerryYu/protoc-gen-plugins/pkg/pluginutils"
 	"github.com/RyoJerryYu/protoc-gen-plugins/pkg/version"
 	"github.com/golang/glog"
