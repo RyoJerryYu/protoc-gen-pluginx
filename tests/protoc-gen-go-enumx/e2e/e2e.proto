@@ -33,3 +33,12 @@ message EnumParent2 {
 
   Enum enum = 1;
 }
+message EnumParent3 {
+  enum Enum {
+    J = 0;
+    K = 1;
+    L = 2;
+  }
+
+  optional Enum enum = 1;
+}
