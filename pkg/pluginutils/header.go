@@ -20,6 +20,10 @@ func (opt PluginOptions) PHeader(p *protogen.Plugin) {
 
 	opt.P()
 }
+func (opt PluginOptions) PPackage() {
+	opt.Pf("package %s", opt.F.GoPackageName)
+	opt.P()
+}
 
 func (opt PluginOptions) protocVersion(p *protogen.Plugin) string {
 	var versionStr string = "(unknown)"
