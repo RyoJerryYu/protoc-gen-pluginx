@@ -28,7 +28,10 @@ func main() {
 	}.Run(func(p *protogen.Plugin) error {
 		p.SupportedFeatures = uint64(pluginpb.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL)
 
-		for _, f := range p.Files {
+		// p.Files listed all files imported.
+		// We only want to process the files that are being generated.
+		for _, name := range p.Request.FileToGenerate {
+			f := p.FilesByPath[name]
 			if len(f.Enums) == 0 {
 				glog.V(1).Infof("Skipping %s, no enums", f.Desc.Path())
 				continue
