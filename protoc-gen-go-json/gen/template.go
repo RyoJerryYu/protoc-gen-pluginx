@@ -45,7 +45,7 @@ func (g *Generator) applyMessages(msgs []*protogen.Message) {
 }
 
 func (g *Generator) applyMessageMarshaler(m *protogen.Message) {
-	heading := fmt.Sprintf(`
+	g.Pf(`
 // MarshalJSON implements json.Marshaler
 func (msg *%s) MarshalJSON() ([]byte,error) {
 	return %s {`,
@@ -55,8 +55,6 @@ func (msg *%s) MarshalJSON() ([]byte,error) {
 			GoImportPath: "google.golang.org/protobuf/encoding/protojson",
 		}),
 	)
-
-	g.W.P(heading)
 
 	fieldPairs := []struct {
 		name  string
@@ -70,16 +68,16 @@ func (msg *%s) MarshalJSON() ([]byte,error) {
 	}
 	for _, pair := range fieldPairs {
 		if pair.value {
-			g.W.P(pair.name, ": true,")
+			g.P(pair.name, ": true,")
 		}
 	}
 
-	g.W.P("}.Marshal(msg)")
-	g.W.P("}")
+	g.P("}.Marshal(msg)")
+	g.P("}")
 }
 
 func (g *Generator) applyMessageUnmarshaler(m *protogen.Message) {
-	heading := fmt.Sprintf(`
+	g.Pf(`
 // UnmarshalJSON implements json.Unmarshaler
 func (msg *%s) UnmarshalJSON(b []byte) error {
 	return %s {`,
@@ -90,8 +88,6 @@ func (msg *%s) UnmarshalJSON(b []byte) error {
 		}),
 	)
 
-	g.W.P(heading)
-
 	fieldPairs := []struct {
 		name  string
 		value bool
@@ -101,12 +97,12 @@ func (msg *%s) UnmarshalJSON(b []byte) error {
 	}
 	for _, pair := range fieldPairs {
 		if pair.value {
-			g.W.P(pair.name, ": true,")
+			g.P(pair.name, ": true,")
 		}
 	}
 
-	g.W.P("}.Unmarshal(b, msg)")
-	g.W.P("}")
+	g.P("}.Unmarshal(b, msg)")
+	g.P("}")
 }
 
 func (g *Generator) applyEnums(enums []*protogen.Enum) {
@@ -129,7 +125,7 @@ func (g *Generator) applyEnumMarshaler(e *protogen.Enum) {
 		returnStr = "enum.String()"
 	}
 
-	str := fmt.Sprintf(`
+	g.Pf(`
 // MarshalJSON implements json.Marshaler
 func (enum %s) MarshalJSON() ([]byte, error) {
 	return json.Marshal(%s)
@@ -138,11 +134,10 @@ func (enum %s) MarshalJSON() ([]byte, error) {
 		e.GoIdent.GoName,
 		returnStr,
 	)
-	g.W.P(str)
 }
 
 func (g *Generator) applyEnumUnmarshaler(e *protogen.Enum) {
-	str := fmt.Sprintf(`
+	g.Pf(`
 // UnmarshalJSON implements json.Unmarshaler
 func (enum *%s) UnmarshalJSON(b []byte) error {
 	dec := %s(%s(b))
@@ -184,5 +179,4 @@ func (enum *%s) UnmarshalJSON(b []byte) error {
 			GoImportPath: "fmt",
 		}),
 	)
-	g.W.P(str)
 }
