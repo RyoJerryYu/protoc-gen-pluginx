@@ -167,3 +167,24 @@ func TestEnumAll(t *testing.T) {
 		assert.True(t, isInAllValue(EnumAllValue(), c.value))
 	}
 }
+
+func TestNested(t *testing.T) {
+	cases := []struct {
+		value    EnumParent2_Enum
+		expected int
+	}{
+		{EnumParent2_G, 0},
+		{EnumParent2_H, 1},
+		{EnumParent2_I, 2},
+	}
+
+	for _, c := range cases {
+		assert.Equal(t, c.expected, int(c.value))
+		assert.Equal(t, c.expected, c.value.Int())
+		assert.Equal(t, int64(c.expected), c.value.Int64())
+		assert.Equal(t, int32(c.expected), c.value.Int32())
+		assert.Equal(t, uint(c.expected), c.value.UInt())
+		assert.Equal(t, uint64(c.expected), c.value.UInt64())
+		assert.Equal(t, uint32(c.expected), c.value.UInt32())
+	}
+}

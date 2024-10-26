@@ -15,15 +15,38 @@ type Generator struct {
 }
 
 func (g *Generator) ApplyTemplate() error {
-	for _, e := range g.F.Enums {
+	enums := append(g.F.Enums, g.findEnumInMessage(g.F.Messages)...)
+	if len(enums) == 0 {
+		glog.V(1).Infof("Skipping %s, no enums", g.F.Desc.Path())
+		g.W.Skip()
+		return nil
+	}
+
+	for _, e := range enums {
 		glog.V(2).Infof("Processing %s", e.GoIdent.GoName)
 
-		g.applyToInt(e)
-		g.applyFromInt(e)
-		g.applyFromString(e)
-		g.applyAlls(e)
+		g.applyEnum(e)
+		g.P()
 	}
+
 	return nil
+}
+
+func (g *Generator) findEnumInMessage(ms []*protogen.Message) []*protogen.Enum {
+	var enums []*protogen.Enum
+	for _, m := range ms {
+		enums = append(enums, m.Enums...)
+		enums = append(enums, g.findEnumInMessage(m.Messages)...)
+	}
+
+	return enums
+}
+
+func (g *Generator) applyEnum(e *protogen.Enum) {
+	g.applyToInt(e)
+	g.applyFromInt(e)
+	g.applyFromString(e)
+	g.applyAlls(e)
 }
 
 func (g *Generator) applyToInt(e *protogen.Enum) {
@@ -39,10 +62,8 @@ func (g *Generator) applyToInt(e *protogen.Enum) {
 		{"uint32", "UInt32"},
 	}
 	for _, m := range interMethods {
-		g.Pf(`func (x %s) %s() %s {
-	return %s(x)
-}
-`, e.GoIdent.GoName, m.name, m.typ, m.typ)
+		g.Pf(`func (x %s) %s() %s {return %s(x)}`,
+			e.GoIdent.GoName, m.name, m.typ, m.typ)
 	}
 }
 func (g *Generator) applyFromInt(e *protogen.Enum) {
