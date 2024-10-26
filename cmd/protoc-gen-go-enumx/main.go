@@ -8,6 +8,7 @@ import (
 	"github.com/RyoJerryYu/protoc-gen-plugins/pkg/version"
 	"github.com/golang/glog"
 	"google.golang.org/protobuf/compiler/protogen"
+	"google.golang.org/protobuf/types/pluginpb"
 )
 
 var (
@@ -25,6 +26,8 @@ func main() {
 	protogen.Options{
 		ParamFunc: flag.CommandLine.Set,
 	}.Run(func(p *protogen.Plugin) error {
+		p.SupportedFeatures = uint64(pluginpb.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL)
+
 		for _, f := range p.Files {
 			if len(f.Enums) == 0 {
 				glog.V(1).Infof("Skipping %s, no enums", f.Desc.Path())
