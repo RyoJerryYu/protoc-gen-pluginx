@@ -71,6 +71,7 @@ func (x *localMsgGenerator) Apply(gCtx *GeneratorCtx) {
 	x.applyMessageMethods()
 
 	for _, field := range x.fields {
+		glog.V(1).Infof("gen for field %s in %s", field.GoName, x.m.GoIdent.GoName)
 		field.Apply(gCtx)
 	}
 }
