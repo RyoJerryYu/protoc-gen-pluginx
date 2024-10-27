@@ -14,18 +14,24 @@ package example;
 
 option go_package = "example/;example";
 
-import "google/type/date.proto";
+import "google/protobuf/timestamp.proto";
 
 message Foo {
   string baz = 1;
   int32 xyz = 2;
   Bar my_bar = 3;
-  google.type.Date some_date = 4;
+  google.protobuf.Timestamp some_date = 4;
 }
 
 message Bar {
   string some_field = 1;
   bool another_field = 2;
+
+  message Nested {
+      string nested_field = 1;
+  }
+
+  Nested nested = 3;
 }
 ```
 
@@ -43,22 +49,31 @@ fieldmasks paths can be used as follows:
   // Prints "my_bar"
   fmt.Println(foo.FieldMaskPaths().MyBar().String())
 
-  // Since baz is a nested message, we can print a nested path - "my_bar.some_field"
+  // Since baz is a message, we can print a path - "my_bar.some_field"
   fmt.Println(foo.FieldMaskPaths().MyBar().SomeField())
 
-  // Thirdparty messages work the same way:
+  // Well-known type messages work the same way:
   // Prints "some_date"
   fmt.Println(foo.FieldMaskPaths().SomeDate().String())
 
-  // Prints "some_date.year"
-  fmt.Println(foo.FieldMaskPaths().SomeDate().Year())
+  // Prints "some_date.seconds"
+  fmt.Println(foo.FieldMaskPaths().SomeDate().Seconds())
+
+  // Nested messages work the same way:
+  // Prints "my_bar.nested"
+  fmt.Println(foo.FieldMaskPaths().MyBar().Nested().String())
+
+  // Prints "my_bar.nested.nested_field"
+  fmt.Println(foo.FieldMaskPaths().MyBar().Nested().NestedField())
 ```
 
 ## Usage
 
 ### Installation
 
-The plugin can be downloaded from the [release page](https://github.com/idodod/protoc-gen-fieldmask/releases/latest), and should be ideally installed somewhere available in your `$PATH`.
+```sh
+go install github.com/RyoJerryYu/protoc-gen-plugins/cmd/protoc-gen-go-fieldmask@latest
+```
 
 ### Executing the plugin
 
@@ -71,14 +86,10 @@ protoc --fieldmask_out=out_dir protos/example.proto --plugin=protoc-gen-fieldmas
 
 ### Parameters
 
-The following parameters can be set by passing `--fieldmask_opt` to the command:
-
-*   `maxdepth`: This option is relevant for a recursive message case.\
-    Specify the max depth for which the paths will be pregenerated. If the path depth gets over the max value, it will be generated at runtime.
-    default value is `7`.
+This plugin do not have any parameters.
 
 ## Features
 
 *   Currently the only supported language is `go`.
-*   All paths are pregenerated (except for recursive messages past `maxdepth`).
-*   Support all type of fields including repeated fields, maps, oneofs, third parties, nested messages and recursive messages.
+*   Support messages and nested messages.
+*   Support well-known types.
