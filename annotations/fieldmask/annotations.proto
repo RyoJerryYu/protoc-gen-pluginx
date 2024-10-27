@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package ryojerryyu.fieldmask;
+
+import "google/protobuf/descriptor.proto";
+
+option go_package = "github.com/RyoJerryYu/protoc-gen-plugins/tests/protoc-gen-go-fieldmask/annotations/fieldmask";
+
+message FieldOptions {
+    string mode = 1;
+}
+
+extend google.protobuf.FieldOptions {
+    optional FieldOptions field = 51013;
+}

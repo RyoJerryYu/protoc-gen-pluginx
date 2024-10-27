@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package api.v1.admin;
+
+option go_package = "github.com/RyoJerryYu/protoc-gen-plugins/tests/protoc-gen-go-fieldmask/e2e/proto/admin";
+
+import "google/protobuf/timestamp.proto";
+import "proto/user/user.proto";
+
+message Admin {
+    string id = 1;
+    string name = 2;
+    user.User user = 3[(ryojerryyu.fieldmask.gen) = {
+        mode: "recursive"
+    }];
+    google.protobuf.Timestamp created_at = 4;
+}

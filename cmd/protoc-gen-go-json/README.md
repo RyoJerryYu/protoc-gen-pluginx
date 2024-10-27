@@ -1,5 +1,7 @@
 # protoc-gen-go-json
 
+> This plugin is originally forked from [protoc-gen-go-json](https://github.com/mitchellh/protoc-gen-go-json) . I have made some changes to make it with more options and more flexible.
+
 This is a plugin for the Google Protocol Buffers compiler
 [protoc](https://github.com/protocolbuffers/protobuf) that generates
 code to implement [json.Marshaler](https://golang.org/pkg/encoding/json/#Marshaler)
