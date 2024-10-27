@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"flag"
 
 	"github.com/RyoJerryYu/protoc-gen-plugins/cmd/protoc-gen-go-fieldmask/gen"
@@ -19,7 +18,7 @@ const (
 var options gen.Options
 
 func init() {
-	flag.Uint64Var(&options.Maxdepth, "maxdepth", DefaultMaxDepth, "maximum depth of the fieldmask")
+	// flag.Uint64Var(&options.Maxdepth, "maxdepth", DefaultMaxDepth, "maximum depth of the fieldmask")
 	flag.StringVar(&options.Mode, "mode", "recursive", "mode of the fieldmask, recursive or reference")
 }
 
@@ -30,9 +29,9 @@ func main() {
 	protogen.Options{
 		ParamFunc: flag.CommandLine.Set,
 	}.Run(func(p *protogen.Plugin) error {
-		if options.Maxdepth <= 0 {
-			return errors.New("maxdepth must be greater than 0")
-		}
+		// if options.Maxdepth <= 0 {
+		// 	return errors.New("maxdepth must be greater than 0")
+		// }
 		p.SupportedFeatures = uint64(pluginpb.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL)
 
 		for _, name := range p.Request.FileToGenerate {
@@ -60,7 +59,6 @@ func main() {
 			plgOpt.PPackage()
 
 			g := gen.Generator{
-				Options:       options,
 				PluginOptions: plgOpt,
 			}
 			err := g.ApplyTemplate()

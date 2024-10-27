@@ -6,12 +6,13 @@ option go_package = "github.com/RyoJerryYu/protoc-gen-plugins/tests/protoc-gen-g
 
 import "google/protobuf/timestamp.proto";
 import "proto/user/user.proto";
+import "proto/fieldmask/annotations.proto";
 
 message Feed {
     string id = 1;
     string title = 2;
     user.User author = 4;
-    google.protobuf.Timestamp created_at = 5;
+    google.protobuf.Timestamp created_at = 5[(ryojerryyu.fieldmask.field) = {end: true}];
 
     user.Icon.Nested nested_from_other = 6;
 }

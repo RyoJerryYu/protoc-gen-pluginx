@@ -4,10 +4,12 @@ package ryojerryyu.fieldmask;
 
 import "google/protobuf/descriptor.proto";
 
-option go_package = "github.com/RyoJerryYu/protoc-gen-plugins/tests/protoc-gen-go-fieldmask/annotations/fieldmask";
+option go_package = "github.com/RyoJerryYu/protoc-gen-plugins/annotations/fieldmask";
 
 message FieldOptions {
-    string mode = 1;
+    // end of the field mask, 
+    // generated code will not allow to get the inner field mask for this field
+    bool end = 1; 
 }
 
 extend google.protobuf.FieldOptions {

@@ -25,7 +25,7 @@ type Generator struct {
 }
 
 func (g *Generator) ApplyTemplate() error {
-	gCtx := msg_generator.NewGeneratorCtx(g.FileGenerator)
+	gCtx := msg_generator.NewGeneratorCtx()
 	for _, m := range g.F.Messages {
 		if m.Desc.IsMapEntry() {
 			glog.V(2).Infof("Skipping %s, mapentry message", m.GoIdent.GoName)

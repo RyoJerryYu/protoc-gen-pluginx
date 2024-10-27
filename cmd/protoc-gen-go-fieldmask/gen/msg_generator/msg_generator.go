@@ -1,10 +1,12 @@
 package msg_generator
 
 import (
+	"github.com/RyoJerryYu/protoc-gen-plugins/annotations/fieldmask"
 	"github.com/RyoJerryYu/protoc-gen-plugins/pkg/pluginutils"
 	"github.com/RyoJerryYu/protoc-gen-plugins/pkg/protobufx"
 	"github.com/golang/glog"
 	"google.golang.org/protobuf/compiler/protogen"
+	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
@@ -17,6 +19,11 @@ type MsgGenerator interface {
 func GeneratorForField(g pluginutils.FileGenerator, f *protogen.Field) MsgGenerator {
 	glog.V(1).Infof("building generator for field %s", f.GoIdent.GoName)
 	if isPathEnd(f) {
+		return newEndMsgGenerator(g)
+	}
+
+	fieldExt := getExtension(f)
+	if fieldExt.GetEnd() {
 		return newEndMsgGenerator(g)
 	}
 
@@ -36,9 +43,6 @@ func GeneratorForMessage(g pluginutils.FileGenerator, m *protogen.Message) MsgGe
 	return newLocalMsgGenerator(g, m, true)
 }
 
-// func generatorForField(g *GeneratorCtx, f *protogen.Field) MsgGenerator {
-// }
-
 // path do not end when the field is a message or group
 func isPathEnd(field *protogen.Field) bool {
 	return (field.Desc.Kind() != protoreflect.MessageKind &&
@@ -47,11 +51,26 @@ func isPathEnd(field *protogen.Field) bool {
 		field.Desc.IsList()
 }
 
+func defaultExtension() *fieldmask.FieldOptions {
+	return &fieldmask.FieldOptions{
+		End: false,
+	}
+}
+
+func getExtension(field *protogen.Field) *fieldmask.FieldOptions {
+	fieldExt, ok := proto.GetExtension(field.Desc.Options(), fieldmask.E_Field).(*fieldmask.FieldOptions)
+	if ok {
+		return fieldExt
+	}
+
+	return defaultExtension()
+}
+
 type GeneratorCtx struct {
 	seen map[protoreflect.FullName]struct{}
 }
 
-func NewGeneratorCtx(f pluginutils.FileGenerator) *GeneratorCtx {
+func NewGeneratorCtx() *GeneratorCtx {
 	return &GeneratorCtx{
 		seen: make(map[protoreflect.FullName]struct{}),
 	}
