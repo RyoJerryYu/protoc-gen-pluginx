@@ -9,6 +9,14 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
+const (
+	protojsonpkg = protogen.GoImportPath("google.golang.org/protobuf/encoding/protojson")
+	strconvpkg   = protogen.GoImportPath("strconv")
+	jsonpkg      = protogen.GoImportPath("encoding/json")
+	bytespkg     = protogen.GoImportPath("bytes")
+	fmtpkg       = protogen.GoImportPath("fmt")
+)
+
 // Options are the options to set for rendering the template.
 type Options struct {
 	MarshalOptions   protojson.MarshalOptions
@@ -47,12 +55,9 @@ func (g *Generator) applyMessageMarshaler(m *protogen.Message) {
 	g.Pf(`
 // MarshalJSON implements json.Marshaler
 func (msg *%s) MarshalJSON() ([]byte,error) {
-	return %s {`,
+	return %s{`,
 		m.GoIdent.GoName,
-		g.W.QualifiedGoIdent(protogen.GoIdent{
-			GoName:       "MarshalOptions",
-			GoImportPath: "google.golang.org/protobuf/encoding/protojson",
-		}),
+		g.W.QualifiedGoIdent(protojsonpkg.Ident("MarshalOptions")),
 	)
 
 	fieldPairs := []struct {
@@ -81,10 +86,7 @@ func (g *Generator) applyMessageUnmarshaler(m *protogen.Message) {
 func (msg *%s) UnmarshalJSON(b []byte) error {
 	return %s {`,
 		m.GoIdent.GoName,
-		g.W.QualifiedGoIdent(protogen.GoIdent{
-			GoName:       "UnmarshalOptions",
-			GoImportPath: "google.golang.org/protobuf/encoding/protojson",
-		}),
+		g.W.QualifiedGoIdent(protojsonpkg.Ident("UnmarshalOptions")),
 	)
 
 	fieldPairs := []struct {
@@ -115,10 +117,7 @@ func (g *Generator) applyEnums(enums []*protogen.Enum) {
 func (g *Generator) applyEnumMarshaler(e *protogen.Enum) {
 	returnStr := ""
 	if g.MarshalOptions.UseEnumNumbers {
-		formatInt := g.W.QualifiedGoIdent(protogen.GoIdent{
-			GoName:       "FormatInt",
-			GoImportPath: "strconv",
-		})
+		formatInt := g.W.QualifiedGoIdent(strconvpkg.Ident("FormatInt"))
 		returnStr = fmt.Sprintf("%s(int64(enum.Number()), 10)", formatInt)
 	} else {
 		returnStr = "enum.String()"
@@ -161,21 +160,12 @@ func (enum *%s) UnmarshalJSON(b []byte) error {
 	return nil
 }`,
 		e.GoIdent.GoName,
-		g.W.QualifiedGoIdent(protogen.GoIdent{
-			GoName:       "NewDecoder",
-			GoImportPath: "encoding/json",
-		}),
-		g.W.QualifiedGoIdent(protogen.GoIdent{
-			GoName:       "NewReader",
-			GoImportPath: "bytes",
-		}),
+		g.W.QualifiedGoIdent(jsonpkg.Ident("NewDecoder")),
+		g.W.QualifiedGoIdent(bytespkg.Ident("NewReader")),
 		e.GoIdent.GoName,
 		e.GoIdent.GoName,
 		e.GoIdent.GoName,
 		e.GoIdent.GoName,
-		g.W.QualifiedGoIdent(protogen.GoIdent{
-			GoName:       "Errorf",
-			GoImportPath: "fmt",
-		}),
+		g.W.QualifiedGoIdent(fmtpkg.Ident("Errorf")),
 	)
 }

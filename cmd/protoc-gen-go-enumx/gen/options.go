@@ -6,6 +6,8 @@ import (
 	"google.golang.org/protobuf/compiler/protogen"
 )
 
+const constraints = protogen.GoImportPath("golang.org/x/exp/constraints")
+
 type Options struct {
 }
 
@@ -74,8 +76,8 @@ func %sFrom[T %s | %s](s T) %s {
 		e.GoIdent.GoName,
 		e.GoIdent.GoName,
 		e.GoIdent.GoName,
-		g.W.QualifiedGoIdent(protogen.GoIdent{GoImportPath: "golang.org/x/exp/constraints", GoName: "Integer"}),
-		g.W.QualifiedGoIdent(protogen.GoIdent{GoImportPath: "golang.org/x/exp/constraints", GoName: "Float"}),
+		g.W.QualifiedGoIdent(constraints.Ident("Integer")),
+		g.W.QualifiedGoIdent(constraints.Ident("Float")),
 		e.GoIdent.GoName,
 		e.GoIdent.GoName,
 	)
@@ -88,8 +90,8 @@ func %sFromValid[T %s | %s](s T) (%s, bool) {
 		e.GoIdent.GoName,
 		e.GoIdent.GoName,
 		e.GoIdent.GoName,
-		g.W.QualifiedGoIdent(protogen.GoIdent{GoImportPath: "golang.org/x/exp/constraints", GoName: "Integer"}),
-		g.W.QualifiedGoIdent(protogen.GoIdent{GoImportPath: "golang.org/x/exp/constraints", GoName: "Float"}),
+		g.W.QualifiedGoIdent(constraints.Ident("Integer")),
+		g.W.QualifiedGoIdent(constraints.Ident("Float")),
 		e.GoIdent.GoName,
 		e.GoIdent.GoName,
 		e.GoIdent.GoName,
