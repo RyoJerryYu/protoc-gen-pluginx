@@ -2,10 +2,10 @@ package pluginutils
 
 import "fmt"
 
-func (opt PluginOptions) P(v ...any) {
+func (opt FileGenerator) P(v ...any) {
 	opt.W.P(v...)
 }
 
-func (opt PluginOptions) Pf(format string, v ...any) {
+func (opt FileGenerator) Pf(format string, v ...any) {
 	opt.W.P(fmt.Sprintf(format, v...))
 }

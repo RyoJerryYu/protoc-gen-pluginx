@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package api.v1.feed;
+
+option go_package = "github.com/RyoJerryYu/protoc-gen-plugins/tests/protoc-gen-go-fieldmask/e2e/proto/feed";
+
+import "google/protobuf/timestamp.proto";
+import "proto/user/user.proto";
+import "proto/fieldmask/annotations.proto";
+
+message Feed {
+    string id = 1;
+    string title = 2;
+    user.User author = 4;
+    google.protobuf.Timestamp created_at = 5;
+
+    user.Icon.Nested nested_from_other = 6;
+}

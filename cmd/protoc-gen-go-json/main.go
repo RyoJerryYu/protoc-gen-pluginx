@@ -105,8 +105,10 @@ func main() {
 			plgOpt := pluginutils.PluginOptions{
 				PluginName:       "protoc-gen-go-json",
 				PluginVersionStr: version.Version,
-				W:                gf,
-				F:                f,
+				FileGenerator: pluginutils.FileGenerator{
+					W: gf,
+					F: f,
+				},
 			}
 			plgOpt.PHeader(gp)
 			plgOpt.PPackage()

@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 
-	"github.com/RyoJerryYu/protoc-gen-plugins/cmd/protoc-gen-go-enumx/gen"
+	"github.com/RyoJerryYu/protoc-gen-plugins/cmd/protoc-gen-go-fieldmask/gen"
 	"github.com/RyoJerryYu/protoc-gen-plugins/pkg/pluginutils"
 	"github.com/RyoJerryYu/protoc-gen-plugins/pkg/version"
 	"github.com/golang/glog"
@@ -11,12 +11,15 @@ import (
 	"google.golang.org/protobuf/types/pluginpb"
 )
 
-var (
-	options gen.Options
+const (
+	DefaultMaxDepth = 7
 )
 
-func init() {
+var options gen.Options
 
+func init() {
+	// flag.Uint64Var(&options.Maxdepth, "maxdepth", DefaultMaxDepth, "maximum depth of the fieldmask")
+	flag.StringVar(&options.Mode, "mode", "recursive", "mode of the fieldmask, recursive or reference")
 }
 
 func main() {
@@ -26,24 +29,25 @@ func main() {
 	protogen.Options{
 		ParamFunc: flag.CommandLine.Set,
 	}.Run(func(p *protogen.Plugin) error {
+		// if options.Maxdepth <= 0 {
+		// 	return errors.New("maxdepth must be greater than 0")
+		// }
 		p.SupportedFeatures = uint64(pluginpb.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL)
 
-		// p.Files listed all files imported.
-		// We only want to process the files that are being generated.
 		for _, name := range p.Request.FileToGenerate {
 			f := p.FilesByPath[name]
-			if len(f.Enums) == 0 {
-				glog.V(1).Infof("Skipping %s, no enums", f.Desc.Path())
+			if len(f.Messages) == 0 {
+				glog.V(1).Infof("Skipping %s, no messages", f.Desc.Path())
 				continue
 			}
 
 			glog.V(1).Infof("Processing %s", f.Desc.Path())
 			glog.V(2).Infof("Generating %s\n", f.GeneratedFilenamePrefix)
 
-			gf := p.NewGeneratedFile(f.GeneratedFilenamePrefix+".pb.enumx.go", f.GoImportPath)
+			gf := p.NewGeneratedFile(f.GeneratedFilenamePrefix+".pb.fieldmask.go", f.GoImportPath)
 
 			plgOpt := pluginutils.PluginOptions{
-				PluginName:       "protoc-gen-enumx",
+				PluginName:       "protoc-gen-go-fieldmask",
 				PluginVersionStr: version.Version,
 				FileGenerator: pluginutils.FileGenerator{
 					W: gf,
@@ -55,7 +59,6 @@ func main() {
 			plgOpt.PPackage()
 
 			g := gen.Generator{
-				Options:       options,
 				PluginOptions: plgOpt,
 			}
 			err := g.ApplyTemplate()
