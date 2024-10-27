@@ -27,19 +27,19 @@ type Generator struct {
 func (g *Generator) ApplyTemplate() error {
 	gCtx := msg_generator.NewGeneratorCtx()
 	for _, m := range g.F.Messages {
-		if m.Desc.IsMapEntry() {
-			glog.V(2).Infof("Skipping %s, mapentry message", m.GoIdent.GoName)
-			continue
-		}
-
-		glog.V(2).Infof("Processing %s", m.GoIdent.GoName)
-
 		g.applyMessage(gCtx, m)
 	}
 	return nil
 }
 
 func (g *Generator) applyMessage(gCtx *msg_generator.GeneratorCtx, m *protogen.Message) {
+	if m.Desc.IsMapEntry() {
+		glog.V(2).Infof("Skipping %s, mapentry message", m.GoIdent.GoName)
+		return
+	}
+
+	glog.V(2).Infof("Processing %s", m.GoIdent.GoName)
+
 	generator := msg_generator.GeneratorForMessage(g.FileGenerator, m)
 	generator.Apply(gCtx)
 

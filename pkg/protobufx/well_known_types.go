@@ -4,7 +4,10 @@ import (
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
-const GoogleProtobuf_package protoreflect.FullName = "google.protobuf"
+const (
+	GoogleProtobuf_package protoreflect.FullName = "google.protobuf"
+	GoogleApi_package      protoreflect.FullName = "google.api"
+)
 
 const (
 	Any_message_name         protoreflect.Name = "Any"
