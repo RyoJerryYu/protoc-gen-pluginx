@@ -31,6 +31,10 @@ func GeneratorForField(g pluginutils.FileGenerator, f *protogen.Field) MsgGenera
 		return newWellKnownTypeMsgGenerator(g, f.Message.Desc)
 	}
 
+	if f.Message.Desc.FullName().Parent() == protobufx.GoogleApi_package {
+		return newEndMsgGenerator(g) // currently do not support google.api package
+	}
+
 	if f.Message.GoIdent.GoImportPath != g.F.GoImportPath {
 		return newImportMsgGenerator(g, f.Message)
 	}
