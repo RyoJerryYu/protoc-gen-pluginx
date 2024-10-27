@@ -6,12 +6,16 @@
 
 package user
 
+import (
+	fieldmask "github.com/RyoJerryYu/protoc-gen-plugins/pkg/fieldmask"
+)
+
 // IUserPasswordFieldPath is the interface for the field path of UserPassword
 type IUserPasswordFieldPath interface {
 	String() string
 	Id() string
 	Password() string
-	CreatedAt() string
+	CreatedAt() fieldmask.ITimestampFieldPath
 }
 
 // userPasswordFieldPath is the implementation for the field path of UserPassword
@@ -32,9 +36,11 @@ func NewUserPasswordFieldPath(fieldPath string) IUserPasswordFieldPath {
 // String returns the field path
 func (x userPasswordFieldPath) String() string { return x.fieldPath }
 
-func (x userPasswordFieldPath) Id() string        { return x.prefix + "id" }
-func (x userPasswordFieldPath) Password() string  { return x.prefix + "password" }
-func (x userPasswordFieldPath) CreatedAt() string { return x.prefix + "created_at" }
+func (x userPasswordFieldPath) Id() string       { return x.prefix + "id" }
+func (x userPasswordFieldPath) Password() string { return x.prefix + "password" }
+func (x userPasswordFieldPath) CreatedAt() fieldmask.ITimestampFieldPath {
+	return fieldmask.NewTimestampFieldPath(x.prefix + "created_at")
+}
 
 // FieldPath returns the field path for UserPassword
 func (x *UserPassword) FieldPath() IUserPasswordFieldPath {

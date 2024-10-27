@@ -6,6 +6,10 @@
 
 package user
 
+import (
+	fieldmask "github.com/RyoJerryYu/protoc-gen-plugins/pkg/fieldmask"
+)
+
 // IUserFieldPath is the interface for the field path of User
 type IUserFieldPath interface {
 	String() string
@@ -52,8 +56,9 @@ type IIconFieldPath interface {
 	String() string
 	Id() string
 	Url() string
-	CreatedAt() string
+	CreatedAt() fieldmask.ITimestampFieldPath
 	Nested() IIcon_NestedFieldPath
+	NestedAnother() string
 }
 
 // iconFieldPath is the implementation for the field path of Icon
@@ -74,12 +79,15 @@ func NewIconFieldPath(fieldPath string) IIconFieldPath {
 // String returns the field path
 func (x iconFieldPath) String() string { return x.fieldPath }
 
-func (x iconFieldPath) Id() string        { return x.prefix + "id" }
-func (x iconFieldPath) Url() string       { return x.prefix + "url" }
-func (x iconFieldPath) CreatedAt() string { return x.prefix + "created_at" }
+func (x iconFieldPath) Id() string  { return x.prefix + "id" }
+func (x iconFieldPath) Url() string { return x.prefix + "url" }
+func (x iconFieldPath) CreatedAt() fieldmask.ITimestampFieldPath {
+	return fieldmask.NewTimestampFieldPath(x.prefix + "created_at")
+}
 func (x iconFieldPath) Nested() IIcon_NestedFieldPath {
 	return NewIcon_NestedFieldPath(x.prefix + "nested")
 }
+func (x iconFieldPath) NestedAnother() string { return x.prefix + "nested_another" }
 
 // FieldPath returns the field path for Icon
 func (x *Icon) FieldPath() IIconFieldPath {

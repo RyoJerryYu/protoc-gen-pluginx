@@ -5,7 +5,7 @@ import "github.com/RyoJerryYu/protoc-gen-plugins/pkg/pluginutils"
 // generator for the end message,
 // which is the field could not be explored recursively
 type endMsgGenerator struct {
-	pluginutils.FileGenerator
+	// pluginutils.FileGenerator
 }
 
 // The end field do not need to apply anything
@@ -23,9 +23,9 @@ func (g *endMsgGenerator) NewStmt(fieldPathStmt string) string {
 	return fieldPathStmt
 }
 
-func newEndMsgGenerator(g pluginutils.FileGenerator) *endMsgGenerator {
+func newEndMsgGenerator(_ pluginutils.FileGenerator) *endMsgGenerator {
 	return &endMsgGenerator{
-		FileGenerator: g,
+		// FileGenerator: g,
 	}
 }
 

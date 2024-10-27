@@ -7,6 +7,7 @@
 package feed
 
 import (
+	fieldmask "github.com/RyoJerryYu/protoc-gen-plugins/pkg/fieldmask"
 	user "github.com/RyoJerryYu/protoc-gen-plugins/tests/protoc-gen-go-fieldmask/e2e/proto/user"
 )
 
@@ -16,7 +17,7 @@ type IFeedFieldPath interface {
 	Id() string
 	Title() string
 	Author() user.IUserFieldPath
-	CreatedAt() string
+	CreatedAt() fieldmask.ITimestampFieldPath
 	NestedFromOther() user.IIcon_NestedFieldPath
 }
 
@@ -43,7 +44,9 @@ func (x feedFieldPath) Title() string { return x.prefix + "title" }
 func (x feedFieldPath) Author() user.IUserFieldPath {
 	return user.NewUserFieldPath(x.prefix + "author")
 }
-func (x feedFieldPath) CreatedAt() string { return x.prefix + "created_at" }
+func (x feedFieldPath) CreatedAt() fieldmask.ITimestampFieldPath {
+	return fieldmask.NewTimestampFieldPath(x.prefix + "created_at")
+}
 func (x feedFieldPath) NestedFromOther() user.IIcon_NestedFieldPath {
 	return user.NewIcon_NestedFieldPath(x.prefix + "nested_from_other")
 }

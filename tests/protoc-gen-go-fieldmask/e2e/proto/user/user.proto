@@ -19,7 +19,7 @@ message User {
 message Icon {
     string id = 1;
     string url = 2;
-    google.protobuf.Timestamp created_at = 3[(ryojerryyu.fieldmask.field) = {end: true}];
+    google.protobuf.Timestamp created_at = 3;
 
 
     message Nested {
@@ -27,4 +27,6 @@ message Icon {
     }
 
     Nested nested = 4;
+
+    Nested nested_another = 5[(ryojerryyu.fieldmask.field) = {end: true}];
 }

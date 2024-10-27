@@ -10,7 +10,7 @@ import (
 // generator for the message that need to be imported from other package
 type importMsgGenerator struct {
 	pluginutils.FileGenerator
-	m           *protogen.Message
+	// m           *protogen.Message
 	importPath  protogen.GoImportPath
 	ifaceName   string
 	newFuncName string
@@ -19,10 +19,10 @@ type importMsgGenerator struct {
 func newImportMsgGenerator(g pluginutils.FileGenerator, m *protogen.Message) *importMsgGenerator {
 	return &importMsgGenerator{
 		FileGenerator: g,
-		m:             m,
-		importPath:    m.GoIdent.GoImportPath,
-		ifaceName:     getIfaceName(m.GoIdent),
-		newFuncName:   getNewFuncName(m.GoIdent),
+		// m:             m,
+		importPath:  m.GoIdent.GoImportPath,
+		ifaceName:   getIfaceName(m.GoIdent),
+		newFuncName: getNewFuncName(m.GoIdent),
 	}
 }
 

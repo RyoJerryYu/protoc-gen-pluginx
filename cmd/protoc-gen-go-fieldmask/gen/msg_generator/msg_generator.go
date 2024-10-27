@@ -28,7 +28,7 @@ func GeneratorForField(g pluginutils.FileGenerator, f *protogen.Field) MsgGenera
 	}
 
 	if protobufx.IsWellKnownType(f.Message.Desc) {
-		return newEndMsgGenerator(g)
+		return newWellKnownTypeMsgGenerator(g, f.Message.Desc)
 	}
 
 	if f.Message.GoIdent.GoImportPath != g.F.GoImportPath {
