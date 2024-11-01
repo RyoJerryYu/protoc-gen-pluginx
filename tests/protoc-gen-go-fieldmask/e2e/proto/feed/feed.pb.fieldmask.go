@@ -11,51 +11,51 @@ import (
 	user "github.com/RyoJerryYu/protoc-gen-plugins/tests/protoc-gen-go-fieldmask/e2e/proto/user"
 )
 
-// IFeedFieldPath is the interface for the field path of Feed
-type IFeedFieldPath interface {
+// IFeedPathBuilder is the interface for the field path of Feed
+type IFeedPathBuilder interface {
 	String() string
-	Id() fieldmask.IEndFieldPath
-	Title() fieldmask.IEndFieldPath
-	Author() user.IUserFieldPath
-	CreatedAt() fieldmask.ITimestampFieldPath
-	NestedFromOther() user.IIcon_NestedFieldPath
+	Id() fieldmask.IEndPathBuilder
+	Title() fieldmask.IEndPathBuilder
+	Author() user.IUserPathBuilder
+	CreatedAt() fieldmask.ITimestampPathBuilder
+	NestedFromOther() user.IIcon_NestedPathBuilder
 }
 
-// feedFieldPath is the implementation for the field path of Feed
-type feedFieldPath struct {
+// feedPathBuilder is the implementation for the field path of Feed
+type feedPathBuilder struct {
 	fieldPath string // the field path to the current field, empty if it's root
 	prefix    string // e.g. "fieldPath." or empty if it's root
 }
 
-// NewFeedFieldPath creates a new feedFieldPath
-func NewFeedFieldPath(fieldPath string) IFeedFieldPath {
+// NewFeedPathBuilder creates a new feedPathBuilder
+func NewFeedPathBuilder(fieldPath string) IFeedPathBuilder {
 	prefix := ""
 	if fieldPath != "" {
 		prefix = fieldPath + "."
 	}
-	return feedFieldPath{fieldPath: fieldPath, prefix: prefix}
+	return feedPathBuilder{fieldPath: fieldPath, prefix: prefix}
 }
 
 // String returns the field path
-func (x feedFieldPath) String() string { return x.fieldPath }
+func (x feedPathBuilder) String() string { return x.fieldPath }
 
-func (x feedFieldPath) Id() fieldmask.IEndFieldPath {
-	return fieldmask.NewEndFieldPath(x.prefix + "id")
+func (x feedPathBuilder) Id() fieldmask.IEndPathBuilder {
+	return fieldmask.NewEndPathBuilder(x.prefix + "id")
 }
-func (x feedFieldPath) Title() fieldmask.IEndFieldPath {
-	return fieldmask.NewEndFieldPath(x.prefix + "title")
+func (x feedPathBuilder) Title() fieldmask.IEndPathBuilder {
+	return fieldmask.NewEndPathBuilder(x.prefix + "title")
 }
-func (x feedFieldPath) Author() user.IUserFieldPath {
-	return user.NewUserFieldPath(x.prefix + "author")
+func (x feedPathBuilder) Author() user.IUserPathBuilder {
+	return user.NewUserPathBuilder(x.prefix + "author")
 }
-func (x feedFieldPath) CreatedAt() fieldmask.ITimestampFieldPath {
-	return fieldmask.NewTimestampFieldPath(x.prefix + "created_at")
+func (x feedPathBuilder) CreatedAt() fieldmask.ITimestampPathBuilder {
+	return fieldmask.NewTimestampPathBuilder(x.prefix + "created_at")
 }
-func (x feedFieldPath) NestedFromOther() user.IIcon_NestedFieldPath {
-	return user.NewIcon_NestedFieldPath(x.prefix + "nested_from_other")
+func (x feedPathBuilder) NestedFromOther() user.IIcon_NestedPathBuilder {
+	return user.NewIcon_NestedPathBuilder(x.prefix + "nested_from_other")
 }
 
-// FieldPath returns the field path for Feed
-func (x *Feed) FieldPath() IFeedFieldPath {
-	return NewFeedFieldPath("")
+// PathBuilder returns the field path for Feed
+func (x *Feed) PathBuilder() IFeedPathBuilder {
+	return NewFeedPathBuilder("")
 }

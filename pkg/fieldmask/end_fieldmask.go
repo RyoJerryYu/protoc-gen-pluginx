@@ -1,15 +1,15 @@
 package fieldmask
 
-type IEndFieldPath interface {
+type IEndPathBuilder interface {
 	String() string
 }
 
-type endFieldPath struct {
+type endPathBuilder struct {
 	fieldPath string
 }
 
-func NewEndFieldPath(fieldPath string) IEndFieldPath {
-	return endFieldPath{fieldPath: fieldPath}
+func NewEndPathBuilder(fieldPath string) IEndPathBuilder {
+	return endPathBuilder{fieldPath: fieldPath}
 }
 
-func (x endFieldPath) String() string { return x.fieldPath }
+func (x endPathBuilder) String() string { return x.fieldPath }

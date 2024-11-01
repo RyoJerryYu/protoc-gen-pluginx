@@ -1,88 +1,92 @@
 package fieldmask
 
-type ITimestampFieldPath interface {
+type ITimestampPathBuilder interface {
 	String() string
-	Seconds() IEndFieldPath
-	Nanos() IEndFieldPath
+	Seconds() IEndPathBuilder
+	Nanos() IEndPathBuilder
 }
-type timestampFieldPath struct {
+type timestampPathBuilder struct {
 	fieldPath string
 	prefix    string
 }
 
-func NewTimestampFieldPath(fieldPath string) ITimestampFieldPath {
+func NewTimestampPathBuilder(fieldPath string) ITimestampPathBuilder {
 	prefix := ""
 	if fieldPath != "" {
 		prefix = fieldPath + "."
 	}
-	return timestampFieldPath{fieldPath: fieldPath, prefix: prefix}
+	return timestampPathBuilder{fieldPath: fieldPath, prefix: prefix}
 }
 
-func (x timestampFieldPath) String() string         { return x.fieldPath }
-func (x timestampFieldPath) Seconds() IEndFieldPath { return NewEndFieldPath(x.prefix + "seconds") }
-func (x timestampFieldPath) Nanos() IEndFieldPath   { return NewEndFieldPath(x.prefix + "nanos") }
+func (x timestampPathBuilder) String() string { return x.fieldPath }
+func (x timestampPathBuilder) Seconds() IEndPathBuilder {
+	return NewEndPathBuilder(x.prefix + "seconds")
+}
+func (x timestampPathBuilder) Nanos() IEndPathBuilder { return NewEndPathBuilder(x.prefix + "nanos") }
 
-type IDurationFieldPath interface {
+type IDurationPathBuilder interface {
 	String() string
-	Seconds() IEndFieldPath
-	Nanos() IEndFieldPath
+	Seconds() IEndPathBuilder
+	Nanos() IEndPathBuilder
 }
 
-type durationFieldPath struct {
+type durationPathBuilder struct {
 	fieldPath string
 	prefix    string
 }
 
-func NewDurationFieldPath(fieldPath string) IDurationFieldPath {
+func NewDurationPathBuilder(fieldPath string) IDurationPathBuilder {
 	prefix := ""
 	if fieldPath != "" {
 		prefix = fieldPath + "."
 	}
-	return durationFieldPath{fieldPath: fieldPath, prefix: prefix}
+	return durationPathBuilder{fieldPath: fieldPath, prefix: prefix}
 }
 
-func (x durationFieldPath) String() string         { return x.fieldPath }
-func (x durationFieldPath) Seconds() IEndFieldPath { return NewEndFieldPath(x.prefix + "seconds") }
-func (x durationFieldPath) Nanos() IEndFieldPath   { return NewEndFieldPath(x.prefix + "nanos") }
+func (x durationPathBuilder) String() string { return x.fieldPath }
+func (x durationPathBuilder) Seconds() IEndPathBuilder {
+	return NewEndPathBuilder(x.prefix + "seconds")
+}
+func (x durationPathBuilder) Nanos() IEndPathBuilder { return NewEndPathBuilder(x.prefix + "nanos") }
 
-type IFieldMaskFieldPath interface {
+type IFieldMaskPathBuilder interface {
 	String() string
-	Paths() IEndFieldPath
+	Paths() IEndPathBuilder
 }
 
-type fieldMaskFieldPath struct {
+type fieldMaskPathBuilder struct {
 	fieldPath string
 	prefix    string
 }
 
-func NewFieldMaskFieldPath(fieldPath string) IFieldMaskFieldPath {
+func NewFieldMaskPathBuilder(fieldPath string) IFieldMaskPathBuilder {
 	prefix := ""
 	if fieldPath != "" {
 		prefix = fieldPath + "."
 	}
-	return fieldMaskFieldPath{fieldPath: fieldPath, prefix: prefix}
+	return fieldMaskPathBuilder{fieldPath: fieldPath, prefix: prefix}
 }
 
-func (x fieldMaskFieldPath) String() string       { return x.fieldPath }
-func (x fieldMaskFieldPath) Paths() IEndFieldPath { return NewEndFieldPath(x.prefix + "paths") }
+func (x fieldMaskPathBuilder) String() string         { return x.fieldPath }
+func (x fieldMaskPathBuilder) Paths() IEndPathBuilder { return NewEndPathBuilder(x.prefix + "paths") }
 
-type IWrappersFieldPath interface {
+type IWrappersPathBuilder interface {
 	String() string
-	Value() IEndFieldPath
+	Value() IEndPathBuilder
 }
 
-type wrappersFieldPath struct {
+type wrappersPathBuilder struct {
 	fieldPath string
 	prefix    string
 }
 
-func NewWrappersFieldPath(fieldPath string) IWrappersFieldPath {
+func NewWrappersPathBuilder(fieldPath string) IWrappersPathBuilder {
 	prefix := ""
 	if fieldPath != "" {
 		prefix = fieldPath + "."
 	}
-	return wrappersFieldPath{fieldPath: fieldPath, prefix: prefix}
+	return wrappersPathBuilder{fieldPath: fieldPath, prefix: prefix}
 }
 
-func (x wrappersFieldPath) String() string       { return x.fieldPath }
-func (x wrappersFieldPath) Value() IEndFieldPath { return NewEndFieldPath(x.prefix + "value") }
+func (x wrappersPathBuilder) String() string         { return x.fieldPath }
+func (x wrappersPathBuilder) Value() IEndPathBuilder { return NewEndPathBuilder(x.prefix + "value") }

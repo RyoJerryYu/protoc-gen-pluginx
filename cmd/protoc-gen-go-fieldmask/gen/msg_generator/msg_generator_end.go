@@ -7,8 +7,6 @@ import (
 	"google.golang.org/protobuf/compiler/protogen"
 )
 
-const fieldmaskPackage protogen.GoImportPath = "github.com/RyoJerryYu/protoc-gen-plugins/pkg/fieldmask"
-
 func endIdent() protogen.GoIdent {
 	return protogen.GoIdent{
 		GoName: "End",

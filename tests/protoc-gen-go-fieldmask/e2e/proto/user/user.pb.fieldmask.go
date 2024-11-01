@@ -10,131 +10,131 @@ import (
 	fieldmask "github.com/RyoJerryYu/protoc-gen-plugins/pkg/fieldmask"
 )
 
-// IUserFieldPath is the interface for the field path of User
-type IUserFieldPath interface {
+// IUserPathBuilder is the interface for the field path of User
+type IUserPathBuilder interface {
 	String() string
-	Id() fieldmask.IEndFieldPath
-	Name() fieldmask.IEndFieldPath
-	Icon() IIconFieldPath
-	Password() IUserPasswordFieldPath
-	CreatedAt() fieldmask.IEndFieldPath
+	Id() fieldmask.IEndPathBuilder
+	Name() fieldmask.IEndPathBuilder
+	Icon() IIconPathBuilder
+	Password() IUserPasswordPathBuilder
+	CreatedAt() fieldmask.IEndPathBuilder
 }
 
-// userFieldPath is the implementation for the field path of User
-type userFieldPath struct {
+// userPathBuilder is the implementation for the field path of User
+type userPathBuilder struct {
 	fieldPath string // the field path to the current field, empty if it's root
 	prefix    string // e.g. "fieldPath." or empty if it's root
 }
 
-// NewUserFieldPath creates a new userFieldPath
-func NewUserFieldPath(fieldPath string) IUserFieldPath {
+// NewUserPathBuilder creates a new userPathBuilder
+func NewUserPathBuilder(fieldPath string) IUserPathBuilder {
 	prefix := ""
 	if fieldPath != "" {
 		prefix = fieldPath + "."
 	}
-	return userFieldPath{fieldPath: fieldPath, prefix: prefix}
+	return userPathBuilder{fieldPath: fieldPath, prefix: prefix}
 }
 
 // String returns the field path
-func (x userFieldPath) String() string { return x.fieldPath }
+func (x userPathBuilder) String() string { return x.fieldPath }
 
-func (x userFieldPath) Id() fieldmask.IEndFieldPath {
-	return fieldmask.NewEndFieldPath(x.prefix + "id")
+func (x userPathBuilder) Id() fieldmask.IEndPathBuilder {
+	return fieldmask.NewEndPathBuilder(x.prefix + "id")
 }
-func (x userFieldPath) Name() fieldmask.IEndFieldPath {
-	return fieldmask.NewEndFieldPath(x.prefix + "name")
+func (x userPathBuilder) Name() fieldmask.IEndPathBuilder {
+	return fieldmask.NewEndPathBuilder(x.prefix + "name")
 }
-func (x userFieldPath) Icon() IIconFieldPath { return NewIconFieldPath(x.prefix + "icon") }
-func (x userFieldPath) Password() IUserPasswordFieldPath {
-	return NewUserPasswordFieldPath(x.prefix + "password")
+func (x userPathBuilder) Icon() IIconPathBuilder { return NewIconPathBuilder(x.prefix + "icon") }
+func (x userPathBuilder) Password() IUserPasswordPathBuilder {
+	return NewUserPasswordPathBuilder(x.prefix + "password")
 }
-func (x userFieldPath) CreatedAt() fieldmask.IEndFieldPath {
-	return fieldmask.NewEndFieldPath(x.prefix + "created_at")
-}
-
-// FieldPath returns the field path for User
-func (x *User) FieldPath() IUserFieldPath {
-	return NewUserFieldPath("")
+func (x userPathBuilder) CreatedAt() fieldmask.IEndPathBuilder {
+	return fieldmask.NewEndPathBuilder(x.prefix + "created_at")
 }
 
-// IIconFieldPath is the interface for the field path of Icon
-type IIconFieldPath interface {
+// PathBuilder returns the field path for User
+func (x *User) PathBuilder() IUserPathBuilder {
+	return NewUserPathBuilder("")
+}
+
+// IIconPathBuilder is the interface for the field path of Icon
+type IIconPathBuilder interface {
 	String() string
-	Id() fieldmask.IEndFieldPath
-	Url() fieldmask.IEndFieldPath
-	CreatedAt() fieldmask.ITimestampFieldPath
-	Nested() IIcon_NestedFieldPath
-	NestedAnother() fieldmask.IEndFieldPath
+	Id() fieldmask.IEndPathBuilder
+	Url() fieldmask.IEndPathBuilder
+	CreatedAt() fieldmask.ITimestampPathBuilder
+	Nested() IIcon_NestedPathBuilder
+	NestedAnother() fieldmask.IEndPathBuilder
 }
 
-// iconFieldPath is the implementation for the field path of Icon
-type iconFieldPath struct {
+// iconPathBuilder is the implementation for the field path of Icon
+type iconPathBuilder struct {
 	fieldPath string // the field path to the current field, empty if it's root
 	prefix    string // e.g. "fieldPath." or empty if it's root
 }
 
-// NewIconFieldPath creates a new iconFieldPath
-func NewIconFieldPath(fieldPath string) IIconFieldPath {
+// NewIconPathBuilder creates a new iconPathBuilder
+func NewIconPathBuilder(fieldPath string) IIconPathBuilder {
 	prefix := ""
 	if fieldPath != "" {
 		prefix = fieldPath + "."
 	}
-	return iconFieldPath{fieldPath: fieldPath, prefix: prefix}
+	return iconPathBuilder{fieldPath: fieldPath, prefix: prefix}
 }
 
 // String returns the field path
-func (x iconFieldPath) String() string { return x.fieldPath }
+func (x iconPathBuilder) String() string { return x.fieldPath }
 
-func (x iconFieldPath) Id() fieldmask.IEndFieldPath {
-	return fieldmask.NewEndFieldPath(x.prefix + "id")
+func (x iconPathBuilder) Id() fieldmask.IEndPathBuilder {
+	return fieldmask.NewEndPathBuilder(x.prefix + "id")
 }
-func (x iconFieldPath) Url() fieldmask.IEndFieldPath {
-	return fieldmask.NewEndFieldPath(x.prefix + "url")
+func (x iconPathBuilder) Url() fieldmask.IEndPathBuilder {
+	return fieldmask.NewEndPathBuilder(x.prefix + "url")
 }
-func (x iconFieldPath) CreatedAt() fieldmask.ITimestampFieldPath {
-	return fieldmask.NewTimestampFieldPath(x.prefix + "created_at")
+func (x iconPathBuilder) CreatedAt() fieldmask.ITimestampPathBuilder {
+	return fieldmask.NewTimestampPathBuilder(x.prefix + "created_at")
 }
-func (x iconFieldPath) Nested() IIcon_NestedFieldPath {
-	return NewIcon_NestedFieldPath(x.prefix + "nested")
+func (x iconPathBuilder) Nested() IIcon_NestedPathBuilder {
+	return NewIcon_NestedPathBuilder(x.prefix + "nested")
 }
-func (x iconFieldPath) NestedAnother() fieldmask.IEndFieldPath {
-	return fieldmask.NewEndFieldPath(x.prefix + "nested_another")
-}
-
-// FieldPath returns the field path for Icon
-func (x *Icon) FieldPath() IIconFieldPath {
-	return NewIconFieldPath("")
+func (x iconPathBuilder) NestedAnother() fieldmask.IEndPathBuilder {
+	return fieldmask.NewEndPathBuilder(x.prefix + "nested_another")
 }
 
-// IIcon_NestedFieldPath is the interface for the field path of Icon_Nested
-type IIcon_NestedFieldPath interface {
+// PathBuilder returns the field path for Icon
+func (x *Icon) PathBuilder() IIconPathBuilder {
+	return NewIconPathBuilder("")
+}
+
+// IIcon_NestedPathBuilder is the interface for the field path of Icon_Nested
+type IIcon_NestedPathBuilder interface {
 	String() string
-	SomeField() fieldmask.IEndFieldPath
+	SomeField() fieldmask.IEndPathBuilder
 }
 
-// icon_NestedFieldPath is the implementation for the field path of Icon_Nested
-type icon_NestedFieldPath struct {
+// icon_NestedPathBuilder is the implementation for the field path of Icon_Nested
+type icon_NestedPathBuilder struct {
 	fieldPath string // the field path to the current field, empty if it's root
 	prefix    string // e.g. "fieldPath." or empty if it's root
 }
 
-// NewIcon_NestedFieldPath creates a new icon_NestedFieldPath
-func NewIcon_NestedFieldPath(fieldPath string) IIcon_NestedFieldPath {
+// NewIcon_NestedPathBuilder creates a new icon_NestedPathBuilder
+func NewIcon_NestedPathBuilder(fieldPath string) IIcon_NestedPathBuilder {
 	prefix := ""
 	if fieldPath != "" {
 		prefix = fieldPath + "."
 	}
-	return icon_NestedFieldPath{fieldPath: fieldPath, prefix: prefix}
+	return icon_NestedPathBuilder{fieldPath: fieldPath, prefix: prefix}
 }
 
 // String returns the field path
-func (x icon_NestedFieldPath) String() string { return x.fieldPath }
+func (x icon_NestedPathBuilder) String() string { return x.fieldPath }
 
-func (x icon_NestedFieldPath) SomeField() fieldmask.IEndFieldPath {
-	return fieldmask.NewEndFieldPath(x.prefix + "some_field")
+func (x icon_NestedPathBuilder) SomeField() fieldmask.IEndPathBuilder {
+	return fieldmask.NewEndPathBuilder(x.prefix + "some_field")
 }
 
-// FieldPath returns the field path for Icon_Nested
-func (x *Icon_Nested) FieldPath() IIcon_NestedFieldPath {
-	return NewIcon_NestedFieldPath("")
+// PathBuilder returns the field path for Icon_Nested
+func (x *Icon_Nested) PathBuilder() IIcon_NestedPathBuilder {
+	return NewIcon_NestedPathBuilder("")
 }

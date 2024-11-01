@@ -10,43 +10,43 @@ import (
 	fieldmask "github.com/RyoJerryYu/protoc-gen-plugins/pkg/fieldmask"
 )
 
-// IUserPasswordFieldPath is the interface for the field path of UserPassword
-type IUserPasswordFieldPath interface {
+// IUserPasswordPathBuilder is the interface for the field path of UserPassword
+type IUserPasswordPathBuilder interface {
 	String() string
-	Id() fieldmask.IEndFieldPath
-	Password() fieldmask.IEndFieldPath
-	CreatedAt() fieldmask.ITimestampFieldPath
+	Id() fieldmask.IEndPathBuilder
+	Password() fieldmask.IEndPathBuilder
+	CreatedAt() fieldmask.ITimestampPathBuilder
 }
 
-// userPasswordFieldPath is the implementation for the field path of UserPassword
-type userPasswordFieldPath struct {
+// userPasswordPathBuilder is the implementation for the field path of UserPassword
+type userPasswordPathBuilder struct {
 	fieldPath string // the field path to the current field, empty if it's root
 	prefix    string // e.g. "fieldPath." or empty if it's root
 }
 
-// NewUserPasswordFieldPath creates a new userPasswordFieldPath
-func NewUserPasswordFieldPath(fieldPath string) IUserPasswordFieldPath {
+// NewUserPasswordPathBuilder creates a new userPasswordPathBuilder
+func NewUserPasswordPathBuilder(fieldPath string) IUserPasswordPathBuilder {
 	prefix := ""
 	if fieldPath != "" {
 		prefix = fieldPath + "."
 	}
-	return userPasswordFieldPath{fieldPath: fieldPath, prefix: prefix}
+	return userPasswordPathBuilder{fieldPath: fieldPath, prefix: prefix}
 }
 
 // String returns the field path
-func (x userPasswordFieldPath) String() string { return x.fieldPath }
+func (x userPasswordPathBuilder) String() string { return x.fieldPath }
 
-func (x userPasswordFieldPath) Id() fieldmask.IEndFieldPath {
-	return fieldmask.NewEndFieldPath(x.prefix + "id")
+func (x userPasswordPathBuilder) Id() fieldmask.IEndPathBuilder {
+	return fieldmask.NewEndPathBuilder(x.prefix + "id")
 }
-func (x userPasswordFieldPath) Password() fieldmask.IEndFieldPath {
-	return fieldmask.NewEndFieldPath(x.prefix + "password")
+func (x userPasswordPathBuilder) Password() fieldmask.IEndPathBuilder {
+	return fieldmask.NewEndPathBuilder(x.prefix + "password")
 }
-func (x userPasswordFieldPath) CreatedAt() fieldmask.ITimestampFieldPath {
-	return fieldmask.NewTimestampFieldPath(x.prefix + "created_at")
+func (x userPasswordPathBuilder) CreatedAt() fieldmask.ITimestampPathBuilder {
+	return fieldmask.NewTimestampPathBuilder(x.prefix + "created_at")
 }
 
-// FieldPath returns the field path for UserPassword
-func (x *UserPassword) FieldPath() IUserPasswordFieldPath {
-	return NewUserPasswordFieldPath("")
+// PathBuilder returns the field path for UserPassword
+func (x *UserPassword) PathBuilder() IUserPasswordPathBuilder {
+	return NewUserPasswordPathBuilder("")
 }
