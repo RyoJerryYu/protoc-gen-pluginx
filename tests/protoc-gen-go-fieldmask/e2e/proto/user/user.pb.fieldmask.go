@@ -13,11 +13,11 @@ import (
 // IUserFieldPath is the interface for the field path of User
 type IUserFieldPath interface {
 	String() string
-	Id() string
-	Name() string
+	Id() fieldmask.IEndFieldPath
+	Name() fieldmask.IEndFieldPath
 	Icon() IIconFieldPath
 	Password() IUserPasswordFieldPath
-	CreatedAt() string
+	CreatedAt() fieldmask.IEndFieldPath
 }
 
 // userFieldPath is the implementation for the field path of User
@@ -38,13 +38,19 @@ func NewUserFieldPath(fieldPath string) IUserFieldPath {
 // String returns the field path
 func (x userFieldPath) String() string { return x.fieldPath }
 
-func (x userFieldPath) Id() string           { return x.prefix + "id" }
-func (x userFieldPath) Name() string         { return x.prefix + "name" }
+func (x userFieldPath) Id() fieldmask.IEndFieldPath {
+	return fieldmask.NewEndFieldPath(x.prefix + "id")
+}
+func (x userFieldPath) Name() fieldmask.IEndFieldPath {
+	return fieldmask.NewEndFieldPath(x.prefix + "name")
+}
 func (x userFieldPath) Icon() IIconFieldPath { return NewIconFieldPath(x.prefix + "icon") }
 func (x userFieldPath) Password() IUserPasswordFieldPath {
 	return NewUserPasswordFieldPath(x.prefix + "password")
 }
-func (x userFieldPath) CreatedAt() string { return x.prefix + "created_at" }
+func (x userFieldPath) CreatedAt() fieldmask.IEndFieldPath {
+	return fieldmask.NewEndFieldPath(x.prefix + "created_at")
+}
 
 // FieldPath returns the field path for User
 func (x *User) FieldPath() IUserFieldPath {
@@ -54,11 +60,11 @@ func (x *User) FieldPath() IUserFieldPath {
 // IIconFieldPath is the interface for the field path of Icon
 type IIconFieldPath interface {
 	String() string
-	Id() string
-	Url() string
+	Id() fieldmask.IEndFieldPath
+	Url() fieldmask.IEndFieldPath
 	CreatedAt() fieldmask.ITimestampFieldPath
 	Nested() IIcon_NestedFieldPath
-	NestedAnother() string
+	NestedAnother() fieldmask.IEndFieldPath
 }
 
 // iconFieldPath is the implementation for the field path of Icon
@@ -79,15 +85,21 @@ func NewIconFieldPath(fieldPath string) IIconFieldPath {
 // String returns the field path
 func (x iconFieldPath) String() string { return x.fieldPath }
 
-func (x iconFieldPath) Id() string  { return x.prefix + "id" }
-func (x iconFieldPath) Url() string { return x.prefix + "url" }
+func (x iconFieldPath) Id() fieldmask.IEndFieldPath {
+	return fieldmask.NewEndFieldPath(x.prefix + "id")
+}
+func (x iconFieldPath) Url() fieldmask.IEndFieldPath {
+	return fieldmask.NewEndFieldPath(x.prefix + "url")
+}
 func (x iconFieldPath) CreatedAt() fieldmask.ITimestampFieldPath {
 	return fieldmask.NewTimestampFieldPath(x.prefix + "created_at")
 }
 func (x iconFieldPath) Nested() IIcon_NestedFieldPath {
 	return NewIcon_NestedFieldPath(x.prefix + "nested")
 }
-func (x iconFieldPath) NestedAnother() string { return x.prefix + "nested_another" }
+func (x iconFieldPath) NestedAnother() fieldmask.IEndFieldPath {
+	return fieldmask.NewEndFieldPath(x.prefix + "nested_another")
+}
 
 // FieldPath returns the field path for Icon
 func (x *Icon) FieldPath() IIconFieldPath {
@@ -97,7 +109,7 @@ func (x *Icon) FieldPath() IIconFieldPath {
 // IIcon_NestedFieldPath is the interface for the field path of Icon_Nested
 type IIcon_NestedFieldPath interface {
 	String() string
-	SomeField() string
+	SomeField() fieldmask.IEndFieldPath
 }
 
 // icon_NestedFieldPath is the implementation for the field path of Icon_Nested
@@ -118,7 +130,9 @@ func NewIcon_NestedFieldPath(fieldPath string) IIcon_NestedFieldPath {
 // String returns the field path
 func (x icon_NestedFieldPath) String() string { return x.fieldPath }
 
-func (x icon_NestedFieldPath) SomeField() string { return x.prefix + "some_field" }
+func (x icon_NestedFieldPath) SomeField() fieldmask.IEndFieldPath {
+	return fieldmask.NewEndFieldPath(x.prefix + "some_field")
+}
 
 // FieldPath returns the field path for Icon_Nested
 func (x *Icon_Nested) FieldPath() IIcon_NestedFieldPath {

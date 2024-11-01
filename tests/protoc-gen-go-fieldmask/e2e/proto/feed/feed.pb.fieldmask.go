@@ -14,8 +14,8 @@ import (
 // IFeedFieldPath is the interface for the field path of Feed
 type IFeedFieldPath interface {
 	String() string
-	Id() string
-	Title() string
+	Id() fieldmask.IEndFieldPath
+	Title() fieldmask.IEndFieldPath
 	Author() user.IUserFieldPath
 	CreatedAt() fieldmask.ITimestampFieldPath
 	NestedFromOther() user.IIcon_NestedFieldPath
@@ -39,8 +39,12 @@ func NewFeedFieldPath(fieldPath string) IFeedFieldPath {
 // String returns the field path
 func (x feedFieldPath) String() string { return x.fieldPath }
 
-func (x feedFieldPath) Id() string    { return x.prefix + "id" }
-func (x feedFieldPath) Title() string { return x.prefix + "title" }
+func (x feedFieldPath) Id() fieldmask.IEndFieldPath {
+	return fieldmask.NewEndFieldPath(x.prefix + "id")
+}
+func (x feedFieldPath) Title() fieldmask.IEndFieldPath {
+	return fieldmask.NewEndFieldPath(x.prefix + "title")
+}
 func (x feedFieldPath) Author() user.IUserFieldPath {
 	return user.NewUserFieldPath(x.prefix + "author")
 }

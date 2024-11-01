@@ -13,8 +13,8 @@ import (
 // IUserPasswordFieldPath is the interface for the field path of UserPassword
 type IUserPasswordFieldPath interface {
 	String() string
-	Id() string
-	Password() string
+	Id() fieldmask.IEndFieldPath
+	Password() fieldmask.IEndFieldPath
 	CreatedAt() fieldmask.ITimestampFieldPath
 }
 
@@ -36,8 +36,12 @@ func NewUserPasswordFieldPath(fieldPath string) IUserPasswordFieldPath {
 // String returns the field path
 func (x userPasswordFieldPath) String() string { return x.fieldPath }
 
-func (x userPasswordFieldPath) Id() string       { return x.prefix + "id" }
-func (x userPasswordFieldPath) Password() string { return x.prefix + "password" }
+func (x userPasswordFieldPath) Id() fieldmask.IEndFieldPath {
+	return fieldmask.NewEndFieldPath(x.prefix + "id")
+}
+func (x userPasswordFieldPath) Password() fieldmask.IEndFieldPath {
+	return fieldmask.NewEndFieldPath(x.prefix + "password")
+}
 func (x userPasswordFieldPath) CreatedAt() fieldmask.ITimestampFieldPath {
 	return fieldmask.NewTimestampFieldPath(x.prefix + "created_at")
 }
