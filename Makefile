@@ -4,17 +4,17 @@ VERSION := "unknown"
 .PHONY: tools
 tools:
 	@echo "Installing tools..."
-	@./tools/tools.sh
+	@./tests/tools/tools.sh
 
 .PHONY: generate
 generate: tools
 	@echo "Generating code..."
-	@go generate ./...
+	@cd tests && go generate ./...
 
 .PHONY: test
 test: generate
 	@echo "Running tests..."
-	@go test -v ./...
+	@cd tests && go test -v ./...
 
 .PHONY: tag
 tag:
