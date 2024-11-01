@@ -46,7 +46,7 @@ func newTimestampMsgGenerator(g pluginutils.FileGenerator) *timestampMsgGenerato
 	return &timestampMsgGenerator{
 		importMsgGenerator: importMsgGenerator{
 			FileGenerator: g,
-			importPath:    "github.com/RyoJerryYu/protoc-gen-plugins/pkg/fieldmask",
+			importPath:    fieldmaskPackage,
 			ifaceName:     getIfaceName(reflectNameIdent(protobufx.Timestamp_message_name)),
 			newFuncName:   getNewFuncName(reflectNameIdent(protobufx.Timestamp_message_name)),
 		},
@@ -61,7 +61,7 @@ func newDurationMsgGenerator(g pluginutils.FileGenerator) *durationMsgGenerator 
 	return &durationMsgGenerator{
 		importMsgGenerator: importMsgGenerator{
 			FileGenerator: g,
-			importPath:    "github.com/RyoJerryYu/protoc-gen-plugins/pkg/fieldmask",
+			importPath:    fieldmaskPackage,
 			ifaceName:     getIfaceName(reflectNameIdent(protobufx.Duration_message_name)),
 			newFuncName:   getNewFuncName(reflectNameIdent(protobufx.Duration_message_name)),
 		},
@@ -76,7 +76,7 @@ func newFieldMaskMsgGenerator(g pluginutils.FileGenerator) *fieldMaskMsgGenerato
 	return &fieldMaskMsgGenerator{
 		importMsgGenerator: importMsgGenerator{
 			FileGenerator: g,
-			importPath:    "github.com/RyoJerryYu/protoc-gen-plugins/pkg/fieldmask",
+			importPath:    fieldmaskPackage,
 			ifaceName:     getIfaceName(reflectNameIdent(protobufx.FieldMask_message_name)),
 			newFuncName:   getNewFuncName(reflectNameIdent(protobufx.FieldMask_message_name)),
 		},

@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package compatibility;
+
+option go_package = "./compatibility;compatibility";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+
+message Holder {
+    google.protobuf.Empty empty = 1;
+    google.protobuf.Timestamp timestamp = 2;
+    google.protobuf.Duration duration = 3;
+    string name = 4;
+    
+    message NestedInner {
+        string name = 1;
+    }
+
+    NestedInner nested = 5;
+    NestedOuter outer = 6;
+}
+
+message NestedOuter {
+    string nested = 1;
+}

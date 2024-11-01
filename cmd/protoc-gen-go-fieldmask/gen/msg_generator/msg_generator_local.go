@@ -133,8 +133,8 @@ func (x %s) String() string { return x.fieldPath }`,
 
 func (x *localMsgGenerator) applyMessageMethods() {
 	// field path method for protobuf message
-	x.Pf(`// FieldPath returns the field path for %s`, x.m.GoIdent.GoName)
-	x.Pf(`func (x *%s) FieldPath() %s {`, x.m.GoIdent.GoName, x.ifaceName)
+	x.Pf(`// PathBuilder returns the field path for %s`, x.m.GoIdent.GoName)
+	x.Pf(`func (x *%s) PathBuilder() %s {`, x.m.GoIdent.GoName, x.ifaceName)
 	x.Pf(`	return %s("")`, getNewFuncName(x.m.GoIdent))
 	x.Pf(`}`)
 	x.Pf(``)
