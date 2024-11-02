@@ -3,9 +3,9 @@ package main
 import (
 	"flag"
 
-	"github.com/RyoJerryYu/protoc-gen-plugins/cmd/protoc-gen-go-fieldmask/gen"
-	"github.com/RyoJerryYu/protoc-gen-plugins/pkg/pluginutils"
-	"github.com/RyoJerryYu/protoc-gen-plugins/pkg/version"
+	"github.com/RyoJerryYu/protoc-gen-pluginx/cmd/protoc-gen-go-fieldmask/gen"
+	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils"
+	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/version"
 	"github.com/golang/glog"
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/types/pluginpb"

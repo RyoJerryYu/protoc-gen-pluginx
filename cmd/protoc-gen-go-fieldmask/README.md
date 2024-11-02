@@ -72,7 +72,7 @@ fieldmasks paths can be used as follows:
 ### Installation
 
 ```sh
-go install github.com/RyoJerryYu/protoc-gen-plugins/cmd/protoc-gen-go-fieldmask@latest
+go install github.com/RyoJerryYu/protoc-gen-pluginx/cmd/protoc-gen-go-fieldmask@latest
 ```
 
 ### Executing the plugin

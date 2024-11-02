@@ -7,7 +7,7 @@
 package compatibility
 
 import (
-	fieldmask "github.com/RyoJerryYu/protoc-gen-plugins/pkg/fieldmask"
+	fieldmask "github.com/RyoJerryYu/protoc-gen-pluginx/pkg/fieldmask"
 )
 
 // IHolderPathBuilder is the interface for the field path of Holder

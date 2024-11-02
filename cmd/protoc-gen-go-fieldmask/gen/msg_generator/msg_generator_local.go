@@ -3,7 +3,7 @@ package msg_generator
 import (
 	"fmt"
 
-	"github.com/RyoJerryYu/protoc-gen-plugins/pkg/pluginutils"
+	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils"
 	"github.com/golang/glog"
 	"google.golang.org/protobuf/compiler/protogen"
 )

@@ -1,8 +1,8 @@
 package gen
 
 import (
-	"github.com/RyoJerryYu/protoc-gen-plugins/cmd/protoc-gen-go-fieldmask/gen/msg_generator"
-	"github.com/RyoJerryYu/protoc-gen-plugins/pkg/pluginutils"
+	"github.com/RyoJerryYu/protoc-gen-pluginx/cmd/protoc-gen-go-fieldmask/gen/msg_generator"
+	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils"
 	"github.com/golang/glog"
 	"google.golang.org/protobuf/compiler/protogen"
 )

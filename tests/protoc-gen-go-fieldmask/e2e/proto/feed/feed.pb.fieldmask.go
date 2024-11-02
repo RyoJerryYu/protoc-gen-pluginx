@@ -7,8 +7,8 @@
 package feed
 
 import (
-	fieldmask "github.com/RyoJerryYu/protoc-gen-plugins/pkg/fieldmask"
-	user "github.com/RyoJerryYu/protoc-gen-plugins/tests/protoc-gen-go-fieldmask/e2e/proto/user"
+	fieldmask "github.com/RyoJerryYu/protoc-gen-pluginx/pkg/fieldmask"
+	user "github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-go-fieldmask/e2e/proto/user"
 )
 
 // IFeedPathBuilder is the interface for the field path of Feed

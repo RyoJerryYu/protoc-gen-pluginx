@@ -1,10 +1,10 @@
-module github.com/RyoJerryYu/protoc-gen-plugins/tests
+module github.com/RyoJerryYu/protoc-gen-pluginx/tests
 
 go 1.22.3
 
 require (
 	github.com/RyoJerryYu/go-utilx/cmd/gogenx v1.0.0
-	github.com/RyoJerryYu/protoc-gen-plugins v0.0.0-00010101000000-000000000000
+	github.com/RyoJerryYu/protoc-gen-pluginx v0.0.0-00010101000000-000000000000
 	github.com/mennanov/fmutils v0.3.0
 	github.com/stretchr/testify v1.9.0
 	golang.org/x/exp v0.0.0-20241009180824-f66d83c29e7c
@@ -25,4 +25,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-replace github.com/RyoJerryYu/protoc-gen-plugins => ..
+replace github.com/RyoJerryYu/protoc-gen-pluginx => ..

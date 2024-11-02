@@ -7,7 +7,7 @@
 package user
 
 import (
-	fieldmask "github.com/RyoJerryYu/protoc-gen-plugins/pkg/fieldmask"
+	fieldmask "github.com/RyoJerryYu/protoc-gen-pluginx/pkg/fieldmask"
 )
 
 // IUserPathBuilder is the interface for the field path of User

@@ -1,8 +1,8 @@
 package msg_generator
 
 import (
-	"github.com/RyoJerryYu/protoc-gen-plugins/pkg/pluginutils"
-	"github.com/RyoJerryYu/protoc-gen-plugins/pkg/protobufx"
+	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils"
+	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/protobufx"
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
@@ -91,7 +91,7 @@ func newWrappersMsgGenerator(g pluginutils.FileGenerator) *wrappersMsgGenerator 
 	return &wrappersMsgGenerator{
 		importMsgGenerator: importMsgGenerator{
 			FileGenerator: g,
-			importPath:    "github.com/RyoJerryYu/protoc-gen-plugins/pkg/fieldmask",
+			importPath:    "github.com/RyoJerryYu/protoc-gen-pluginx/pkg/fieldmask",
 			ifaceName:     getIfaceName(reflectNameIdent("Wrappers")),
 			newFuncName:   getNewFuncName(reflectNameIdent("Wrappers")),
 		},
