@@ -1,4 +1,4 @@
-module github.com/RyoJerryYu/protoc-gen-plugins
+module github.com/RyoJerryYu/protoc-gen-pluginx
 
 go 1.22.3
 

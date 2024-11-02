@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package api.v1.user;
 
-option go_package = "github.com/RyoJerryYu/protoc-gen-plugins/tests/protoc-gen-go-fieldmask/e2e/proto/user";
+option go_package = "github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-go-fieldmask/e2e/proto/user";
 
 import "google/protobuf/timestamp.proto";
 import "proto/user/user_password.proto";

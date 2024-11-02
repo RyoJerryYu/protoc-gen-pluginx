@@ -9,7 +9,7 @@ import (
 
 const (
 	nameSuffix                             = "PathBuilder"
-	fieldmaskPackage protogen.GoImportPath = "github.com/RyoJerryYu/protoc-gen-plugins/pkg/fieldmask"
+	fieldmaskPackage protogen.GoImportPath = "github.com/RyoJerryYu/protoc-gen-pluginx/pkg/fieldmask"
 )
 
 func lowerFirst(s string) string {

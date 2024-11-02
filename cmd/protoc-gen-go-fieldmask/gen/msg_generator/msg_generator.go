@@ -1,9 +1,9 @@
 package msg_generator
 
 import (
-	"github.com/RyoJerryYu/protoc-gen-plugins/annotations/fieldmask"
-	"github.com/RyoJerryYu/protoc-gen-plugins/pkg/pluginutils"
-	"github.com/RyoJerryYu/protoc-gen-plugins/pkg/protobufx"
+	"github.com/RyoJerryYu/protoc-gen-pluginx/annotations/fieldmask"
+	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils"
+	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/protobufx"
 	"github.com/golang/glog"
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/proto"

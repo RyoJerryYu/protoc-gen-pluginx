@@ -4,7 +4,7 @@ package ryojerryyu.fieldmask;
 
 import "google/protobuf/descriptor.proto";
 
-option go_package = "github.com/RyoJerryYu/protoc-gen-plugins/annotations/fieldmask";
+option go_package = "github.com/RyoJerryYu/protoc-gen-pluginx/annotations/fieldmask";
 
 message FieldOptions {
     // end of the field mask, 
