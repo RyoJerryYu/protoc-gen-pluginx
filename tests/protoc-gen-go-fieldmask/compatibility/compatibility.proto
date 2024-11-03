@@ -7,8 +7,10 @@ option go_package = "./compatibility;compatibility";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/duration.proto";
+import "transformer/annotations.proto";
 
 message Holder {
+    option(transformer.go_struct) = "HolderSelf";
     google.protobuf.Empty empty = 1;
     google.protobuf.Timestamp timestamp = 2;
     google.protobuf.Duration duration = 3;
