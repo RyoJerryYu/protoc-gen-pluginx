@@ -17,3 +17,8 @@ Plugins for generating enum extension methods, works with `protoc-gen-go` .
 Plugins for generating fieldmask paths helper for messages, works with `protoc-gen-go` .
 
 It is a fork of [github.com/idodod/protoc-gen-fieldmask](https://github.com/idodod/protoc-gen-fieldmask) with some improvements.
+
+## [protoc-gen-go-gwcli-wrapper](./cmd//protoc-gen-go-gwcli-wrapper/README.md)
+
+- [ ] grpc gateway streaming method? server side, client side, duplex
+- [ ] grpc-web streaming method? server side, client side, duplex
