@@ -4,6 +4,7 @@ VERSION := "unknown"
 .PHONY: tools
 tools:
 	@echo "Installing tools..."
+	@cd tests && go mod tidy
 	@./tests/tools/tools.sh
 	@echo "Tools installed."
 
