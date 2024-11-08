@@ -17,7 +17,7 @@ type Options struct {
 
 type Generator struct {
 	Options
-	pluginutils.PluginOptions
+	pluginutils.GenerateOptions
 }
 
 func (g *Generator) ApplyTemplate() error {
@@ -54,8 +54,8 @@ func (g *Generator) applyGRPCAdapter(svc *protogen.Service) {
 
 	for _, method := range svc.Methods {
 		methodApplyer{
-			PluginOptions: g.PluginOptions,
-			structName:    structName,
+			GenerateOptions: g.GenerateOptions,
+			structName:      structName,
 		}.applyMethod(method)
 	}
 }
@@ -76,14 +76,14 @@ func (g *Generator) applyGatewayClientAdapter(svc *protogen.Service) {
 
 	for _, method := range svc.Methods {
 		methodApplyer{
-			PluginOptions: g.PluginOptions,
-			structName:    structName,
+			GenerateOptions: g.GenerateOptions,
+			structName:      structName,
 		}.applyMethod(method)
 	}
 }
 
 type methodApplyer struct {
-	pluginutils.PluginOptions
+	pluginutils.GenerateOptions
 	structName string
 }
 

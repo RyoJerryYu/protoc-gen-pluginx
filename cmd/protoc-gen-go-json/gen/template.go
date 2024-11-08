@@ -25,7 +25,7 @@ type Options struct {
 
 type Generator struct {
 	Options
-	pluginutils.PluginOptions
+	pluginutils.GenerateOptions
 }
 
 // This function is called with a param which contains the entire definition of a method.

@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 
 	"github.com/RyoJerryYu/protoc-gen-pluginx/cmd/protoc-gen-go-json/gen"
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils"
@@ -84,47 +83,22 @@ func main() {
 	flag.Parse()
 	defer glog.Flush()
 
-	protogen.Options{
-		ParamFunc: flag.CommandLine.Set,
-	}.Run(func(gp *protogen.Plugin) error {
-		gp.SupportedFeatures = uint64(pluginpb.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL)
-
-		for _, name := range gp.Request.FileToGenerate {
-			f := gp.FilesByPath[name]
-
-			if len(f.Messages) == 0 && len(f.Enums) == 0 {
-				glog.V(1).Infof("Skipping %s, no messages and no enums", name)
-				continue
-			}
-
-			glog.V(1).Infof("Processing %s", name)
-			glog.V(2).Infof("Generating %s\n", fmt.Sprintf("%s.pb.json.go", f.GeneratedFilenamePrefix))
-
-			gf := gp.NewGeneratedFile(fmt.Sprintf("%s.pb.json.go", f.GeneratedFilenamePrefix), f.GoImportPath)
-
-			plgOpt := pluginutils.PluginOptions{
-				PluginName:       "protoc-gen-go-json",
-				PluginVersionStr: version.Version,
-				FileGenerator: pluginutils.FileGenerator{
-					W: gf,
-					F: f,
-				},
-			}
-			plgOpt.PHeader(gp)
-			plgOpt.PPackage()
-
-			g := gen.Generator{
-				Options:       options,
-				PluginOptions: plgOpt,
-			}
-			err := g.ApplyTemplate()
-			if err != nil {
-				gf.Skip()
-				gp.Error(err)
-				continue
-			}
+	pluginutils.NewForEachFileRunner(pluginutils.PluginInfo{
+		PluginName:        "protoc-gen-go-json",
+		VersionStr:        version.Version,
+		GenFileSuffix:     ".pb.json.go",
+		SupportedFeatures: uint64(pluginpb.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL),
+	}).ForEachFileThat(func(protoFile *protogen.File) bool {
+		if len(protoFile.Messages) == 0 && len(protoFile.Enums) == 0 {
+			glog.V(1).Infof("Skipping %s, no messages and no enums", protoFile.Desc.Path())
+			return false
 		}
-
-		return nil
+		return true
+	}).Run(func(genOpt pluginutils.GenerateOptions) error {
+		g := gen.Generator{
+			Options:         options,
+			GenerateOptions: genOpt,
+		}
+		return g.ApplyTemplate()
 	})
 }

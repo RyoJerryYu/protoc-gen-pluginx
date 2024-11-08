@@ -23,48 +23,22 @@ func main() {
 	flag.Parse()
 	defer glog.Flush()
 
-	protogen.Options{
-		ParamFunc: flag.CommandLine.Set,
-	}.Run(func(p *protogen.Plugin) error {
-		p.SupportedFeatures = uint64(pluginpb.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL)
-
-		// p.Files listed all files imported.
-		// We only want to process the files that are being generated.
-		for _, name := range p.Request.FileToGenerate {
-			f := p.FilesByPath[name]
-			if len(f.Enums) == 0 {
-				glog.V(1).Infof("Skipping %s, no enums", f.Desc.Path())
-				continue
-			}
-
-			glog.V(1).Infof("Processing %s", f.Desc.Path())
-			glog.V(2).Infof("Generating %s\n", f.GeneratedFilenamePrefix)
-
-			gf := p.NewGeneratedFile(f.GeneratedFilenamePrefix+".pb.enumx.go", f.GoImportPath)
-
-			plgOpt := pluginutils.PluginOptions{
-				PluginName:       "protoc-gen-enumx",
-				PluginVersionStr: version.Version,
-				FileGenerator: pluginutils.FileGenerator{
-					W: gf,
-					F: f,
-				},
-			}
-
-			plgOpt.PHeader(p)
-			plgOpt.PPackage()
-
-			g := gen.Generator{
-				Options:       options,
-				PluginOptions: plgOpt,
-			}
-			err := g.ApplyTemplate()
-			if err != nil {
-				gf.Skip()
-				p.Error(err)
-				continue
-			}
+	pluginutils.NewForEachFileRunner(pluginutils.PluginInfo{
+		PluginName:        "protoc-gen-go-enumx",
+		VersionStr:        version.Version,
+		GenFileSuffix:     ".pb.enumx.go",
+		SupportedFeatures: uint64(pluginpb.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL),
+	}).ForEachFileThat(func(protoFile *protogen.File) bool {
+		if len(protoFile.Enums) == 0 {
+			glog.V(1).Infof("Skipping %s, no enums", protoFile.Desc.Path())
+			return false
 		}
-		return nil
+		return true
+	}).Run(func(genOpt pluginutils.GenerateOptions) error {
+		g := gen.Generator{
+			Options:         options,
+			GenerateOptions: genOpt,
+		}
+		return g.ApplyTemplate()
 	})
 }
