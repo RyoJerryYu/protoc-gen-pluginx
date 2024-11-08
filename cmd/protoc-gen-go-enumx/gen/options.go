@@ -13,7 +13,7 @@ type Options struct {
 
 type Generator struct {
 	Options
-	pluginutils.PluginOptions
+	pluginutils.GenerateOptions
 }
 
 func (g *Generator) ApplyTemplate() error {

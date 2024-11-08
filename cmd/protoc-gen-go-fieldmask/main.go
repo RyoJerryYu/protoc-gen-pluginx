@@ -25,49 +25,26 @@ func init() {
 func main() {
 	flag.Parse()
 	defer glog.Flush()
+	// if options.Maxdepth <= 0 {
+	// 	return errors.New("maxdepth must be greater than 0")
+	// }
 
-	protogen.Options{
-		ParamFunc: flag.CommandLine.Set,
-	}.Run(func(p *protogen.Plugin) error {
-		// if options.Maxdepth <= 0 {
-		// 	return errors.New("maxdepth must be greater than 0")
-		// }
-		p.SupportedFeatures = uint64(pluginpb.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL)
-
-		for _, name := range p.Request.FileToGenerate {
-			f := p.FilesByPath[name]
-			if len(f.Messages) == 0 {
-				glog.V(1).Infof("Skipping %s, no messages", f.Desc.Path())
-				continue
-			}
-
-			glog.V(1).Infof("Processing %s", f.Desc.Path())
-			glog.V(2).Infof("Generating %s\n", f.GeneratedFilenamePrefix)
-
-			gf := p.NewGeneratedFile(f.GeneratedFilenamePrefix+".pb.fieldmask.go", f.GoImportPath)
-
-			plgOpt := pluginutils.PluginOptions{
-				PluginName:       "protoc-gen-go-fieldmask",
-				PluginVersionStr: version.Version,
-				FileGenerator: pluginutils.FileGenerator{
-					W: gf,
-					F: f,
-				},
-			}
-
-			plgOpt.PHeader(p)
-			plgOpt.PPackage()
-
-			g := gen.Generator{
-				PluginOptions: plgOpt,
-			}
-			err := g.ApplyTemplate()
-			if err != nil {
-				gf.Skip()
-				p.Error(err)
-				continue
-			}
+	pluginutils.NewForEachFileRunner(pluginutils.PluginInfo{
+		PluginName:        "protoc-gen-go-fieldmask",
+		VersionStr:        version.Version,
+		GenFileSuffix:     ".pb.fieldmask.go",
+		SupportedFeatures: uint64(pluginpb.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL),
+	}).ForEachFileThat(func(protoFile *protogen.File) bool {
+		if len(protoFile.Messages) == 0 {
+			glog.V(1).Infof("Skipping %s, no messages", protoFile.Desc.Path())
+			return false
 		}
-		return nil
+		return true
+	}).Run(func(genOpt pluginutils.GenerateOptions) error {
+		g := gen.Generator{
+			Options:         options,
+			GenerateOptions: genOpt,
+		}
+		return g.ApplyTemplate()
 	})
 }

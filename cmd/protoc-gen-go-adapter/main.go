@@ -24,51 +24,26 @@ func main() {
 	flag.Parse()
 	defer glog.Flush()
 
-	protogen.Options{
-		ParamFunc: flag.CommandLine.Set,
-	}.Run(func(p *protogen.Plugin) error {
-		p.SupportedFeatures = uint64(pluginpb.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL)
-
-		for _, name := range p.Request.FileToGenerate {
-			f := p.FilesByPath[name]
-			if options.NotGenGRPCAdapter && !options.GenGatewayClientAdapter {
-				glog.V(1).Infof("Skipping %s, no adapter to generate", f.Desc.Path())
-				continue
-			}
-			if len(f.Services) == 0 {
-				glog.V(1).Infof("Skipping %s, no services", f.Desc.Path())
-				continue
-			}
-
-			glog.V(1).Infof("Processing %s", f.Desc.Path())
-			glog.V(2).Infof("Generating %s\n", f.GeneratedFilenamePrefix)
-
-			gf := p.NewGeneratedFile(f.GeneratedFilenamePrefix+".pb.adapter.go", f.GoImportPath)
-
-			plgOpt := pluginutils.PluginOptions{
-				PluginName:       "protoc-gen-go-adapter",
-				PluginVersionStr: version.Version,
-				FileGenerator: pluginutils.FileGenerator{
-					W: gf,
-					F: f,
-				},
-			}
-
-			plgOpt.PHeader(p)
-			plgOpt.PPackage()
-
-			g := gen.Generator{
-				Options:       options,
-				PluginOptions: plgOpt,
-			}
-
-			err := g.ApplyTemplate()
-			if err != nil {
-				gf.Skip()
-				p.Error(err)
-				continue
-			}
+	pluginutils.NewForEachFileRunner(pluginutils.PluginInfo{
+		PluginName:        "protoc-gen-go-adapter",
+		VersionStr:        version.Version,
+		GenFileSuffix:     ".pb.adapter.go",
+		SupportedFeatures: uint64(pluginpb.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL),
+	}).ForEachFileThat(func(protoFile *protogen.File) bool {
+		if options.NotGenGRPCAdapter && !options.GenGatewayClientAdapter {
+			glog.V(1).Infof("Skipping %s, no adapter to generate", protoFile.Desc.Path())
+			return false
 		}
-		return nil
+		if len(protoFile.Services) == 0 {
+			glog.V(1).Infof("Skipping %s, no services", protoFile.Desc.Path())
+			return false
+		}
+		return true
+	}).Run(func(genOpt pluginutils.GenerateOptions) error {
+		g := gen.Generator{
+			Options:         options,
+			GenerateOptions: genOpt,
+		}
+		return g.ApplyTemplate()
 	})
 }

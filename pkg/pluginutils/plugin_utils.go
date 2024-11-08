@@ -2,10 +2,16 @@ package pluginutils
 
 import "google.golang.org/protobuf/compiler/protogen"
 
-type PluginOptions struct {
+type GenerateOptions struct {
 	FileGenerator
-	PluginName       string
-	PluginVersionStr string
+	PluginInfo
+}
+
+type PluginInfo struct {
+	PluginName        string
+	VersionStr        string
+	GenFileSuffix     string
+	SupportedFeatures uint64
 }
 
 type FileGenerator struct {
