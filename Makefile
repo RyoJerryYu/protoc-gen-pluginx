@@ -11,6 +11,7 @@ tools:
 .PHONY: generate
 generate: tools
 	@echo "Generating code..."
+	@go generate ./...
 	@cd tests && go generate ./...
 	@echo "Code generated."
 
