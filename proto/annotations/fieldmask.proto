@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package ryojerryyu.annotations;
-option go_package = "github.com/RyoJerryYu/protoc-gen-pluginx/proto/ryojerryyu/annotations";
+option go_package = "github.com/RyoJerryYu/protoc-gen-pluginx/proto/annotations";
 
 message FieldMaskFieldOptions {
     // end of the field mask, 
