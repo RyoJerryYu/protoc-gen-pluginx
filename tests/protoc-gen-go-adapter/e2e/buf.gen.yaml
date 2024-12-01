@@ -1,0 +1,24 @@
+version: v2
+plugins:
+  - local: protoc-gen-go
+    out: .
+    opt:
+      - paths=source_relative
+  - local: protoc-gen-go-grpc
+    out: .
+    opt:
+      - paths=source_relative
+  - local: protoc-gen-grpc-gateway
+    out: .
+    opt:
+      - paths=source_relative
+  - local: protoc-gen-grpc-gateway-client
+    out: .
+    opt:
+      - paths=source_relative
+  - local: ./protoc-gen-go-adapter
+    out: .
+    opt:
+      - paths=source_relative
+      - gen_gateway_client_adapter=true
+      - logtostderr=true
