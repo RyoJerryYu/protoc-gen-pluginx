@@ -6,7 +6,7 @@ option go_package = "github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-g
 
 import "google/protobuf/timestamp.proto";
 import "proto/user/user.proto";
-import "annotations/annotations.proto";
+import "ryojerryyu/annotations/annotations.proto";
 
 message Feed {
     string id = 1;
