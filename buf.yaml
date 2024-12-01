@@ -1,0 +1,5 @@
+version: v2
+modules:
+  - name: buf.build/ryojerryyu/protoc-gen-pluginx
+    path: proto
+

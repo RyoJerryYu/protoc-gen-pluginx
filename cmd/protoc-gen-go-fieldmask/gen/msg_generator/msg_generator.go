@@ -1,9 +1,9 @@
 package msg_generator
 
 import (
-	"github.com/RyoJerryYu/protoc-gen-pluginx/annotations/fieldmask"
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils"
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/protobufx"
+	"github.com/RyoJerryYu/protoc-gen-pluginx/proto/annotations"
 	"github.com/golang/glog"
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/proto"
@@ -55,19 +55,21 @@ func isPathEnd(field *protogen.Field) bool {
 		field.Desc.IsList()
 }
 
-func defaultExtension() *fieldmask.FieldOptions {
-	return &fieldmask.FieldOptions{
+func defaultExtension() *annotations.FieldMaskFieldOptions {
+	return &annotations.FieldMaskFieldOptions{
 		End: false,
 	}
 }
 
-func getExtension(field *protogen.Field) *fieldmask.FieldOptions {
-	fieldExt, ok := proto.GetExtension(field.Desc.Options(), fieldmask.E_Field).(*fieldmask.FieldOptions)
-	if ok {
-		return fieldExt
+func getExtension(field *protogen.Field) *annotations.FieldMaskFieldOptions {
+	fieldExt, ok := proto.GetExtension(field.Desc.Options(), annotations.E_Field).(*annotations.FieldOptions)
+	if !ok {
+		return defaultExtension()
 	}
-
-	return defaultExtension()
+	if fieldExt.GetFieldMask() == nil {
+		return defaultExtension()
+	}
+	return fieldExt.FieldMask
 }
 
 type GeneratorCtx struct {
