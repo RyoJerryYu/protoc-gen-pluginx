@@ -1,0 +1,13 @@
+version: v2
+modules:
+  - name: buf.build/protoc-gen-go-adapter/e2e
+    path: protoc-gen-go-adapter/e2e
+  - name: buf.build/protoc-gen-go-enumx/e2e
+    path: protoc-gen-go-enumx/e2e
+  - name: buf.build/protoc-gen-go-fieldmask/e2e
+    path: protoc-gen-go-fieldmask/e2e
+  - name: buf.build/protoc-gen-go-json/e2e
+    path: protoc-gen-go-json/e2e
+deps:
+  - buf.build/googleapis/googleapis
+  - buf.build/ryojerryyu/protoc-gen-pluginx
