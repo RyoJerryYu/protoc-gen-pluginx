@@ -10,8 +10,10 @@ import "proto/user/user.proto";
 message Admin {
     string id = 1;
     string name = 2;
-    user.User user = 3[(ryojerryyu.fieldmask.gen) = {
-        mode: "recursive"
-    }];
+    // TODO , test recursive mode
+    // user.User user = 3[(ryojerryyu.fieldmask.gen) = {
+    //     mode: "recursive"
+    // }];
+    user.User user = 3;
     google.protobuf.Timestamp created_at = 4;
 }
