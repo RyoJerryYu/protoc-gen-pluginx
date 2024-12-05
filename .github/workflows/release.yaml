@@ -16,13 +16,16 @@ jobs:
         uses: actions/checkout@v4
       - name: Parse version
         id: parse_version
-        run: echo "::set-output name=version::${GITHUB_REF#refs/heads/release/}"
+        run:  |
+          echo "::set-output name=version::$(cat pkg/version/VERSION)"
       - name: Config git
         run: |
           git config --global user.name 'release-workflow[bot]'
           git config --global user.email 'tzl19961216@gmail.com'
       - name: Release version
         id: release_version
+        env:
+          BUF_TOKEN: ${{ secrets.BUF_TOKEN }}
         run: |
           echo "Release version ${{ steps.parse_version.outputs.version }}"
           make release VERSION=${{ steps.parse_version.outputs.version }}
