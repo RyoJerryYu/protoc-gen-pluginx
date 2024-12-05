@@ -24,6 +24,11 @@ jobs:
         run: |
           git config --global user.name 'release-workflow[bot]'
           git config --global user.email 'tzl19961216@gmail.com'
+
+      # Install the `buf` CLI
+      - name: Setup buf
+        uses: bufbuild/buf-setup-action@v1.47.2
+
       - name: Release version
         id: release_version
         env:
