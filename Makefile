@@ -34,7 +34,15 @@ tag: write_version
 	@$(MAKE) test
 	@git add .
 	@git commit -m "Bump version to $(VERSION)"
-	@git tag -a $(VERSION) -m "Version $(VERSION)"
 	@git push origin release/$(VERSION)
+
+.PHONY: release
+release:
+	@echo "Releasing version..."
+	@echo "Version: $(VERSION)"
+	@echo "Release go modules"
+	@git tag -a $(VERSION) -m "Version $(VERSION)"
 	@git push origin $(VERSION)
-	@gh pr create --title "Release $(VERSION)" --body "Release version $(VERSION)" --base main --head release/$(VERSION)
+	@echo "Release buf modules"
+	@buf push --git-metadata
+	@echo "Version $(VERSION) released."

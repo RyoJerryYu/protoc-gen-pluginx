@@ -1,0 +1,29 @@
+name: Release Version
+on:
+  push:
+    # on VERSION file change in master branch
+    branches:
+      - "master"
+    paths:
+      - "pkg/version/VERSION"
+
+jobs:
+  release:
+    name: Release Version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Parse version
+        id: parse_version
+        run: echo "::set-output name=version::${GITHUB_REF#refs/heads/release/}"
+      - name: Config git
+        run: |
+          git config --global user.name 'release-workflow[bot]'
+          git config --global user.email 'tzl19961216@gmail.com'
+      - name: Release version
+        id: release_version
+        run: |
+          echo "Release version ${{ steps.parse_version.outputs.version }}"
+          make release VERSION=${{ steps.parse_version.outputs.version }}
+
