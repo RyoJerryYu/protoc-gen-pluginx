@@ -40,6 +40,7 @@ jobs:
           title: "Release ${{ steps.parse_version.outputs.version }}"
           body: "Release version ${{ steps.parse_version.outputs.version }}"
           branch: "release/${{ steps.parse_version.outputs.version }}"
+          base: 'master'
           labels: 'release'
           committer: version-release[bot] <tzl19961216@gmail.com>
           delete-branch: true
