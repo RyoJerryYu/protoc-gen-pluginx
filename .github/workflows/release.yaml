@@ -24,6 +24,8 @@ jobs:
           git config --global user.email 'tzl19961216@gmail.com'
       - name: Release version
         id: release_version
+        env:
+          BUF_TOKEN: ${{ secrets.BUF_TOKEN }}
         run: |
           echo "Release version ${{ steps.parse_version.outputs.version }}"
           make release VERSION=${{ steps.parse_version.outputs.version }}
