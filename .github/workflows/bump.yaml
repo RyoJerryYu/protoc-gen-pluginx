@@ -1,0 +1,44 @@
+name: Bump Version
+on:
+  push:
+    branches:
+      - "release/v*"
+
+jobs:
+  update_version:
+    name: Update Version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Parse version
+        id: parse_version
+        run: echo "::set-output name=version::${GITHUB_REF#refs/heads/release/}"
+      - name: Parse version from branch name
+        run: make write_version VERSION="${{ steps.parse_version.outputs.version }}"
+      - name: Check if version file changed
+        id: version_changed
+        run: |
+          if git diff --exit-code ./pkg/version/VERSION; then
+            echo "::set-output name=changed::false"
+          else
+            echo "::set-output name=changed::true"
+          fi
+      - name: Commit version file
+        if: steps.version_changed.outputs.changed == 'true'
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add ./pkg/version/VERSION
+          git commit -m "Update version to ${{ steps.parse_version.outputs.version }}"
+          git push
+      - name: Create pull request
+        if: steps.version_changed.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Update version to ${{ steps.parse_version.outputs.version }}"
+          title: "Release ${{ steps.parse_version.outputs.version }}"
+          body: "Release version ${{ steps.parse_version.outputs.version }}"
+          base: main
+          head: release/${{ steps.parse_version.outputs.version }}
