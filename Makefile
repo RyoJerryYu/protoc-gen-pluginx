@@ -21,8 +21,12 @@ test: generate
 	@cd tests && go test -v ./...
 	@echo "Tests passed."
 
+.PHONY: write_version
+write_version:
+	@echo $(VERSION) > ./pkg/version/VERSION
+
 .PHONY: tag
-tag:
+tag: write_version
 	@echo "Tagging version..."
 	@echo "Version: $(VERSION)"
 	@git checkout -b release/$(VERSION)
@@ -33,3 +37,4 @@ tag:
 	@git tag -a $(VERSION) -m "Version $(VERSION)"
 	@git push origin release/$(VERSION)
 	@git push origin $(VERSION)
+	@gh pr create --title "Release $(VERSION)" --body "Release version $(VERSION)" --base main --head release/$(VERSION)
