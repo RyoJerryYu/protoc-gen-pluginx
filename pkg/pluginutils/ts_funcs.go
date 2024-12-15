@@ -92,9 +92,9 @@ func functionCase(s string) string {
 // Template
 ////////////////
 
-func FieldName(r *Registry) func(name string) string {
+func FieldName(opt *TSOption) func(name string) string {
 	return func(name string) string {
-		if r.UseProtoNames {
+		if opt.UseProtoNames {
 			return name
 		}
 		return JSONCamelCase(name)
@@ -103,10 +103,7 @@ func FieldName(r *Registry) func(name string) string {
 
 // location: the location of the field or method that references the type
 func tsType(def *protogen.Message, location protogen.Location) string {
-	glog.V(3).Infof("Processing tsType %s", def.GoIdent.GoName)
-	glog.V(3).Infof("def location: %s, %s", def.Location.SourceFile, def.Location.Path)
-	glog.V(3).Infof("location: %s, %s", location.SourceFile, location.Path)
-
+	glog.V(3).Infof("tsType: %s", def.GoIdent.GoName)
 	// Map entry type
 	if def.Desc.IsMapEntry() {
 		glog.V(3).Infof("tsType is map entry %s", def.GoIdent.GoName)
@@ -118,15 +115,12 @@ func tsType(def *protogen.Message, location protogen.Location) string {
 	var typeStr string
 	switch {
 	case protobufx.IsWellKnownType(def.Desc): // Well known type
-		glog.V(3).Infof("tsType is well known type %s", def.GoIdent.GoName)
 		typeStr = mapWellKnownType(def.Desc)
-	case strings.Index(string(def.Desc.FullName()), ".") != 0: // Scalar type
-		glog.V(3).Infof("tsType is scalar type %s", def.GoIdent.GoName)
+	case !strings.Contains(string(def.Desc.FullName()), "."): // Scalar type
 		typeStr = mapScalaType(string(def.Desc.FullName()))
 	// case def.Location.SourceFile == location.SourceFile: // Local type
 	// 	typeStr = typeInfo.PackageIdentifier
 	default: // External type
-		glog.V(3).Infof("tsType is external type %s", def.GoIdent.GoName)
 		glog.V(3).Infof("parent file: package: %s, name: %s, fullname: %s, path: %s",
 			def.Desc.ParentFile().Package(),
 			def.Desc.ParentFile().Name(),
@@ -201,25 +195,11 @@ type TSOption struct {
 	TSImportRoots string
 	// TSImportRootAliasParamsKey contains the key for common_import_root_alias in parameters
 	TSImportRootAliases string
-	// FetchModuleDirectory is the parameter for directory where fetch module will live
-	FetchModuleDirectory string
-	// FetchModuleFilename is the file name for the individual fetch module
-	FetchModuleFilename string
 	// UseProtoNames will generate field names the same as defined in the proto
 	UseProtoNames bool
-	// UseStaticClasses will cause the generator to generate a static class in the form ServiceName.MethodName, which is
-	// the legacy behavior for this generator. If set to false, the generator will generate a client class with methods
-	// as well as static methods exported for each service method.
-	UseStaticClasses bool
 	// EmitUnpopulated mirrors the grpc gateway protojson configuration of the same name and allows
 	// clients to differentiate between zero values and optional values that aren't set.
 	EmitUnpopulated bool
 	// EnableStylingCheck enables both eslint and tsc check for the generated code
 	EnableStylingCheck bool
-}
-
-// Registry analyze generation request, spits out the data the the rendering process
-// it also holds the information about all the types.
-type Registry struct {
-	TSOption
 }

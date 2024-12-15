@@ -20,8 +20,8 @@ func init() {
 
 	flag.StringVar(&options.FetchModuleDirectory, "fetch_module_directory", ".", "where shared typescript file should be placed")
 	flag.StringVar(&options.FetchModuleFilename, "fetch_module_filename", "fetch.pb.ts", "name of shard typescript file")
-	flag.StringVar(&options.TsImportRoots, "ts_import_roots", "", "defaults to $(pwd)")
-	flag.StringVar(&options.TsImportRootAliases, "ts_import_root_aliases", "", "use import aliases instead of relative paths")
+	flag.StringVar(&options.TSImportRoots, "ts_import_roots", "", "defaults to $(pwd)")
+	flag.StringVar(&options.TSImportRootAliases, "ts_import_root_aliases", "", "use import aliases instead of relative paths")
 
 	flag.BoolVar(&options.EnableStylingCheck, "enable_styling_check", false, "TODO")
 }

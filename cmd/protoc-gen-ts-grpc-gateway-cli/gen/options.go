@@ -14,16 +14,16 @@ import (
 )
 
 type Options struct {
-	UseProtoNames    bool
+	pluginutils.TSOption
+
+	// UseStaticClasses will cause the generator to generate a static class in the form ServiceName.MethodName, which is
+	// the legacy behavior for this generator. If set to false, the generator will generate a client class with methods
+	// as well as static methods exported for each service method.
 	UseStaticClasses bool
-	EmitUnpopulated  bool
-
+	// FetchModuleDirectory is the parameter for directory where fetch module will live
 	FetchModuleDirectory string
-	FetchModuleFilename  string
-	TsImportRoots        string
-	TsImportRootAliases  string
-
-	EnableStylingCheck bool
+	// FetchModuleFilename is the file name for the individual fetch module
+	FetchModuleFilename string
 }
 
 type Generator struct {
@@ -32,22 +32,20 @@ type Generator struct {
 }
 
 func (g *Generator) PTmplStr(tmpl string, data interface{}, funcs ...template.FuncMap) {
-	r := pluginutils.Registry{
-		TSOption: pluginutils.TSOption{
-			UseProtoNames: g.UseProtoNames,
-		},
-	}
 	funcs = append(funcs, pluginutils.ServiceFmap())
 	funcs = append(funcs, template.FuncMap{
-		"renderURL":    renderURL(&r),
-		"buildInitReq": buildInitReq,
+		"renderURL":    g.renderURL(&g.TSOption),
+		"buildInitReq": g.buildInitReq,
 	})
 	g.GenerateOptions.PTmplStr(tmpl, data, funcs...)
 }
-func renderURL(r *pluginutils.Registry) func(method *protogen.Method) string {
+func (g *Generator) renderURL(r *pluginutils.TSOption) func(method *protogen.Method) string {
 	fieldNameFn := pluginutils.FieldName(r)
 	return func(method *protogen.Method) string {
-		methodURL := "method.URL"
+		// httpMethod, httpURL :=
+		httpOpts := g.httpOptions(method)
+		methodURL := httpOpts.URL
+		methodMethod := httpOpts.Method
 		reg := regexp.MustCompile("{([^}]+)}")
 		matches := reg.FindAllStringSubmatch(methodURL, -1)
 		fieldsInPath := make([]string, 0, len(matches))
@@ -63,13 +61,14 @@ func renderURL(r *pluginutils.Registry) func(method *protogen.Method) string {
 		}
 		urlPathParams := fmt.Sprintf("[%s]", strings.Join(fieldsInPath, ", "))
 
+		// httpMethod
+
 		if !method.Desc.IsStreamingClient() &&
-			// (method.HTTPMethod == "GET" || method.HTTPMethod == "DELETE")
-			true {
+			(methodMethod == "GET" || methodMethod == "DELETE") {
 			// parse the url to check for query string
 			parsedURL, err := url.Parse(methodURL)
 			if err != nil {
-				return methodURL
+				return fmt.Sprintf("`%s`", methodURL)
 			}
 			renderURLSearchParamsFn := fmt.Sprintf("${fm.renderURLSearchParams(req, %s)}", urlPathParams)
 			// prepend "&" if query string is present otherwise prepend "?"
@@ -80,19 +79,21 @@ func renderURL(r *pluginutils.Registry) func(method *protogen.Method) string {
 				methodURL += "?" + renderURLSearchParamsFn
 			}
 		}
-		return methodURL
+		return fmt.Sprintf("`%s`", methodURL)
 	}
 }
 
-func buildInitReq(method *protogen.Method) string {
-	httpMethod := "method.HTTPMethod"
+func (g *Generator) buildInitReq(method *protogen.Method) string {
+	httpOpts := g.httpOptions(method)
+	httpMethod := httpOpts.Method
+	httpBody := httpOpts.Body
 	m := `method: "` + httpMethod + `"`
 	fields := []string{m}
-	// if method.HTTPRequestBody == nil || *method.HTTPRequestBody == "*" {
-	// 	fields = append(fields, "body: JSON.stringify(req, fm.replacer)")
-	// } else if *method.HTTPRequestBody != "" {
-	// 	fields = append(fields, `body: JSON.stringify(req["`+*method.HTTPRequestBody+`"], fm.replacer)`)
-	// }
+	if httpBody == nil || *httpBody == "*" {
+		fields = append(fields, "body: JSON.stringify(req, fm.replacer)")
+	} else if *httpBody != "" {
+		fields = append(fields, `body: JSON.stringify(req["`+*httpBody+`"], fm.replacer)`)
+	}
 
 	return strings.Join(fields, ", ")
 }
