@@ -17,15 +17,15 @@ import (
 )
 
 type TSRegistry struct {
-	buf         bytes.Buffer
-	GenOpts     GenerateOptions
-	ImportFiles map[string]protoreflect.FileDescriptor // map<module_name, file_descriptor>
+	buf           bytes.Buffer
+	GenOpts       GenerateOptions
+	ImportModules map[string]TSModule // map<module_name, file_descriptor>
 }
 
 func NewTSRegistry(opts GenerateOptions) *TSRegistry {
 	return &TSRegistry{
-		GenOpts:     opts,
-		ImportFiles: make(map[string]protoreflect.FileDescriptor),
+		GenOpts:       opts,
+		ImportModules: make(map[string]TSModule),
 	}
 }
 
@@ -40,12 +40,32 @@ func (g *TSRegistry) Apply(w io.Writer) error {
 	return err
 }
 
-func TSPath_TSProto(file protoreflect.FileDescriptor) string {
-	protoPath := file.Path()
-	return strings.TrimSuffix(protoPath, ".proto") + ".ts"
+type TSModule struct {
+	ModuleName string
+	Path       string // path relative to the generate root
 }
 
-func tsImportPath(thisPath string, modulePath string) string {
+func (m TSModule) Ident(name string) TSIdent {
+	return TSIdent{
+		TSModule: m,
+		Name:     name,
+	}
+}
+
+type TSIdent struct {
+	TSModule
+	Name string
+}
+
+func TSModule_TSProto(file protoreflect.FileDescriptor) TSModule {
+	protoPath := file.Path()
+	return TSModule{
+		ModuleName: GetModuleName(file),
+		Path:       strings.TrimSuffix(protoPath, ".proto") + ".ts",
+	}
+}
+
+func TSImportPath(thisPath string, modulePath string) string {
 	thisDir := filepath.Dir(thisPath)
 	relativePath, err := filepath.Rel(thisDir, modulePath)
 	if err != nil {
@@ -59,12 +79,11 @@ func tsImportPath(thisPath string, modulePath string) string {
 }
 
 func (g *TSRegistry) ImportSegments() string {
-	thisPath := TSPath_TSProto(g.GenOpts.FileGenerator.F.Desc)
+	thisModule := TSModule_TSProto(g.GenOpts.FileGenerator.F.Desc)
 	var imports []string
-	for moduleName, file := range g.ImportFiles {
-		modulePath := TSPath_TSProto(file)
-		relativePath := tsImportPath(thisPath, modulePath)
-		glog.V(3).Infof("ImportSegments: thisPath: %s, modulePath: %s, relativePath: %s", thisPath, modulePath, relativePath)
+	for moduleName, module := range g.ImportModules {
+		relativePath := TSImportPath(thisModule.Path, module.Path)
+		glog.V(3).Infof("ImportSegments: thisPath: %s, modulePath: %s, relativePath: %s", thisModule, module, relativePath)
 		imports = append(imports, fmt.Sprintf("import * as %s from '%s';", moduleName, relativePath))
 	}
 	return strings.Join(imports, "\n")
@@ -77,7 +96,7 @@ func (g *TSRegistry) Write(p []byte) (n int, err error) {
 func (g *TSRegistry) P(v ...any) {
 	for _, x := range v {
 		switch x := x.(type) {
-		case *protogen.Message:
+		case TSIdent:
 			fmt.Fprint(&g.buf, g.QualifiedTSIdent(x))
 		default:
 			fmt.Fprint(&g.buf, x)
@@ -122,11 +141,10 @@ func (opt *TSRegistry) PTmplStr(tmpl string, data interface{}, funcs ...template
 	opt.PTmpl(t, data, funcs...)
 }
 
-func (r *TSRegistry) QualifiedTSIdent(m *protogen.Message) string {
-	glog.V(3).Infof("QualifiedTSIdent: %s", m.GoIdent.GoName)
-	moduleName := GetModuleName(m.Desc.ParentFile())
-	r.ImportFiles[moduleName] = m.Desc.ParentFile()
-	return moduleName + "." + m.GoIdent.GoName
+func (r *TSRegistry) QualifiedTSIdent(ident TSIdent) string {
+	// glog.V(3).Infof("QualifiedTSIdent: %s", m.GoIdent.GoName)
+	r.ImportModules[ident.ModuleName] = ident.TSModule
+	return ident.ModuleName + "." + ident.Name
 }
 
 // ServiceTemplate gets the template for the primary typescript file.
@@ -243,7 +261,8 @@ func (r *TSRegistry) tsType(def *protogen.Message, location protogen.Location) s
 			def.Desc.ParentFile().FullName(),
 			def.Desc.ParentFile().Path(),
 		)
-		typeStr = r.QualifiedTSIdent(def)
+		module := TSModule_TSProto(def.Desc.ParentFile())
+		typeStr = r.QualifiedTSIdent(module.Ident(def.GoIdent.GoName))
 	}
 
 	// if .IsRepeated {

@@ -21,6 +21,10 @@ type Options struct {
 	FetchModuleFilename string
 }
 
+var (
+	niceGrpcWeb = pluginutils.TSModule{ModuleName: "NiceGrpcWeb", Path: "nice-grpc-web"}
+)
+
 type Generator struct {
 	Options
 	Generator pluginutils.GenerateOptions
@@ -46,15 +50,18 @@ func (g *Generator) ApplyTemplate() error {
 }
 
 func (g *Generator) applyService(service *protogen.Service) {
+	serviceModule := pluginutils.TSModule_TSProto(service.Desc.ParentFile())
 	for _, leadingDetached := range service.Comments.LeadingDetached {
 		g.P(leadingDetached)
 	}
-	g.P("export class ", service.GoName, " {")
+	g.P("export function new", service.GoName, "(): ", niceGrpcWeb.Ident("Client"), "<", serviceModule.Ident(service.GoName+"Definition"), "> {")
 	g.P(service.Comments.Leading)
+	g.P("return {")
 
 	for _, method := range service.Methods {
 		g.applyMethod(method)
 	}
+	g.P("};")
 	g.P("}")
 	g.P(service.Comments.Trailing)
 }
@@ -67,14 +74,17 @@ func (g *Generator) applyMethod(method *protogen.Method) {
 	glog.V(3).Infof("method location: %s, %s", method.Location.SourceFile, method.Location.Path)
 	if method.Desc.IsStreamingServer() {
 		tmpl := `
-  static {{.GoName}}(this:void, req: {{tsType .Input, .Location}}, entityNotifier?: fm.NotifyStreamEntityArrival<{{tsType .Output .Location}}>, initReq?: fm.InitReq): Promise<void> {
+  {{.GoName}}(req: Partial<{{tsType .Input, .Location}}>, entityNotifier?: fm.NotifyStreamEntityArrival<{{tsType .Output .Location}}>, initReq?: fm.InitReq): Promise<void> {
     return fm.fetchStreamingRequest<{{tsType .Output .Location}}>({{renderURL .}}, entityNotifier, {...initReq, {{buildInitReq .}}});
   }
 `
 		g.PTmplStr(tmpl, method)
 	} else {
 		tmpl := `
-  static {{.GoName}}(this:void, req: {{tsType .Input .Location}}, initReq?: fm.InitReq): Promise<{{tsType .Output .Location}}> {
+  {{.GoName}}(
+    req: Partial<{{tsType .Input .Location}}>, 
+    options?: CallOptions
+  ): Promise<{{tsType .Output .Location}}> {
     return fm.fetchRequest<{{tsType .Output .Location}}>({{renderURL .}}, {...initReq, {{buildInitReq .}}});
   }
 `
