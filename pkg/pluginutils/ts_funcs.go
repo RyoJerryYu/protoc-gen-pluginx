@@ -1,22 +1,119 @@
 package pluginutils
 
 import (
+	"bytes"
 	"fmt"
+	"io"
 	"path/filepath"
 	"strings"
 	"text/template"
 
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/protobufx"
+	sprig "github.com/go-task/slim-sprig/v3"
 	"github.com/golang/glog"
 	"github.com/iancoleman/strcase"
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
+type TSRegistry struct {
+	buf         bytes.Buffer
+	GenOpts     GenerateOptions
+	ImportFiles map[string]protoreflect.FileDescriptor // map<module_name, file_descriptor>
+}
+
+func NewTSRegistry(opts GenerateOptions) *TSRegistry {
+	return &TSRegistry{
+		GenOpts:     opts,
+		ImportFiles: make(map[string]protoreflect.FileDescriptor),
+	}
+}
+
+func (g *TSRegistry) Apply(w io.Writer) error {
+	if !strings.HasSuffix(g.GenOpts.GenFileSuffix, ".ts") {
+		_, err := io.Copy(w, &g.buf)
+		return err
+	}
+	content := g.buf.Bytes()
+	imports := g.ImportSegments()
+	_, err := w.Write([]byte(fmt.Sprintf("%s\n%s", imports, content)))
+	return err
+}
+
+func (g *TSRegistry) ImportSegments() string {
+	thisPath := g.GenOpts.FileGenerator.F.Desc.Path()
+	var imports []string
+	for moduleName, file := range g.ImportFiles {
+		modulePath := file.Path()
+		glog.V(3).Infof("ImportSegments: thisPath: %s, modulePath: %s", thisPath, modulePath)
+		imports = append(imports, fmt.Sprintf("import * as %s from '%s';", moduleName, file.Path()))
+	}
+	return strings.Join(imports, "\n")
+}
+
+func (g *TSRegistry) Write(p []byte) (n int, err error) {
+	return g.buf.Write(p)
+}
+
+func (g *TSRegistry) P(v ...any) {
+	for _, x := range v {
+		switch x := x.(type) {
+		case *protogen.Message:
+			fmt.Fprint(&g.buf, g.QualifiedTSIdent(x))
+		default:
+			fmt.Fprint(&g.buf, x)
+		}
+	}
+	fmt.Fprintln(&g.buf)
+}
+
+// Pf is same as P, but with formatted string.
+func (opt *TSRegistry) Pf(format string, v ...any) {
+	opt.P(fmt.Sprintf(format, v...))
+}
+
+// PComment allows multiple lines string as comment.
+func (opt *TSRegistry) PComment(comments ...string) {
+	comment := strings.Join(comments, " ")
+	io.Copy(opt, bytes.NewBufferString(protogen.Comments(comment).String()))
+}
+
+// PCommentf allows formatted string as comment.
+func (opt *TSRegistry) PCommentf(format string, args ...interface{}) {
+	io.Copy(opt, bytes.NewBufferString(protogen.Comments(fmt.Sprintf(format, args...)).String()))
+}
+
+func (opt *TSRegistry) PTmpl(tmpl *template.Template, data interface{}, funcs ...template.FuncMap) {
+	t := tmpl
+	t.Funcs(sprig.TxtFuncMap())
+	for _, fMap := range funcs {
+		t.Funcs(fMap)
+	}
+	t.Execute(opt, data)
+}
+
+func (opt *TSRegistry) PTmplStr(tmpl string, data interface{}, funcs ...template.FuncMap) {
+
+	t := template.New("tmpl")
+	for _, fMap := range funcs {
+		t.Funcs(fMap)
+	}
+
+	t = template.Must(t.Parse(tmpl))
+	opt.PTmpl(t, data, funcs...)
+}
+
+func (r *TSRegistry) QualifiedTSIdent(m *protogen.Message) string {
+	glog.V(3).Infof("QualifiedTSIdent: %s", m.GoIdent.GoName)
+	moduleName := GetModuleName(m.Desc.ParentFile())
+	r.ImportFiles[moduleName] = m.Desc.ParentFile()
+	return moduleName + "." + m.GoIdent.GoName
+}
+
 // ServiceTemplate gets the template for the primary typescript file.
-func ServiceFmap() template.FuncMap {
+func (r *TSRegistry) ServiceFmap() template.FuncMap {
 	fMap := template.FuncMap{
-		"tsType":       tsType,
+		"tsType":       r.tsType,
 		"functionCase": functionCase,
 		// "tsTypeKey":    tsTypeKey(r),
 		// "tsTypeDef":    tsTypeDef(r),
@@ -102,13 +199,13 @@ func FieldName(opt *TSOption) func(name string) string {
 }
 
 // location: the location of the field or method that references the type
-func tsType(def *protogen.Message, location protogen.Location) string {
+func (r *TSRegistry) tsType(def *protogen.Message, location protogen.Location) string {
 	glog.V(3).Infof("tsType: %s", def.GoIdent.GoName)
 	// Map entry type
 	if def.Desc.IsMapEntry() {
 		glog.V(3).Infof("tsType is map entry %s", def.GoIdent.GoName)
-		keyType := tsType(def.Fields[0].Message, location)   //TODO: enums?
-		valueType := tsType(def.Fields[1].Message, location) //TODO: enums?
+		keyType := r.tsType(def.Fields[0].Message, location)   //TODO: enums?
+		valueType := r.tsType(def.Fields[1].Message, location) //TODO: enums?
 
 		return fmt.Sprintf("Record<%s, %s>", keyType, valueType)
 	}
@@ -127,7 +224,7 @@ func tsType(def *protogen.Message, location protogen.Location) string {
 			def.Desc.ParentFile().FullName(),
 			def.Desc.ParentFile().Path(),
 		)
-		typeStr = GetModuleName(def.Desc.ParentFile()) + "." + def.GoIdent.GoName
+		typeStr = r.QualifiedTSIdent(def)
 	}
 
 	// if .IsRepeated {
@@ -185,9 +282,13 @@ func mapScalaType(protoType string) string {
 // fileName: memos.proto
 func GetModuleName(file protoreflect.FileDescriptor) string {
 	packageName, fileName := string(file.Package()), string(file.Path())
+	glog.V(3).Infof("GetModuleName packageName: %s, fileName %s", packageName, fileName)
 	baseName := filepath.Base(fileName)
+	glog.V(3).Infof("GetModuleName baseName: %s", baseName)
 	ext := filepath.Ext(fileName)
+	glog.V(3).Infof("GetModuleName ext: %s", ext)
 	name := baseName[0 : len(baseName)-len(ext)]
+	glog.V(3).Infof("GetModuleName name: %s", name)
 
 	return strcase.ToCamel(packageName) + strcase.ToCamel(name)
 }

@@ -43,8 +43,9 @@ func main() {
 		return true
 	}).Run(func(genOpt pluginutils.GenerateOptions) error {
 		g := gen.Generator{
-			Options:         options,
-			GenerateOptions: genOpt,
+			Options:    options,
+			Generator:  genOpt,
+			TSRegistry: pluginutils.NewTSRegistry(genOpt),
 		}
 		return g.ApplyTemplate()
 	})

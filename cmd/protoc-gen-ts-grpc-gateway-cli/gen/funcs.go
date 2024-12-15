@@ -23,23 +23,25 @@ type Options struct {
 
 type Generator struct {
 	Options
-	pluginutils.GenerateOptions
+	Generator pluginutils.GenerateOptions
+	*pluginutils.TSRegistry
 }
 
 func (g *Generator) PTmplStr(tmpl string, data interface{}, funcs ...template.FuncMap) {
-	funcs = append(funcs, pluginutils.ServiceFmap())
+	funcs = append(funcs, g.ServiceFmap())
 	funcs = append(funcs, template.FuncMap{
 		"renderURL":    g.renderURL(&g.TSOption),
 		"buildInitReq": g.buildInitReq,
 	})
-	g.GenerateOptions.PTmplStr(tmpl, data, funcs...)
+	g.TSRegistry.PTmplStr(tmpl, data, funcs...)
 }
 
 func (g *Generator) ApplyTemplate() error {
 	// services do not nest, so we can apply them directly
-	for _, s := range g.F.Services {
+	for _, s := range g.Generator.F.Services {
 		g.applyService(s)
 	}
+	g.Apply(g.Generator.W)
 	return nil
 }
 
