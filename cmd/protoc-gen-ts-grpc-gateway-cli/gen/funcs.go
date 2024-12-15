@@ -1,11 +1,6 @@
 package gen
 
 import (
-	"fmt"
-	"log/slog"
-	"net/url"
-	"regexp"
-	"strings"
 	"text/template"
 
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils"
@@ -38,64 +33,6 @@ func (g *Generator) PTmplStr(tmpl string, data interface{}, funcs ...template.Fu
 		"buildInitReq": g.buildInitReq,
 	})
 	g.GenerateOptions.PTmplStr(tmpl, data, funcs...)
-}
-func (g *Generator) renderURL(r *pluginutils.TSOption) func(method *protogen.Method) string {
-	fieldNameFn := pluginutils.FieldName(r)
-	return func(method *protogen.Method) string {
-		// httpMethod, httpURL :=
-		httpOpts := g.httpOptions(method)
-		methodURL := httpOpts.URL
-		methodMethod := httpOpts.Method
-		reg := regexp.MustCompile("{([^}]+)}")
-		matches := reg.FindAllStringSubmatch(methodURL, -1)
-		fieldsInPath := make([]string, 0, len(matches))
-		if len(matches) > 0 {
-			slog.Debug("url matches", slog.Any("matches", matches))
-			for _, m := range matches {
-				expToReplace := m[0]
-				fieldName := fieldNameFn(m[1])
-				part := fmt.Sprintf(`${req.%s}`, fieldName)
-				methodURL = strings.ReplaceAll(methodURL, expToReplace, part)
-				fieldsInPath = append(fieldsInPath, fmt.Sprintf(`"%s"`, fieldName))
-			}
-		}
-		urlPathParams := fmt.Sprintf("[%s]", strings.Join(fieldsInPath, ", "))
-
-		// httpMethod
-
-		if !method.Desc.IsStreamingClient() &&
-			(methodMethod == "GET" || methodMethod == "DELETE") {
-			// parse the url to check for query string
-			parsedURL, err := url.Parse(methodURL)
-			if err != nil {
-				return fmt.Sprintf("`%s`", methodURL)
-			}
-			renderURLSearchParamsFn := fmt.Sprintf("${fm.renderURLSearchParams(req, %s)}", urlPathParams)
-			// prepend "&" if query string is present otherwise prepend "?"
-			// trim leading "&" if present before prepending it
-			if parsedURL.RawQuery != "" {
-				methodURL = strings.TrimRight(methodURL, "&") + "&" + renderURLSearchParamsFn
-			} else {
-				methodURL += "?" + renderURLSearchParamsFn
-			}
-		}
-		return fmt.Sprintf("`%s`", methodURL)
-	}
-}
-
-func (g *Generator) buildInitReq(method *protogen.Method) string {
-	httpOpts := g.httpOptions(method)
-	httpMethod := httpOpts.Method
-	httpBody := httpOpts.Body
-	m := `method: "` + httpMethod + `"`
-	fields := []string{m}
-	if httpBody == nil || *httpBody == "*" {
-		fields = append(fields, "body: JSON.stringify(req, fm.replacer)")
-	} else if *httpBody != "" {
-		fields = append(fields, `body: JSON.stringify(req["`+*httpBody+`"], fm.replacer)`)
-	}
-
-	return strings.Join(fields, ", ")
 }
 
 func (g *Generator) ApplyTemplate() error {

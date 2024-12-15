@@ -153,8 +153,10 @@ func mapWellKnownType(desc protoreflect.MessageDescriptor) string {
 		return "StructPBValue[]"
 	case protobufx.Struct_message_fullname:
 		return "{ [key: string]: StructPBValue }"
+	case protobufx.Empty_message_fullname:
+		return "{}"
 	}
-	return ""
+	return "unknown"
 }
 
 func mapScalaType(protoType string) string {
