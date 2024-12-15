@@ -40,13 +40,32 @@ func (g *TSRegistry) Apply(w io.Writer) error {
 	return err
 }
 
+func TSPath_TSProto(file protoreflect.FileDescriptor) string {
+	protoPath := file.Path()
+	return strings.TrimSuffix(protoPath, ".proto") + ".ts"
+}
+
+func tsImportPath(thisPath string, modulePath string) string {
+	thisDir := filepath.Dir(thisPath)
+	relativePath, err := filepath.Rel(thisDir, modulePath)
+	if err != nil {
+		glog.Errorf("failed to get relative path from %s to %s: %v", thisDir, modulePath, err)
+		return ""
+	}
+	if !strings.Contains(relativePath, "/") && !strings.HasPrefix(relativePath, ".") {
+		relativePath = "./" + relativePath
+	}
+	return strings.TrimSuffix(relativePath, ".ts")
+}
+
 func (g *TSRegistry) ImportSegments() string {
-	thisPath := g.GenOpts.FileGenerator.F.Desc.Path()
+	thisPath := TSPath_TSProto(g.GenOpts.FileGenerator.F.Desc)
 	var imports []string
 	for moduleName, file := range g.ImportFiles {
-		modulePath := file.Path()
-		glog.V(3).Infof("ImportSegments: thisPath: %s, modulePath: %s", thisPath, modulePath)
-		imports = append(imports, fmt.Sprintf("import * as %s from '%s';", moduleName, file.Path()))
+		modulePath := TSPath_TSProto(file)
+		relativePath := tsImportPath(thisPath, modulePath)
+		glog.V(3).Infof("ImportSegments: thisPath: %s, modulePath: %s, relativePath: %s", thisPath, modulePath, relativePath)
+		imports = append(imports, fmt.Sprintf("import * as %s from '%s';", moduleName, relativePath))
 	}
 	return strings.Join(imports, "\n")
 }
