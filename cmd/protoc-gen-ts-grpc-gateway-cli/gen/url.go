@@ -39,7 +39,7 @@ func (g *Generator) httpOptions(method *protogen.Method) *httpOptions {
 
 var (
 	// match {field} or {field=pattern}, return param and pattern
-	pathParamRegexp = regexp.MustCompile(`{([^=]+)(?:=([^}]+))?}`)
+	pathParamRegexp = regexp.MustCompile(`{([^=}/]+)(?:=([^}]+))?}`)
 )
 
 func (g *Generator) renderURL(r *pluginutils.TSOption) func(method *protogen.Method) string {
