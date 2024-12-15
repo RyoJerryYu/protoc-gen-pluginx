@@ -2,6 +2,7 @@ package pluginutils
 
 import (
 	"flag"
+	"strings"
 
 	"github.com/golang/glog"
 	"google.golang.org/protobuf/compiler/protogen"
@@ -59,9 +60,10 @@ func (pr forEachFileRunner) Run(fn func(genOpt GenerateOptions) error) {
 					F: f,
 				},
 			}
-
-			plgOpt.PHeader(p)
-			plgOpt.PPackage()
+			if strings.HasSuffix(pr.info.GenFileSuffix, ".go") {
+				plgOpt.PHeader(p)
+				plgOpt.PPackage()
+			}
 
 			err := fn(plgOpt)
 			if err != nil {
