@@ -35,6 +35,7 @@ func (g *Generator) applyMessages(msgs []*protogen.Message) {
 
 func (g *Generator) applyFieldSetter(m *protogen.Message, f *protogen.Field) {
 	// Setter for parent oneof
+	// Only for the first field in the oneof
 	if oneof := f.Oneof; oneof != nil && oneof.Fields[0] == f && !oneof.Desc.IsSynthetic() {
 		ss := []string{fmt.Sprintf(" Types that are assignable to %s:\n", oneof.GoName)}
 		for _, field := range oneof.Fields {
@@ -50,7 +51,6 @@ func (g *Generator) applyFieldSetter(m *protogen.Message, f *protogen.Field) {
 			protobufx.OneOfInterfaceName(oneof),
 			oneof.GoName,
 		)
-		return
 	}
 
 	if f.Desc.IsWeak() {
@@ -61,16 +61,21 @@ func (g *Generator) applyFieldSetter(m *protogen.Message, f *protogen.Field) {
 
 	// Setter for oneof field
 	if f.Oneof != nil && !f.Oneof.Desc.IsSynthetic() {
-		// 		g.PCommentf("Set%s sets the value of the field %s", f.GoName, f.GoName)
-		// 		g.Pf(`func (msg *%s) Set%s(v %s) {
-		// 	msg.%s = v
-		// }
-		// `,
-		// 			m.GoIdent.GoName,
-		// 			name,
-		// 			goType,
-		// 			name,
-		// 		)
+		goType, _ := protobufx.FieldGoType(g.W, f)
+		g.PCommentf("Set%s sets the value of the field %s", f.GoName, f.GoName)
+		g.Pf(`func (msg *%s) Set%s(v %s) {
+			msg.Set%s(&%s{
+				%s: v,
+			})
+		}
+		`,
+			m.GoIdent.GoName,
+			f.GoName,
+			goType,
+			f.Oneof.GoName,
+			f.GoIdent.GoName,
+			f.GoName,
+		)
 		return
 	}
 

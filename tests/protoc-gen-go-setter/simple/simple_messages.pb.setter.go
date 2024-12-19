@@ -7,6 +7,7 @@
 package simple
 
 import (
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -136,6 +137,20 @@ func (msg *ABitOfEverything) SetRepeatedStringValue(v []string) {
 //	*ABitOfEverything_OneofString
 func (msg *ABitOfEverything) SetOneofValue(v isABitOfEverything_OneofValue) {
 	msg.OneofValue = v
+}
+
+// SetOneofEmpty sets the value of the field OneofEmpty
+func (msg *ABitOfEverything) SetOneofEmpty(v *emptypb.Empty) {
+	msg.SetOneofValue(&ABitOfEverything_OneofEmpty{
+		OneofEmpty: v,
+	})
+}
+
+// SetOneofString sets the value of the field OneofString
+func (msg *ABitOfEverything) SetOneofString(v string) {
+	msg.SetOneofValue(&ABitOfEverything_OneofString{
+		OneofString: v,
+	})
 }
 
 // SetMapValue sets the value of the field MapValue
