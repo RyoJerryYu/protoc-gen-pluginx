@@ -1,0 +1,164 @@
+syntax = "proto3";
+
+package simple;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "./simple;simple";
+
+// NumericEnum is one or zero.
+enum NumericEnum {
+  // ZERO means 0
+  ZERO = 0;
+  // ONE means 1
+  ONE = 1;
+}
+
+enum PathEnum {
+  ABC = 0;
+  DEF = 1;
+}
+
+message MessagePathEnum {
+  enum NestedPathEnum {
+    GHI = 0;
+    JKL = 1;
+  }
+}
+
+message MessageWithPathEnum {
+  PathEnum value = 1;
+}
+
+message MessageWithNestedPathEnum {
+  MessagePathEnum.NestedPathEnum value = 1;
+}
+
+// Intentionally complicated message type to cover many features of Protobuf.
+message ABitOfEverything {
+  // Nested is nested type.
+  message Nested {
+    // name is nested field.
+    string name = 1;
+    uint32 amount = 2;
+    // DeepEnum is one or zero.
+    enum DeepEnum {
+      // FALSE is false.
+      FALSE = 0;
+      // TRUE is true.
+      TRUE = 1;
+    }
+
+    // DeepEnum comment.
+    DeepEnum ok = 3;
+  }
+  Nested single_nested = 25;
+
+  string uuid = 1;
+  repeated Nested nested = 2;
+  float float_value = 3;
+  double double_value = 4;
+  int64 int64_value = 5;
+  uint64 uint64_value = 6;
+  int32 int32_value = 7;
+  fixed64 fixed64_value = 8;
+  fixed32 fixed32_value = 9;
+  bool bool_value = 10;
+  string string_value = 11;
+  bytes bytes_value = 29;
+  uint32 uint32_value = 13;
+  NumericEnum enum_value = 14;
+  PathEnum path_enum_value = 30;
+  MessagePathEnum.NestedPathEnum nested_path_enum_value = 31;
+  sfixed32 sfixed32_value = 15;
+  sfixed64 sfixed64_value = 16;
+  sint32 sint32_value = 17;
+  sint64 sint64_value = 18;
+  repeated string repeated_string_value = 19;
+  oneof oneof_value {
+    google.protobuf.Empty oneof_empty = 20;
+    string oneof_string = 21;
+  }
+
+  map<string, NumericEnum> map_value = 22;
+  map<string, string> mapped_string_value = 23;
+  map<string, Nested> mapped_nested_value = 24;
+
+  string nonConventionalNameValue = 26;
+
+  google.protobuf.Timestamp timestamp_value = 27;
+
+  // repeated enum value. it is comma-separated in query
+  repeated NumericEnum repeated_enum_value = 28;
+
+  // repeated numeric enum comment (This comment is overridden by the field annotation)
+  repeated NumericEnum repeated_enum_annotation = 32;
+
+  // numeric enum comment (This comment is overridden by the field annotation)
+  NumericEnum enum_value_annotation = 33;
+
+  // repeated string comment (This comment is overridden by the field annotation)
+  repeated string repeated_string_annotation = 34;
+
+  // repeated nested object comment (This comment is overridden by the field annotation)
+  repeated Nested repeated_nested_annotation = 35;
+
+  // nested object comments (This comment is overridden by the field annotation)
+  Nested nested_annotation = 36;
+
+  int64 int64_override_type = 37;
+
+  // mark a field as required in Open API definition
+  string required_string_via_field_behavior_annotation = 38;
+
+  // mark a field as readonly in Open API definition
+  string output_only_string_via_field_behavior_annotation = 39;
+
+  optional string optional_string_value = 40;
+
+  // Test openapiv2 generation of repeated fields
+  repeated string product_id = 41;
+
+  // Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
+  string optional_string_field = 42;
+  string required_string_field_1 = 43;
+  string required_string_field_2 = 44;
+
+  // Test openapiv2 handling of required json_name fields
+  string required_field_behavior_json_name = 45;
+  string required_field_schema_json_name = 46;
+
+  string trailing_only = 47; // Trailing only
+  string trailing_only_dot = 48; // Trailing only dot.
+  // Leading both
+  string trailing_both = 49; // Trailing both.
+  // Leading multiline
+  //
+  // This is an example of a multi-line comment.
+  string trailing_multiline = 50; // Trailing multiline.
+
+  // Specify a custom format of repeated field items
+  repeated string uuids = 51;
+}
+
+// ABitOfEverythingRepeated is used to validate repeated path parameter functionality
+message ABitOfEverythingRepeated {
+  // repeated values. they are comma-separated in path
+  repeated float path_repeated_float_value = 1;
+  repeated double path_repeated_double_value = 2;
+  repeated int64 path_repeated_int64_value = 3;
+  repeated uint64 path_repeated_uint64_value = 4;
+  repeated int32 path_repeated_int32_value = 5;
+  repeated fixed64 path_repeated_fixed64_value = 6;
+  repeated fixed32 path_repeated_fixed32_value = 7;
+  repeated bool path_repeated_bool_value = 8;
+  repeated string path_repeated_string_value = 9;
+  repeated bytes path_repeated_bytes_value = 10;
+  repeated uint32 path_repeated_uint32_value = 11;
+  repeated NumericEnum path_repeated_enum_value = 12;
+  repeated sfixed32 path_repeated_sfixed32_value = 13;
+  repeated sfixed64 path_repeated_sfixed64_value = 14;
+  repeated sint32 path_repeated_sint32_value = 15;
+  repeated sint64 path_repeated_sint64_value = 16;
+}
