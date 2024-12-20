@@ -36,6 +36,10 @@ tag: write_version
 	@git commit -m "Bump version to $(VERSION)"
 	@git push origin release/$(VERSION)
 
+# the release command for ci
+# do not execute this command locally
+# use `make tag` , then create a PR and merge it
+# the ci will release the version
 .PHONY: release
 release:
 	@echo "Releasing version..."
