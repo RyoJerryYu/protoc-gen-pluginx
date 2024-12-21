@@ -1,8 +1,11 @@
-import * as ProtoExamplepbABitOfEverything from './a_bit_of_everything';
 import * as ProtoSub2Message from '../sub2/message';
+import * as GoogleProtobufEmpty from '../../google/protobuf/empty';
+import * as GoogleProtobufDuration from '../../google/protobuf/duration';
+import * as GoogleProtobufWrappers from '../../google/protobuf/wrappers';
 import * as PathenumPathEnum from '../pathenum/path_enum';
 import * as ProtoOneofenumOneofEnum from '../oneofenum/oneof_enum';
-import * as NiceGrpcWeb from '../../nice-grpc-web';
+import * as NiceGrpcWeb from 'nice-grpc-web';
+import * as ProtoExamplepbABitOfEverything from './a_bit_of_everything';
 export function newABitOfEverythingService(): NiceGrpcWeb.Client<ProtoExamplepbABitOfEverything.ABitOfEverythingServiceDefinition> {
 // ABitOfEverything service is used to validate that APIs with complicated
 // proto messages and URL templates are still processed correctly.
@@ -10,228 +13,278 @@ export function newABitOfEverythingService(): NiceGrpcWeb.Client<ProtoExamplepbA
 return {
 
 
-  CreateBody(
-    req: Partial<ProtoExamplepbABitOfEverything.ABitOfEverything>, 
-    options?: CallOptions
-  ): Promise<ProtoExamplepbABitOfEverything.ABitOfEverything> {
-    return fm.fetchRequest<ProtoExamplepbABitOfEverything.ABitOfEverything>(`/v1/example/a_bit_of_everything`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
-  }
+	createBody(
+		req: Partial<ProtoExamplepbABitOfEverything.ABitOfEverything>, 
+		options?: NiceGrpcWeb.CallOptions
+	): Promise<ProtoExamplepbABitOfEverything.ABitOfEverything> {
+		// return fm.fetchRequest<ProtoExamplepbABitOfEverything.ABitOfEverything>(`/v1/example/a_bit_of_everything`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+		throw new Error("Not implemented");
+	},
 
 
 
-  Lookup(
-    req: Partial<ProtoSub2Message.IdMessage>, 
-    options?: CallOptions
-  ): Promise<ProtoExamplepbABitOfEverything.ABitOfEverything> {
-    return fm.fetchRequest<ProtoExamplepbABitOfEverything.ABitOfEverything>(`/v1/example/a_bit_of_everything/${req.uuid}?${fm.renderURLSearchParams(req, ["uuid"])}`, {...initReq, method: "GET"});
-  }
 
+	lookup(
+		req: Partial<ProtoSub2Message.IdMessage>, 
+		options?: NiceGrpcWeb.CallOptions
+	): Promise<ProtoExamplepbABitOfEverything.ABitOfEverything> {
+		// return fm.fetchRequest<ProtoExamplepbABitOfEverything.ABitOfEverything>(`/v1/example/a_bit_of_everything/${req.uuid}?${fm.renderURLSearchParams(req, ["uuid"])}`, {...initReq, method: "GET"});
+		throw new Error("Not implemented");
+	},
 
 
-  Custom(
-    req: Partial<ProtoExamplepbABitOfEverything.ABitOfEverything>, 
-    options?: CallOptions
-  ): Promise<ProtoExamplepbABitOfEverything.ABitOfEverything> {
-    return fm.fetchRequest<ProtoExamplepbABitOfEverything.ABitOfEverything>(`/v1/example/a_bit_of_everything/${req.uuid}:custom`, {...initReq, method: "POST"});
-  }
 
 
+	custom(
+		req: Partial<ProtoExamplepbABitOfEverything.ABitOfEverything>, 
+		options?: NiceGrpcWeb.CallOptions
+	): Promise<ProtoExamplepbABitOfEverything.ABitOfEverything> {
+		// return fm.fetchRequest<ProtoExamplepbABitOfEverything.ABitOfEverything>(`/v1/example/a_bit_of_everything/${req.uuid}:custom`, {...initReq, method: "POST"});
+		throw new Error("Not implemented");
+	},
 
-  DoubleColon(
-    req: Partial<ProtoExamplepbABitOfEverything.ABitOfEverything>, 
-    options?: CallOptions
-  ): Promise<ProtoExamplepbABitOfEverything.ABitOfEverything> {
-    return fm.fetchRequest<ProtoExamplepbABitOfEverything.ABitOfEverything>(`/v1/example/a_bit_of_everything/${req.uuid}:custom:custom`, {...initReq, method: "POST"});
-  }
 
 
 
-  Update(
-    req: Partial<ProtoExamplepbABitOfEverything.ABitOfEverything>, 
-    options?: CallOptions
-  ): Promise<{}> {
-    return fm.fetchRequest<{}>(`/v1/example/a_bit_of_everything/${req.uuid}`, {...initReq, method: "PUT", body: JSON.stringify(req, fm.replacer)});
-  }
+	doubleColon(
+		req: Partial<ProtoExamplepbABitOfEverything.ABitOfEverything>, 
+		options?: NiceGrpcWeb.CallOptions
+	): Promise<ProtoExamplepbABitOfEverything.ABitOfEverything> {
+		// return fm.fetchRequest<ProtoExamplepbABitOfEverything.ABitOfEverything>(`/v1/example/a_bit_of_everything/${req.uuid}:custom:custom`, {...initReq, method: "POST"});
+		throw new Error("Not implemented");
+	},
 
 
 
-  UpdateV2(
-    req: Partial<ProtoExamplepbABitOfEverything.UpdateV2Request>, 
-    options?: CallOptions
-  ): Promise<{}> {
-    return fm.fetchRequest<{}>(`/v2/example/a_bit_of_everything/${req.abe.uuid}`, {...initReq, method: "PUT", body: JSON.stringify(req["abe"], fm.replacer)});
-  }
 
+	update(
+		req: Partial<ProtoExamplepbABitOfEverything.ABitOfEverything>, 
+		options?: NiceGrpcWeb.CallOptions
+	): Promise<GoogleProtobufEmpty.Empty> {
+		// return fm.fetchRequest<GoogleProtobufEmpty.Empty>(`/v1/example/a_bit_of_everything/${req.uuid}`, {...initReq, method: "PUT", body: JSON.stringify(req, fm.replacer)});
+		throw new Error("Not implemented");
+	},
 
 
-  Delete(
-    req: Partial<ProtoSub2Message.IdMessage>, 
-    options?: CallOptions
-  ): Promise<{}> {
-    return fm.fetchRequest<{}>(`/v1/example/a_bit_of_everything/${req.uuid}?${fm.renderURLSearchParams(req, ["uuid"])}`, {...initReq, method: "DELETE"});
-  }
 
 
+	updateV2(
+		req: Partial<ProtoExamplepbABitOfEverything.UpdateV2Request>, 
+		options?: NiceGrpcWeb.CallOptions
+	): Promise<GoogleProtobufEmpty.Empty> {
+		// return fm.fetchRequest<GoogleProtobufEmpty.Empty>(`/v2/example/a_bit_of_everything/${req.abe.uuid}`, {...initReq, method: "PUT", body: JSON.stringify(req["abe"], fm.replacer)});
+		throw new Error("Not implemented");
+	},
 
-  GetQuery(
-    req: Partial<ProtoExamplepbABitOfEverything.ABitOfEverything>, 
-    options?: CallOptions
-  ): Promise<{}> {
-    return fm.fetchRequest<{}>(`/v1/example/a_bit_of_everything/query/${req.uuid}?${fm.renderURLSearchParams(req, ["uuid"])}`, {...initReq, method: "GET"});
-  }
 
 
 
-  GetRepeatedQuery(
-    req: Partial<ProtoExamplepbABitOfEverything.ABitOfEverythingRepeated>, 
-    options?: CallOptions
-  ): Promise<ProtoExamplepbABitOfEverything.ABitOfEverythingRepeated> {
-    return fm.fetchRequest<ProtoExamplepbABitOfEverything.ABitOfEverythingRepeated>(`/v1/example/a_bit_of_everything_repeated/${req.pathRepeatedFloatValue}/${req.pathRepeatedDoubleValue}/${req.pathRepeatedInt64Value}/${req.pathRepeatedUint64Value}/${req.pathRepeatedInt32Value}/${req.pathRepeatedFixed64Value}/${req.pathRepeatedFixed32Value}/${req.pathRepeatedBoolValue}/${req.pathRepeatedStringValue}/${req.pathRepeatedBytesValue}/${req.pathRepeatedUint32Value}/${req.pathRepeatedEnumValue}/${req.pathRepeatedSfixed32Value}/${req.pathRepeatedSfixed64Value}/${req.pathRepeatedSint32Value}/${req.pathRepeatedSint64Value}?${fm.renderURLSearchParams(req, ["pathRepeatedFloatValue", "pathRepeatedDoubleValue", "pathRepeatedInt64Value", "pathRepeatedUint64Value", "pathRepeatedInt32Value", "pathRepeatedFixed64Value", "pathRepeatedFixed32Value", "pathRepeatedBoolValue", "pathRepeatedStringValue", "pathRepeatedBytesValue", "pathRepeatedUint32Value", "pathRepeatedEnumValue", "pathRepeatedSfixed32Value", "pathRepeatedSfixed64Value", "pathRepeatedSint32Value", "pathRepeatedSint64Value"])}`, {...initReq, method: "GET"});
-  }
+	delete(
+		req: Partial<ProtoSub2Message.IdMessage>, 
+		options?: NiceGrpcWeb.CallOptions
+	): Promise<GoogleProtobufEmpty.Empty> {
+		// return fm.fetchRequest<GoogleProtobufEmpty.Empty>(`/v1/example/a_bit_of_everything/${req.uuid}?${fm.renderURLSearchParams(req, ["uuid"])}`, {...initReq, method: "DELETE"});
+		throw new Error("Not implemented");
+	},
 
 
 
-  DeepPathEcho(
-    req: Partial<ProtoExamplepbABitOfEverything.ABitOfEverything>, 
-    options?: CallOptions
-  ): Promise<ProtoExamplepbABitOfEverything.ABitOfEverything> {
-    return fm.fetchRequest<ProtoExamplepbABitOfEverything.ABitOfEverything>(`/v1/example/deep_path/${req.singleNested.name}`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
-  }
 
+	getQuery(
+		req: Partial<ProtoExamplepbABitOfEverything.ABitOfEverything>, 
+		options?: NiceGrpcWeb.CallOptions
+	): Promise<GoogleProtobufEmpty.Empty> {
+		// return fm.fetchRequest<GoogleProtobufEmpty.Empty>(`/v1/example/a_bit_of_everything/query/${req.uuid}?${fm.renderURLSearchParams(req, ["uuid"])}`, {...initReq, method: "GET"});
+		throw new Error("Not implemented");
+	},
 
 
-  NoBindings(
-    req: Partial<unknown>, 
-    options?: CallOptions
-  ): Promise<{}> {
-    return fm.fetchRequest<{}>(`/proto.examplepb.ABitOfEverythingService/NoBindings`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
-  }
 
 
+	getRepeatedQuery(
+		req: Partial<ProtoExamplepbABitOfEverything.ABitOfEverythingRepeated>, 
+		options?: NiceGrpcWeb.CallOptions
+	): Promise<ProtoExamplepbABitOfEverything.ABitOfEverythingRepeated> {
+		// return fm.fetchRequest<ProtoExamplepbABitOfEverything.ABitOfEverythingRepeated>(`/v1/example/a_bit_of_everything_repeated/${req.pathRepeatedFloatValue}/${req.pathRepeatedDoubleValue}/${req.pathRepeatedInt64Value}/${req.pathRepeatedUint64Value}/${req.pathRepeatedInt32Value}/${req.pathRepeatedFixed64Value}/${req.pathRepeatedFixed32Value}/${req.pathRepeatedBoolValue}/${req.pathRepeatedStringValue}/${req.pathRepeatedBytesValue}/${req.pathRepeatedUint32Value}/${req.pathRepeatedEnumValue}/${req.pathRepeatedSfixed32Value}/${req.pathRepeatedSfixed64Value}/${req.pathRepeatedSint32Value}/${req.pathRepeatedSint64Value}?${fm.renderURLSearchParams(req, ["pathRepeatedFloatValue", "pathRepeatedDoubleValue", "pathRepeatedInt64Value", "pathRepeatedUint64Value", "pathRepeatedInt32Value", "pathRepeatedFixed64Value", "pathRepeatedFixed32Value", "pathRepeatedBoolValue", "pathRepeatedStringValue", "pathRepeatedBytesValue", "pathRepeatedUint32Value", "pathRepeatedEnumValue", "pathRepeatedSfixed32Value", "pathRepeatedSfixed64Value", "pathRepeatedSint32Value", "pathRepeatedSint64Value"])}`, {...initReq, method: "GET"});
+		throw new Error("Not implemented");
+	},
 
-  Timeout(
-    req: Partial<{}>, 
-    options?: CallOptions
-  ): Promise<{}> {
-    return fm.fetchRequest<{}>(`/v2/example/timeout?${fm.renderURLSearchParams(req, [])}`, {...initReq, method: "GET"});
-  }
 
 
 
-  ErrorWithDetails(
-    req: Partial<{}>, 
-    options?: CallOptions
-  ): Promise<{}> {
-    return fm.fetchRequest<{}>(`/v2/example/errorwithdetails?${fm.renderURLSearchParams(req, [])}`, {...initReq, method: "GET"});
-  }
+	deepPathEcho(
+		req: Partial<ProtoExamplepbABitOfEverything.ABitOfEverything>, 
+		options?: NiceGrpcWeb.CallOptions
+	): Promise<ProtoExamplepbABitOfEverything.ABitOfEverything> {
+		// return fm.fetchRequest<ProtoExamplepbABitOfEverything.ABitOfEverything>(`/v1/example/deep_path/${req.singleNested.name}`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+		throw new Error("Not implemented");
+	},
 
 
 
-  GetMessageWithBody(
-    req: Partial<ProtoExamplepbABitOfEverything.MessageWithBody>, 
-    options?: CallOptions
-  ): Promise<{}> {
-    return fm.fetchRequest<{}>(`/v2/example/withbody/${req.id}`, {...initReq, method: "POST", body: JSON.stringify(req["data"], fm.replacer)});
-  }
 
+	noBindings(
+		req: Partial<GoogleProtobufDuration.Duration>, 
+		options?: NiceGrpcWeb.CallOptions
+	): Promise<GoogleProtobufEmpty.Empty> {
+		// return fm.fetchRequest<GoogleProtobufEmpty.Empty>(`/proto.examplepb.ABitOfEverythingService/NoBindings`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+		throw new Error("Not implemented");
+	},
 
 
-  PostWithEmptyBody(
-    req: Partial<ProtoExamplepbABitOfEverything.Body>, 
-    options?: CallOptions
-  ): Promise<{}> {
-    return fm.fetchRequest<{}>(`/v2/example/postwithemptybody/${req.name}`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
-  }
 
 
+	timeout(
+		req: Partial<GoogleProtobufEmpty.Empty>, 
+		options?: NiceGrpcWeb.CallOptions
+	): Promise<GoogleProtobufEmpty.Empty> {
+		// return fm.fetchRequest<GoogleProtobufEmpty.Empty>(`/v2/example/timeout?${fm.renderURLSearchParams(req, [])}`, {...initReq, method: "GET"});
+		throw new Error("Not implemented");
+	},
 
-  CheckGetQueryParams(
-    req: Partial<ProtoExamplepbABitOfEverything.ABitOfEverything>, 
-    options?: CallOptions
-  ): Promise<ProtoExamplepbABitOfEverything.ABitOfEverything> {
-    return fm.fetchRequest<ProtoExamplepbABitOfEverything.ABitOfEverything>(`/v1/example/a_bit_of_everything/params/get/${req.singleNested.name}?${fm.renderURLSearchParams(req, ["singleNested.name"])}`, {...initReq, method: "GET"});
-  }
 
 
 
-  CheckNestedEnumGetQueryParams(
-    req: Partial<ProtoExamplepbABitOfEverything.ABitOfEverything>, 
-    options?: CallOptions
-  ): Promise<ProtoExamplepbABitOfEverything.ABitOfEverything> {
-    return fm.fetchRequest<ProtoExamplepbABitOfEverything.ABitOfEverything>(`/v1/example/a_bit_of_everything/params/get/nested_enum/${req.singleNested.ok}?${fm.renderURLSearchParams(req, ["singleNested.ok"])}`, {...initReq, method: "GET"});
-  }
+	errorWithDetails(
+		req: Partial<GoogleProtobufEmpty.Empty>, 
+		options?: NiceGrpcWeb.CallOptions
+	): Promise<GoogleProtobufEmpty.Empty> {
+		// return fm.fetchRequest<GoogleProtobufEmpty.Empty>(`/v2/example/errorwithdetails?${fm.renderURLSearchParams(req, [])}`, {...initReq, method: "GET"});
+		throw new Error("Not implemented");
+	},
 
 
 
-  CheckPostQueryParams(
-    req: Partial<ProtoExamplepbABitOfEverything.ABitOfEverything>, 
-    options?: CallOptions
-  ): Promise<ProtoExamplepbABitOfEverything.ABitOfEverything> {
-    return fm.fetchRequest<ProtoExamplepbABitOfEverything.ABitOfEverything>(`/v1/example/a_bit_of_everything/params/post/${req.stringValue}`, {...initReq, method: "POST", body: JSON.stringify(req["single_nested"], fm.replacer)});
-  }
 
+	getMessageWithBody(
+		req: Partial<ProtoExamplepbABitOfEverything.MessageWithBody>, 
+		options?: NiceGrpcWeb.CallOptions
+	): Promise<GoogleProtobufEmpty.Empty> {
+		// return fm.fetchRequest<GoogleProtobufEmpty.Empty>(`/v2/example/withbody/${req.id}`, {...initReq, method: "POST", body: JSON.stringify(req["data"], fm.replacer)});
+		throw new Error("Not implemented");
+	},
 
 
-  OverwriteRequestContentType(
-    req: Partial<ProtoExamplepbABitOfEverything.Body>, 
-    options?: CallOptions
-  ): Promise<{}> {
-    return fm.fetchRequest<{}>(`/v2/example/overwriterequestcontenttype`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
-  }
 
 
+	postWithEmptyBody(
+		req: Partial<ProtoExamplepbABitOfEverything.Body>, 
+		options?: NiceGrpcWeb.CallOptions
+	): Promise<GoogleProtobufEmpty.Empty> {
+		// return fm.fetchRequest<GoogleProtobufEmpty.Empty>(`/v2/example/postwithemptybody/${req.name}`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+		throw new Error("Not implemented");
+	},
 
-  OverwriteResponseContentType(
-    req: Partial<{}>, 
-    options?: CallOptions
-  ): Promise<string | null> {
-    return fm.fetchRequest<string | null>(`/v2/example/overwriteresponsecontenttype?${fm.renderURLSearchParams(req, [])}`, {...initReq, method: "GET"});
-  }
 
 
 
-  CheckExternalPathEnum(
-    req: Partial<PathenumPathEnum.MessageWithPathEnum>, 
-    options?: CallOptions
-  ): Promise<{}> {
-    return fm.fetchRequest<{}>(`/v2/${req.value}:check?${fm.renderURLSearchParams(req, ["value"])}`, {...initReq, method: "GET"});
-  }
+	checkGetQueryParams(
+		req: Partial<ProtoExamplepbABitOfEverything.ABitOfEverything>, 
+		options?: NiceGrpcWeb.CallOptions
+	): Promise<ProtoExamplepbABitOfEverything.ABitOfEverything> {
+		// return fm.fetchRequest<ProtoExamplepbABitOfEverything.ABitOfEverything>(`/v1/example/a_bit_of_everything/params/get/${req.singleNested.name}?${fm.renderURLSearchParams(req, ["singleNested.name"])}`, {...initReq, method: "GET"});
+		throw new Error("Not implemented");
+	},
 
 
 
-  CheckExternalNestedPathEnum(
-    req: Partial<PathenumPathEnum.MessageWithNestedPathEnum>, 
-    options?: CallOptions
-  ): Promise<{}> {
-    return fm.fetchRequest<{}>(`/v3/${req.value}:check?${fm.renderURLSearchParams(req, ["value"])}`, {...initReq, method: "GET"});
-  }
 
+	checkNestedEnumGetQueryParams(
+		req: Partial<ProtoExamplepbABitOfEverything.ABitOfEverything>, 
+		options?: NiceGrpcWeb.CallOptions
+	): Promise<ProtoExamplepbABitOfEverything.ABitOfEverything> {
+		// return fm.fetchRequest<ProtoExamplepbABitOfEverything.ABitOfEverything>(`/v1/example/a_bit_of_everything/params/get/nested_enum/${req.singleNested.ok}?${fm.renderURLSearchParams(req, ["singleNested.ok"])}`, {...initReq, method: "GET"});
+		throw new Error("Not implemented");
+	},
 
 
-  CheckStatus(
-    req: Partial<{}>, 
-    options?: CallOptions
-  ): Promise<ProtoExamplepbABitOfEverything.CheckStatusResponse> {
-    return fm.fetchRequest<ProtoExamplepbABitOfEverything.CheckStatusResponse>(`/v1/example/checkStatus?${fm.renderURLSearchParams(req, [])}`, {...initReq, method: "GET"});
-  }
 
 
+	checkPostQueryParams(
+		req: Partial<ProtoExamplepbABitOfEverything.ABitOfEverything>, 
+		options?: NiceGrpcWeb.CallOptions
+	): Promise<ProtoExamplepbABitOfEverything.ABitOfEverything> {
+		// return fm.fetchRequest<ProtoExamplepbABitOfEverything.ABitOfEverything>(`/v1/example/a_bit_of_everything/params/post/${req.stringValue}`, {...initReq, method: "POST", body: JSON.stringify(req["single_nested"], fm.replacer)});
+		throw new Error("Not implemented");
+	},
 
-  PostOneofEnum(
-    req: Partial<ProtoOneofenumOneofEnum.OneofEnumMessage>, 
-    options?: CallOptions
-  ): Promise<{}> {
-    return fm.fetchRequest<{}>(`/v1/example/oneofenum`, {...initReq, method: "POST", body: JSON.stringify(req["example_enum"], fm.replacer)});
-  }
 
 
 
-  PostRequiredMessageType(
-    req: Partial<ProtoExamplepbABitOfEverything.RequiredMessageTypeRequest>, 
-    options?: CallOptions
-  ): Promise<{}> {
-    return fm.fetchRequest<{}>(`/v1/example/requiredmessagetype`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
-  }
+	overwriteRequestContentType(
+		req: Partial<ProtoExamplepbABitOfEverything.Body>, 
+		options?: NiceGrpcWeb.CallOptions
+	): Promise<GoogleProtobufEmpty.Empty> {
+		// return fm.fetchRequest<GoogleProtobufEmpty.Empty>(`/v2/example/overwriterequestcontenttype`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+		throw new Error("Not implemented");
+	},
+
+
+
+
+	overwriteResponseContentType(
+		req: Partial<GoogleProtobufEmpty.Empty>, 
+		options?: NiceGrpcWeb.CallOptions
+	): Promise<GoogleProtobufWrappers.StringValue> {
+		// return fm.fetchRequest<GoogleProtobufWrappers.StringValue>(`/v2/example/overwriteresponsecontenttype?${fm.renderURLSearchParams(req, [])}`, {...initReq, method: "GET"});
+		throw new Error("Not implemented");
+	},
+
+
+
+
+	checkExternalPathEnum(
+		req: Partial<PathenumPathEnum.MessageWithPathEnum>, 
+		options?: NiceGrpcWeb.CallOptions
+	): Promise<GoogleProtobufEmpty.Empty> {
+		// return fm.fetchRequest<GoogleProtobufEmpty.Empty>(`/v2/${req.value}:check?${fm.renderURLSearchParams(req, ["value"])}`, {...initReq, method: "GET"});
+		throw new Error("Not implemented");
+	},
+
+
+
+
+	checkExternalNestedPathEnum(
+		req: Partial<PathenumPathEnum.MessageWithNestedPathEnum>, 
+		options?: NiceGrpcWeb.CallOptions
+	): Promise<GoogleProtobufEmpty.Empty> {
+		// return fm.fetchRequest<GoogleProtobufEmpty.Empty>(`/v3/${req.value}:check?${fm.renderURLSearchParams(req, ["value"])}`, {...initReq, method: "GET"});
+		throw new Error("Not implemented");
+	},
+
+
+
+
+	checkStatus(
+		req: Partial<GoogleProtobufEmpty.Empty>, 
+		options?: NiceGrpcWeb.CallOptions
+	): Promise<ProtoExamplepbABitOfEverything.CheckStatusResponse> {
+		// return fm.fetchRequest<ProtoExamplepbABitOfEverything.CheckStatusResponse>(`/v1/example/checkStatus?${fm.renderURLSearchParams(req, [])}`, {...initReq, method: "GET"});
+		throw new Error("Not implemented");
+	},
+
+
+
+
+	postOneofEnum(
+		req: Partial<ProtoOneofenumOneofEnum.OneofEnumMessage>, 
+		options?: NiceGrpcWeb.CallOptions
+	): Promise<GoogleProtobufEmpty.Empty> {
+		// return fm.fetchRequest<GoogleProtobufEmpty.Empty>(`/v1/example/oneofenum`, {...initReq, method: "POST", body: JSON.stringify(req["example_enum"], fm.replacer)});
+		throw new Error("Not implemented");
+	},
+
+
+
+
+	postRequiredMessageType(
+		req: Partial<ProtoExamplepbABitOfEverything.RequiredMessageTypeRequest>, 
+		options?: NiceGrpcWeb.CallOptions
+	): Promise<GoogleProtobufEmpty.Empty> {
+		// return fm.fetchRequest<GoogleProtobufEmpty.Empty>(`/v1/example/requiredmessagetype`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+		throw new Error("Not implemented");
+	},
+
 
 };
 }
@@ -241,12 +294,14 @@ export function newAnotherServiceWithNoBindings(): NiceGrpcWeb.Client<ProtoExamp
 return {
 
 
-  NoBindings(
-    req: Partial<{}>, 
-    options?: CallOptions
-  ): Promise<{}> {
-    return fm.fetchRequest<{}>(`/proto.examplepb.AnotherServiceWithNoBindings/NoBindings`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
-  }
+	noBindings(
+		req: Partial<GoogleProtobufEmpty.Empty>, 
+		options?: NiceGrpcWeb.CallOptions
+	): Promise<GoogleProtobufEmpty.Empty> {
+		// return fm.fetchRequest<GoogleProtobufEmpty.Empty>(`/proto.examplepb.AnotherServiceWithNoBindings/NoBindings`, {...initReq, method: "POST", body: JSON.stringify(req, fm.replacer)});
+		throw new Error("Not implemented");
+	},
+
 
 };
 }
