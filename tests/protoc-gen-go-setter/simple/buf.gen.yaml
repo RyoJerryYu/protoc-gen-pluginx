@@ -4,7 +4,7 @@ plugins:
     out: .
     opt:
       - paths=source_relative
-  - local: ./protoc-gen-go-setter
+  - local: protoc-gen-go-setter
     out: .
     opt:
       - paths=source_relative
