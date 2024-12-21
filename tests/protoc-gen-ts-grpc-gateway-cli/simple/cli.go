@@ -1,4 +1,4 @@
 package cli
 
-///// go:generate buf generate
-//TODO: generate later
+//go:generate buf generate
+//go:generate prettier **/*.ts --write

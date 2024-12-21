@@ -1,7 +1,8 @@
 VERSION := "unknown"
 
 BIN := $(shell pwd)/bin
-export PATH := $(BIN):$(PATH)
+NODE_BIN := $(shell pwd)/tests/node_modules/.bin
+export PATH := $(BIN):$(NODE_BIN):$(PATH)
 
 .PHONY: bins
 bins:
@@ -14,6 +15,7 @@ tools:
 	@echo "Installing tools..."
 	@cd tests && go mod tidy
 	@./tests/tools/tools.sh
+	@cd tests && pnpm install
 	@echo "Tools installed."
 
 .PHONY: generate

@@ -18,7 +18,10 @@ function createBaseIdMessage(): IdMessage {
 }
 
 export const IdMessage: MessageFns<IdMessage> = {
-  encode(message: IdMessage, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: IdMessage,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.uuid !== "") {
       writer.uint32(10).string(message.uuid);
     }
@@ -26,7 +29,8 @@ export const IdMessage: MessageFns<IdMessage> = {
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): IdMessage {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseIdMessage();
     while (reader.pos < end) {
@@ -59,13 +63,24 @@ export const IdMessage: MessageFns<IdMessage> = {
   },
 };
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+type Builtin =
+  | Date
+  | Function
+  | Uint8Array
+  | string
+  | number
+  | boolean
+  | undefined;
 
-export type DeepPartial<T> = T extends Builtin ? T
-  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
-  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
-  : Partial<T>;
+export type DeepPartial<T> = T extends Builtin
+  ? T
+  : T extends globalThis.Array<infer U>
+    ? globalThis.Array<DeepPartial<U>>
+    : T extends ReadonlyArray<infer U>
+      ? ReadonlyArray<DeepPartial<U>>
+      : T extends {}
+        ? { [K in keyof T]?: DeepPartial<T[K]> }
+        : Partial<T>;
 
 export interface MessageFns<T> {
   encode(message: T, writer?: BinaryWriter): BinaryWriter;

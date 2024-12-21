@@ -97,9 +97,7 @@ export interface ABitOfEverything {
   mapValue: { [key: string]: NumericEnum };
   mappedStringValue: { [key: string]: string };
   mappedNestedValue: { [key: string]: ABitOfEverything_Nested };
-  timestampValue?:
-    | Date
-    | undefined;
+  timestampValue?: Date | undefined;
   /** repeated enum value. it is comma-separated in query */
   repeatedEnumValue: NumericEnum[];
   /** repeated numeric enum comment (This comment is overridden by the field annotation) */
@@ -117,9 +115,7 @@ export interface ABitOfEverything {
   requiredStringViaFieldBehaviorAnnotation: string;
   /** mark a field as readonly in Open API definition */
   outputOnlyStringViaFieldBehaviorAnnotation: string;
-  optionalStringValue?:
-    | string
-    | undefined;
+  optionalStringValue?: string | undefined;
   /** Test openapiv2 generation of repeated fields */
   productId: string[];
   /** Test openapiv2 generation of required fields with annotation and jsonschema to reproduce */
@@ -163,7 +159,9 @@ export enum ABitOfEverything_Nested_DeepEnum {
   UNRECOGNIZED = "UNRECOGNIZED",
 }
 
-export function aBitOfEverything_Nested_DeepEnumFromJSON(object: any): ABitOfEverything_Nested_DeepEnum {
+export function aBitOfEverything_Nested_DeepEnumFromJSON(
+  object: any,
+): ABitOfEverything_Nested_DeepEnum {
   switch (object) {
     case 0:
     case "FALSE":
@@ -178,7 +176,9 @@ export function aBitOfEverything_Nested_DeepEnumFromJSON(object: any): ABitOfEve
   }
 }
 
-export function aBitOfEverything_Nested_DeepEnumToNumber(object: ABitOfEverything_Nested_DeepEnum): number {
+export function aBitOfEverything_Nested_DeepEnumToNumber(
+  object: ABitOfEverything_Nested_DeepEnum,
+): number {
   switch (object) {
     case ABitOfEverything_Nested_DeepEnum.FALSE:
       return 0;
@@ -241,9 +241,7 @@ export interface MessageWithBody {
 
 /** UpdateV2Request request for update includes the message and the update mask */
 export interface UpdateV2Request {
-  abe?:
-    | ABitOfEverything
-    | undefined;
+  abe?: ABitOfEverything | undefined;
   /** The paths to update. */
   updateMask?: string[] | undefined;
 }
@@ -286,9 +284,7 @@ export interface CreateBookRequest {
    */
   parent: string;
   /** The book to create. */
-  book?:
-    | Book
-    | undefined;
+  book?: Book | undefined;
   /**
    * The ID to use for the book.
    *
@@ -309,13 +305,9 @@ export interface UpdateBookRequest {
    * The book's `name` field is used to identify the book to be updated.
    * Format: publishers/{publisher}/books/{book}
    */
-  book?:
-    | Book
-    | undefined;
+  book?: Book | undefined;
   /** The list of fields to be updated. */
-  updateMask?:
-    | string[]
-    | undefined;
+  updateMask?: string[] | undefined;
   /**
    * If set to true, and the book is not found, a new book will be created.
    * In this situation, `update_mask` is ignored.
@@ -345,7 +337,10 @@ function createBaseErrorObject(): ErrorObject {
 }
 
 export const ErrorObject: MessageFns<ErrorObject> = {
-  encode(message: ErrorObject, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: ErrorObject,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.code !== 0) {
       writer.uint32(8).int32(message.code);
     }
@@ -356,7 +351,8 @@ export const ErrorObject: MessageFns<ErrorObject> = {
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): ErrorObject {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseErrorObject();
     while (reader.pos < end) {
@@ -453,9 +449,15 @@ function createBaseABitOfEverything(): ABitOfEverything {
 }
 
 export const ABitOfEverything: MessageFns<ABitOfEverything> = {
-  encode(message: ABitOfEverything, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: ABitOfEverything,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.singleNested !== undefined) {
-      ABitOfEverything_Nested.encode(message.singleNested, writer.uint32(202).fork()).join();
+      ABitOfEverything_Nested.encode(
+        message.singleNested,
+        writer.uint32(202).fork(),
+      ).join();
     }
     if (message.uuid !== "") {
       writer.uint32(10).string(message.uuid);
@@ -503,7 +505,11 @@ export const ABitOfEverything: MessageFns<ABitOfEverything> = {
       writer.uint32(240).int32(pathEnumToNumber(message.pathEnumValue));
     }
     if (message.nestedPathEnumValue !== MessagePathEnum_NestedPathEnum.GHI) {
-      writer.uint32(248).int32(messagePathEnum_NestedPathEnumToNumber(message.nestedPathEnumValue));
+      writer
+        .uint32(248)
+        .int32(
+          messagePathEnum_NestedPathEnumToNumber(message.nestedPathEnumValue),
+        );
     }
     if (message.sfixed32Value !== 0) {
       writer.uint32(125).sfixed32(message.sfixed32Value);
@@ -527,16 +533,28 @@ export const ABitOfEverything: MessageFns<ABitOfEverything> = {
       writer.uint32(170).string(message.oneofString);
     }
     Object.entries(message.mapValue).forEach(([key, value]) => {
-      ABitOfEverything_MapValueEntry.encode({ key: key as any, value }, writer.uint32(178).fork()).join();
+      ABitOfEverything_MapValueEntry.encode(
+        { key: key as any, value },
+        writer.uint32(178).fork(),
+      ).join();
     });
     Object.entries(message.mappedStringValue).forEach(([key, value]) => {
-      ABitOfEverything_MappedStringValueEntry.encode({ key: key as any, value }, writer.uint32(186).fork()).join();
+      ABitOfEverything_MappedStringValueEntry.encode(
+        { key: key as any, value },
+        writer.uint32(186).fork(),
+      ).join();
     });
     Object.entries(message.mappedNestedValue).forEach(([key, value]) => {
-      ABitOfEverything_MappedNestedValueEntry.encode({ key: key as any, value }, writer.uint32(194).fork()).join();
+      ABitOfEverything_MappedNestedValueEntry.encode(
+        { key: key as any, value },
+        writer.uint32(194).fork(),
+      ).join();
     });
     if (message.timestampValue !== undefined) {
-      Timestamp.encode(toTimestamp(message.timestampValue), writer.uint32(218).fork()).join();
+      Timestamp.encode(
+        toTimestamp(message.timestampValue),
+        writer.uint32(218).fork(),
+      ).join();
     }
     writer.uint32(226).fork();
     for (const v of message.repeatedEnumValue) {
@@ -549,7 +567,9 @@ export const ABitOfEverything: MessageFns<ABitOfEverything> = {
     }
     writer.join();
     if (message.enumValueAnnotation !== NumericEnum.ZERO) {
-      writer.uint32(264).int32(numericEnumToNumber(message.enumValueAnnotation));
+      writer
+        .uint32(264)
+        .int32(numericEnumToNumber(message.enumValueAnnotation));
     }
     for (const v of message.repeatedStringAnnotation) {
       writer.uint32(274).string(v!);
@@ -558,16 +578,23 @@ export const ABitOfEverything: MessageFns<ABitOfEverything> = {
       ABitOfEverything_Nested.encode(v!, writer.uint32(282).fork()).join();
     }
     if (message.nestedAnnotation !== undefined) {
-      ABitOfEverything_Nested.encode(message.nestedAnnotation, writer.uint32(290).fork()).join();
+      ABitOfEverything_Nested.encode(
+        message.nestedAnnotation,
+        writer.uint32(290).fork(),
+      ).join();
     }
     if (message.int64OverrideType !== 0) {
       writer.uint32(296).int64(message.int64OverrideType);
     }
     if (message.requiredStringViaFieldBehaviorAnnotation !== "") {
-      writer.uint32(306).string(message.requiredStringViaFieldBehaviorAnnotation);
+      writer
+        .uint32(306)
+        .string(message.requiredStringViaFieldBehaviorAnnotation);
     }
     if (message.outputOnlyStringViaFieldBehaviorAnnotation !== "") {
-      writer.uint32(314).string(message.outputOnlyStringViaFieldBehaviorAnnotation);
+      writer
+        .uint32(314)
+        .string(message.outputOnlyStringViaFieldBehaviorAnnotation);
     }
     if (message.optionalStringValue !== undefined) {
       writer.uint32(322).string(message.optionalStringValue);
@@ -609,7 +636,8 @@ export const ABitOfEverything: MessageFns<ABitOfEverything> = {
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): ABitOfEverything {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseABitOfEverything();
     while (reader.pos < end) {
@@ -620,7 +648,10 @@ export const ABitOfEverything: MessageFns<ABitOfEverything> = {
             break;
           }
 
-          message.singleNested = ABitOfEverything_Nested.decode(reader, reader.uint32());
+          message.singleNested = ABitOfEverything_Nested.decode(
+            reader,
+            reader.uint32(),
+          );
           continue;
         }
         case 1: {
@@ -636,7 +667,9 @@ export const ABitOfEverything: MessageFns<ABitOfEverything> = {
             break;
           }
 
-          message.nested.push(ABitOfEverything_Nested.decode(reader, reader.uint32()));
+          message.nested.push(
+            ABitOfEverything_Nested.decode(reader, reader.uint32()),
+          );
           continue;
         }
         case 3: {
@@ -748,7 +781,9 @@ export const ABitOfEverything: MessageFns<ABitOfEverything> = {
             break;
           }
 
-          message.nestedPathEnumValue = messagePathEnum_NestedPathEnumFromJSON(reader.int32());
+          message.nestedPathEnumValue = messagePathEnum_NestedPathEnumFromJSON(
+            reader.int32(),
+          );
           continue;
         }
         case 15: {
@@ -812,7 +847,10 @@ export const ABitOfEverything: MessageFns<ABitOfEverything> = {
             break;
           }
 
-          const entry22 = ABitOfEverything_MapValueEntry.decode(reader, reader.uint32());
+          const entry22 = ABitOfEverything_MapValueEntry.decode(
+            reader,
+            reader.uint32(),
+          );
           if (entry22.value !== undefined) {
             message.mapValue[entry22.key] = entry22.value;
           }
@@ -823,7 +861,10 @@ export const ABitOfEverything: MessageFns<ABitOfEverything> = {
             break;
           }
 
-          const entry23 = ABitOfEverything_MappedStringValueEntry.decode(reader, reader.uint32());
+          const entry23 = ABitOfEverything_MappedStringValueEntry.decode(
+            reader,
+            reader.uint32(),
+          );
           if (entry23.value !== undefined) {
             message.mappedStringValue[entry23.key] = entry23.value;
           }
@@ -834,7 +875,10 @@ export const ABitOfEverything: MessageFns<ABitOfEverything> = {
             break;
           }
 
-          const entry24 = ABitOfEverything_MappedNestedValueEntry.decode(reader, reader.uint32());
+          const entry24 = ABitOfEverything_MappedNestedValueEntry.decode(
+            reader,
+            reader.uint32(),
+          );
           if (entry24.value !== undefined) {
             message.mappedNestedValue[entry24.key] = entry24.value;
           }
@@ -845,7 +889,9 @@ export const ABitOfEverything: MessageFns<ABitOfEverything> = {
             break;
           }
 
-          message.timestampValue = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          message.timestampValue = fromTimestamp(
+            Timestamp.decode(reader, reader.uint32()),
+          );
           continue;
         }
         case 28: {
@@ -858,7 +904,9 @@ export const ABitOfEverything: MessageFns<ABitOfEverything> = {
           if (tag === 226) {
             const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
-              message.repeatedEnumValue.push(numericEnumFromJSON(reader.int32()));
+              message.repeatedEnumValue.push(
+                numericEnumFromJSON(reader.int32()),
+              );
             }
 
             continue;
@@ -868,7 +916,9 @@ export const ABitOfEverything: MessageFns<ABitOfEverything> = {
         }
         case 32: {
           if (tag === 256) {
-            message.repeatedEnumAnnotation.push(numericEnumFromJSON(reader.int32()));
+            message.repeatedEnumAnnotation.push(
+              numericEnumFromJSON(reader.int32()),
+            );
 
             continue;
           }
@@ -876,7 +926,9 @@ export const ABitOfEverything: MessageFns<ABitOfEverything> = {
           if (tag === 258) {
             const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
-              message.repeatedEnumAnnotation.push(numericEnumFromJSON(reader.int32()));
+              message.repeatedEnumAnnotation.push(
+                numericEnumFromJSON(reader.int32()),
+              );
             }
 
             continue;
@@ -905,7 +957,9 @@ export const ABitOfEverything: MessageFns<ABitOfEverything> = {
             break;
           }
 
-          message.repeatedNestedAnnotation.push(ABitOfEverything_Nested.decode(reader, reader.uint32()));
+          message.repeatedNestedAnnotation.push(
+            ABitOfEverything_Nested.decode(reader, reader.uint32()),
+          );
           continue;
         }
         case 36: {
@@ -913,7 +967,10 @@ export const ABitOfEverything: MessageFns<ABitOfEverything> = {
             break;
           }
 
-          message.nestedAnnotation = ABitOfEverything_Nested.decode(reader, reader.uint32());
+          message.nestedAnnotation = ABitOfEverything_Nested.decode(
+            reader,
+            reader.uint32(),
+          );
           continue;
         }
         case 37: {
@@ -1050,11 +1107,13 @@ export const ABitOfEverything: MessageFns<ABitOfEverything> = {
   },
   fromPartial(object: DeepPartial<ABitOfEverything>): ABitOfEverything {
     const message = createBaseABitOfEverything();
-    message.singleNested = (object.singleNested !== undefined && object.singleNested !== null)
-      ? ABitOfEverything_Nested.fromPartial(object.singleNested)
-      : undefined;
+    message.singleNested =
+      object.singleNested !== undefined && object.singleNested !== null
+        ? ABitOfEverything_Nested.fromPartial(object.singleNested)
+        : undefined;
     message.uuid = object.uuid ?? "";
-    message.nested = object.nested?.map((e) => ABitOfEverything_Nested.fromPartial(e)) || [];
+    message.nested =
+      object.nested?.map((e) => ABitOfEverything_Nested.fromPartial(e)) || [];
     message.floatValue = object.floatValue ?? 0;
     message.doubleValue = object.doubleValue ?? 0;
     message.int64Value = object.int64Value ?? 0;
@@ -1068,62 +1127,76 @@ export const ABitOfEverything: MessageFns<ABitOfEverything> = {
     message.uint32Value = object.uint32Value ?? 0;
     message.enumValue = object.enumValue ?? NumericEnum.ZERO;
     message.pathEnumValue = object.pathEnumValue ?? PathEnum.ABC;
-    message.nestedPathEnumValue = object.nestedPathEnumValue ?? MessagePathEnum_NestedPathEnum.GHI;
+    message.nestedPathEnumValue =
+      object.nestedPathEnumValue ?? MessagePathEnum_NestedPathEnum.GHI;
     message.sfixed32Value = object.sfixed32Value ?? 0;
     message.sfixed64Value = object.sfixed64Value ?? 0;
     message.sint32Value = object.sint32Value ?? 0;
     message.sint64Value = object.sint64Value ?? 0;
-    message.repeatedStringValue = object.repeatedStringValue?.map((e) => e) || [];
-    message.oneofEmpty = (object.oneofEmpty !== undefined && object.oneofEmpty !== null)
-      ? Empty.fromPartial(object.oneofEmpty)
-      : undefined;
+    message.repeatedStringValue =
+      object.repeatedStringValue?.map((e) => e) || [];
+    message.oneofEmpty =
+      object.oneofEmpty !== undefined && object.oneofEmpty !== null
+        ? Empty.fromPartial(object.oneofEmpty)
+        : undefined;
     message.oneofString = object.oneofString ?? undefined;
-    message.mapValue = Object.entries(object.mapValue ?? {}).reduce<{ [key: string]: NumericEnum }>(
-      (acc, [key, value]) => {
-        if (value !== undefined) {
-          acc[key] = value as NumericEnum;
-        }
-        return acc;
-      },
-      {},
-    );
-    message.mappedStringValue = Object.entries(object.mappedStringValue ?? {}).reduce<{ [key: string]: string }>(
-      (acc, [key, value]) => {
-        if (value !== undefined) {
-          acc[key] = globalThis.String(value);
-        }
-        return acc;
-      },
-      {},
-    );
-    message.mappedNestedValue = Object.entries(object.mappedNestedValue ?? {}).reduce<
-      { [key: string]: ABitOfEverything_Nested }
-    >((acc, [key, value]) => {
+    message.mapValue = Object.entries(object.mapValue ?? {}).reduce<{
+      [key: string]: NumericEnum;
+    }>((acc, [key, value]) => {
       if (value !== undefined) {
-        acc[key] = ABitOfEverything_Nested.fromPartial(value);
+        acc[key] = value as NumericEnum;
       }
       return acc;
     }, {});
+    message.mappedStringValue = Object.entries(
+      object.mappedStringValue ?? {},
+    ).reduce<{ [key: string]: string }>((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = globalThis.String(value);
+      }
+      return acc;
+    }, {});
+    message.mappedNestedValue = Object.entries(
+      object.mappedNestedValue ?? {},
+    ).reduce<{ [key: string]: ABitOfEverything_Nested }>(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = ABitOfEverything_Nested.fromPartial(value);
+        }
+        return acc;
+      },
+      {},
+    );
     message.timestampValue = object.timestampValue ?? undefined;
     message.repeatedEnumValue = object.repeatedEnumValue?.map((e) => e) || [];
-    message.repeatedEnumAnnotation = object.repeatedEnumAnnotation?.map((e) => e) || [];
-    message.enumValueAnnotation = object.enumValueAnnotation ?? NumericEnum.ZERO;
-    message.repeatedStringAnnotation = object.repeatedStringAnnotation?.map((e) => e) || [];
+    message.repeatedEnumAnnotation =
+      object.repeatedEnumAnnotation?.map((e) => e) || [];
+    message.enumValueAnnotation =
+      object.enumValueAnnotation ?? NumericEnum.ZERO;
+    message.repeatedStringAnnotation =
+      object.repeatedStringAnnotation?.map((e) => e) || [];
     message.repeatedNestedAnnotation =
-      object.repeatedNestedAnnotation?.map((e) => ABitOfEverything_Nested.fromPartial(e)) || [];
-    message.nestedAnnotation = (object.nestedAnnotation !== undefined && object.nestedAnnotation !== null)
-      ? ABitOfEverything_Nested.fromPartial(object.nestedAnnotation)
-      : undefined;
+      object.repeatedNestedAnnotation?.map((e) =>
+        ABitOfEverything_Nested.fromPartial(e),
+      ) || [];
+    message.nestedAnnotation =
+      object.nestedAnnotation !== undefined && object.nestedAnnotation !== null
+        ? ABitOfEverything_Nested.fromPartial(object.nestedAnnotation)
+        : undefined;
     message.int64OverrideType = object.int64OverrideType ?? 0;
-    message.requiredStringViaFieldBehaviorAnnotation = object.requiredStringViaFieldBehaviorAnnotation ?? "";
-    message.outputOnlyStringViaFieldBehaviorAnnotation = object.outputOnlyStringViaFieldBehaviorAnnotation ?? "";
+    message.requiredStringViaFieldBehaviorAnnotation =
+      object.requiredStringViaFieldBehaviorAnnotation ?? "";
+    message.outputOnlyStringViaFieldBehaviorAnnotation =
+      object.outputOnlyStringViaFieldBehaviorAnnotation ?? "";
     message.optionalStringValue = object.optionalStringValue ?? undefined;
     message.productId = object.productId?.map((e) => e) || [];
     message.optionalStringField = object.optionalStringField ?? "";
     message.requiredStringField1 = object.requiredStringField1 ?? "";
     message.requiredStringField2 = object.requiredStringField2 ?? "";
-    message.requiredFieldBehaviorJsonName = object.requiredFieldBehaviorJsonName ?? "";
-    message.requiredFieldSchemaJsonName = object.requiredFieldSchemaJsonName ?? "";
+    message.requiredFieldBehaviorJsonName =
+      object.requiredFieldBehaviorJsonName ?? "";
+    message.requiredFieldSchemaJsonName =
+      object.requiredFieldSchemaJsonName ?? "";
     message.trailingOnly = object.trailingOnly ?? "";
     message.trailingOnlyDot = object.trailingOnlyDot ?? "";
     message.trailingBoth = object.trailingBoth ?? "";
@@ -1138,7 +1211,10 @@ function createBaseABitOfEverything_Nested(): ABitOfEverything_Nested {
 }
 
 export const ABitOfEverything_Nested: MessageFns<ABitOfEverything_Nested> = {
-  encode(message: ABitOfEverything_Nested, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: ABitOfEverything_Nested,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
@@ -1146,13 +1222,19 @@ export const ABitOfEverything_Nested: MessageFns<ABitOfEverything_Nested> = {
       writer.uint32(16).uint32(message.amount);
     }
     if (message.ok !== ABitOfEverything_Nested_DeepEnum.FALSE) {
-      writer.uint32(24).int32(aBitOfEverything_Nested_DeepEnumToNumber(message.ok));
+      writer
+        .uint32(24)
+        .int32(aBitOfEverything_Nested_DeepEnumToNumber(message.ok));
     }
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): ABitOfEverything_Nested {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+  decode(
+    input: BinaryReader | Uint8Array,
+    length?: number,
+  ): ABitOfEverything_Nested {
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseABitOfEverything_Nested();
     while (reader.pos < end) {
@@ -1194,7 +1276,9 @@ export const ABitOfEverything_Nested: MessageFns<ABitOfEverything_Nested> = {
   create(base?: DeepPartial<ABitOfEverything_Nested>): ABitOfEverything_Nested {
     return ABitOfEverything_Nested.fromPartial(base ?? {});
   },
-  fromPartial(object: DeepPartial<ABitOfEverything_Nested>): ABitOfEverything_Nested {
+  fromPartial(
+    object: DeepPartial<ABitOfEverything_Nested>,
+  ): ABitOfEverything_Nested {
     const message = createBaseABitOfEverything_Nested();
     message.name = object.name ?? "";
     message.amount = object.amount ?? 0;
@@ -1207,177 +1291,220 @@ function createBaseABitOfEverything_MapValueEntry(): ABitOfEverything_MapValueEn
   return { key: "", value: NumericEnum.ZERO };
 }
 
-export const ABitOfEverything_MapValueEntry: MessageFns<ABitOfEverything_MapValueEntry> = {
-  encode(message: ABitOfEverything_MapValueEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.key !== "") {
-      writer.uint32(10).string(message.key);
-    }
-    if (message.value !== NumericEnum.ZERO) {
-      writer.uint32(16).int32(numericEnumToNumber(message.value));
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): ABitOfEverything_MapValueEntry {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseABitOfEverything_MapValueEntry();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.key = reader.string();
-          continue;
-        }
-        case 2: {
-          if (tag !== 16) {
-            break;
-          }
-
-          message.value = numericEnumFromJSON(reader.int32());
-          continue;
-        }
+export const ABitOfEverything_MapValueEntry: MessageFns<ABitOfEverything_MapValueEntry> =
+  {
+    encode(
+      message: ABitOfEverything_MapValueEntry,
+      writer: BinaryWriter = new BinaryWriter(),
+    ): BinaryWriter {
+      if (message.key !== "") {
+        writer.uint32(10).string(message.key);
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
+      if (message.value !== NumericEnum.ZERO) {
+        writer.uint32(16).int32(numericEnumToNumber(message.value));
       }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
+      return writer;
+    },
 
-  create(base?: DeepPartial<ABitOfEverything_MapValueEntry>): ABitOfEverything_MapValueEntry {
-    return ABitOfEverything_MapValueEntry.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<ABitOfEverything_MapValueEntry>): ABitOfEverything_MapValueEntry {
-    const message = createBaseABitOfEverything_MapValueEntry();
-    message.key = object.key ?? "";
-    message.value = object.value ?? NumericEnum.ZERO;
-    return message;
-  },
-};
+    decode(
+      input: BinaryReader | Uint8Array,
+      length?: number,
+    ): ABitOfEverything_MapValueEntry {
+      const reader =
+        input instanceof BinaryReader ? input : new BinaryReader(input);
+      let end = length === undefined ? reader.len : reader.pos + length;
+      const message = createBaseABitOfEverything_MapValueEntry();
+      while (reader.pos < end) {
+        const tag = reader.uint32();
+        switch (tag >>> 3) {
+          case 1: {
+            if (tag !== 10) {
+              break;
+            }
+
+            message.key = reader.string();
+            continue;
+          }
+          case 2: {
+            if (tag !== 16) {
+              break;
+            }
+
+            message.value = numericEnumFromJSON(reader.int32());
+            continue;
+          }
+        }
+        if ((tag & 7) === 4 || tag === 0) {
+          break;
+        }
+        reader.skip(tag & 7);
+      }
+      return message;
+    },
+
+    create(
+      base?: DeepPartial<ABitOfEverything_MapValueEntry>,
+    ): ABitOfEverything_MapValueEntry {
+      return ABitOfEverything_MapValueEntry.fromPartial(base ?? {});
+    },
+    fromPartial(
+      object: DeepPartial<ABitOfEverything_MapValueEntry>,
+    ): ABitOfEverything_MapValueEntry {
+      const message = createBaseABitOfEverything_MapValueEntry();
+      message.key = object.key ?? "";
+      message.value = object.value ?? NumericEnum.ZERO;
+      return message;
+    },
+  };
 
 function createBaseABitOfEverything_MappedStringValueEntry(): ABitOfEverything_MappedStringValueEntry {
   return { key: "", value: "" };
 }
 
-export const ABitOfEverything_MappedStringValueEntry: MessageFns<ABitOfEverything_MappedStringValueEntry> = {
-  encode(message: ABitOfEverything_MappedStringValueEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.key !== "") {
-      writer.uint32(10).string(message.key);
-    }
-    if (message.value !== "") {
-      writer.uint32(18).string(message.value);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): ABitOfEverything_MappedStringValueEntry {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseABitOfEverything_MappedStringValueEntry();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.key = reader.string();
-          continue;
-        }
-        case 2: {
-          if (tag !== 18) {
-            break;
-          }
-
-          message.value = reader.string();
-          continue;
-        }
+export const ABitOfEverything_MappedStringValueEntry: MessageFns<ABitOfEverything_MappedStringValueEntry> =
+  {
+    encode(
+      message: ABitOfEverything_MappedStringValueEntry,
+      writer: BinaryWriter = new BinaryWriter(),
+    ): BinaryWriter {
+      if (message.key !== "") {
+        writer.uint32(10).string(message.key);
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
+      if (message.value !== "") {
+        writer.uint32(18).string(message.value);
       }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
+      return writer;
+    },
 
-  create(base?: DeepPartial<ABitOfEverything_MappedStringValueEntry>): ABitOfEverything_MappedStringValueEntry {
-    return ABitOfEverything_MappedStringValueEntry.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<ABitOfEverything_MappedStringValueEntry>): ABitOfEverything_MappedStringValueEntry {
-    const message = createBaseABitOfEverything_MappedStringValueEntry();
-    message.key = object.key ?? "";
-    message.value = object.value ?? "";
-    return message;
-  },
-};
+    decode(
+      input: BinaryReader | Uint8Array,
+      length?: number,
+    ): ABitOfEverything_MappedStringValueEntry {
+      const reader =
+        input instanceof BinaryReader ? input : new BinaryReader(input);
+      let end = length === undefined ? reader.len : reader.pos + length;
+      const message = createBaseABitOfEverything_MappedStringValueEntry();
+      while (reader.pos < end) {
+        const tag = reader.uint32();
+        switch (tag >>> 3) {
+          case 1: {
+            if (tag !== 10) {
+              break;
+            }
+
+            message.key = reader.string();
+            continue;
+          }
+          case 2: {
+            if (tag !== 18) {
+              break;
+            }
+
+            message.value = reader.string();
+            continue;
+          }
+        }
+        if ((tag & 7) === 4 || tag === 0) {
+          break;
+        }
+        reader.skip(tag & 7);
+      }
+      return message;
+    },
+
+    create(
+      base?: DeepPartial<ABitOfEverything_MappedStringValueEntry>,
+    ): ABitOfEverything_MappedStringValueEntry {
+      return ABitOfEverything_MappedStringValueEntry.fromPartial(base ?? {});
+    },
+    fromPartial(
+      object: DeepPartial<ABitOfEverything_MappedStringValueEntry>,
+    ): ABitOfEverything_MappedStringValueEntry {
+      const message = createBaseABitOfEverything_MappedStringValueEntry();
+      message.key = object.key ?? "";
+      message.value = object.value ?? "";
+      return message;
+    },
+  };
 
 function createBaseABitOfEverything_MappedNestedValueEntry(): ABitOfEverything_MappedNestedValueEntry {
   return { key: "", value: undefined };
 }
 
-export const ABitOfEverything_MappedNestedValueEntry: MessageFns<ABitOfEverything_MappedNestedValueEntry> = {
-  encode(message: ABitOfEverything_MappedNestedValueEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.key !== "") {
-      writer.uint32(10).string(message.key);
-    }
-    if (message.value !== undefined) {
-      ABitOfEverything_Nested.encode(message.value, writer.uint32(18).fork()).join();
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): ABitOfEverything_MappedNestedValueEntry {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseABitOfEverything_MappedNestedValueEntry();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.key = reader.string();
-          continue;
-        }
-        case 2: {
-          if (tag !== 18) {
-            break;
-          }
-
-          message.value = ABitOfEverything_Nested.decode(reader, reader.uint32());
-          continue;
-        }
+export const ABitOfEverything_MappedNestedValueEntry: MessageFns<ABitOfEverything_MappedNestedValueEntry> =
+  {
+    encode(
+      message: ABitOfEverything_MappedNestedValueEntry,
+      writer: BinaryWriter = new BinaryWriter(),
+    ): BinaryWriter {
+      if (message.key !== "") {
+        writer.uint32(10).string(message.key);
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
+      if (message.value !== undefined) {
+        ABitOfEverything_Nested.encode(
+          message.value,
+          writer.uint32(18).fork(),
+        ).join();
       }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
+      return writer;
+    },
 
-  create(base?: DeepPartial<ABitOfEverything_MappedNestedValueEntry>): ABitOfEverything_MappedNestedValueEntry {
-    return ABitOfEverything_MappedNestedValueEntry.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<ABitOfEverything_MappedNestedValueEntry>): ABitOfEverything_MappedNestedValueEntry {
-    const message = createBaseABitOfEverything_MappedNestedValueEntry();
-    message.key = object.key ?? "";
-    message.value = (object.value !== undefined && object.value !== null)
-      ? ABitOfEverything_Nested.fromPartial(object.value)
-      : undefined;
-    return message;
-  },
-};
+    decode(
+      input: BinaryReader | Uint8Array,
+      length?: number,
+    ): ABitOfEverything_MappedNestedValueEntry {
+      const reader =
+        input instanceof BinaryReader ? input : new BinaryReader(input);
+      let end = length === undefined ? reader.len : reader.pos + length;
+      const message = createBaseABitOfEverything_MappedNestedValueEntry();
+      while (reader.pos < end) {
+        const tag = reader.uint32();
+        switch (tag >>> 3) {
+          case 1: {
+            if (tag !== 10) {
+              break;
+            }
+
+            message.key = reader.string();
+            continue;
+          }
+          case 2: {
+            if (tag !== 18) {
+              break;
+            }
+
+            message.value = ABitOfEverything_Nested.decode(
+              reader,
+              reader.uint32(),
+            );
+            continue;
+          }
+        }
+        if ((tag & 7) === 4 || tag === 0) {
+          break;
+        }
+        reader.skip(tag & 7);
+      }
+      return message;
+    },
+
+    create(
+      base?: DeepPartial<ABitOfEverything_MappedNestedValueEntry>,
+    ): ABitOfEverything_MappedNestedValueEntry {
+      return ABitOfEverything_MappedNestedValueEntry.fromPartial(base ?? {});
+    },
+    fromPartial(
+      object: DeepPartial<ABitOfEverything_MappedNestedValueEntry>,
+    ): ABitOfEverything_MappedNestedValueEntry {
+      const message = createBaseABitOfEverything_MappedNestedValueEntry();
+      message.key = object.key ?? "";
+      message.value =
+        object.value !== undefined && object.value !== null
+          ? ABitOfEverything_Nested.fromPartial(object.value)
+          : undefined;
+      return message;
+    },
+  };
 
 function createBaseABitOfEverythingRepeated(): ABitOfEverythingRepeated {
   return {
@@ -1401,7 +1528,10 @@ function createBaseABitOfEverythingRepeated(): ABitOfEverythingRepeated {
 }
 
 export const ABitOfEverythingRepeated: MessageFns<ABitOfEverythingRepeated> = {
-  encode(message: ABitOfEverythingRepeated, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: ABitOfEverythingRepeated,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     writer.uint32(10).fork();
     for (const v of message.pathRepeatedFloatValue) {
       writer.float(v);
@@ -1481,8 +1611,12 @@ export const ABitOfEverythingRepeated: MessageFns<ABitOfEverythingRepeated> = {
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): ABitOfEverythingRepeated {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+  decode(
+    input: BinaryReader | Uint8Array,
+    length?: number,
+  ): ABitOfEverythingRepeated {
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseABitOfEverythingRepeated();
     while (reader.pos < end) {
@@ -1552,7 +1686,9 @@ export const ABitOfEverythingRepeated: MessageFns<ABitOfEverythingRepeated> = {
           if (tag === 34) {
             const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
-              message.pathRepeatedUint64Value.push(longToNumber(reader.uint64()));
+              message.pathRepeatedUint64Value.push(
+                longToNumber(reader.uint64()),
+              );
             }
 
             continue;
@@ -1580,7 +1716,9 @@ export const ABitOfEverythingRepeated: MessageFns<ABitOfEverythingRepeated> = {
         }
         case 6: {
           if (tag === 49) {
-            message.pathRepeatedFixed64Value.push(longToNumber(reader.fixed64()));
+            message.pathRepeatedFixed64Value.push(
+              longToNumber(reader.fixed64()),
+            );
 
             continue;
           }
@@ -1588,7 +1726,9 @@ export const ABitOfEverythingRepeated: MessageFns<ABitOfEverythingRepeated> = {
           if (tag === 50) {
             const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
-              message.pathRepeatedFixed64Value.push(longToNumber(reader.fixed64()));
+              message.pathRepeatedFixed64Value.push(
+                longToNumber(reader.fixed64()),
+              );
             }
 
             continue;
@@ -1668,7 +1808,9 @@ export const ABitOfEverythingRepeated: MessageFns<ABitOfEverythingRepeated> = {
         }
         case 12: {
           if (tag === 96) {
-            message.pathRepeatedEnumValue.push(numericEnumFromJSON(reader.int32()));
+            message.pathRepeatedEnumValue.push(
+              numericEnumFromJSON(reader.int32()),
+            );
 
             continue;
           }
@@ -1676,7 +1818,9 @@ export const ABitOfEverythingRepeated: MessageFns<ABitOfEverythingRepeated> = {
           if (tag === 98) {
             const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
-              message.pathRepeatedEnumValue.push(numericEnumFromJSON(reader.int32()));
+              message.pathRepeatedEnumValue.push(
+                numericEnumFromJSON(reader.int32()),
+              );
             }
 
             continue;
@@ -1704,7 +1848,9 @@ export const ABitOfEverythingRepeated: MessageFns<ABitOfEverythingRepeated> = {
         }
         case 14: {
           if (tag === 113) {
-            message.pathRepeatedSfixed64Value.push(longToNumber(reader.sfixed64()));
+            message.pathRepeatedSfixed64Value.push(
+              longToNumber(reader.sfixed64()),
+            );
 
             continue;
           }
@@ -1712,7 +1858,9 @@ export const ABitOfEverythingRepeated: MessageFns<ABitOfEverythingRepeated> = {
           if (tag === 114) {
             const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
-              message.pathRepeatedSfixed64Value.push(longToNumber(reader.sfixed64()));
+              message.pathRepeatedSfixed64Value.push(
+                longToNumber(reader.sfixed64()),
+              );
             }
 
             continue;
@@ -1748,7 +1896,9 @@ export const ABitOfEverythingRepeated: MessageFns<ABitOfEverythingRepeated> = {
           if (tag === 130) {
             const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
-              message.pathRepeatedSint64Value.push(longToNumber(reader.sint64()));
+              message.pathRepeatedSint64Value.push(
+                longToNumber(reader.sint64()),
+              );
             }
 
             continue;
@@ -1765,27 +1915,47 @@ export const ABitOfEverythingRepeated: MessageFns<ABitOfEverythingRepeated> = {
     return message;
   },
 
-  create(base?: DeepPartial<ABitOfEverythingRepeated>): ABitOfEverythingRepeated {
+  create(
+    base?: DeepPartial<ABitOfEverythingRepeated>,
+  ): ABitOfEverythingRepeated {
     return ABitOfEverythingRepeated.fromPartial(base ?? {});
   },
-  fromPartial(object: DeepPartial<ABitOfEverythingRepeated>): ABitOfEverythingRepeated {
+  fromPartial(
+    object: DeepPartial<ABitOfEverythingRepeated>,
+  ): ABitOfEverythingRepeated {
     const message = createBaseABitOfEverythingRepeated();
-    message.pathRepeatedFloatValue = object.pathRepeatedFloatValue?.map((e) => e) || [];
-    message.pathRepeatedDoubleValue = object.pathRepeatedDoubleValue?.map((e) => e) || [];
-    message.pathRepeatedInt64Value = object.pathRepeatedInt64Value?.map((e) => e) || [];
-    message.pathRepeatedUint64Value = object.pathRepeatedUint64Value?.map((e) => e) || [];
-    message.pathRepeatedInt32Value = object.pathRepeatedInt32Value?.map((e) => e) || [];
-    message.pathRepeatedFixed64Value = object.pathRepeatedFixed64Value?.map((e) => e) || [];
-    message.pathRepeatedFixed32Value = object.pathRepeatedFixed32Value?.map((e) => e) || [];
-    message.pathRepeatedBoolValue = object.pathRepeatedBoolValue?.map((e) => e) || [];
-    message.pathRepeatedStringValue = object.pathRepeatedStringValue?.map((e) => e) || [];
-    message.pathRepeatedBytesValue = object.pathRepeatedBytesValue?.map((e) => e) || [];
-    message.pathRepeatedUint32Value = object.pathRepeatedUint32Value?.map((e) => e) || [];
-    message.pathRepeatedEnumValue = object.pathRepeatedEnumValue?.map((e) => e) || [];
-    message.pathRepeatedSfixed32Value = object.pathRepeatedSfixed32Value?.map((e) => e) || [];
-    message.pathRepeatedSfixed64Value = object.pathRepeatedSfixed64Value?.map((e) => e) || [];
-    message.pathRepeatedSint32Value = object.pathRepeatedSint32Value?.map((e) => e) || [];
-    message.pathRepeatedSint64Value = object.pathRepeatedSint64Value?.map((e) => e) || [];
+    message.pathRepeatedFloatValue =
+      object.pathRepeatedFloatValue?.map((e) => e) || [];
+    message.pathRepeatedDoubleValue =
+      object.pathRepeatedDoubleValue?.map((e) => e) || [];
+    message.pathRepeatedInt64Value =
+      object.pathRepeatedInt64Value?.map((e) => e) || [];
+    message.pathRepeatedUint64Value =
+      object.pathRepeatedUint64Value?.map((e) => e) || [];
+    message.pathRepeatedInt32Value =
+      object.pathRepeatedInt32Value?.map((e) => e) || [];
+    message.pathRepeatedFixed64Value =
+      object.pathRepeatedFixed64Value?.map((e) => e) || [];
+    message.pathRepeatedFixed32Value =
+      object.pathRepeatedFixed32Value?.map((e) => e) || [];
+    message.pathRepeatedBoolValue =
+      object.pathRepeatedBoolValue?.map((e) => e) || [];
+    message.pathRepeatedStringValue =
+      object.pathRepeatedStringValue?.map((e) => e) || [];
+    message.pathRepeatedBytesValue =
+      object.pathRepeatedBytesValue?.map((e) => e) || [];
+    message.pathRepeatedUint32Value =
+      object.pathRepeatedUint32Value?.map((e) => e) || [];
+    message.pathRepeatedEnumValue =
+      object.pathRepeatedEnumValue?.map((e) => e) || [];
+    message.pathRepeatedSfixed32Value =
+      object.pathRepeatedSfixed32Value?.map((e) => e) || [];
+    message.pathRepeatedSfixed64Value =
+      object.pathRepeatedSfixed64Value?.map((e) => e) || [];
+    message.pathRepeatedSint32Value =
+      object.pathRepeatedSint32Value?.map((e) => e) || [];
+    message.pathRepeatedSint64Value =
+      object.pathRepeatedSint64Value?.map((e) => e) || [];
     return message;
   },
 };
@@ -1795,15 +1965,22 @@ function createBaseCheckStatusResponse(): CheckStatusResponse {
 }
 
 export const CheckStatusResponse: MessageFns<CheckStatusResponse> = {
-  encode(message: CheckStatusResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: CheckStatusResponse,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.status !== undefined) {
       Status.encode(message.status, writer.uint32(10).fork()).join();
     }
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): CheckStatusResponse {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+  decode(
+    input: BinaryReader | Uint8Array,
+    length?: number,
+  ): CheckStatusResponse {
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCheckStatusResponse();
     while (reader.pos < end) {
@@ -1831,9 +2008,10 @@ export const CheckStatusResponse: MessageFns<CheckStatusResponse> = {
   },
   fromPartial(object: DeepPartial<CheckStatusResponse>): CheckStatusResponse {
     const message = createBaseCheckStatusResponse();
-    message.status = (object.status !== undefined && object.status !== null)
-      ? Status.fromPartial(object.status)
-      : undefined;
+    message.status =
+      object.status !== undefined && object.status !== null
+        ? Status.fromPartial(object.status)
+        : undefined;
     return message;
   },
 };
@@ -1843,7 +2021,10 @@ function createBaseBody(): Body {
 }
 
 export const Body: MessageFns<Body> = {
-  encode(message: Body, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: Body,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
@@ -1851,7 +2032,8 @@ export const Body: MessageFns<Body> = {
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): Body {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseBody();
     while (reader.pos < end) {
@@ -1889,7 +2071,10 @@ function createBaseMessageWithBody(): MessageWithBody {
 }
 
 export const MessageWithBody: MessageFns<MessageWithBody> = {
-  encode(message: MessageWithBody, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: MessageWithBody,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
@@ -1900,7 +2085,8 @@ export const MessageWithBody: MessageFns<MessageWithBody> = {
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): MessageWithBody {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMessageWithBody();
     while (reader.pos < end) {
@@ -1937,7 +2123,10 @@ export const MessageWithBody: MessageFns<MessageWithBody> = {
   fromPartial(object: DeepPartial<MessageWithBody>): MessageWithBody {
     const message = createBaseMessageWithBody();
     message.id = object.id ?? "";
-    message.data = (object.data !== undefined && object.data !== null) ? Body.fromPartial(object.data) : undefined;
+    message.data =
+      object.data !== undefined && object.data !== null
+        ? Body.fromPartial(object.data)
+        : undefined;
     return message;
   },
 };
@@ -1947,18 +2136,25 @@ function createBaseUpdateV2Request(): UpdateV2Request {
 }
 
 export const UpdateV2Request: MessageFns<UpdateV2Request> = {
-  encode(message: UpdateV2Request, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: UpdateV2Request,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.abe !== undefined) {
       ABitOfEverything.encode(message.abe, writer.uint32(10).fork()).join();
     }
     if (message.updateMask !== undefined) {
-      FieldMask.encode(FieldMask.wrap(message.updateMask), writer.uint32(18).fork()).join();
+      FieldMask.encode(
+        FieldMask.wrap(message.updateMask),
+        writer.uint32(18).fork(),
+      ).join();
     }
     return writer;
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): UpdateV2Request {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseUpdateV2Request();
     while (reader.pos < end) {
@@ -1977,7 +2173,9 @@ export const UpdateV2Request: MessageFns<UpdateV2Request> = {
             break;
           }
 
-          message.updateMask = FieldMask.unwrap(FieldMask.decode(reader, reader.uint32()));
+          message.updateMask = FieldMask.unwrap(
+            FieldMask.decode(reader, reader.uint32()),
+          );
           continue;
         }
       }
@@ -1994,9 +2192,10 @@ export const UpdateV2Request: MessageFns<UpdateV2Request> = {
   },
   fromPartial(object: DeepPartial<UpdateV2Request>): UpdateV2Request {
     const message = createBaseUpdateV2Request();
-    message.abe = (object.abe !== undefined && object.abe !== null)
-      ? ABitOfEverything.fromPartial(object.abe)
-      : undefined;
+    message.abe =
+      object.abe !== undefined && object.abe !== null
+        ? ABitOfEverything.fromPartial(object.abe)
+        : undefined;
     message.updateMask = object.updateMask ?? undefined;
     return message;
   },
@@ -2007,7 +2206,10 @@ function createBaseBook(): Book {
 }
 
 export const Book: MessageFns<Book> = {
-  encode(message: Book, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: Book,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
@@ -2015,13 +2217,17 @@ export const Book: MessageFns<Book> = {
       writer.uint32(18).string(message.id);
     }
     if (message.createTime !== undefined) {
-      Timestamp.encode(toTimestamp(message.createTime), writer.uint32(26).fork()).join();
+      Timestamp.encode(
+        toTimestamp(message.createTime),
+        writer.uint32(26).fork(),
+      ).join();
     }
     return writer;
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): Book {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseBook();
     while (reader.pos < end) {
@@ -2048,7 +2254,9 @@ export const Book: MessageFns<Book> = {
             break;
           }
 
-          message.createTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          message.createTime = fromTimestamp(
+            Timestamp.decode(reader, reader.uint32()),
+          );
           continue;
         }
       }
@@ -2077,7 +2285,10 @@ function createBaseCreateBookRequest(): CreateBookRequest {
 }
 
 export const CreateBookRequest: MessageFns<CreateBookRequest> = {
-  encode(message: CreateBookRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: CreateBookRequest,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.parent !== "") {
       writer.uint32(10).string(message.parent);
     }
@@ -2091,7 +2302,8 @@ export const CreateBookRequest: MessageFns<CreateBookRequest> = {
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): CreateBookRequest {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseCreateBookRequest();
     while (reader.pos < end) {
@@ -2136,7 +2348,10 @@ export const CreateBookRequest: MessageFns<CreateBookRequest> = {
   fromPartial(object: DeepPartial<CreateBookRequest>): CreateBookRequest {
     const message = createBaseCreateBookRequest();
     message.parent = object.parent ?? "";
-    message.book = (object.book !== undefined && object.book !== null) ? Book.fromPartial(object.book) : undefined;
+    message.book =
+      object.book !== undefined && object.book !== null
+        ? Book.fromPartial(object.book)
+        : undefined;
     message.bookId = object.bookId ?? "";
     return message;
   },
@@ -2147,12 +2362,18 @@ function createBaseUpdateBookRequest(): UpdateBookRequest {
 }
 
 export const UpdateBookRequest: MessageFns<UpdateBookRequest> = {
-  encode(message: UpdateBookRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: UpdateBookRequest,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.book !== undefined) {
       Book.encode(message.book, writer.uint32(10).fork()).join();
     }
     if (message.updateMask !== undefined) {
-      FieldMask.encode(FieldMask.wrap(message.updateMask), writer.uint32(18).fork()).join();
+      FieldMask.encode(
+        FieldMask.wrap(message.updateMask),
+        writer.uint32(18).fork(),
+      ).join();
     }
     if (message.allowMissing !== false) {
       writer.uint32(24).bool(message.allowMissing);
@@ -2161,7 +2382,8 @@ export const UpdateBookRequest: MessageFns<UpdateBookRequest> = {
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): UpdateBookRequest {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseUpdateBookRequest();
     while (reader.pos < end) {
@@ -2180,7 +2402,9 @@ export const UpdateBookRequest: MessageFns<UpdateBookRequest> = {
             break;
           }
 
-          message.updateMask = FieldMask.unwrap(FieldMask.decode(reader, reader.uint32()));
+          message.updateMask = FieldMask.unwrap(
+            FieldMask.decode(reader, reader.uint32()),
+          );
           continue;
         }
         case 3: {
@@ -2205,7 +2429,10 @@ export const UpdateBookRequest: MessageFns<UpdateBookRequest> = {
   },
   fromPartial(object: DeepPartial<UpdateBookRequest>): UpdateBookRequest {
     const message = createBaseUpdateBookRequest();
-    message.book = (object.book !== undefined && object.book !== null) ? Book.fromPartial(object.book) : undefined;
+    message.book =
+      object.book !== undefined && object.book !== null
+        ? Book.fromPartial(object.book)
+        : undefined;
     message.updateMask = object.updateMask ?? undefined;
     message.allowMissing = object.allowMissing ?? false;
     return message;
@@ -2216,66 +2443,84 @@ function createBaseRequiredMessageTypeRequest(): RequiredMessageTypeRequest {
   return { id: "", foo: undefined };
 }
 
-export const RequiredMessageTypeRequest: MessageFns<RequiredMessageTypeRequest> = {
-  encode(message: RequiredMessageTypeRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
-    }
-    if (message.foo !== undefined) {
-      Foo.encode(message.foo, writer.uint32(18).fork()).join();
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): RequiredMessageTypeRequest {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseRequiredMessageTypeRequest();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.id = reader.string();
-          continue;
-        }
-        case 2: {
-          if (tag !== 18) {
-            break;
-          }
-
-          message.foo = Foo.decode(reader, reader.uint32());
-          continue;
-        }
+export const RequiredMessageTypeRequest: MessageFns<RequiredMessageTypeRequest> =
+  {
+    encode(
+      message: RequiredMessageTypeRequest,
+      writer: BinaryWriter = new BinaryWriter(),
+    ): BinaryWriter {
+      if (message.id !== "") {
+        writer.uint32(10).string(message.id);
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
+      if (message.foo !== undefined) {
+        Foo.encode(message.foo, writer.uint32(18).fork()).join();
       }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
+      return writer;
+    },
 
-  create(base?: DeepPartial<RequiredMessageTypeRequest>): RequiredMessageTypeRequest {
-    return RequiredMessageTypeRequest.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<RequiredMessageTypeRequest>): RequiredMessageTypeRequest {
-    const message = createBaseRequiredMessageTypeRequest();
-    message.id = object.id ?? "";
-    message.foo = (object.foo !== undefined && object.foo !== null) ? Foo.fromPartial(object.foo) : undefined;
-    return message;
-  },
-};
+    decode(
+      input: BinaryReader | Uint8Array,
+      length?: number,
+    ): RequiredMessageTypeRequest {
+      const reader =
+        input instanceof BinaryReader ? input : new BinaryReader(input);
+      let end = length === undefined ? reader.len : reader.pos + length;
+      const message = createBaseRequiredMessageTypeRequest();
+      while (reader.pos < end) {
+        const tag = reader.uint32();
+        switch (tag >>> 3) {
+          case 1: {
+            if (tag !== 10) {
+              break;
+            }
+
+            message.id = reader.string();
+            continue;
+          }
+          case 2: {
+            if (tag !== 18) {
+              break;
+            }
+
+            message.foo = Foo.decode(reader, reader.uint32());
+            continue;
+          }
+        }
+        if ((tag & 7) === 4 || tag === 0) {
+          break;
+        }
+        reader.skip(tag & 7);
+      }
+      return message;
+    },
+
+    create(
+      base?: DeepPartial<RequiredMessageTypeRequest>,
+    ): RequiredMessageTypeRequest {
+      return RequiredMessageTypeRequest.fromPartial(base ?? {});
+    },
+    fromPartial(
+      object: DeepPartial<RequiredMessageTypeRequest>,
+    ): RequiredMessageTypeRequest {
+      const message = createBaseRequiredMessageTypeRequest();
+      message.id = object.id ?? "";
+      message.foo =
+        object.foo !== undefined && object.foo !== null
+          ? Foo.fromPartial(object.foo)
+          : undefined;
+      return message;
+    },
+  };
 
 function createBaseFoo(): Foo {
   return { bar: undefined };
 }
 
 export const Foo: MessageFns<Foo> = {
-  encode(message: Foo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: Foo,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.bar !== undefined) {
       Bar.encode(message.bar, writer.uint32(10).fork()).join();
     }
@@ -2283,7 +2528,8 @@ export const Foo: MessageFns<Foo> = {
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): Foo {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseFoo();
     while (reader.pos < end) {
@@ -2311,7 +2557,10 @@ export const Foo: MessageFns<Foo> = {
   },
   fromPartial(object: DeepPartial<Foo>): Foo {
     const message = createBaseFoo();
-    message.bar = (object.bar !== undefined && object.bar !== null) ? Bar.fromPartial(object.bar) : undefined;
+    message.bar =
+      object.bar !== undefined && object.bar !== null
+        ? Bar.fromPartial(object.bar)
+        : undefined;
     return message;
   },
 };
@@ -2321,7 +2570,10 @@ function createBaseBar(): Bar {
 }
 
 export const Bar: MessageFns<Bar> = {
-  encode(message: Bar, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: Bar,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
@@ -2329,7 +2581,8 @@ export const Bar: MessageFns<Bar> = {
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): Bar {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseBar();
     while (reader.pos < end) {
@@ -2366,7 +2619,8 @@ export const Bar: MessageFns<Bar> = {
  * ABitOfEverything service is used to validate that APIs with complicated
  * proto messages and URL templates are still processed correctly.
  */
-export type ABitOfEverythingServiceDefinition = typeof ABitOfEverythingServiceDefinition;
+export type ABitOfEverythingServiceDefinition =
+  typeof ABitOfEverythingServiceDefinition;
 export const ABitOfEverythingServiceDefinition = {
   name: "ABitOfEverythingService",
   fullName: "proto.examplepb.ABitOfEverythingService",
@@ -2381,43 +2635,9 @@ export const ABitOfEverythingServiceDefinition = {
         _unknownFields: {
           578365826: [
             new Uint8Array([
-              36,
-              58,
-              1,
-              42,
-              34,
-              31,
-              47,
-              118,
-              49,
-              47,
-              101,
-              120,
-              97,
-              109,
-              112,
-              108,
-              101,
-              47,
-              97,
-              95,
-              98,
-              105,
-              116,
-              95,
-              111,
-              102,
-              95,
-              101,
-              118,
-              101,
-              114,
-              121,
-              116,
-              104,
-              105,
-              110,
-              103,
+              36, 58, 1, 42, 34, 31, 47, 118, 49, 47, 101, 120, 97, 109, 112,
+              108, 101, 47, 97, 95, 98, 105, 116, 95, 111, 102, 95, 101, 118,
+              101, 114, 121, 116, 104, 105, 110, 103,
             ]),
           ],
         },
@@ -2433,47 +2653,9 @@ export const ABitOfEverythingServiceDefinition = {
         _unknownFields: {
           578365826: [
             new Uint8Array([
-              40,
-              18,
-              38,
-              47,
-              118,
-              49,
-              47,
-              101,
-              120,
-              97,
-              109,
-              112,
-              108,
-              101,
-              47,
-              97,
-              95,
-              98,
-              105,
-              116,
-              95,
-              111,
-              102,
-              95,
-              101,
-              118,
-              101,
-              114,
-              121,
-              116,
-              104,
-              105,
-              110,
-              103,
-              47,
-              123,
-              117,
-              117,
-              105,
-              100,
-              125,
+              40, 18, 38, 47, 118, 49, 47, 101, 120, 97, 109, 112, 108, 101, 47,
+              97, 95, 98, 105, 116, 95, 111, 102, 95, 101, 118, 101, 114, 121,
+              116, 104, 105, 110, 103, 47, 123, 117, 117, 105, 100, 125,
             ]),
           ],
         },
@@ -2489,54 +2671,10 @@ export const ABitOfEverythingServiceDefinition = {
         _unknownFields: {
           578365826: [
             new Uint8Array([
-              47,
-              34,
-              45,
-              47,
-              118,
-              49,
-              47,
-              101,
-              120,
-              97,
-              109,
-              112,
-              108,
-              101,
-              47,
-              97,
-              95,
-              98,
-              105,
-              116,
-              95,
-              111,
-              102,
-              95,
-              101,
-              118,
-              101,
-              114,
-              121,
-              116,
-              104,
-              105,
-              110,
-              103,
-              47,
-              123,
-              117,
-              117,
-              105,
-              100,
-              125,
-              58,
-              99,
-              117,
-              115,
-              116,
-              111,
-              109,
+              47, 34, 45, 47, 118, 49, 47, 101, 120, 97, 109, 112, 108, 101, 47,
+              97, 95, 98, 105, 116, 95, 111, 102, 95, 101, 118, 101, 114, 121,
+              116, 104, 105, 110, 103, 47, 123, 117, 117, 105, 100, 125, 58, 99,
+              117, 115, 116, 111, 109,
             ]),
           ],
         },
@@ -2552,61 +2690,10 @@ export const ABitOfEverythingServiceDefinition = {
         _unknownFields: {
           578365826: [
             new Uint8Array([
-              54,
-              34,
-              52,
-              47,
-              118,
-              49,
-              47,
-              101,
-              120,
-              97,
-              109,
-              112,
-              108,
-              101,
-              47,
-              97,
-              95,
-              98,
-              105,
-              116,
-              95,
-              111,
-              102,
-              95,
-              101,
-              118,
-              101,
-              114,
-              121,
-              116,
-              104,
-              105,
-              110,
-              103,
-              47,
-              123,
-              117,
-              117,
-              105,
-              100,
-              125,
-              58,
-              99,
-              117,
-              115,
-              116,
-              111,
-              109,
-              58,
-              99,
-              117,
-              115,
-              116,
-              111,
-              109,
+              54, 34, 52, 47, 118, 49, 47, 101, 120, 97, 109, 112, 108, 101, 47,
+              97, 95, 98, 105, 116, 95, 111, 102, 95, 101, 118, 101, 114, 121,
+              116, 104, 105, 110, 103, 47, 123, 117, 117, 105, 100, 125, 58, 99,
+              117, 115, 116, 111, 109, 58, 99, 117, 115, 116, 111, 109,
             ]),
           ],
         },
@@ -2622,50 +2709,10 @@ export const ABitOfEverythingServiceDefinition = {
         _unknownFields: {
           578365826: [
             new Uint8Array([
-              43,
-              58,
-              1,
-              42,
-              26,
-              38,
-              47,
-              118,
-              49,
-              47,
-              101,
-              120,
-              97,
-              109,
-              112,
-              108,
-              101,
-              47,
-              97,
-              95,
-              98,
-              105,
-              116,
-              95,
-              111,
-              102,
-              95,
-              101,
-              118,
-              101,
-              114,
-              121,
-              116,
-              104,
-              105,
-              110,
-              103,
-              47,
-              123,
-              117,
-              117,
-              105,
-              100,
-              125,
+              43, 58, 1, 42, 26, 38, 47, 118, 49, 47, 101, 120, 97, 109, 112,
+              108, 101, 47, 97, 95, 98, 105, 116, 95, 111, 102, 95, 101, 118,
+              101, 114, 121, 116, 104, 105, 110, 103, 47, 123, 117, 117, 105,
+              100, 125,
             ]),
           ],
         },
@@ -2681,158 +2728,17 @@ export const ABitOfEverythingServiceDefinition = {
         _unknownFields: {
           578365826: [
             new Uint8Array([
-              150,
-              1,
-              58,
-              3,
-              97,
-              98,
-              101,
-              90,
-              49,
-              58,
-              3,
-              97,
-              98,
-              101,
-              50,
-              42,
-              47,
-              118,
-              50,
-              47,
-              101,
-              120,
-              97,
-              109,
-              112,
-              108,
-              101,
-              47,
-              97,
-              95,
-              98,
-              105,
-              116,
-              95,
-              111,
-              102,
-              95,
-              101,
-              118,
-              101,
-              114,
-              121,
-              116,
-              104,
-              105,
-              110,
-              103,
-              47,
-              123,
-              97,
-              98,
-              101,
-              46,
-              117,
-              117,
-              105,
-              100,
-              125,
-              90,
-              48,
-              58,
-              1,
-              42,
-              50,
-              43,
-              47,
-              118,
-              50,
-              97,
-              47,
-              101,
-              120,
-              97,
-              109,
-              112,
-              108,
-              101,
-              47,
-              97,
-              95,
-              98,
-              105,
-              116,
-              95,
-              111,
-              102,
-              95,
-              101,
-              118,
-              101,
-              114,
-              121,
-              116,
-              104,
-              105,
-              110,
-              103,
-              47,
-              123,
-              97,
-              98,
-              101,
-              46,
-              117,
-              117,
-              105,
-              100,
-              125,
-              26,
-              42,
-              47,
-              118,
-              50,
-              47,
-              101,
-              120,
-              97,
-              109,
-              112,
-              108,
-              101,
-              47,
-              97,
-              95,
-              98,
-              105,
-              116,
-              95,
-              111,
-              102,
-              95,
-              101,
-              118,
-              101,
-              114,
-              121,
-              116,
-              104,
-              105,
-              110,
-              103,
-              47,
-              123,
-              97,
-              98,
-              101,
-              46,
-              117,
-              117,
-              105,
-              100,
-              125,
+              150, 1, 58, 3, 97, 98, 101, 90, 49, 58, 3, 97, 98, 101, 50, 42,
+              47, 118, 50, 47, 101, 120, 97, 109, 112, 108, 101, 47, 97, 95, 98,
+              105, 116, 95, 111, 102, 95, 101, 118, 101, 114, 121, 116, 104,
+              105, 110, 103, 47, 123, 97, 98, 101, 46, 117, 117, 105, 100, 125,
+              90, 48, 58, 1, 42, 50, 43, 47, 118, 50, 97, 47, 101, 120, 97, 109,
+              112, 108, 101, 47, 97, 95, 98, 105, 116, 95, 111, 102, 95, 101,
+              118, 101, 114, 121, 116, 104, 105, 110, 103, 47, 123, 97, 98, 101,
+              46, 117, 117, 105, 100, 125, 26, 42, 47, 118, 50, 47, 101, 120,
+              97, 109, 112, 108, 101, 47, 97, 95, 98, 105, 116, 95, 111, 102,
+              95, 101, 118, 101, 114, 121, 116, 104, 105, 110, 103, 47, 123, 97,
+              98, 101, 46, 117, 117, 105, 100, 125,
             ]),
           ],
         },
@@ -2848,117 +2754,18 @@ export const ABitOfEverythingServiceDefinition = {
         _unknownFields: {
           8338: [
             new Uint8Array([
-              65,
-              98,
-              41,
-              10,
-              14,
-              10,
-              10,
-              65,
-              112,
-              105,
-              75,
-              101,
-              121,
-              65,
-              117,
-              116,
-              104,
-              18,
-              0,
-              10,
-              23,
-              10,
-              6,
-              79,
-              65,
-              117,
-              116,
-              104,
-              50,
-              18,
-              13,
-              10,
-              4,
-              114,
-              101,
-              97,
-              100,
-              10,
-              5,
-              119,
-              114,
-              105,
-              116,
-              101,
-              106,
-              20,
-              10,
-              14,
-              120,
-              45,
-              105,
-              114,
-              114,
-              101,
-              118,
-              101,
-              114,
-              115,
-              105,
-              98,
-              108,
-              101,
-              18,
-              2,
-              32,
-              1,
+              65, 98, 41, 10, 14, 10, 10, 65, 112, 105, 75, 101, 121, 65, 117,
+              116, 104, 18, 0, 10, 23, 10, 6, 79, 65, 117, 116, 104, 50, 18, 13,
+              10, 4, 114, 101, 97, 100, 10, 5, 119, 114, 105, 116, 101, 106, 20,
+              10, 14, 120, 45, 105, 114, 114, 101, 118, 101, 114, 115, 105, 98,
+              108, 101, 18, 2, 32, 1,
             ]),
           ],
           578365826: [
             new Uint8Array([
-              40,
-              42,
-              38,
-              47,
-              118,
-              49,
-              47,
-              101,
-              120,
-              97,
-              109,
-              112,
-              108,
-              101,
-              47,
-              97,
-              95,
-              98,
-              105,
-              116,
-              95,
-              111,
-              102,
-              95,
-              101,
-              118,
-              101,
-              114,
-              121,
-              116,
-              104,
-              105,
-              110,
-              103,
-              47,
-              123,
-              117,
-              117,
-              105,
-              100,
-              125,
+              40, 42, 38, 47, 118, 49, 47, 101, 120, 97, 109, 112, 108, 101, 47,
+              97, 95, 98, 105, 116, 95, 111, 102, 95, 101, 118, 101, 114, 121,
+              116, 104, 105, 110, 103, 47, 123, 117, 117, 105, 100, 125,
             ]),
           ],
         },
@@ -2974,142 +2781,20 @@ export const ABitOfEverythingServiceDefinition = {
         _unknownFields: {
           8338: [
             new Uint8Array([
-              84,
-              34,
-              78,
-              10,
-              28,
-              70,
-              105,
-              110,
-              100,
-              32,
-              111,
-              117,
-              116,
-              32,
-              109,
-              111,
-              114,
-              101,
-              32,
-              97,
-              98,
-              111,
-              117,
-              116,
-              32,
-              71,
-              101,
-              116,
-              81,
-              117,
-              101,
-              114,
-              121,
-              18,
-              46,
-              104,
-              116,
-              116,
-              112,
-              115,
-              58,
-              47,
-              47,
-              103,
-              105,
-              116,
-              104,
-              117,
-              98,
-              46,
-              99,
-              111,
-              109,
-              47,
-              103,
-              114,
-              112,
-              99,
-              45,
-              101,
-              99,
-              111,
-              115,
-              121,
-              115,
-              116,
-              101,
-              109,
-              47,
-              103,
-              114,
-              112,
-              99,
-              45,
-              103,
-              97,
-              116,
-              101,
-              119,
-              97,
-              121,
-              88,
-              1,
-              98,
-              0,
+              84, 34, 78, 10, 28, 70, 105, 110, 100, 32, 111, 117, 116, 32, 109,
+              111, 114, 101, 32, 97, 98, 111, 117, 116, 32, 71, 101, 116, 81,
+              117, 101, 114, 121, 18, 46, 104, 116, 116, 112, 115, 58, 47, 47,
+              103, 105, 116, 104, 117, 98, 46, 99, 111, 109, 47, 103, 114, 112,
+              99, 45, 101, 99, 111, 115, 121, 115, 116, 101, 109, 47, 103, 114,
+              112, 99, 45, 103, 97, 116, 101, 119, 97, 121, 88, 1, 98, 0,
             ]),
           ],
           578365826: [
             new Uint8Array([
-              46,
-              18,
-              44,
-              47,
-              118,
-              49,
-              47,
-              101,
-              120,
-              97,
-              109,
-              112,
-              108,
-              101,
-              47,
-              97,
-              95,
-              98,
-              105,
-              116,
-              95,
-              111,
-              102,
-              95,
-              101,
-              118,
-              101,
-              114,
-              121,
-              116,
-              104,
-              105,
-              110,
-              103,
-              47,
-              113,
-              117,
-              101,
-              114,
-              121,
-              47,
-              123,
-              117,
-              117,
-              105,
-              100,
-              125,
+              46, 18, 44, 47, 118, 49, 47, 101, 120, 97, 109, 112, 108, 101, 47,
+              97, 95, 98, 105, 116, 95, 111, 102, 95, 101, 118, 101, 114, 121,
+              116, 104, 105, 110, 103, 47, 113, 117, 101, 114, 121, 47, 123,
+              117, 117, 105, 100, 125,
             ]),
           ],
         },
@@ -3125,513 +2810,43 @@ export const ABitOfEverythingServiceDefinition = {
         _unknownFields: {
           578365826: [
             new Uint8Array([
-              249,
-              3,
-              18,
-              246,
-              3,
-              47,
-              118,
-              49,
-              47,
-              101,
-              120,
-              97,
-              109,
-              112,
-              108,
-              101,
-              47,
-              97,
-              95,
-              98,
-              105,
-              116,
-              95,
-              111,
-              102,
-              95,
-              101,
-              118,
-              101,
-              114,
-              121,
-              116,
-              104,
-              105,
-              110,
-              103,
-              95,
-              114,
-              101,
-              112,
-              101,
-              97,
-              116,
-              101,
-              100,
-              47,
-              123,
-              112,
-              97,
-              116,
-              104,
-              95,
-              114,
-              101,
-              112,
-              101,
-              97,
-              116,
-              101,
-              100,
-              95,
-              102,
-              108,
-              111,
-              97,
-              116,
-              95,
-              118,
-              97,
-              108,
-              117,
-              101,
-              125,
-              47,
-              123,
-              112,
-              97,
-              116,
-              104,
-              95,
-              114,
-              101,
-              112,
-              101,
-              97,
-              116,
-              101,
-              100,
-              95,
-              100,
-              111,
-              117,
-              98,
-              108,
-              101,
-              95,
-              118,
-              97,
-              108,
-              117,
-              101,
-              125,
-              47,
-              123,
-              112,
-              97,
-              116,
-              104,
-              95,
-              114,
-              101,
-              112,
-              101,
-              97,
-              116,
-              101,
-              100,
-              95,
-              105,
-              110,
-              116,
-              54,
-              52,
-              95,
-              118,
-              97,
-              108,
-              117,
-              101,
-              125,
-              47,
-              123,
-              112,
-              97,
-              116,
-              104,
-              95,
-              114,
-              101,
-              112,
-              101,
-              97,
-              116,
-              101,
-              100,
-              95,
-              117,
-              105,
-              110,
-              116,
-              54,
-              52,
-              95,
-              118,
-              97,
-              108,
-              117,
-              101,
-              125,
-              47,
-              123,
-              112,
-              97,
-              116,
-              104,
-              95,
-              114,
-              101,
-              112,
-              101,
-              97,
-              116,
-              101,
-              100,
-              95,
-              105,
-              110,
-              116,
-              51,
-              50,
-              95,
-              118,
-              97,
-              108,
-              117,
-              101,
-              125,
-              47,
-              123,
-              112,
-              97,
-              116,
-              104,
-              95,
-              114,
-              101,
-              112,
-              101,
-              97,
-              116,
-              101,
-              100,
-              95,
-              102,
-              105,
-              120,
-              101,
-              100,
-              54,
-              52,
-              95,
-              118,
-              97,
-              108,
-              117,
-              101,
-              125,
-              47,
-              123,
-              112,
-              97,
-              116,
-              104,
-              95,
-              114,
-              101,
-              112,
-              101,
-              97,
-              116,
-              101,
-              100,
-              95,
-              102,
-              105,
-              120,
-              101,
-              100,
-              51,
-              50,
-              95,
-              118,
-              97,
-              108,
-              117,
-              101,
-              125,
-              47,
-              123,
-              112,
-              97,
-              116,
-              104,
-              95,
-              114,
-              101,
-              112,
-              101,
-              97,
-              116,
-              101,
-              100,
-              95,
-              98,
-              111,
-              111,
-              108,
-              95,
-              118,
-              97,
-              108,
-              117,
-              101,
-              125,
-              47,
-              123,
-              112,
-              97,
-              116,
-              104,
-              95,
-              114,
-              101,
-              112,
-              101,
-              97,
-              116,
-              101,
-              100,
-              95,
-              115,
-              116,
-              114,
-              105,
-              110,
-              103,
-              95,
-              118,
-              97,
-              108,
-              117,
-              101,
-              125,
-              47,
-              123,
-              112,
-              97,
-              116,
-              104,
-              95,
-              114,
-              101,
-              112,
-              101,
-              97,
-              116,
-              101,
-              100,
-              95,
-              98,
-              121,
-              116,
-              101,
-              115,
-              95,
-              118,
-              97,
-              108,
-              117,
-              101,
-              125,
-              47,
-              123,
-              112,
-              97,
-              116,
-              104,
-              95,
-              114,
-              101,
-              112,
-              101,
-              97,
-              116,
-              101,
-              100,
-              95,
-              117,
-              105,
-              110,
-              116,
-              51,
-              50,
-              95,
-              118,
-              97,
-              108,
-              117,
-              101,
-              125,
-              47,
-              123,
-              112,
-              97,
-              116,
-              104,
-              95,
-              114,
-              101,
-              112,
-              101,
-              97,
-              116,
-              101,
-              100,
-              95,
-              101,
-              110,
-              117,
-              109,
-              95,
-              118,
-              97,
-              108,
-              117,
-              101,
-              125,
-              47,
-              123,
-              112,
-              97,
-              116,
-              104,
-              95,
-              114,
-              101,
-              112,
-              101,
-              97,
-              116,
-              101,
-              100,
-              95,
-              115,
-              102,
-              105,
-              120,
-              101,
-              100,
-              51,
-              50,
-              95,
-              118,
-              97,
-              108,
-              117,
-              101,
-              125,
-              47,
-              123,
-              112,
-              97,
-              116,
-              104,
-              95,
-              114,
-              101,
-              112,
-              101,
-              97,
-              116,
-              101,
-              100,
-              95,
-              115,
-              102,
-              105,
-              120,
-              101,
-              100,
-              54,
-              52,
-              95,
-              118,
-              97,
-              108,
-              117,
-              101,
-              125,
-              47,
-              123,
-              112,
-              97,
-              116,
-              104,
-              95,
-              114,
-              101,
-              112,
-              101,
-              97,
-              116,
-              101,
-              100,
-              95,
-              115,
-              105,
-              110,
-              116,
-              51,
-              50,
-              95,
-              118,
-              97,
-              108,
-              117,
-              101,
-              125,
-              47,
-              123,
-              112,
-              97,
-              116,
-              104,
-              95,
-              114,
-              101,
-              112,
-              101,
-              97,
-              116,
-              101,
-              100,
-              95,
-              115,
-              105,
-              110,
-              116,
-              54,
-              52,
-              95,
-              118,
-              97,
-              108,
-              117,
-              101,
-              125,
+              249, 3, 18, 246, 3, 47, 118, 49, 47, 101, 120, 97, 109, 112, 108,
+              101, 47, 97, 95, 98, 105, 116, 95, 111, 102, 95, 101, 118, 101,
+              114, 121, 116, 104, 105, 110, 103, 95, 114, 101, 112, 101, 97,
+              116, 101, 100, 47, 123, 112, 97, 116, 104, 95, 114, 101, 112, 101,
+              97, 116, 101, 100, 95, 102, 108, 111, 97, 116, 95, 118, 97, 108,
+              117, 101, 125, 47, 123, 112, 97, 116, 104, 95, 114, 101, 112, 101,
+              97, 116, 101, 100, 95, 100, 111, 117, 98, 108, 101, 95, 118, 97,
+              108, 117, 101, 125, 47, 123, 112, 97, 116, 104, 95, 114, 101, 112,
+              101, 97, 116, 101, 100, 95, 105, 110, 116, 54, 52, 95, 118, 97,
+              108, 117, 101, 125, 47, 123, 112, 97, 116, 104, 95, 114, 101, 112,
+              101, 97, 116, 101, 100, 95, 117, 105, 110, 116, 54, 52, 95, 118,
+              97, 108, 117, 101, 125, 47, 123, 112, 97, 116, 104, 95, 114, 101,
+              112, 101, 97, 116, 101, 100, 95, 105, 110, 116, 51, 50, 95, 118,
+              97, 108, 117, 101, 125, 47, 123, 112, 97, 116, 104, 95, 114, 101,
+              112, 101, 97, 116, 101, 100, 95, 102, 105, 120, 101, 100, 54, 52,
+              95, 118, 97, 108, 117, 101, 125, 47, 123, 112, 97, 116, 104, 95,
+              114, 101, 112, 101, 97, 116, 101, 100, 95, 102, 105, 120, 101,
+              100, 51, 50, 95, 118, 97, 108, 117, 101, 125, 47, 123, 112, 97,
+              116, 104, 95, 114, 101, 112, 101, 97, 116, 101, 100, 95, 98, 111,
+              111, 108, 95, 118, 97, 108, 117, 101, 125, 47, 123, 112, 97, 116,
+              104, 95, 114, 101, 112, 101, 97, 116, 101, 100, 95, 115, 116, 114,
+              105, 110, 103, 95, 118, 97, 108, 117, 101, 125, 47, 123, 112, 97,
+              116, 104, 95, 114, 101, 112, 101, 97, 116, 101, 100, 95, 98, 121,
+              116, 101, 115, 95, 118, 97, 108, 117, 101, 125, 47, 123, 112, 97,
+              116, 104, 95, 114, 101, 112, 101, 97, 116, 101, 100, 95, 117, 105,
+              110, 116, 51, 50, 95, 118, 97, 108, 117, 101, 125, 47, 123, 112,
+              97, 116, 104, 95, 114, 101, 112, 101, 97, 116, 101, 100, 95, 101,
+              110, 117, 109, 95, 118, 97, 108, 117, 101, 125, 47, 123, 112, 97,
+              116, 104, 95, 114, 101, 112, 101, 97, 116, 101, 100, 95, 115, 102,
+              105, 120, 101, 100, 51, 50, 95, 118, 97, 108, 117, 101, 125, 47,
+              123, 112, 97, 116, 104, 95, 114, 101, 112, 101, 97, 116, 101, 100,
+              95, 115, 102, 105, 120, 101, 100, 54, 52, 95, 118, 97, 108, 117,
+              101, 125, 47, 123, 112, 97, 116, 104, 95, 114, 101, 112, 101, 97,
+              116, 101, 100, 95, 115, 105, 110, 116, 51, 50, 95, 118, 97, 108,
+              117, 101, 125, 47, 123, 112, 97, 116, 104, 95, 114, 101, 112, 101,
+              97, 116, 101, 100, 95, 115, 105, 110, 116, 54, 52, 95, 118, 97,
+              108, 117, 101, 125,
             ]),
           ],
         },
@@ -3647,54 +2862,10 @@ export const ABitOfEverythingServiceDefinition = {
         _unknownFields: {
           578365826: [
             new Uint8Array([
-              47,
-              58,
-              1,
-              42,
-              34,
-              42,
-              47,
-              118,
-              49,
-              47,
-              101,
-              120,
-              97,
-              109,
-              112,
-              108,
-              101,
-              47,
-              100,
-              101,
-              101,
-              112,
-              95,
-              112,
-              97,
-              116,
-              104,
-              47,
-              123,
-              115,
-              105,
-              110,
-              103,
-              108,
-              101,
-              95,
-              110,
-              101,
-              115,
-              116,
-              101,
-              100,
-              46,
-              110,
-              97,
-              109,
-              101,
-              125,
+              47, 58, 1, 42, 34, 42, 47, 118, 49, 47, 101, 120, 97, 109, 112,
+              108, 101, 47, 100, 101, 101, 112, 95, 112, 97, 116, 104, 47, 123,
+              115, 105, 110, 103, 108, 101, 95, 110, 101, 115, 116, 101, 100,
+              46, 110, 97, 109, 101, 125,
             ]),
           ],
         },
@@ -3718,28 +2889,8 @@ export const ABitOfEverythingServiceDefinition = {
         _unknownFields: {
           578365826: [
             new Uint8Array([
-              21,
-              18,
-              19,
-              47,
-              118,
-              50,
-              47,
-              101,
-              120,
-              97,
-              109,
-              112,
-              108,
-              101,
-              47,
-              116,
-              105,
-              109,
-              101,
-              111,
-              117,
-              116,
+              21, 18, 19, 47, 118, 50, 47, 101, 120, 97, 109, 112, 108, 101, 47,
+              116, 105, 109, 101, 111, 117, 116,
             ]),
           ],
         },
@@ -3755,37 +2906,9 @@ export const ABitOfEverythingServiceDefinition = {
         _unknownFields: {
           578365826: [
             new Uint8Array([
-              30,
-              18,
-              28,
-              47,
-              118,
-              50,
-              47,
-              101,
-              120,
-              97,
-              109,
-              112,
-              108,
-              101,
-              47,
-              101,
-              114,
-              114,
-              111,
-              114,
-              119,
-              105,
-              116,
-              104,
-              100,
-              101,
-              116,
-              97,
-              105,
-              108,
-              115,
+              30, 18, 28, 47, 118, 50, 47, 101, 120, 97, 109, 112, 108, 101, 47,
+              101, 114, 114, 111, 114, 119, 105, 116, 104, 100, 101, 116, 97,
+              105, 108, 115,
             ]),
           ],
         },
@@ -3801,40 +2924,9 @@ export const ABitOfEverythingServiceDefinition = {
         _unknownFields: {
           578365826: [
             new Uint8Array([
-              33,
-              58,
-              4,
-              100,
-              97,
-              116,
-              97,
-              34,
-              25,
-              47,
-              118,
-              50,
-              47,
-              101,
-              120,
-              97,
-              109,
-              112,
-              108,
-              101,
-              47,
-              119,
-              105,
-              116,
-              104,
-              98,
-              111,
-              100,
-              121,
-              47,
-              123,
-              105,
-              100,
-              125,
+              33, 58, 4, 100, 97, 116, 97, 34, 25, 47, 118, 50, 47, 101, 120,
+              97, 109, 112, 108, 101, 47, 119, 105, 116, 104, 98, 111, 100, 121,
+              47, 123, 105, 100, 125,
             ]),
           ],
         },
@@ -3850,48 +2942,9 @@ export const ABitOfEverythingServiceDefinition = {
         _unknownFields: {
           578365826: [
             new Uint8Array([
-              41,
-              58,
-              1,
-              42,
-              34,
-              36,
-              47,
-              118,
-              50,
-              47,
-              101,
-              120,
-              97,
-              109,
-              112,
-              108,
-              101,
-              47,
-              112,
-              111,
-              115,
-              116,
-              119,
-              105,
-              116,
-              104,
-              101,
-              109,
-              112,
-              116,
-              121,
-              98,
-              111,
-              100,
-              121,
-              47,
-              123,
-              110,
-              97,
-              109,
-              101,
-              125,
+              41, 58, 1, 42, 34, 36, 47, 118, 50, 47, 101, 120, 97, 109, 112,
+              108, 101, 47, 112, 111, 115, 116, 119, 105, 116, 104, 101, 109,
+              112, 116, 121, 98, 111, 100, 121, 47, 123, 110, 97, 109, 101, 125,
             ]),
           ],
         },
@@ -3907,72 +2960,11 @@ export const ABitOfEverythingServiceDefinition = {
         _unknownFields: {
           578365826: [
             new Uint8Array([
-              65,
-              18,
-              63,
-              47,
-              118,
-              49,
-              47,
-              101,
-              120,
-              97,
-              109,
-              112,
-              108,
-              101,
-              47,
-              97,
-              95,
-              98,
-              105,
-              116,
-              95,
-              111,
-              102,
-              95,
-              101,
-              118,
-              101,
-              114,
-              121,
-              116,
-              104,
-              105,
-              110,
-              103,
-              47,
-              112,
-              97,
-              114,
-              97,
-              109,
-              115,
-              47,
-              103,
-              101,
-              116,
-              47,
-              123,
-              115,
-              105,
-              110,
-              103,
-              108,
-              101,
-              95,
-              110,
-              101,
-              115,
-              116,
-              101,
-              100,
-              46,
-              110,
-              97,
-              109,
-              101,
-              125,
+              65, 18, 63, 47, 118, 49, 47, 101, 120, 97, 109, 112, 108, 101, 47,
+              97, 95, 98, 105, 116, 95, 111, 102, 95, 101, 118, 101, 114, 121,
+              116, 104, 105, 110, 103, 47, 112, 97, 114, 97, 109, 115, 47, 103,
+              101, 116, 47, 123, 115, 105, 110, 103, 108, 101, 95, 110, 101,
+              115, 116, 101, 100, 46, 110, 97, 109, 101, 125,
             ]),
           ],
         },
@@ -3988,82 +2980,12 @@ export const ABitOfEverythingServiceDefinition = {
         _unknownFields: {
           578365826: [
             new Uint8Array([
-              75,
-              18,
-              73,
-              47,
-              118,
-              49,
-              47,
-              101,
-              120,
-              97,
-              109,
-              112,
-              108,
-              101,
-              47,
-              97,
-              95,
-              98,
-              105,
-              116,
-              95,
-              111,
-              102,
-              95,
-              101,
-              118,
-              101,
-              114,
-              121,
-              116,
-              104,
-              105,
-              110,
-              103,
-              47,
-              112,
-              97,
-              114,
-              97,
-              109,
-              115,
-              47,
-              103,
-              101,
-              116,
-              47,
-              110,
-              101,
-              115,
-              116,
-              101,
-              100,
-              95,
-              101,
-              110,
-              117,
-              109,
-              47,
-              123,
-              115,
-              105,
-              110,
-              103,
-              108,
-              101,
-              95,
-              110,
-              101,
-              115,
-              116,
-              101,
-              100,
-              46,
-              111,
-              107,
-              125,
+              75, 18, 73, 47, 118, 49, 47, 101, 120, 97, 109, 112, 108, 101, 47,
+              97, 95, 98, 105, 116, 95, 111, 102, 95, 101, 118, 101, 114, 121,
+              116, 104, 105, 110, 103, 47, 112, 97, 114, 97, 109, 115, 47, 103,
+              101, 116, 47, 110, 101, 115, 116, 101, 100, 95, 101, 110, 117,
+              109, 47, 123, 115, 105, 110, 103, 108, 101, 95, 110, 101, 115,
+              116, 101, 100, 46, 111, 107, 125,
             ]),
           ],
         },
@@ -4079,82 +3001,12 @@ export const ABitOfEverythingServiceDefinition = {
         _unknownFields: {
           578365826: [
             new Uint8Array([
-              75,
-              58,
-              13,
-              115,
-              105,
-              110,
-              103,
-              108,
-              101,
-              95,
-              110,
-              101,
-              115,
-              116,
-              101,
-              100,
-              34,
-              58,
-              47,
-              118,
-              49,
-              47,
-              101,
-              120,
-              97,
-              109,
-              112,
-              108,
-              101,
-              47,
-              97,
-              95,
-              98,
-              105,
-              116,
-              95,
-              111,
-              102,
-              95,
-              101,
-              118,
-              101,
-              114,
-              121,
-              116,
-              104,
-              105,
-              110,
-              103,
-              47,
-              112,
-              97,
-              114,
-              97,
-              109,
-              115,
-              47,
-              112,
-              111,
-              115,
-              116,
-              47,
-              123,
-              115,
-              116,
-              114,
-              105,
-              110,
-              103,
-              95,
-              118,
-              97,
-              108,
-              117,
-              101,
-              125,
+              75, 58, 13, 115, 105, 110, 103, 108, 101, 95, 110, 101, 115, 116,
+              101, 100, 34, 58, 47, 118, 49, 47, 101, 120, 97, 109, 112, 108,
+              101, 47, 97, 95, 98, 105, 116, 95, 111, 102, 95, 101, 118, 101,
+              114, 121, 116, 104, 105, 110, 103, 47, 112, 97, 114, 97, 109, 115,
+              47, 112, 111, 115, 116, 47, 123, 115, 116, 114, 105, 110, 103, 95,
+              118, 97, 108, 117, 101, 125,
             ]),
           ],
         },
@@ -4170,80 +3022,16 @@ export const ABitOfEverythingServiceDefinition = {
         _unknownFields: {
           8338: [
             new Uint8Array([
-              24,
-              50,
-              22,
-              97,
-              112,
-              112,
-              108,
-              105,
-              99,
-              97,
-              116,
-              105,
-              111,
-              110,
-              47,
-              120,
-              45,
-              98,
-              97,
-              114,
-              45,
-              109,
-              105,
-              109,
-              101,
+              24, 50, 22, 97, 112, 112, 108, 105, 99, 97, 116, 105, 111, 110,
+              47, 120, 45, 98, 97, 114, 45, 109, 105, 109, 101,
             ]),
           ],
           578365826: [
             new Uint8Array([
-              44,
-              58,
-              1,
-              42,
-              34,
-              39,
-              47,
-              118,
-              50,
-              47,
-              101,
-              120,
-              97,
-              109,
-              112,
-              108,
-              101,
-              47,
-              111,
-              118,
-              101,
-              114,
-              119,
-              114,
-              105,
-              116,
-              101,
-              114,
-              101,
-              113,
-              117,
-              101,
-              115,
-              116,
-              99,
-              111,
-              110,
-              116,
-              101,
-              110,
-              116,
-              116,
-              121,
-              112,
-              101,
+              44, 58, 1, 42, 34, 39, 47, 118, 50, 47, 101, 120, 97, 109, 112,
+              108, 101, 47, 111, 118, 101, 114, 119, 114, 105, 116, 101, 114,
+              101, 113, 117, 101, 115, 116, 99, 111, 110, 116, 101, 110, 116,
+              116, 121, 112, 101,
             ]),
           ],
         },
@@ -4258,53 +3046,17 @@ export const ABitOfEverythingServiceDefinition = {
       options: {
         _unknownFields: {
           8338: [
-            new Uint8Array([18, 58, 16, 97, 112, 112, 108, 105, 99, 97, 116, 105, 111, 110, 47, 116, 101, 120, 116]),
+            new Uint8Array([
+              18, 58, 16, 97, 112, 112, 108, 105, 99, 97, 116, 105, 111, 110,
+              47, 116, 101, 120, 116,
+            ]),
           ],
           578365826: [
             new Uint8Array([
-              42,
-              18,
-              40,
-              47,
-              118,
-              50,
-              47,
-              101,
-              120,
-              97,
-              109,
-              112,
-              108,
-              101,
-              47,
-              111,
-              118,
-              101,
-              114,
-              119,
-              114,
-              105,
-              116,
-              101,
-              114,
-              101,
-              115,
-              112,
-              111,
-              110,
-              115,
-              101,
-              99,
-              111,
-              110,
-              116,
-              101,
-              110,
-              116,
-              116,
-              121,
-              112,
-              101,
+              42, 18, 40, 47, 118, 50, 47, 101, 120, 97, 109, 112, 108, 101, 47,
+              111, 118, 101, 114, 119, 114, 105, 116, 101, 114, 101, 115, 112,
+              111, 110, 115, 101, 99, 111, 110, 116, 101, 110, 116, 116, 121,
+              112, 101,
             ]),
           ],
         },
@@ -4319,7 +3071,10 @@ export const ABitOfEverythingServiceDefinition = {
       options: {
         _unknownFields: {
           578365826: [
-            new Uint8Array([19, 18, 17, 47, 118, 50, 47, 123, 118, 97, 108, 117, 101, 125, 58, 99, 104, 101, 99, 107]),
+            new Uint8Array([
+              19, 18, 17, 47, 118, 50, 47, 123, 118, 97, 108, 117, 101, 125, 58,
+              99, 104, 101, 99, 107,
+            ]),
           ],
         },
       },
@@ -4333,7 +3088,10 @@ export const ABitOfEverythingServiceDefinition = {
       options: {
         _unknownFields: {
           578365826: [
-            new Uint8Array([19, 18, 17, 47, 118, 51, 47, 123, 118, 97, 108, 117, 101, 125, 58, 99, 104, 101, 99, 107]),
+            new Uint8Array([
+              19, 18, 17, 47, 118, 51, 47, 123, 118, 97, 108, 117, 101, 125, 58,
+              99, 104, 101, 99, 107,
+            ]),
           ],
         },
       },
@@ -4348,32 +3106,8 @@ export const ABitOfEverythingServiceDefinition = {
         _unknownFields: {
           578365826: [
             new Uint8Array([
-              25,
-              18,
-              23,
-              47,
-              118,
-              49,
-              47,
-              101,
-              120,
-              97,
-              109,
-              112,
-              108,
-              101,
-              47,
-              99,
-              104,
-              101,
-              99,
-              107,
-              83,
-              116,
-              97,
-              116,
-              117,
-              115,
+              25, 18, 23, 47, 118, 49, 47, 101, 120, 97, 109, 112, 108, 101, 47,
+              99, 104, 101, 99, 107, 83, 116, 97, 116, 117, 115,
             ]),
           ],
         },
@@ -4389,44 +3123,9 @@ export const ABitOfEverythingServiceDefinition = {
         _unknownFields: {
           578365826: [
             new Uint8Array([
-              37,
-              58,
-              12,
-              101,
-              120,
-              97,
-              109,
-              112,
-              108,
-              101,
-              95,
-              101,
-              110,
-              117,
-              109,
-              34,
-              21,
-              47,
-              118,
-              49,
-              47,
-              101,
-              120,
-              97,
-              109,
-              112,
-              108,
-              101,
-              47,
-              111,
-              110,
-              101,
-              111,
-              102,
-              101,
-              110,
-              117,
-              109,
+              37, 58, 12, 101, 120, 97, 109, 112, 108, 101, 95, 101, 110, 117,
+              109, 34, 21, 47, 118, 49, 47, 101, 120, 97, 109, 112, 108, 101,
+              47, 111, 110, 101, 111, 102, 101, 110, 117, 109,
             ]),
           ],
         },
@@ -4442,43 +3141,9 @@ export const ABitOfEverythingServiceDefinition = {
         _unknownFields: {
           578365826: [
             new Uint8Array([
-              36,
-              58,
-              1,
-              42,
-              34,
-              31,
-              47,
-              118,
-              49,
-              47,
-              101,
-              120,
-              97,
-              109,
-              112,
-              108,
-              101,
-              47,
-              114,
-              101,
-              113,
-              117,
-              105,
-              114,
-              101,
-              100,
-              109,
-              101,
-              115,
-              115,
-              97,
-              103,
-              101,
-              116,
-              121,
-              112,
-              101,
+              36, 58, 1, 42, 34, 31, 47, 118, 49, 47, 101, 120, 97, 109, 112,
+              108, 101, 47, 114, 101, 113, 117, 105, 114, 101, 100, 109, 101,
+              115, 115, 97, 103, 101, 116, 121, 112, 101,
             ]),
           ],
         },
@@ -4487,7 +3152,8 @@ export const ABitOfEverythingServiceDefinition = {
   },
 } as const;
 
-export type AnotherServiceWithNoBindingsDefinition = typeof AnotherServiceWithNoBindingsDefinition;
+export type AnotherServiceWithNoBindingsDefinition =
+  typeof AnotherServiceWithNoBindingsDefinition;
 export const AnotherServiceWithNoBindingsDefinition = {
   name: "AnotherServiceWithNoBindings",
   fullName: "proto.examplepb.AnotherServiceWithNoBindings",
@@ -4503,13 +3169,24 @@ export const AnotherServiceWithNoBindingsDefinition = {
   },
 } as const;
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+type Builtin =
+  | Date
+  | Function
+  | Uint8Array
+  | string
+  | number
+  | boolean
+  | undefined;
 
-export type DeepPartial<T> = T extends Builtin ? T
-  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
-  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
-  : Partial<T>;
+export type DeepPartial<T> = T extends Builtin
+  ? T
+  : T extends globalThis.Array<infer U>
+    ? globalThis.Array<DeepPartial<U>>
+    : T extends ReadonlyArray<infer U>
+      ? ReadonlyArray<DeepPartial<U>>
+      : T extends {}
+        ? { [K in keyof T]?: DeepPartial<T[K]> }
+        : Partial<T>;
 
 function toTimestamp(date: Date): Timestamp {
   const seconds = Math.trunc(date.getTime() / 1_000);

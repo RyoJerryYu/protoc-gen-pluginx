@@ -103,9 +103,7 @@ export interface Swagger {
    * Provides metadata about the API. The metadata can be used by the
    * clients if needed.
    */
-  info?:
-    | Info
-    | undefined;
+  info?: Info | undefined;
   /**
    * The host (name or ip) serving the API. This MUST be the host only and does
    * not include the scheme nor sub-paths. It MAY include a port. If the host is
@@ -149,9 +147,7 @@ export interface Swagger {
    */
   responses: { [key: string]: Response };
   /** Security scheme definitions that can be used across the specification. */
-  securityDefinitions?:
-    | SecurityDefinitions
-    | undefined;
+  securityDefinitions?: SecurityDefinitions | undefined;
   /**
    * A declaration of which security schemes are applied for the API as a whole.
    * The list of values describes alternative security schemes that can be used
@@ -165,9 +161,7 @@ export interface Swagger {
    */
   tags: Tag[];
   /** Additional external documentation. */
-  externalDocs?:
-    | ExternalDocumentation
-    | undefined;
+  externalDocs?: ExternalDocumentation | undefined;
   /**
    * Custom properties that start with "x-" such as "x-foo" used to describe
    * extra functionality that is not covered by the standard OpenAPI Specification.
@@ -230,9 +224,7 @@ export interface Operation {
    */
   description: string;
   /** Additional external documentation for this operation. */
-  externalDocs?:
-    | ExternalDocumentation
-    | undefined;
+  externalDocs?: ExternalDocumentation | undefined;
   /**
    * Unique string used to identify the operation. The id MUST be unique among
    * all operations described in the API. Tools and libraries MAY use the
@@ -348,7 +340,9 @@ export enum HeaderParameter_Type {
   UNRECOGNIZED = "UNRECOGNIZED",
 }
 
-export function headerParameter_TypeFromJSON(object: any): HeaderParameter_Type {
+export function headerParameter_TypeFromJSON(
+  object: any,
+): HeaderParameter_Type {
   switch (object) {
     case 0:
     case "UNKNOWN":
@@ -372,7 +366,9 @@ export function headerParameter_TypeFromJSON(object: any): HeaderParameter_Type 
   }
 }
 
-export function headerParameter_TypeToNumber(object: HeaderParameter_Type): number {
+export function headerParameter_TypeToNumber(
+  object: HeaderParameter_Type,
+): number {
   switch (object) {
     case HeaderParameter_Type.UNKNOWN:
       return 0;
@@ -427,9 +423,7 @@ export interface Response {
    * `Schema` optionally defines the structure of the response.
    * If `Schema` is not provided, it means there is no content to the response.
    */
-  schema?:
-    | Schema
-    | undefined;
+  schema?: Schema | undefined;
   /**
    * `Headers` A list of headers that are sent with the response.
    * `Header` name is expected to be a string in the canonical format of the MIME header key
@@ -500,13 +494,9 @@ export interface Info {
   /** The Terms of Service for the API. */
   termsOfService: string;
   /** The contact information for the exposed API. */
-  contact?:
-    | Contact
-    | undefined;
+  contact?: Contact | undefined;
   /** The license information for the exposed API. */
-  license?:
-    | License
-    | undefined;
+  license?: License | undefined;
   /**
    * Provides the version of the application API (not to be confused
    * with the specification version).
@@ -622,9 +612,7 @@ export interface ExternalDocumentation {
  * See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#schemaObject
  */
 export interface Schema {
-  jsonSchema?:
-    | JSONSchema
-    | undefined;
+  jsonSchema?: JSONSchema | undefined;
   /**
    * Adds support for polymorphism. The discriminator is the schema property
    * name that is used to differentiate between other schema that inherit this
@@ -642,9 +630,7 @@ export interface Schema {
    */
   readOnly: boolean;
   /** Additional external documentation for this schema. */
-  externalDocs?:
-    | ExternalDocumentation
-    | undefined;
+  externalDocs?: ExternalDocumentation | undefined;
   /**
    * A free-form property to include an example of an instance for this schema in JSON.
    * This is copied verbatim to the output.
@@ -733,9 +719,7 @@ export interface JSONSchema {
   /** Items in `enum` must be unique https://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-5.5.1 */
   enum: string[];
   /** Additional field level properties used when generating the OpenAPI v2 file. */
-  fieldConfiguration?:
-    | JSONSchema_FieldConfiguration
-    | undefined;
+  fieldConfiguration?: JSONSchema_FieldConfiguration | undefined;
   /**
    * Custom properties that start with "x-" such as "x-foo" used to describe
    * extra functionality that is not covered by the standard OpenAPI Specification.
@@ -756,7 +740,9 @@ export enum JSONSchema_JSONSchemaSimpleTypes {
   UNRECOGNIZED = "UNRECOGNIZED",
 }
 
-export function jSONSchema_JSONSchemaSimpleTypesFromJSON(object: any): JSONSchema_JSONSchemaSimpleTypes {
+export function jSONSchema_JSONSchemaSimpleTypesFromJSON(
+  object: any,
+): JSONSchema_JSONSchemaSimpleTypes {
   switch (object) {
     case 0:
     case "UNKNOWN":
@@ -789,7 +775,9 @@ export function jSONSchema_JSONSchemaSimpleTypesFromJSON(object: any): JSONSchem
   }
 }
 
-export function jSONSchema_JSONSchemaSimpleTypesToNumber(object: JSONSchema_JSONSchemaSimpleTypes): number {
+export function jSONSchema_JSONSchemaSimpleTypesToNumber(
+  object: JSONSchema_JSONSchemaSimpleTypes,
+): number {
   switch (object) {
     case JSONSchema_JSONSchemaSimpleTypes.UNKNOWN:
       return 0;
@@ -850,9 +838,7 @@ export interface Tag {
    */
   description: string;
   /** Additional external documentation for this tag. */
-  externalDocs?:
-    | ExternalDocumentation
-    | undefined;
+  externalDocs?: ExternalDocumentation | undefined;
   /**
    * Custom properties that start with "x-" such as "x-foo" used to describe
    * extra functionality that is not covered by the standard OpenAPI Specification.
@@ -941,9 +927,7 @@ export interface SecurityScheme {
    * The available scopes for the OAuth2 security scheme.
    * Valid for oauth2.
    */
-  scopes?:
-    | Scopes
-    | undefined;
+  scopes?: Scopes | undefined;
   /**
    * Custom properties that start with "x-" such as "x-foo" used to describe
    * extra functionality that is not covered by the standard OpenAPI Specification.
@@ -985,7 +969,9 @@ export function securityScheme_TypeFromJSON(object: any): SecurityScheme_Type {
   }
 }
 
-export function securityScheme_TypeToNumber(object: SecurityScheme_Type): number {
+export function securityScheme_TypeToNumber(
+  object: SecurityScheme_Type,
+): number {
   switch (object) {
     case SecurityScheme_Type.TYPE_INVALID:
       return 0;
@@ -1078,7 +1064,9 @@ export function securityScheme_FlowFromJSON(object: any): SecurityScheme_Flow {
   }
 }
 
-export function securityScheme_FlowToNumber(object: SecurityScheme_Flow): number {
+export function securityScheme_FlowToNumber(
+  object: SecurityScheme_Flow,
+): number {
   switch (object) {
     case SecurityScheme_Flow.FLOW_INVALID:
       return 0;
@@ -1121,7 +1109,9 @@ export interface SecurityRequirement {
    * then the value is a list of scope names required for the execution.
    * For other security scheme types, the array MUST be empty.
    */
-  securityRequirement: { [key: string]: SecurityRequirement_SecurityRequirementValue };
+  securityRequirement: {
+    [key: string]: SecurityRequirement_SecurityRequirementValue;
+  };
 }
 
 /**
@@ -1177,7 +1167,10 @@ function createBaseSwagger(): Swagger {
 }
 
 export const Swagger: MessageFns<Swagger> = {
-  encode(message: Swagger, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: Swagger,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.swagger !== "") {
       writer.uint32(10).string(message.swagger);
     }
@@ -1202,10 +1195,16 @@ export const Swagger: MessageFns<Swagger> = {
       writer.uint32(58).string(v!);
     }
     Object.entries(message.responses).forEach(([key, value]) => {
-      Swagger_ResponsesEntry.encode({ key: key as any, value }, writer.uint32(82).fork()).join();
+      Swagger_ResponsesEntry.encode(
+        { key: key as any, value },
+        writer.uint32(82).fork(),
+      ).join();
     });
     if (message.securityDefinitions !== undefined) {
-      SecurityDefinitions.encode(message.securityDefinitions, writer.uint32(90).fork()).join();
+      SecurityDefinitions.encode(
+        message.securityDefinitions,
+        writer.uint32(90).fork(),
+      ).join();
     }
     for (const v of message.security) {
       SecurityRequirement.encode(v!, writer.uint32(98).fork()).join();
@@ -1214,18 +1213,25 @@ export const Swagger: MessageFns<Swagger> = {
       Tag.encode(v!, writer.uint32(106).fork()).join();
     }
     if (message.externalDocs !== undefined) {
-      ExternalDocumentation.encode(message.externalDocs, writer.uint32(114).fork()).join();
+      ExternalDocumentation.encode(
+        message.externalDocs,
+        writer.uint32(114).fork(),
+      ).join();
     }
     Object.entries(message.extensions).forEach(([key, value]) => {
       if (value !== undefined) {
-        Swagger_ExtensionsEntry.encode({ key: key as any, value }, writer.uint32(122).fork()).join();
+        Swagger_ExtensionsEntry.encode(
+          { key: key as any, value },
+          writer.uint32(122).fork(),
+        ).join();
       }
     });
     return writer;
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): Swagger {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSwagger();
     while (reader.pos < end) {
@@ -1302,7 +1308,10 @@ export const Swagger: MessageFns<Swagger> = {
             break;
           }
 
-          const entry10 = Swagger_ResponsesEntry.decode(reader, reader.uint32());
+          const entry10 = Swagger_ResponsesEntry.decode(
+            reader,
+            reader.uint32(),
+          );
           if (entry10.value !== undefined) {
             message.responses[entry10.key] = entry10.value;
           }
@@ -1313,7 +1322,10 @@ export const Swagger: MessageFns<Swagger> = {
             break;
           }
 
-          message.securityDefinitions = SecurityDefinitions.decode(reader, reader.uint32());
+          message.securityDefinitions = SecurityDefinitions.decode(
+            reader,
+            reader.uint32(),
+          );
           continue;
         }
         case 12: {
@@ -1321,7 +1333,9 @@ export const Swagger: MessageFns<Swagger> = {
             break;
           }
 
-          message.security.push(SecurityRequirement.decode(reader, reader.uint32()));
+          message.security.push(
+            SecurityRequirement.decode(reader, reader.uint32()),
+          );
           continue;
         }
         case 13: {
@@ -1337,7 +1351,10 @@ export const Swagger: MessageFns<Swagger> = {
             break;
           }
 
-          message.externalDocs = ExternalDocumentation.decode(reader, reader.uint32());
+          message.externalDocs = ExternalDocumentation.decode(
+            reader,
+            reader.uint32(),
+          );
           continue;
         }
         case 15: {
@@ -1345,7 +1362,10 @@ export const Swagger: MessageFns<Swagger> = {
             break;
           }
 
-          const entry15 = Swagger_ExtensionsEntry.decode(reader, reader.uint32());
+          const entry15 = Swagger_ExtensionsEntry.decode(
+            reader,
+            reader.uint32(),
+          );
           if (entry15.value !== undefined) {
             message.extensions[entry15.key] = entry15.value;
           }
@@ -1366,38 +1386,43 @@ export const Swagger: MessageFns<Swagger> = {
   fromPartial(object: DeepPartial<Swagger>): Swagger {
     const message = createBaseSwagger();
     message.swagger = object.swagger ?? "";
-    message.info = (object.info !== undefined && object.info !== null) ? Info.fromPartial(object.info) : undefined;
+    message.info =
+      object.info !== undefined && object.info !== null
+        ? Info.fromPartial(object.info)
+        : undefined;
     message.host = object.host ?? "";
     message.basePath = object.basePath ?? "";
     message.schemes = object.schemes?.map((e) => e) || [];
     message.consumes = object.consumes?.map((e) => e) || [];
     message.produces = object.produces?.map((e) => e) || [];
-    message.responses = Object.entries(object.responses ?? {}).reduce<{ [key: string]: Response }>(
-      (acc, [key, value]) => {
-        if (value !== undefined) {
-          acc[key] = Response.fromPartial(value);
-        }
-        return acc;
-      },
-      {},
-    );
-    message.securityDefinitions = (object.securityDefinitions !== undefined && object.securityDefinitions !== null)
-      ? SecurityDefinitions.fromPartial(object.securityDefinitions)
-      : undefined;
-    message.security = object.security?.map((e) => SecurityRequirement.fromPartial(e)) || [];
+    message.responses = Object.entries(object.responses ?? {}).reduce<{
+      [key: string]: Response;
+    }>((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = Response.fromPartial(value);
+      }
+      return acc;
+    }, {});
+    message.securityDefinitions =
+      object.securityDefinitions !== undefined &&
+      object.securityDefinitions !== null
+        ? SecurityDefinitions.fromPartial(object.securityDefinitions)
+        : undefined;
+    message.security =
+      object.security?.map((e) => SecurityRequirement.fromPartial(e)) || [];
     message.tags = object.tags?.map((e) => Tag.fromPartial(e)) || [];
-    message.externalDocs = (object.externalDocs !== undefined && object.externalDocs !== null)
-      ? ExternalDocumentation.fromPartial(object.externalDocs)
-      : undefined;
-    message.extensions = Object.entries(object.extensions ?? {}).reduce<{ [key: string]: any | undefined }>(
-      (acc, [key, value]) => {
-        if (value !== undefined) {
-          acc[key] = value;
-        }
-        return acc;
-      },
-      {},
-    );
+    message.externalDocs =
+      object.externalDocs !== undefined && object.externalDocs !== null
+        ? ExternalDocumentation.fromPartial(object.externalDocs)
+        : undefined;
+    message.extensions = Object.entries(object.extensions ?? {}).reduce<{
+      [key: string]: any | undefined;
+    }>((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = value;
+      }
+      return acc;
+    }, {});
     return message;
   },
 };
@@ -1407,7 +1432,10 @@ function createBaseSwagger_ResponsesEntry(): Swagger_ResponsesEntry {
 }
 
 export const Swagger_ResponsesEntry: MessageFns<Swagger_ResponsesEntry> = {
-  encode(message: Swagger_ResponsesEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: Swagger_ResponsesEntry,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -1417,8 +1445,12 @@ export const Swagger_ResponsesEntry: MessageFns<Swagger_ResponsesEntry> = {
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): Swagger_ResponsesEntry {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+  decode(
+    input: BinaryReader | Uint8Array,
+    length?: number,
+  ): Swagger_ResponsesEntry {
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSwagger_ResponsesEntry();
     while (reader.pos < end) {
@@ -1452,12 +1484,15 @@ export const Swagger_ResponsesEntry: MessageFns<Swagger_ResponsesEntry> = {
   create(base?: DeepPartial<Swagger_ResponsesEntry>): Swagger_ResponsesEntry {
     return Swagger_ResponsesEntry.fromPartial(base ?? {});
   },
-  fromPartial(object: DeepPartial<Swagger_ResponsesEntry>): Swagger_ResponsesEntry {
+  fromPartial(
+    object: DeepPartial<Swagger_ResponsesEntry>,
+  ): Swagger_ResponsesEntry {
     const message = createBaseSwagger_ResponsesEntry();
     message.key = object.key ?? "";
-    message.value = (object.value !== undefined && object.value !== null)
-      ? Response.fromPartial(object.value)
-      : undefined;
+    message.value =
+      object.value !== undefined && object.value !== null
+        ? Response.fromPartial(object.value)
+        : undefined;
     return message;
   },
 };
@@ -1467,7 +1502,10 @@ function createBaseSwagger_ExtensionsEntry(): Swagger_ExtensionsEntry {
 }
 
 export const Swagger_ExtensionsEntry: MessageFns<Swagger_ExtensionsEntry> = {
-  encode(message: Swagger_ExtensionsEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: Swagger_ExtensionsEntry,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -1477,8 +1515,12 @@ export const Swagger_ExtensionsEntry: MessageFns<Swagger_ExtensionsEntry> = {
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): Swagger_ExtensionsEntry {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+  decode(
+    input: BinaryReader | Uint8Array,
+    length?: number,
+  ): Swagger_ExtensionsEntry {
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSwagger_ExtensionsEntry();
     while (reader.pos < end) {
@@ -1512,7 +1554,9 @@ export const Swagger_ExtensionsEntry: MessageFns<Swagger_ExtensionsEntry> = {
   create(base?: DeepPartial<Swagger_ExtensionsEntry>): Swagger_ExtensionsEntry {
     return Swagger_ExtensionsEntry.fromPartial(base ?? {});
   },
-  fromPartial(object: DeepPartial<Swagger_ExtensionsEntry>): Swagger_ExtensionsEntry {
+  fromPartial(
+    object: DeepPartial<Swagger_ExtensionsEntry>,
+  ): Swagger_ExtensionsEntry {
     const message = createBaseSwagger_ExtensionsEntry();
     message.key = object.key ?? "";
     message.value = object.value ?? undefined;
@@ -1539,7 +1583,10 @@ function createBaseOperation(): Operation {
 }
 
 export const Operation: MessageFns<Operation> = {
-  encode(message: Operation, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: Operation,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     for (const v of message.tags) {
       writer.uint32(10).string(v!);
     }
@@ -1550,7 +1597,10 @@ export const Operation: MessageFns<Operation> = {
       writer.uint32(26).string(message.description);
     }
     if (message.externalDocs !== undefined) {
-      ExternalDocumentation.encode(message.externalDocs, writer.uint32(34).fork()).join();
+      ExternalDocumentation.encode(
+        message.externalDocs,
+        writer.uint32(34).fork(),
+      ).join();
     }
     if (message.operationId !== "") {
       writer.uint32(42).string(message.operationId);
@@ -1562,7 +1612,10 @@ export const Operation: MessageFns<Operation> = {
       writer.uint32(58).string(v!);
     }
     Object.entries(message.responses).forEach(([key, value]) => {
-      Operation_ResponsesEntry.encode({ key: key as any, value }, writer.uint32(74).fork()).join();
+      Operation_ResponsesEntry.encode(
+        { key: key as any, value },
+        writer.uint32(74).fork(),
+      ).join();
     });
     writer.uint32(82).fork();
     for (const v of message.schemes) {
@@ -1577,7 +1630,10 @@ export const Operation: MessageFns<Operation> = {
     }
     Object.entries(message.extensions).forEach(([key, value]) => {
       if (value !== undefined) {
-        Operation_ExtensionsEntry.encode({ key: key as any, value }, writer.uint32(106).fork()).join();
+        Operation_ExtensionsEntry.encode(
+          { key: key as any, value },
+          writer.uint32(106).fork(),
+        ).join();
       }
     });
     if (message.parameters !== undefined) {
@@ -1587,7 +1643,8 @@ export const Operation: MessageFns<Operation> = {
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): Operation {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseOperation();
     while (reader.pos < end) {
@@ -1622,7 +1679,10 @@ export const Operation: MessageFns<Operation> = {
             break;
           }
 
-          message.externalDocs = ExternalDocumentation.decode(reader, reader.uint32());
+          message.externalDocs = ExternalDocumentation.decode(
+            reader,
+            reader.uint32(),
+          );
           continue;
         }
         case 5: {
@@ -1654,7 +1714,10 @@ export const Operation: MessageFns<Operation> = {
             break;
           }
 
-          const entry9 = Operation_ResponsesEntry.decode(reader, reader.uint32());
+          const entry9 = Operation_ResponsesEntry.decode(
+            reader,
+            reader.uint32(),
+          );
           if (entry9.value !== undefined) {
             message.responses[entry9.key] = entry9.value;
           }
@@ -1691,7 +1754,9 @@ export const Operation: MessageFns<Operation> = {
             break;
           }
 
-          message.security.push(SecurityRequirement.decode(reader, reader.uint32()));
+          message.security.push(
+            SecurityRequirement.decode(reader, reader.uint32()),
+          );
           continue;
         }
         case 13: {
@@ -1699,7 +1764,10 @@ export const Operation: MessageFns<Operation> = {
             break;
           }
 
-          const entry13 = Operation_ExtensionsEntry.decode(reader, reader.uint32());
+          const entry13 = Operation_ExtensionsEntry.decode(
+            reader,
+            reader.uint32(),
+          );
           if (entry13.value !== undefined) {
             message.extensions[entry13.key] = entry13.value;
           }
@@ -1730,36 +1798,37 @@ export const Operation: MessageFns<Operation> = {
     message.tags = object.tags?.map((e) => e) || [];
     message.summary = object.summary ?? "";
     message.description = object.description ?? "";
-    message.externalDocs = (object.externalDocs !== undefined && object.externalDocs !== null)
-      ? ExternalDocumentation.fromPartial(object.externalDocs)
-      : undefined;
+    message.externalDocs =
+      object.externalDocs !== undefined && object.externalDocs !== null
+        ? ExternalDocumentation.fromPartial(object.externalDocs)
+        : undefined;
     message.operationId = object.operationId ?? "";
     message.consumes = object.consumes?.map((e) => e) || [];
     message.produces = object.produces?.map((e) => e) || [];
-    message.responses = Object.entries(object.responses ?? {}).reduce<{ [key: string]: Response }>(
-      (acc, [key, value]) => {
-        if (value !== undefined) {
-          acc[key] = Response.fromPartial(value);
-        }
-        return acc;
-      },
-      {},
-    );
+    message.responses = Object.entries(object.responses ?? {}).reduce<{
+      [key: string]: Response;
+    }>((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = Response.fromPartial(value);
+      }
+      return acc;
+    }, {});
     message.schemes = object.schemes?.map((e) => e) || [];
     message.deprecated = object.deprecated ?? false;
-    message.security = object.security?.map((e) => SecurityRequirement.fromPartial(e)) || [];
-    message.extensions = Object.entries(object.extensions ?? {}).reduce<{ [key: string]: any | undefined }>(
-      (acc, [key, value]) => {
-        if (value !== undefined) {
-          acc[key] = value;
-        }
-        return acc;
-      },
-      {},
-    );
-    message.parameters = (object.parameters !== undefined && object.parameters !== null)
-      ? Parameters.fromPartial(object.parameters)
-      : undefined;
+    message.security =
+      object.security?.map((e) => SecurityRequirement.fromPartial(e)) || [];
+    message.extensions = Object.entries(object.extensions ?? {}).reduce<{
+      [key: string]: any | undefined;
+    }>((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = value;
+      }
+      return acc;
+    }, {});
+    message.parameters =
+      object.parameters !== undefined && object.parameters !== null
+        ? Parameters.fromPartial(object.parameters)
+        : undefined;
     return message;
   },
 };
@@ -1769,7 +1838,10 @@ function createBaseOperation_ResponsesEntry(): Operation_ResponsesEntry {
 }
 
 export const Operation_ResponsesEntry: MessageFns<Operation_ResponsesEntry> = {
-  encode(message: Operation_ResponsesEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: Operation_ResponsesEntry,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -1779,8 +1851,12 @@ export const Operation_ResponsesEntry: MessageFns<Operation_ResponsesEntry> = {
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): Operation_ResponsesEntry {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+  decode(
+    input: BinaryReader | Uint8Array,
+    length?: number,
+  ): Operation_ResponsesEntry {
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseOperation_ResponsesEntry();
     while (reader.pos < end) {
@@ -1811,15 +1887,20 @@ export const Operation_ResponsesEntry: MessageFns<Operation_ResponsesEntry> = {
     return message;
   },
 
-  create(base?: DeepPartial<Operation_ResponsesEntry>): Operation_ResponsesEntry {
+  create(
+    base?: DeepPartial<Operation_ResponsesEntry>,
+  ): Operation_ResponsesEntry {
     return Operation_ResponsesEntry.fromPartial(base ?? {});
   },
-  fromPartial(object: DeepPartial<Operation_ResponsesEntry>): Operation_ResponsesEntry {
+  fromPartial(
+    object: DeepPartial<Operation_ResponsesEntry>,
+  ): Operation_ResponsesEntry {
     const message = createBaseOperation_ResponsesEntry();
     message.key = object.key ?? "";
-    message.value = (object.value !== undefined && object.value !== null)
-      ? Response.fromPartial(object.value)
-      : undefined;
+    message.value =
+      object.value !== undefined && object.value !== null
+        ? Response.fromPartial(object.value)
+        : undefined;
     return message;
   },
 };
@@ -1828,66 +1909,84 @@ function createBaseOperation_ExtensionsEntry(): Operation_ExtensionsEntry {
   return { key: "", value: undefined };
 }
 
-export const Operation_ExtensionsEntry: MessageFns<Operation_ExtensionsEntry> = {
-  encode(message: Operation_ExtensionsEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.key !== "") {
-      writer.uint32(10).string(message.key);
-    }
-    if (message.value !== undefined) {
-      Value.encode(Value.wrap(message.value), writer.uint32(18).fork()).join();
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): Operation_ExtensionsEntry {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseOperation_ExtensionsEntry();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.key = reader.string();
-          continue;
-        }
-        case 2: {
-          if (tag !== 18) {
-            break;
-          }
-
-          message.value = Value.unwrap(Value.decode(reader, reader.uint32()));
-          continue;
-        }
+export const Operation_ExtensionsEntry: MessageFns<Operation_ExtensionsEntry> =
+  {
+    encode(
+      message: Operation_ExtensionsEntry,
+      writer: BinaryWriter = new BinaryWriter(),
+    ): BinaryWriter {
+      if (message.key !== "") {
+        writer.uint32(10).string(message.key);
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
+      if (message.value !== undefined) {
+        Value.encode(
+          Value.wrap(message.value),
+          writer.uint32(18).fork(),
+        ).join();
       }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
+      return writer;
+    },
 
-  create(base?: DeepPartial<Operation_ExtensionsEntry>): Operation_ExtensionsEntry {
-    return Operation_ExtensionsEntry.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<Operation_ExtensionsEntry>): Operation_ExtensionsEntry {
-    const message = createBaseOperation_ExtensionsEntry();
-    message.key = object.key ?? "";
-    message.value = object.value ?? undefined;
-    return message;
-  },
-};
+    decode(
+      input: BinaryReader | Uint8Array,
+      length?: number,
+    ): Operation_ExtensionsEntry {
+      const reader =
+        input instanceof BinaryReader ? input : new BinaryReader(input);
+      let end = length === undefined ? reader.len : reader.pos + length;
+      const message = createBaseOperation_ExtensionsEntry();
+      while (reader.pos < end) {
+        const tag = reader.uint32();
+        switch (tag >>> 3) {
+          case 1: {
+            if (tag !== 10) {
+              break;
+            }
+
+            message.key = reader.string();
+            continue;
+          }
+          case 2: {
+            if (tag !== 18) {
+              break;
+            }
+
+            message.value = Value.unwrap(Value.decode(reader, reader.uint32()));
+            continue;
+          }
+        }
+        if ((tag & 7) === 4 || tag === 0) {
+          break;
+        }
+        reader.skip(tag & 7);
+      }
+      return message;
+    },
+
+    create(
+      base?: DeepPartial<Operation_ExtensionsEntry>,
+    ): Operation_ExtensionsEntry {
+      return Operation_ExtensionsEntry.fromPartial(base ?? {});
+    },
+    fromPartial(
+      object: DeepPartial<Operation_ExtensionsEntry>,
+    ): Operation_ExtensionsEntry {
+      const message = createBaseOperation_ExtensionsEntry();
+      message.key = object.key ?? "";
+      message.value = object.value ?? undefined;
+      return message;
+    },
+  };
 
 function createBaseParameters(): Parameters {
   return { headers: [] };
 }
 
 export const Parameters: MessageFns<Parameters> = {
-  encode(message: Parameters, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: Parameters,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     for (const v of message.headers) {
       HeaderParameter.encode(v!, writer.uint32(10).fork()).join();
     }
@@ -1895,7 +1994,8 @@ export const Parameters: MessageFns<Parameters> = {
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): Parameters {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseParameters();
     while (reader.pos < end) {
@@ -1923,17 +2023,27 @@ export const Parameters: MessageFns<Parameters> = {
   },
   fromPartial(object: DeepPartial<Parameters>): Parameters {
     const message = createBaseParameters();
-    message.headers = object.headers?.map((e) => HeaderParameter.fromPartial(e)) || [];
+    message.headers =
+      object.headers?.map((e) => HeaderParameter.fromPartial(e)) || [];
     return message;
   },
 };
 
 function createBaseHeaderParameter(): HeaderParameter {
-  return { name: "", description: "", type: HeaderParameter_Type.UNKNOWN, format: "", required: false };
+  return {
+    name: "",
+    description: "",
+    type: HeaderParameter_Type.UNKNOWN,
+    format: "",
+    required: false,
+  };
 }
 
 export const HeaderParameter: MessageFns<HeaderParameter> = {
-  encode(message: HeaderParameter, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: HeaderParameter,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
@@ -1953,7 +2063,8 @@ export const HeaderParameter: MessageFns<HeaderParameter> = {
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): HeaderParameter {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseHeaderParameter();
     while (reader.pos < end) {
@@ -2027,7 +2138,10 @@ function createBaseHeader(): Header {
 }
 
 export const Header: MessageFns<Header> = {
-  encode(message: Header, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: Header,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.description !== "") {
       writer.uint32(10).string(message.description);
     }
@@ -2047,7 +2161,8 @@ export const Header: MessageFns<Header> = {
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): Header {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseHeader();
     while (reader.pos < end) {
@@ -2117,11 +2232,20 @@ export const Header: MessageFns<Header> = {
 };
 
 function createBaseResponse(): Response {
-  return { description: "", schema: undefined, headers: {}, examples: {}, extensions: {} };
+  return {
+    description: "",
+    schema: undefined,
+    headers: {},
+    examples: {},
+    extensions: {},
+  };
 }
 
 export const Response: MessageFns<Response> = {
-  encode(message: Response, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: Response,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.description !== "") {
       writer.uint32(10).string(message.description);
     }
@@ -2129,21 +2253,31 @@ export const Response: MessageFns<Response> = {
       Schema.encode(message.schema, writer.uint32(18).fork()).join();
     }
     Object.entries(message.headers).forEach(([key, value]) => {
-      Response_HeadersEntry.encode({ key: key as any, value }, writer.uint32(26).fork()).join();
+      Response_HeadersEntry.encode(
+        { key: key as any, value },
+        writer.uint32(26).fork(),
+      ).join();
     });
     Object.entries(message.examples).forEach(([key, value]) => {
-      Response_ExamplesEntry.encode({ key: key as any, value }, writer.uint32(34).fork()).join();
+      Response_ExamplesEntry.encode(
+        { key: key as any, value },
+        writer.uint32(34).fork(),
+      ).join();
     });
     Object.entries(message.extensions).forEach(([key, value]) => {
       if (value !== undefined) {
-        Response_ExtensionsEntry.encode({ key: key as any, value }, writer.uint32(42).fork()).join();
+        Response_ExtensionsEntry.encode(
+          { key: key as any, value },
+          writer.uint32(42).fork(),
+        ).join();
       }
     });
     return writer;
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): Response {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseResponse();
     while (reader.pos < end) {
@@ -2192,7 +2326,10 @@ export const Response: MessageFns<Response> = {
             break;
           }
 
-          const entry5 = Response_ExtensionsEntry.decode(reader, reader.uint32());
+          const entry5 = Response_ExtensionsEntry.decode(
+            reader,
+            reader.uint32(),
+          );
           if (entry5.value !== undefined) {
             message.extensions[entry5.key] = entry5.value;
           }
@@ -2213,30 +2350,34 @@ export const Response: MessageFns<Response> = {
   fromPartial(object: DeepPartial<Response>): Response {
     const message = createBaseResponse();
     message.description = object.description ?? "";
-    message.schema = (object.schema !== undefined && object.schema !== null)
-      ? Schema.fromPartial(object.schema)
-      : undefined;
-    message.headers = Object.entries(object.headers ?? {}).reduce<{ [key: string]: Header }>((acc, [key, value]) => {
+    message.schema =
+      object.schema !== undefined && object.schema !== null
+        ? Schema.fromPartial(object.schema)
+        : undefined;
+    message.headers = Object.entries(object.headers ?? {}).reduce<{
+      [key: string]: Header;
+    }>((acc, [key, value]) => {
       if (value !== undefined) {
         acc[key] = Header.fromPartial(value);
       }
       return acc;
     }, {});
-    message.examples = Object.entries(object.examples ?? {}).reduce<{ [key: string]: string }>((acc, [key, value]) => {
+    message.examples = Object.entries(object.examples ?? {}).reduce<{
+      [key: string]: string;
+    }>((acc, [key, value]) => {
       if (value !== undefined) {
         acc[key] = globalThis.String(value);
       }
       return acc;
     }, {});
-    message.extensions = Object.entries(object.extensions ?? {}).reduce<{ [key: string]: any | undefined }>(
-      (acc, [key, value]) => {
-        if (value !== undefined) {
-          acc[key] = value;
-        }
-        return acc;
-      },
-      {},
-    );
+    message.extensions = Object.entries(object.extensions ?? {}).reduce<{
+      [key: string]: any | undefined;
+    }>((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = value;
+      }
+      return acc;
+    }, {});
     return message;
   },
 };
@@ -2246,7 +2387,10 @@ function createBaseResponse_HeadersEntry(): Response_HeadersEntry {
 }
 
 export const Response_HeadersEntry: MessageFns<Response_HeadersEntry> = {
-  encode(message: Response_HeadersEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: Response_HeadersEntry,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -2256,8 +2400,12 @@ export const Response_HeadersEntry: MessageFns<Response_HeadersEntry> = {
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): Response_HeadersEntry {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+  decode(
+    input: BinaryReader | Uint8Array,
+    length?: number,
+  ): Response_HeadersEntry {
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseResponse_HeadersEntry();
     while (reader.pos < end) {
@@ -2291,12 +2439,15 @@ export const Response_HeadersEntry: MessageFns<Response_HeadersEntry> = {
   create(base?: DeepPartial<Response_HeadersEntry>): Response_HeadersEntry {
     return Response_HeadersEntry.fromPartial(base ?? {});
   },
-  fromPartial(object: DeepPartial<Response_HeadersEntry>): Response_HeadersEntry {
+  fromPartial(
+    object: DeepPartial<Response_HeadersEntry>,
+  ): Response_HeadersEntry {
     const message = createBaseResponse_HeadersEntry();
     message.key = object.key ?? "";
-    message.value = (object.value !== undefined && object.value !== null)
-      ? Header.fromPartial(object.value)
-      : undefined;
+    message.value =
+      object.value !== undefined && object.value !== null
+        ? Header.fromPartial(object.value)
+        : undefined;
     return message;
   },
 };
@@ -2306,7 +2457,10 @@ function createBaseResponse_ExamplesEntry(): Response_ExamplesEntry {
 }
 
 export const Response_ExamplesEntry: MessageFns<Response_ExamplesEntry> = {
-  encode(message: Response_ExamplesEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: Response_ExamplesEntry,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -2316,8 +2470,12 @@ export const Response_ExamplesEntry: MessageFns<Response_ExamplesEntry> = {
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): Response_ExamplesEntry {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+  decode(
+    input: BinaryReader | Uint8Array,
+    length?: number,
+  ): Response_ExamplesEntry {
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseResponse_ExamplesEntry();
     while (reader.pos < end) {
@@ -2351,7 +2509,9 @@ export const Response_ExamplesEntry: MessageFns<Response_ExamplesEntry> = {
   create(base?: DeepPartial<Response_ExamplesEntry>): Response_ExamplesEntry {
     return Response_ExamplesEntry.fromPartial(base ?? {});
   },
-  fromPartial(object: DeepPartial<Response_ExamplesEntry>): Response_ExamplesEntry {
+  fromPartial(
+    object: DeepPartial<Response_ExamplesEntry>,
+  ): Response_ExamplesEntry {
     const message = createBaseResponse_ExamplesEntry();
     message.key = object.key ?? "";
     message.value = object.value ?? "";
@@ -2364,7 +2524,10 @@ function createBaseResponse_ExtensionsEntry(): Response_ExtensionsEntry {
 }
 
 export const Response_ExtensionsEntry: MessageFns<Response_ExtensionsEntry> = {
-  encode(message: Response_ExtensionsEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: Response_ExtensionsEntry,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -2374,8 +2537,12 @@ export const Response_ExtensionsEntry: MessageFns<Response_ExtensionsEntry> = {
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): Response_ExtensionsEntry {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+  decode(
+    input: BinaryReader | Uint8Array,
+    length?: number,
+  ): Response_ExtensionsEntry {
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseResponse_ExtensionsEntry();
     while (reader.pos < end) {
@@ -2406,10 +2573,14 @@ export const Response_ExtensionsEntry: MessageFns<Response_ExtensionsEntry> = {
     return message;
   },
 
-  create(base?: DeepPartial<Response_ExtensionsEntry>): Response_ExtensionsEntry {
+  create(
+    base?: DeepPartial<Response_ExtensionsEntry>,
+  ): Response_ExtensionsEntry {
     return Response_ExtensionsEntry.fromPartial(base ?? {});
   },
-  fromPartial(object: DeepPartial<Response_ExtensionsEntry>): Response_ExtensionsEntry {
+  fromPartial(
+    object: DeepPartial<Response_ExtensionsEntry>,
+  ): Response_ExtensionsEntry {
     const message = createBaseResponse_ExtensionsEntry();
     message.key = object.key ?? "";
     message.value = object.value ?? undefined;
@@ -2430,7 +2601,10 @@ function createBaseInfo(): Info {
 }
 
 export const Info: MessageFns<Info> = {
-  encode(message: Info, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: Info,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.title !== "") {
       writer.uint32(10).string(message.title);
     }
@@ -2451,14 +2625,18 @@ export const Info: MessageFns<Info> = {
     }
     Object.entries(message.extensions).forEach(([key, value]) => {
       if (value !== undefined) {
-        Info_ExtensionsEntry.encode({ key: key as any, value }, writer.uint32(58).fork()).join();
+        Info_ExtensionsEntry.encode(
+          { key: key as any, value },
+          writer.uint32(58).fork(),
+        ).join();
       }
     });
     return writer;
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): Info {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseInfo();
     while (reader.pos < end) {
@@ -2540,22 +2718,23 @@ export const Info: MessageFns<Info> = {
     message.title = object.title ?? "";
     message.description = object.description ?? "";
     message.termsOfService = object.termsOfService ?? "";
-    message.contact = (object.contact !== undefined && object.contact !== null)
-      ? Contact.fromPartial(object.contact)
-      : undefined;
-    message.license = (object.license !== undefined && object.license !== null)
-      ? License.fromPartial(object.license)
-      : undefined;
+    message.contact =
+      object.contact !== undefined && object.contact !== null
+        ? Contact.fromPartial(object.contact)
+        : undefined;
+    message.license =
+      object.license !== undefined && object.license !== null
+        ? License.fromPartial(object.license)
+        : undefined;
     message.version = object.version ?? "";
-    message.extensions = Object.entries(object.extensions ?? {}).reduce<{ [key: string]: any | undefined }>(
-      (acc, [key, value]) => {
-        if (value !== undefined) {
-          acc[key] = value;
-        }
-        return acc;
-      },
-      {},
-    );
+    message.extensions = Object.entries(object.extensions ?? {}).reduce<{
+      [key: string]: any | undefined;
+    }>((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = value;
+      }
+      return acc;
+    }, {});
     return message;
   },
 };
@@ -2565,7 +2744,10 @@ function createBaseInfo_ExtensionsEntry(): Info_ExtensionsEntry {
 }
 
 export const Info_ExtensionsEntry: MessageFns<Info_ExtensionsEntry> = {
-  encode(message: Info_ExtensionsEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: Info_ExtensionsEntry,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -2575,8 +2757,12 @@ export const Info_ExtensionsEntry: MessageFns<Info_ExtensionsEntry> = {
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): Info_ExtensionsEntry {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+  decode(
+    input: BinaryReader | Uint8Array,
+    length?: number,
+  ): Info_ExtensionsEntry {
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseInfo_ExtensionsEntry();
     while (reader.pos < end) {
@@ -2623,7 +2809,10 @@ function createBaseContact(): Contact {
 }
 
 export const Contact: MessageFns<Contact> = {
-  encode(message: Contact, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: Contact,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
@@ -2637,7 +2826,8 @@ export const Contact: MessageFns<Contact> = {
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): Contact {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseContact();
     while (reader.pos < end) {
@@ -2693,7 +2883,10 @@ function createBaseLicense(): License {
 }
 
 export const License: MessageFns<License> = {
-  encode(message: License, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: License,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
@@ -2704,7 +2897,8 @@ export const License: MessageFns<License> = {
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): License {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseLicense();
     while (reader.pos < end) {
@@ -2751,7 +2945,10 @@ function createBaseExternalDocumentation(): ExternalDocumentation {
 }
 
 export const ExternalDocumentation: MessageFns<ExternalDocumentation> = {
-  encode(message: ExternalDocumentation, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: ExternalDocumentation,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.description !== "") {
       writer.uint32(10).string(message.description);
     }
@@ -2761,8 +2958,12 @@ export const ExternalDocumentation: MessageFns<ExternalDocumentation> = {
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): ExternalDocumentation {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+  decode(
+    input: BinaryReader | Uint8Array,
+    length?: number,
+  ): ExternalDocumentation {
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseExternalDocumentation();
     while (reader.pos < end) {
@@ -2796,7 +2997,9 @@ export const ExternalDocumentation: MessageFns<ExternalDocumentation> = {
   create(base?: DeepPartial<ExternalDocumentation>): ExternalDocumentation {
     return ExternalDocumentation.fromPartial(base ?? {});
   },
-  fromPartial(object: DeepPartial<ExternalDocumentation>): ExternalDocumentation {
+  fromPartial(
+    object: DeepPartial<ExternalDocumentation>,
+  ): ExternalDocumentation {
     const message = createBaseExternalDocumentation();
     message.description = object.description ?? "";
     message.url = object.url ?? "";
@@ -2805,11 +3008,20 @@ export const ExternalDocumentation: MessageFns<ExternalDocumentation> = {
 };
 
 function createBaseSchema(): Schema {
-  return { jsonSchema: undefined, discriminator: "", readOnly: false, externalDocs: undefined, example: "" };
+  return {
+    jsonSchema: undefined,
+    discriminator: "",
+    readOnly: false,
+    externalDocs: undefined,
+    example: "",
+  };
 }
 
 export const Schema: MessageFns<Schema> = {
-  encode(message: Schema, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: Schema,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.jsonSchema !== undefined) {
       JSONSchema.encode(message.jsonSchema, writer.uint32(10).fork()).join();
     }
@@ -2820,7 +3032,10 @@ export const Schema: MessageFns<Schema> = {
       writer.uint32(24).bool(message.readOnly);
     }
     if (message.externalDocs !== undefined) {
-      ExternalDocumentation.encode(message.externalDocs, writer.uint32(42).fork()).join();
+      ExternalDocumentation.encode(
+        message.externalDocs,
+        writer.uint32(42).fork(),
+      ).join();
     }
     if (message.example !== "") {
       writer.uint32(50).string(message.example);
@@ -2829,7 +3044,8 @@ export const Schema: MessageFns<Schema> = {
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): Schema {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSchema();
     while (reader.pos < end) {
@@ -2864,7 +3080,10 @@ export const Schema: MessageFns<Schema> = {
             break;
           }
 
-          message.externalDocs = ExternalDocumentation.decode(reader, reader.uint32());
+          message.externalDocs = ExternalDocumentation.decode(
+            reader,
+            reader.uint32(),
+          );
           continue;
         }
         case 6: {
@@ -2889,14 +3108,16 @@ export const Schema: MessageFns<Schema> = {
   },
   fromPartial(object: DeepPartial<Schema>): Schema {
     const message = createBaseSchema();
-    message.jsonSchema = (object.jsonSchema !== undefined && object.jsonSchema !== null)
-      ? JSONSchema.fromPartial(object.jsonSchema)
-      : undefined;
+    message.jsonSchema =
+      object.jsonSchema !== undefined && object.jsonSchema !== null
+        ? JSONSchema.fromPartial(object.jsonSchema)
+        : undefined;
     message.discriminator = object.discriminator ?? "";
     message.readOnly = object.readOnly ?? false;
-    message.externalDocs = (object.externalDocs !== undefined && object.externalDocs !== null)
-      ? ExternalDocumentation.fromPartial(object.externalDocs)
-      : undefined;
+    message.externalDocs =
+      object.externalDocs !== undefined && object.externalDocs !== null
+        ? ExternalDocumentation.fromPartial(object.externalDocs)
+        : undefined;
     message.example = object.example ?? "";
     return message;
   },
@@ -2934,7 +3155,10 @@ function createBaseJSONSchema(): JSONSchema {
 }
 
 export const JSONSchema: MessageFns<JSONSchema> = {
-  encode(message: JSONSchema, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: JSONSchema,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.ref !== "") {
       writer.uint32(26).string(message.ref);
     }
@@ -3010,18 +3234,25 @@ export const JSONSchema: MessageFns<JSONSchema> = {
       writer.uint32(370).string(v!);
     }
     if (message.fieldConfiguration !== undefined) {
-      JSONSchema_FieldConfiguration.encode(message.fieldConfiguration, writer.uint32(8010).fork()).join();
+      JSONSchema_FieldConfiguration.encode(
+        message.fieldConfiguration,
+        writer.uint32(8010).fork(),
+      ).join();
     }
     Object.entries(message.extensions).forEach(([key, value]) => {
       if (value !== undefined) {
-        JSONSchema_ExtensionsEntry.encode({ key: key as any, value }, writer.uint32(386).fork()).join();
+        JSONSchema_ExtensionsEntry.encode(
+          { key: key as any, value },
+          writer.uint32(386).fork(),
+        ).join();
       }
     });
     return writer;
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): JSONSchema {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseJSONSchema();
     while (reader.pos < end) {
@@ -3197,7 +3428,9 @@ export const JSONSchema: MessageFns<JSONSchema> = {
         }
         case 35: {
           if (tag === 280) {
-            message.type.push(jSONSchema_JSONSchemaSimpleTypesFromJSON(reader.int32()));
+            message.type.push(
+              jSONSchema_JSONSchemaSimpleTypesFromJSON(reader.int32()),
+            );
 
             continue;
           }
@@ -3205,7 +3438,9 @@ export const JSONSchema: MessageFns<JSONSchema> = {
           if (tag === 282) {
             const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
-              message.type.push(jSONSchema_JSONSchemaSimpleTypesFromJSON(reader.int32()));
+              message.type.push(
+                jSONSchema_JSONSchemaSimpleTypesFromJSON(reader.int32()),
+              );
             }
 
             continue;
@@ -3234,7 +3469,10 @@ export const JSONSchema: MessageFns<JSONSchema> = {
             break;
           }
 
-          message.fieldConfiguration = JSONSchema_FieldConfiguration.decode(reader, reader.uint32());
+          message.fieldConfiguration = JSONSchema_FieldConfiguration.decode(
+            reader,
+            reader.uint32(),
+          );
           continue;
         }
         case 48: {
@@ -3242,7 +3480,10 @@ export const JSONSchema: MessageFns<JSONSchema> = {
             break;
           }
 
-          const entry48 = JSONSchema_ExtensionsEntry.decode(reader, reader.uint32());
+          const entry48 = JSONSchema_ExtensionsEntry.decode(
+            reader,
+            reader.uint32(),
+          );
           if (entry48.value !== undefined) {
             message.extensions[entry48.key] = entry48.value;
           }
@@ -3286,18 +3527,19 @@ export const JSONSchema: MessageFns<JSONSchema> = {
     message.type = object.type?.map((e) => e) || [];
     message.format = object.format ?? "";
     message.enum = object.enum?.map((e) => e) || [];
-    message.fieldConfiguration = (object.fieldConfiguration !== undefined && object.fieldConfiguration !== null)
-      ? JSONSchema_FieldConfiguration.fromPartial(object.fieldConfiguration)
-      : undefined;
-    message.extensions = Object.entries(object.extensions ?? {}).reduce<{ [key: string]: any | undefined }>(
-      (acc, [key, value]) => {
-        if (value !== undefined) {
-          acc[key] = value;
-        }
-        return acc;
-      },
-      {},
-    );
+    message.fieldConfiguration =
+      object.fieldConfiguration !== undefined &&
+      object.fieldConfiguration !== null
+        ? JSONSchema_FieldConfiguration.fromPartial(object.fieldConfiguration)
+        : undefined;
+    message.extensions = Object.entries(object.extensions ?? {}).reduce<{
+      [key: string]: any | undefined;
+    }>((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = value;
+      }
+      return acc;
+    }, {});
     return message;
   },
 };
@@ -3306,112 +3548,142 @@ function createBaseJSONSchema_FieldConfiguration(): JSONSchema_FieldConfiguratio
   return { pathParamName: "" };
 }
 
-export const JSONSchema_FieldConfiguration: MessageFns<JSONSchema_FieldConfiguration> = {
-  encode(message: JSONSchema_FieldConfiguration, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.pathParamName !== "") {
-      writer.uint32(378).string(message.pathParamName);
-    }
-    return writer;
-  },
+export const JSONSchema_FieldConfiguration: MessageFns<JSONSchema_FieldConfiguration> =
+  {
+    encode(
+      message: JSONSchema_FieldConfiguration,
+      writer: BinaryWriter = new BinaryWriter(),
+    ): BinaryWriter {
+      if (message.pathParamName !== "") {
+        writer.uint32(378).string(message.pathParamName);
+      }
+      return writer;
+    },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): JSONSchema_FieldConfiguration {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseJSONSchema_FieldConfiguration();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 47: {
-          if (tag !== 378) {
-            break;
+    decode(
+      input: BinaryReader | Uint8Array,
+      length?: number,
+    ): JSONSchema_FieldConfiguration {
+      const reader =
+        input instanceof BinaryReader ? input : new BinaryReader(input);
+      let end = length === undefined ? reader.len : reader.pos + length;
+      const message = createBaseJSONSchema_FieldConfiguration();
+      while (reader.pos < end) {
+        const tag = reader.uint32();
+        switch (tag >>> 3) {
+          case 47: {
+            if (tag !== 378) {
+              break;
+            }
+
+            message.pathParamName = reader.string();
+            continue;
           }
-
-          message.pathParamName = reader.string();
-          continue;
         }
+        if ((tag & 7) === 4 || tag === 0) {
+          break;
+        }
+        reader.skip(tag & 7);
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
+      return message;
+    },
 
-  create(base?: DeepPartial<JSONSchema_FieldConfiguration>): JSONSchema_FieldConfiguration {
-    return JSONSchema_FieldConfiguration.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<JSONSchema_FieldConfiguration>): JSONSchema_FieldConfiguration {
-    const message = createBaseJSONSchema_FieldConfiguration();
-    message.pathParamName = object.pathParamName ?? "";
-    return message;
-  },
-};
+    create(
+      base?: DeepPartial<JSONSchema_FieldConfiguration>,
+    ): JSONSchema_FieldConfiguration {
+      return JSONSchema_FieldConfiguration.fromPartial(base ?? {});
+    },
+    fromPartial(
+      object: DeepPartial<JSONSchema_FieldConfiguration>,
+    ): JSONSchema_FieldConfiguration {
+      const message = createBaseJSONSchema_FieldConfiguration();
+      message.pathParamName = object.pathParamName ?? "";
+      return message;
+    },
+  };
 
 function createBaseJSONSchema_ExtensionsEntry(): JSONSchema_ExtensionsEntry {
   return { key: "", value: undefined };
 }
 
-export const JSONSchema_ExtensionsEntry: MessageFns<JSONSchema_ExtensionsEntry> = {
-  encode(message: JSONSchema_ExtensionsEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.key !== "") {
-      writer.uint32(10).string(message.key);
-    }
-    if (message.value !== undefined) {
-      Value.encode(Value.wrap(message.value), writer.uint32(18).fork()).join();
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): JSONSchema_ExtensionsEntry {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseJSONSchema_ExtensionsEntry();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.key = reader.string();
-          continue;
-        }
-        case 2: {
-          if (tag !== 18) {
-            break;
-          }
-
-          message.value = Value.unwrap(Value.decode(reader, reader.uint32()));
-          continue;
-        }
+export const JSONSchema_ExtensionsEntry: MessageFns<JSONSchema_ExtensionsEntry> =
+  {
+    encode(
+      message: JSONSchema_ExtensionsEntry,
+      writer: BinaryWriter = new BinaryWriter(),
+    ): BinaryWriter {
+      if (message.key !== "") {
+        writer.uint32(10).string(message.key);
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
+      if (message.value !== undefined) {
+        Value.encode(
+          Value.wrap(message.value),
+          writer.uint32(18).fork(),
+        ).join();
       }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
+      return writer;
+    },
 
-  create(base?: DeepPartial<JSONSchema_ExtensionsEntry>): JSONSchema_ExtensionsEntry {
-    return JSONSchema_ExtensionsEntry.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<JSONSchema_ExtensionsEntry>): JSONSchema_ExtensionsEntry {
-    const message = createBaseJSONSchema_ExtensionsEntry();
-    message.key = object.key ?? "";
-    message.value = object.value ?? undefined;
-    return message;
-  },
-};
+    decode(
+      input: BinaryReader | Uint8Array,
+      length?: number,
+    ): JSONSchema_ExtensionsEntry {
+      const reader =
+        input instanceof BinaryReader ? input : new BinaryReader(input);
+      let end = length === undefined ? reader.len : reader.pos + length;
+      const message = createBaseJSONSchema_ExtensionsEntry();
+      while (reader.pos < end) {
+        const tag = reader.uint32();
+        switch (tag >>> 3) {
+          case 1: {
+            if (tag !== 10) {
+              break;
+            }
+
+            message.key = reader.string();
+            continue;
+          }
+          case 2: {
+            if (tag !== 18) {
+              break;
+            }
+
+            message.value = Value.unwrap(Value.decode(reader, reader.uint32()));
+            continue;
+          }
+        }
+        if ((tag & 7) === 4 || tag === 0) {
+          break;
+        }
+        reader.skip(tag & 7);
+      }
+      return message;
+    },
+
+    create(
+      base?: DeepPartial<JSONSchema_ExtensionsEntry>,
+    ): JSONSchema_ExtensionsEntry {
+      return JSONSchema_ExtensionsEntry.fromPartial(base ?? {});
+    },
+    fromPartial(
+      object: DeepPartial<JSONSchema_ExtensionsEntry>,
+    ): JSONSchema_ExtensionsEntry {
+      const message = createBaseJSONSchema_ExtensionsEntry();
+      message.key = object.key ?? "";
+      message.value = object.value ?? undefined;
+      return message;
+    },
+  };
 
 function createBaseTag(): Tag {
   return { name: "", description: "", externalDocs: undefined, extensions: {} };
 }
 
 export const Tag: MessageFns<Tag> = {
-  encode(message: Tag, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: Tag,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
@@ -3419,18 +3691,25 @@ export const Tag: MessageFns<Tag> = {
       writer.uint32(18).string(message.description);
     }
     if (message.externalDocs !== undefined) {
-      ExternalDocumentation.encode(message.externalDocs, writer.uint32(26).fork()).join();
+      ExternalDocumentation.encode(
+        message.externalDocs,
+        writer.uint32(26).fork(),
+      ).join();
     }
     Object.entries(message.extensions).forEach(([key, value]) => {
       if (value !== undefined) {
-        Tag_ExtensionsEntry.encode({ key: key as any, value }, writer.uint32(34).fork()).join();
+        Tag_ExtensionsEntry.encode(
+          { key: key as any, value },
+          writer.uint32(34).fork(),
+        ).join();
       }
     });
     return writer;
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): Tag {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseTag();
     while (reader.pos < end) {
@@ -3457,7 +3736,10 @@ export const Tag: MessageFns<Tag> = {
             break;
           }
 
-          message.externalDocs = ExternalDocumentation.decode(reader, reader.uint32());
+          message.externalDocs = ExternalDocumentation.decode(
+            reader,
+            reader.uint32(),
+          );
           continue;
         }
         case 4: {
@@ -3487,18 +3769,18 @@ export const Tag: MessageFns<Tag> = {
     const message = createBaseTag();
     message.name = object.name ?? "";
     message.description = object.description ?? "";
-    message.externalDocs = (object.externalDocs !== undefined && object.externalDocs !== null)
-      ? ExternalDocumentation.fromPartial(object.externalDocs)
-      : undefined;
-    message.extensions = Object.entries(object.extensions ?? {}).reduce<{ [key: string]: any | undefined }>(
-      (acc, [key, value]) => {
-        if (value !== undefined) {
-          acc[key] = value;
-        }
-        return acc;
-      },
-      {},
-    );
+    message.externalDocs =
+      object.externalDocs !== undefined && object.externalDocs !== null
+        ? ExternalDocumentation.fromPartial(object.externalDocs)
+        : undefined;
+    message.extensions = Object.entries(object.extensions ?? {}).reduce<{
+      [key: string]: any | undefined;
+    }>((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = value;
+      }
+      return acc;
+    }, {});
     return message;
   },
 };
@@ -3508,7 +3790,10 @@ function createBaseTag_ExtensionsEntry(): Tag_ExtensionsEntry {
 }
 
 export const Tag_ExtensionsEntry: MessageFns<Tag_ExtensionsEntry> = {
-  encode(message: Tag_ExtensionsEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: Tag_ExtensionsEntry,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -3518,8 +3803,12 @@ export const Tag_ExtensionsEntry: MessageFns<Tag_ExtensionsEntry> = {
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): Tag_ExtensionsEntry {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+  decode(
+    input: BinaryReader | Uint8Array,
+    length?: number,
+  ): Tag_ExtensionsEntry {
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseTag_ExtensionsEntry();
     while (reader.pos < end) {
@@ -3566,15 +3855,25 @@ function createBaseSecurityDefinitions(): SecurityDefinitions {
 }
 
 export const SecurityDefinitions: MessageFns<SecurityDefinitions> = {
-  encode(message: SecurityDefinitions, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: SecurityDefinitions,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     Object.entries(message.security).forEach(([key, value]) => {
-      SecurityDefinitions_SecurityEntry.encode({ key: key as any, value }, writer.uint32(10).fork()).join();
+      SecurityDefinitions_SecurityEntry.encode(
+        { key: key as any, value },
+        writer.uint32(10).fork(),
+      ).join();
     });
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): SecurityDefinitions {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+  decode(
+    input: BinaryReader | Uint8Array,
+    length?: number,
+  ): SecurityDefinitions {
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSecurityDefinitions();
     while (reader.pos < end) {
@@ -3585,7 +3884,10 @@ export const SecurityDefinitions: MessageFns<SecurityDefinitions> = {
             break;
           }
 
-          const entry1 = SecurityDefinitions_SecurityEntry.decode(reader, reader.uint32());
+          const entry1 = SecurityDefinitions_SecurityEntry.decode(
+            reader,
+            reader.uint32(),
+          );
           if (entry1.value !== undefined) {
             message.security[entry1.key] = entry1.value;
           }
@@ -3605,15 +3907,14 @@ export const SecurityDefinitions: MessageFns<SecurityDefinitions> = {
   },
   fromPartial(object: DeepPartial<SecurityDefinitions>): SecurityDefinitions {
     const message = createBaseSecurityDefinitions();
-    message.security = Object.entries(object.security ?? {}).reduce<{ [key: string]: SecurityScheme }>(
-      (acc, [key, value]) => {
-        if (value !== undefined) {
-          acc[key] = SecurityScheme.fromPartial(value);
-        }
-        return acc;
-      },
-      {},
-    );
+    message.security = Object.entries(object.security ?? {}).reduce<{
+      [key: string]: SecurityScheme;
+    }>((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = SecurityScheme.fromPartial(value);
+      }
+      return acc;
+    }, {});
     return message;
   },
 };
@@ -3622,61 +3923,74 @@ function createBaseSecurityDefinitions_SecurityEntry(): SecurityDefinitions_Secu
   return { key: "", value: undefined };
 }
 
-export const SecurityDefinitions_SecurityEntry: MessageFns<SecurityDefinitions_SecurityEntry> = {
-  encode(message: SecurityDefinitions_SecurityEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.key !== "") {
-      writer.uint32(10).string(message.key);
-    }
-    if (message.value !== undefined) {
-      SecurityScheme.encode(message.value, writer.uint32(18).fork()).join();
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): SecurityDefinitions_SecurityEntry {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseSecurityDefinitions_SecurityEntry();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.key = reader.string();
-          continue;
-        }
-        case 2: {
-          if (tag !== 18) {
-            break;
-          }
-
-          message.value = SecurityScheme.decode(reader, reader.uint32());
-          continue;
-        }
+export const SecurityDefinitions_SecurityEntry: MessageFns<SecurityDefinitions_SecurityEntry> =
+  {
+    encode(
+      message: SecurityDefinitions_SecurityEntry,
+      writer: BinaryWriter = new BinaryWriter(),
+    ): BinaryWriter {
+      if (message.key !== "") {
+        writer.uint32(10).string(message.key);
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
+      if (message.value !== undefined) {
+        SecurityScheme.encode(message.value, writer.uint32(18).fork()).join();
       }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
+      return writer;
+    },
 
-  create(base?: DeepPartial<SecurityDefinitions_SecurityEntry>): SecurityDefinitions_SecurityEntry {
-    return SecurityDefinitions_SecurityEntry.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<SecurityDefinitions_SecurityEntry>): SecurityDefinitions_SecurityEntry {
-    const message = createBaseSecurityDefinitions_SecurityEntry();
-    message.key = object.key ?? "";
-    message.value = (object.value !== undefined && object.value !== null)
-      ? SecurityScheme.fromPartial(object.value)
-      : undefined;
-    return message;
-  },
-};
+    decode(
+      input: BinaryReader | Uint8Array,
+      length?: number,
+    ): SecurityDefinitions_SecurityEntry {
+      const reader =
+        input instanceof BinaryReader ? input : new BinaryReader(input);
+      let end = length === undefined ? reader.len : reader.pos + length;
+      const message = createBaseSecurityDefinitions_SecurityEntry();
+      while (reader.pos < end) {
+        const tag = reader.uint32();
+        switch (tag >>> 3) {
+          case 1: {
+            if (tag !== 10) {
+              break;
+            }
+
+            message.key = reader.string();
+            continue;
+          }
+          case 2: {
+            if (tag !== 18) {
+              break;
+            }
+
+            message.value = SecurityScheme.decode(reader, reader.uint32());
+            continue;
+          }
+        }
+        if ((tag & 7) === 4 || tag === 0) {
+          break;
+        }
+        reader.skip(tag & 7);
+      }
+      return message;
+    },
+
+    create(
+      base?: DeepPartial<SecurityDefinitions_SecurityEntry>,
+    ): SecurityDefinitions_SecurityEntry {
+      return SecurityDefinitions_SecurityEntry.fromPartial(base ?? {});
+    },
+    fromPartial(
+      object: DeepPartial<SecurityDefinitions_SecurityEntry>,
+    ): SecurityDefinitions_SecurityEntry {
+      const message = createBaseSecurityDefinitions_SecurityEntry();
+      message.key = object.key ?? "";
+      message.value =
+        object.value !== undefined && object.value !== null
+          ? SecurityScheme.fromPartial(object.value)
+          : undefined;
+      return message;
+    },
+  };
 
 function createBaseSecurityScheme(): SecurityScheme {
   return {
@@ -3693,7 +4007,10 @@ function createBaseSecurityScheme(): SecurityScheme {
 }
 
 export const SecurityScheme: MessageFns<SecurityScheme> = {
-  encode(message: SecurityScheme, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: SecurityScheme,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.type !== SecurityScheme_Type.TYPE_INVALID) {
       writer.uint32(8).int32(securityScheme_TypeToNumber(message.type));
     }
@@ -3720,14 +4037,18 @@ export const SecurityScheme: MessageFns<SecurityScheme> = {
     }
     Object.entries(message.extensions).forEach(([key, value]) => {
       if (value !== undefined) {
-        SecurityScheme_ExtensionsEntry.encode({ key: key as any, value }, writer.uint32(74).fork()).join();
+        SecurityScheme_ExtensionsEntry.encode(
+          { key: key as any, value },
+          writer.uint32(74).fork(),
+        ).join();
       }
     });
     return writer;
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): SecurityScheme {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSecurityScheme();
     while (reader.pos < end) {
@@ -3802,7 +4123,10 @@ export const SecurityScheme: MessageFns<SecurityScheme> = {
             break;
           }
 
-          const entry9 = SecurityScheme_ExtensionsEntry.decode(reader, reader.uint32());
+          const entry9 = SecurityScheme_ExtensionsEntry.decode(
+            reader,
+            reader.uint32(),
+          );
           if (entry9.value !== undefined) {
             message.extensions[entry9.key] = entry9.value;
           }
@@ -3829,18 +4153,18 @@ export const SecurityScheme: MessageFns<SecurityScheme> = {
     message.flow = object.flow ?? SecurityScheme_Flow.FLOW_INVALID;
     message.authorizationUrl = object.authorizationUrl ?? "";
     message.tokenUrl = object.tokenUrl ?? "";
-    message.scopes = (object.scopes !== undefined && object.scopes !== null)
-      ? Scopes.fromPartial(object.scopes)
-      : undefined;
-    message.extensions = Object.entries(object.extensions ?? {}).reduce<{ [key: string]: any | undefined }>(
-      (acc, [key, value]) => {
-        if (value !== undefined) {
-          acc[key] = value;
-        }
-        return acc;
-      },
-      {},
-    );
+    message.scopes =
+      object.scopes !== undefined && object.scopes !== null
+        ? Scopes.fromPartial(object.scopes)
+        : undefined;
+    message.extensions = Object.entries(object.extensions ?? {}).reduce<{
+      [key: string]: any | undefined;
+    }>((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = value;
+      }
+      return acc;
+    }, {});
     return message;
   },
 };
@@ -3849,74 +4173,99 @@ function createBaseSecurityScheme_ExtensionsEntry(): SecurityScheme_ExtensionsEn
   return { key: "", value: undefined };
 }
 
-export const SecurityScheme_ExtensionsEntry: MessageFns<SecurityScheme_ExtensionsEntry> = {
-  encode(message: SecurityScheme_ExtensionsEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.key !== "") {
-      writer.uint32(10).string(message.key);
-    }
-    if (message.value !== undefined) {
-      Value.encode(Value.wrap(message.value), writer.uint32(18).fork()).join();
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): SecurityScheme_ExtensionsEntry {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseSecurityScheme_ExtensionsEntry();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.key = reader.string();
-          continue;
-        }
-        case 2: {
-          if (tag !== 18) {
-            break;
-          }
-
-          message.value = Value.unwrap(Value.decode(reader, reader.uint32()));
-          continue;
-        }
+export const SecurityScheme_ExtensionsEntry: MessageFns<SecurityScheme_ExtensionsEntry> =
+  {
+    encode(
+      message: SecurityScheme_ExtensionsEntry,
+      writer: BinaryWriter = new BinaryWriter(),
+    ): BinaryWriter {
+      if (message.key !== "") {
+        writer.uint32(10).string(message.key);
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
+      if (message.value !== undefined) {
+        Value.encode(
+          Value.wrap(message.value),
+          writer.uint32(18).fork(),
+        ).join();
       }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
+      return writer;
+    },
 
-  create(base?: DeepPartial<SecurityScheme_ExtensionsEntry>): SecurityScheme_ExtensionsEntry {
-    return SecurityScheme_ExtensionsEntry.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<SecurityScheme_ExtensionsEntry>): SecurityScheme_ExtensionsEntry {
-    const message = createBaseSecurityScheme_ExtensionsEntry();
-    message.key = object.key ?? "";
-    message.value = object.value ?? undefined;
-    return message;
-  },
-};
+    decode(
+      input: BinaryReader | Uint8Array,
+      length?: number,
+    ): SecurityScheme_ExtensionsEntry {
+      const reader =
+        input instanceof BinaryReader ? input : new BinaryReader(input);
+      let end = length === undefined ? reader.len : reader.pos + length;
+      const message = createBaseSecurityScheme_ExtensionsEntry();
+      while (reader.pos < end) {
+        const tag = reader.uint32();
+        switch (tag >>> 3) {
+          case 1: {
+            if (tag !== 10) {
+              break;
+            }
+
+            message.key = reader.string();
+            continue;
+          }
+          case 2: {
+            if (tag !== 18) {
+              break;
+            }
+
+            message.value = Value.unwrap(Value.decode(reader, reader.uint32()));
+            continue;
+          }
+        }
+        if ((tag & 7) === 4 || tag === 0) {
+          break;
+        }
+        reader.skip(tag & 7);
+      }
+      return message;
+    },
+
+    create(
+      base?: DeepPartial<SecurityScheme_ExtensionsEntry>,
+    ): SecurityScheme_ExtensionsEntry {
+      return SecurityScheme_ExtensionsEntry.fromPartial(base ?? {});
+    },
+    fromPartial(
+      object: DeepPartial<SecurityScheme_ExtensionsEntry>,
+    ): SecurityScheme_ExtensionsEntry {
+      const message = createBaseSecurityScheme_ExtensionsEntry();
+      message.key = object.key ?? "";
+      message.value = object.value ?? undefined;
+      return message;
+    },
+  };
 
 function createBaseSecurityRequirement(): SecurityRequirement {
   return { securityRequirement: {} };
 }
 
 export const SecurityRequirement: MessageFns<SecurityRequirement> = {
-  encode(message: SecurityRequirement, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: SecurityRequirement,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     Object.entries(message.securityRequirement).forEach(([key, value]) => {
-      SecurityRequirement_SecurityRequirementEntry.encode({ key: key as any, value }, writer.uint32(10).fork()).join();
+      SecurityRequirement_SecurityRequirementEntry.encode(
+        { key: key as any, value },
+        writer.uint32(10).fork(),
+      ).join();
     });
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): SecurityRequirement {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+  decode(
+    input: BinaryReader | Uint8Array,
+    length?: number,
+  ): SecurityRequirement {
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseSecurityRequirement();
     while (reader.pos < end) {
@@ -3927,7 +4276,10 @@ export const SecurityRequirement: MessageFns<SecurityRequirement> = {
             break;
           }
 
-          const entry1 = SecurityRequirement_SecurityRequirementEntry.decode(reader, reader.uint32());
+          const entry1 = SecurityRequirement_SecurityRequirementEntry.decode(
+            reader,
+            reader.uint32(),
+          );
           if (entry1.value !== undefined) {
             message.securityRequirement[entry1.key] = entry1.value;
           }
@@ -3947,14 +4299,18 @@ export const SecurityRequirement: MessageFns<SecurityRequirement> = {
   },
   fromPartial(object: DeepPartial<SecurityRequirement>): SecurityRequirement {
     const message = createBaseSecurityRequirement();
-    message.securityRequirement = Object.entries(object.securityRequirement ?? {}).reduce<
-      { [key: string]: SecurityRequirement_SecurityRequirementValue }
-    >((acc, [key, value]) => {
-      if (value !== undefined) {
-        acc[key] = SecurityRequirement_SecurityRequirementValue.fromPartial(value);
-      }
-      return acc;
-    }, {});
+    message.securityRequirement = Object.entries(
+      object.securityRequirement ?? {},
+    ).reduce<{ [key: string]: SecurityRequirement_SecurityRequirementValue }>(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] =
+            SecurityRequirement_SecurityRequirementValue.fromPartial(value);
+        }
+        return acc;
+      },
+      {},
+    );
     return message;
   },
 };
@@ -3963,136 +4319,166 @@ function createBaseSecurityRequirement_SecurityRequirementValue(): SecurityRequi
   return { scope: [] };
 }
 
-export const SecurityRequirement_SecurityRequirementValue: MessageFns<SecurityRequirement_SecurityRequirementValue> = {
-  encode(
-    message: SecurityRequirement_SecurityRequirementValue,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
-    for (const v of message.scope) {
-      writer.uint32(10).string(v!);
-    }
-    return writer;
-  },
+export const SecurityRequirement_SecurityRequirementValue: MessageFns<SecurityRequirement_SecurityRequirementValue> =
+  {
+    encode(
+      message: SecurityRequirement_SecurityRequirementValue,
+      writer: BinaryWriter = new BinaryWriter(),
+    ): BinaryWriter {
+      for (const v of message.scope) {
+        writer.uint32(10).string(v!);
+      }
+      return writer;
+    },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): SecurityRequirement_SecurityRequirementValue {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseSecurityRequirement_SecurityRequirementValue();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
+    decode(
+      input: BinaryReader | Uint8Array,
+      length?: number,
+    ): SecurityRequirement_SecurityRequirementValue {
+      const reader =
+        input instanceof BinaryReader ? input : new BinaryReader(input);
+      let end = length === undefined ? reader.len : reader.pos + length;
+      const message = createBaseSecurityRequirement_SecurityRequirementValue();
+      while (reader.pos < end) {
+        const tag = reader.uint32();
+        switch (tag >>> 3) {
+          case 1: {
+            if (tag !== 10) {
+              break;
+            }
+
+            message.scope.push(reader.string());
+            continue;
           }
-
-          message.scope.push(reader.string());
-          continue;
         }
+        if ((tag & 7) === 4 || tag === 0) {
+          break;
+        }
+        reader.skip(tag & 7);
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
+      return message;
+    },
 
-  create(
-    base?: DeepPartial<SecurityRequirement_SecurityRequirementValue>,
-  ): SecurityRequirement_SecurityRequirementValue {
-    return SecurityRequirement_SecurityRequirementValue.fromPartial(base ?? {});
-  },
-  fromPartial(
-    object: DeepPartial<SecurityRequirement_SecurityRequirementValue>,
-  ): SecurityRequirement_SecurityRequirementValue {
-    const message = createBaseSecurityRequirement_SecurityRequirementValue();
-    message.scope = object.scope?.map((e) => e) || [];
-    return message;
-  },
-};
+    create(
+      base?: DeepPartial<SecurityRequirement_SecurityRequirementValue>,
+    ): SecurityRequirement_SecurityRequirementValue {
+      return SecurityRequirement_SecurityRequirementValue.fromPartial(
+        base ?? {},
+      );
+    },
+    fromPartial(
+      object: DeepPartial<SecurityRequirement_SecurityRequirementValue>,
+    ): SecurityRequirement_SecurityRequirementValue {
+      const message = createBaseSecurityRequirement_SecurityRequirementValue();
+      message.scope = object.scope?.map((e) => e) || [];
+      return message;
+    },
+  };
 
 function createBaseSecurityRequirement_SecurityRequirementEntry(): SecurityRequirement_SecurityRequirementEntry {
   return { key: "", value: undefined };
 }
 
-export const SecurityRequirement_SecurityRequirementEntry: MessageFns<SecurityRequirement_SecurityRequirementEntry> = {
-  encode(
-    message: SecurityRequirement_SecurityRequirementEntry,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
-    if (message.key !== "") {
-      writer.uint32(10).string(message.key);
-    }
-    if (message.value !== undefined) {
-      SecurityRequirement_SecurityRequirementValue.encode(message.value, writer.uint32(18).fork()).join();
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): SecurityRequirement_SecurityRequirementEntry {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseSecurityRequirement_SecurityRequirementEntry();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.key = reader.string();
-          continue;
-        }
-        case 2: {
-          if (tag !== 18) {
-            break;
-          }
-
-          message.value = SecurityRequirement_SecurityRequirementValue.decode(reader, reader.uint32());
-          continue;
-        }
+export const SecurityRequirement_SecurityRequirementEntry: MessageFns<SecurityRequirement_SecurityRequirementEntry> =
+  {
+    encode(
+      message: SecurityRequirement_SecurityRequirementEntry,
+      writer: BinaryWriter = new BinaryWriter(),
+    ): BinaryWriter {
+      if (message.key !== "") {
+        writer.uint32(10).string(message.key);
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
+      if (message.value !== undefined) {
+        SecurityRequirement_SecurityRequirementValue.encode(
+          message.value,
+          writer.uint32(18).fork(),
+        ).join();
       }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
+      return writer;
+    },
 
-  create(
-    base?: DeepPartial<SecurityRequirement_SecurityRequirementEntry>,
-  ): SecurityRequirement_SecurityRequirementEntry {
-    return SecurityRequirement_SecurityRequirementEntry.fromPartial(base ?? {});
-  },
-  fromPartial(
-    object: DeepPartial<SecurityRequirement_SecurityRequirementEntry>,
-  ): SecurityRequirement_SecurityRequirementEntry {
-    const message = createBaseSecurityRequirement_SecurityRequirementEntry();
-    message.key = object.key ?? "";
-    message.value = (object.value !== undefined && object.value !== null)
-      ? SecurityRequirement_SecurityRequirementValue.fromPartial(object.value)
-      : undefined;
-    return message;
-  },
-};
+    decode(
+      input: BinaryReader | Uint8Array,
+      length?: number,
+    ): SecurityRequirement_SecurityRequirementEntry {
+      const reader =
+        input instanceof BinaryReader ? input : new BinaryReader(input);
+      let end = length === undefined ? reader.len : reader.pos + length;
+      const message = createBaseSecurityRequirement_SecurityRequirementEntry();
+      while (reader.pos < end) {
+        const tag = reader.uint32();
+        switch (tag >>> 3) {
+          case 1: {
+            if (tag !== 10) {
+              break;
+            }
+
+            message.key = reader.string();
+            continue;
+          }
+          case 2: {
+            if (tag !== 18) {
+              break;
+            }
+
+            message.value = SecurityRequirement_SecurityRequirementValue.decode(
+              reader,
+              reader.uint32(),
+            );
+            continue;
+          }
+        }
+        if ((tag & 7) === 4 || tag === 0) {
+          break;
+        }
+        reader.skip(tag & 7);
+      }
+      return message;
+    },
+
+    create(
+      base?: DeepPartial<SecurityRequirement_SecurityRequirementEntry>,
+    ): SecurityRequirement_SecurityRequirementEntry {
+      return SecurityRequirement_SecurityRequirementEntry.fromPartial(
+        base ?? {},
+      );
+    },
+    fromPartial(
+      object: DeepPartial<SecurityRequirement_SecurityRequirementEntry>,
+    ): SecurityRequirement_SecurityRequirementEntry {
+      const message = createBaseSecurityRequirement_SecurityRequirementEntry();
+      message.key = object.key ?? "";
+      message.value =
+        object.value !== undefined && object.value !== null
+          ? SecurityRequirement_SecurityRequirementValue.fromPartial(
+              object.value,
+            )
+          : undefined;
+      return message;
+    },
+  };
 
 function createBaseScopes(): Scopes {
   return { scope: {} };
 }
 
 export const Scopes: MessageFns<Scopes> = {
-  encode(message: Scopes, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: Scopes,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     Object.entries(message.scope).forEach(([key, value]) => {
-      Scopes_ScopeEntry.encode({ key: key as any, value }, writer.uint32(10).fork()).join();
+      Scopes_ScopeEntry.encode(
+        { key: key as any, value },
+        writer.uint32(10).fork(),
+      ).join();
     });
     return writer;
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): Scopes {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseScopes();
     while (reader.pos < end) {
@@ -4123,7 +4509,9 @@ export const Scopes: MessageFns<Scopes> = {
   },
   fromPartial(object: DeepPartial<Scopes>): Scopes {
     const message = createBaseScopes();
-    message.scope = Object.entries(object.scope ?? {}).reduce<{ [key: string]: string }>((acc, [key, value]) => {
+    message.scope = Object.entries(object.scope ?? {}).reduce<{
+      [key: string]: string;
+    }>((acc, [key, value]) => {
       if (value !== undefined) {
         acc[key] = globalThis.String(value);
       }
@@ -4138,7 +4526,10 @@ function createBaseScopes_ScopeEntry(): Scopes_ScopeEntry {
 }
 
 export const Scopes_ScopeEntry: MessageFns<Scopes_ScopeEntry> = {
-  encode(message: Scopes_ScopeEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: Scopes_ScopeEntry,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.key !== "") {
       writer.uint32(10).string(message.key);
     }
@@ -4149,7 +4540,8 @@ export const Scopes_ScopeEntry: MessageFns<Scopes_ScopeEntry> = {
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): Scopes_ScopeEntry {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseScopes_ScopeEntry();
     while (reader.pos < end) {
@@ -4191,13 +4583,24 @@ export const Scopes_ScopeEntry: MessageFns<Scopes_ScopeEntry> = {
   },
 };
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+type Builtin =
+  | Date
+  | Function
+  | Uint8Array
+  | string
+  | number
+  | boolean
+  | undefined;
 
-export type DeepPartial<T> = T extends Builtin ? T
-  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
-  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
-  : Partial<T>;
+export type DeepPartial<T> = T extends Builtin
+  ? T
+  : T extends globalThis.Array<infer U>
+    ? globalThis.Array<DeepPartial<U>>
+    : T extends ReadonlyArray<infer U>
+      ? ReadonlyArray<DeepPartial<U>>
+      : T extends {}
+        ? { [K in keyof T]?: DeepPartial<T[K]> }
+        : Partial<T>;
 
 function longToNumber(int64: { toString(): string }): number {
   const num = globalThis.Number(int64.toString());

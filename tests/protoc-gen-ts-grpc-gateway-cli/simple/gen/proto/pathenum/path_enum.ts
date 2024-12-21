@@ -82,8 +82,7 @@ export function snakeCaseForImportToNumber(object: snakeCaseForImport): number {
   }
 }
 
-export interface MessagePathEnum {
-}
+export interface MessagePathEnum {}
 
 export enum MessagePathEnum_NestedPathEnum {
   GHI = "GHI",
@@ -91,7 +90,9 @@ export enum MessagePathEnum_NestedPathEnum {
   UNRECOGNIZED = "UNRECOGNIZED",
 }
 
-export function messagePathEnum_NestedPathEnumFromJSON(object: any): MessagePathEnum_NestedPathEnum {
+export function messagePathEnum_NestedPathEnumFromJSON(
+  object: any,
+): MessagePathEnum_NestedPathEnum {
   switch (object) {
     case 0:
     case "GHI":
@@ -106,7 +107,9 @@ export function messagePathEnum_NestedPathEnumFromJSON(object: any): MessagePath
   }
 }
 
-export function messagePathEnum_NestedPathEnumToNumber(object: MessagePathEnum_NestedPathEnum): number {
+export function messagePathEnum_NestedPathEnumToNumber(
+  object: MessagePathEnum_NestedPathEnum,
+): number {
   switch (object) {
     case MessagePathEnum_NestedPathEnum.GHI:
       return 0;
@@ -131,12 +134,16 @@ function createBaseMessagePathEnum(): MessagePathEnum {
 }
 
 export const MessagePathEnum: MessageFns<MessagePathEnum> = {
-  encode(_: MessagePathEnum, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    _: MessagePathEnum,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     return writer;
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): MessagePathEnum {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMessagePathEnum();
     while (reader.pos < end) {
@@ -165,15 +172,22 @@ function createBaseMessageWithPathEnum(): MessageWithPathEnum {
 }
 
 export const MessageWithPathEnum: MessageFns<MessageWithPathEnum> = {
-  encode(message: MessageWithPathEnum, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: MessageWithPathEnum,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.value !== PathEnum.ABC) {
       writer.uint32(8).int32(pathEnumToNumber(message.value));
     }
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): MessageWithPathEnum {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+  decode(
+    input: BinaryReader | Uint8Array,
+    length?: number,
+  ): MessageWithPathEnum {
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMessageWithPathEnum();
     while (reader.pos < end) {
@@ -210,55 +224,82 @@ function createBaseMessageWithNestedPathEnum(): MessageWithNestedPathEnum {
   return { value: MessagePathEnum_NestedPathEnum.GHI };
 }
 
-export const MessageWithNestedPathEnum: MessageFns<MessageWithNestedPathEnum> = {
-  encode(message: MessageWithNestedPathEnum, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.value !== MessagePathEnum_NestedPathEnum.GHI) {
-      writer.uint32(8).int32(messagePathEnum_NestedPathEnumToNumber(message.value));
-    }
-    return writer;
-  },
+export const MessageWithNestedPathEnum: MessageFns<MessageWithNestedPathEnum> =
+  {
+    encode(
+      message: MessageWithNestedPathEnum,
+      writer: BinaryWriter = new BinaryWriter(),
+    ): BinaryWriter {
+      if (message.value !== MessagePathEnum_NestedPathEnum.GHI) {
+        writer
+          .uint32(8)
+          .int32(messagePathEnum_NestedPathEnumToNumber(message.value));
+      }
+      return writer;
+    },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): MessageWithNestedPathEnum {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseMessageWithNestedPathEnum();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 8) {
-            break;
+    decode(
+      input: BinaryReader | Uint8Array,
+      length?: number,
+    ): MessageWithNestedPathEnum {
+      const reader =
+        input instanceof BinaryReader ? input : new BinaryReader(input);
+      let end = length === undefined ? reader.len : reader.pos + length;
+      const message = createBaseMessageWithNestedPathEnum();
+      while (reader.pos < end) {
+        const tag = reader.uint32();
+        switch (tag >>> 3) {
+          case 1: {
+            if (tag !== 8) {
+              break;
+            }
+
+            message.value = messagePathEnum_NestedPathEnumFromJSON(
+              reader.int32(),
+            );
+            continue;
           }
-
-          message.value = messagePathEnum_NestedPathEnumFromJSON(reader.int32());
-          continue;
         }
+        if ((tag & 7) === 4 || tag === 0) {
+          break;
+        }
+        reader.skip(tag & 7);
       }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
+      return message;
+    },
 
-  create(base?: DeepPartial<MessageWithNestedPathEnum>): MessageWithNestedPathEnum {
-    return MessageWithNestedPathEnum.fromPartial(base ?? {});
-  },
-  fromPartial(object: DeepPartial<MessageWithNestedPathEnum>): MessageWithNestedPathEnum {
-    const message = createBaseMessageWithNestedPathEnum();
-    message.value = object.value ?? MessagePathEnum_NestedPathEnum.GHI;
-    return message;
-  },
-};
+    create(
+      base?: DeepPartial<MessageWithNestedPathEnum>,
+    ): MessageWithNestedPathEnum {
+      return MessageWithNestedPathEnum.fromPartial(base ?? {});
+    },
+    fromPartial(
+      object: DeepPartial<MessageWithNestedPathEnum>,
+    ): MessageWithNestedPathEnum {
+      const message = createBaseMessageWithNestedPathEnum();
+      message.value = object.value ?? MessagePathEnum_NestedPathEnum.GHI;
+      return message;
+    },
+  };
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+type Builtin =
+  | Date
+  | Function
+  | Uint8Array
+  | string
+  | number
+  | boolean
+  | undefined;
 
-export type DeepPartial<T> = T extends Builtin ? T
-  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
-  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
-  : Partial<T>;
+export type DeepPartial<T> = T extends Builtin
+  ? T
+  : T extends globalThis.Array<infer U>
+    ? globalThis.Array<DeepPartial<U>>
+    : T extends ReadonlyArray<infer U>
+      ? ReadonlyArray<DeepPartial<U>>
+      : T extends {}
+        ? { [K in keyof T]?: DeepPartial<T[K]> }
+        : Partial<T>;
 
 export interface MessageFns<T> {
   encode(message: T, writer?: BinaryWriter): BinaryWriter;

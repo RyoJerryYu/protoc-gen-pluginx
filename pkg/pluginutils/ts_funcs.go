@@ -103,6 +103,10 @@ func (g *TSRegistry) P(v ...any) {
 		switch x := x.(type) {
 		case TSIdent:
 			fmt.Fprint(&g.buf, g.QualifiedTSIdent(x))
+		case protogen.Comments:
+			comments := x.String()
+			comments = strings.TrimSuffix(comments, "\n")
+			fmt.Fprint(&g.buf, comments)
 		default:
 			fmt.Fprint(&g.buf, x)
 		}
@@ -112,7 +116,16 @@ func (g *TSRegistry) P(v ...any) {
 
 // Pf is same as P, but with formatted string.
 func (opt *TSRegistry) Pf(format string, v ...any) {
-	opt.P(fmt.Sprintf(format, v...))
+	newV := make([]any, len(v))
+	for i, x := range v {
+		switch x := x.(type) {
+		case TSIdent:
+			newV[i] = opt.QualifiedTSIdent(x)
+		default:
+			newV[i] = x
+		}
+	}
+	opt.P(fmt.Sprintf(format, newV...))
 }
 
 // PComment allows multiple lines string as comment.

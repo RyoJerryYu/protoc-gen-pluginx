@@ -219,7 +219,10 @@ function createBaseFieldMask(): FieldMask {
 }
 
 export const FieldMask: MessageFns<FieldMask> & FieldMaskWrapperFns = {
-  encode(message: FieldMask, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: FieldMask,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     for (const v of message.paths) {
       writer.uint32(10).string(v!);
     }
@@ -227,7 +230,8 @@ export const FieldMask: MessageFns<FieldMask> & FieldMaskWrapperFns = {
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): FieldMask {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseFieldMask();
     while (reader.pos < end) {
@@ -270,13 +274,24 @@ export const FieldMask: MessageFns<FieldMask> & FieldMaskWrapperFns = {
   },
 };
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+type Builtin =
+  | Date
+  | Function
+  | Uint8Array
+  | string
+  | number
+  | boolean
+  | undefined;
 
-export type DeepPartial<T> = T extends Builtin ? T
-  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
-  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
-  : Partial<T>;
+export type DeepPartial<T> = T extends Builtin
+  ? T
+  : T extends globalThis.Array<infer U>
+    ? globalThis.Array<DeepPartial<U>>
+    : T extends ReadonlyArray<infer U>
+      ? ReadonlyArray<DeepPartial<U>>
+      : T extends {}
+        ? { [K in keyof T]?: DeepPartial<T[K]> }
+        : Partial<T>;
 
 export interface MessageFns<T> {
   encode(message: T, writer?: BinaryWriter): BinaryWriter;

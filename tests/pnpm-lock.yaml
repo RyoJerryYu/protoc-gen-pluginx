@@ -14,6 +14,9 @@ importers:
       nice-grpc-web:
         specifier: ^3.3.5
         version: 3.3.5(ws@8.18.0)
+      prettier:
+        specifier: ^3.4.2
+        version: 3.4.2
 
 packages:
 
@@ -36,6 +39,11 @@ packages:
 
   nice-grpc-web@3.3.5:
     resolution: {integrity: sha512-+G+WcHUHCXZC/GcZ8OiuT7BSlvIBsujaojcemGIHClq8Dh3z31BzsC1E8bUv++WzQAHq1/8PnBySvcmF1tb90Q==}
+
+  prettier@3.4.2:
+    resolution: {integrity: sha512-e9MewbtFo+Fevyuxn/4rrcDAaq0IYxPGLvObpQjiZBMAzB9IGmzlnG9RZy3FFas+eBMu2vA0CszMeduow5dIuQ==}
+    engines: {node: '>=14'}
+    hasBin: true
 
   ts-error@1.0.6:
     resolution: {integrity: sha512-tLJxacIQUM82IR7JO1UUkKlYuUTmoY9HBJAmNWFzheSlDS5SPMcNIepejHJa4BpPQLAcbRhRf3GDJzyj6rbKvA==}
@@ -76,6 +84,8 @@ snapshots:
       nice-grpc-common: 2.0.2
     transitivePeerDependencies:
       - ws
+
+  prettier@3.4.2: {}
 
   ts-error@1.0.6: {}
 

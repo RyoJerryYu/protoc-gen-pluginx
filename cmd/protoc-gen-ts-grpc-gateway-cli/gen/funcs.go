@@ -41,6 +41,8 @@ func (g *Generator) PTmplStr(tmpl string, data interface{}, funcs ...template.Fu
 }
 
 func (g *Generator) ApplyTemplate() error {
+	g.applyFile()
+
 	// services do not nest, so we can apply them directly
 	for _, s := range g.Generator.F.Services {
 		g.applyService(s)
@@ -49,13 +51,23 @@ func (g *Generator) ApplyTemplate() error {
 	return nil
 }
 
+func (g *Generator) applyFile() {
+	g.P(`
+// PartialDeep allow all fields and all sub-fields to be optional.
+// Used for rpc Request types.
+type PartialDeep<T> = T extends object ? {
+    [P in keyof T]?: PartialDeep<T[P]>;
+} : T;
+`)
+}
+
 func (g *Generator) applyService(service *protogen.Service) {
 	serviceModule := pluginutils.TSModule_TSProto(service.Desc.ParentFile())
 	for _, leadingDetached := range service.Comments.LeadingDetached {
 		g.P(leadingDetached)
 	}
-	g.P("export function new", service.GoName, "(): ", niceGrpcWeb.Ident("Client"), "<", serviceModule.Ident(service.GoName+"Definition"), "> {")
 	g.P(service.Comments.Leading)
+	g.P("export function new", service.GoName, "(): ", niceGrpcWeb.Ident("Client"), "<", serviceModule.Ident(service.GoName+"Definition"), "> {")
 	g.P("return {")
 
 	for _, method := range service.Methods {
@@ -72,38 +84,36 @@ func (g *Generator) applyMethod(method *protogen.Method) {
 	g.P(method.Comments.Leading)
 	glog.V(3).Infof("method location: %s, %s", method.Location.SourceFile, method.Location.Path)
 	if method.Desc.IsStreamingServer() {
-		g.Pf(`
-	%s(
-		req: Partial<%s>,
+		g.Pf(`%s(
+		req: PartialDeep<%s>,
 		entityNotifier?: fm.NotifyStreamEntityArrival<%s>,
-		initReq?: fm.InitReq
+		initReq?: fm.InitReq,
 	): Promise<void> {
 		return fm.fetchStreamingRequest<%s>(%s, entityNotifier, {...initReq, %s});
   	},
 `,
 			method.GoName,
-			g.QualifiedTSIdent(pluginutils.TSModule_TSProto(input.Desc.ParentFile()).Ident(input.GoIdent.GoName)),
-			g.QualifiedTSIdent(pluginutils.TSModule_TSProto(output.Desc.ParentFile()).Ident(output.GoIdent.GoName)),
-			g.QualifiedTSIdent(pluginutils.TSModule_TSProto(output.Desc.ParentFile()).Ident(output.GoIdent.GoName)),
+			pluginutils.TSModule_TSProto(input.Desc.ParentFile()).Ident(input.GoIdent.GoName),
+			pluginutils.TSModule_TSProto(output.Desc.ParentFile()).Ident(output.GoIdent.GoName),
+			pluginutils.TSModule_TSProto(output.Desc.ParentFile()).Ident(output.GoIdent.GoName),
 			g.renderURL(&g.TSOption)(method),
 			g.buildInitReq(method),
 		)
 
 	} else {
-		g.Pf(`
-	%s(
-		req: Partial<%s>, 
-		options?: %s
+		g.Pf(`%s(
+		req: PartialDeep<%s>, 
+		options?: %s,
 	): Promise<%s> {
 		// return fm.fetchRequest<%s>(%s, {...initReq, %s});
 		throw new Error("Not implemented");
 	},
 `,
 			pluginutils.FunctionCase(method.GoName),
-			g.QualifiedTSIdent(pluginutils.TSModule_TSProto(input.Desc.ParentFile()).Ident(input.GoIdent.GoName)),
-			g.QualifiedTSIdent(niceGrpcWeb.Ident("CallOptions")),
-			g.QualifiedTSIdent(pluginutils.TSModule_TSProto(output.Desc.ParentFile()).Ident(output.GoIdent.GoName)),
-			g.QualifiedTSIdent(pluginutils.TSModule_TSProto(output.Desc.ParentFile()).Ident(output.GoIdent.GoName)),
+			pluginutils.TSModule_TSProto(input.Desc.ParentFile()).Ident(input.GoIdent.GoName),
+			niceGrpcWeb.Ident("CallOptions"),
+			pluginutils.TSModule_TSProto(output.Desc.ParentFile()).Ident(output.GoIdent.GoName),
+			pluginutils.TSModule_TSProto(output.Desc.ParentFile()).Ident(output.GoIdent.GoName),
 			g.renderURL(&g.TSOption)(method),
 			g.buildInitReq(method),
 		)

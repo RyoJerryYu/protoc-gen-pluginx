@@ -51,7 +51,10 @@ function createBaseOneofEnumMessage(): OneofEnumMessage {
 }
 
 export const OneofEnumMessage: MessageFns<OneofEnumMessage> = {
-  encode(message: OneofEnumMessage, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: OneofEnumMessage,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.exampleEnum !== undefined) {
       writer.uint32(8).int32(exampleEnumToNumber(message.exampleEnum));
     }
@@ -59,7 +62,8 @@ export const OneofEnumMessage: MessageFns<OneofEnumMessage> = {
   },
 
   decode(input: BinaryReader | Uint8Array, length?: number): OneofEnumMessage {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseOneofEnumMessage();
     while (reader.pos < end) {
@@ -92,13 +96,24 @@ export const OneofEnumMessage: MessageFns<OneofEnumMessage> = {
   },
 };
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+type Builtin =
+  | Date
+  | Function
+  | Uint8Array
+  | string
+  | number
+  | boolean
+  | undefined;
 
-export type DeepPartial<T> = T extends Builtin ? T
-  : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
-  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
-  : Partial<T>;
+export type DeepPartial<T> = T extends Builtin
+  ? T
+  : T extends globalThis.Array<infer U>
+    ? globalThis.Array<DeepPartial<U>>
+    : T extends ReadonlyArray<infer U>
+      ? ReadonlyArray<DeepPartial<U>>
+      : T extends {}
+        ? { [K in keyof T]?: DeepPartial<T[K]> }
+        : Partial<T>;
 
 export interface MessageFns<T> {
   encode(message: T, writer?: BinaryWriter): BinaryWriter;
