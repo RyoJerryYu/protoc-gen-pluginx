@@ -510,8 +510,8 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
       const res = await fetch(`/v1/example/oneofenum`, {
         ...initReq,
         method: "POST",
-        body: JSON.stringify(
-          ProtoOneofenumOneofEnum.ExampleEnum.toJSON(must(fullReq.exampleEnum)),
+        body: ProtoOneofenumOneofEnum.exampleEnumToJSON(
+          must(fullReq.exampleEnum),
         ),
       });
       const body = await res.json();

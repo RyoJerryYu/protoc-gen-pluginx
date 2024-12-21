@@ -105,16 +105,20 @@ func (g *Generator) buildInitReq(method *protogen.Method) string {
 		initRes = append(initRes, [2]string{"body", TSProtoJsonify("fullReq", bodyMsg)})
 	} else if *httpBody != "" {
 		bodyField := method.Input.Desc.Fields().ByTextName(*httpBody)
-		var bodyType protoreflect.Descriptor
 		switch bodyField.Kind() {
 		case protoreflect.MessageKind:
-			bodyType = bodyField.Message()
+			bodyType := bodyField.Message()
+			jsonify := TSProtoJsonify(g.must("fullReq", *httpBody), bodyType)
+			initRes = append(initRes, [2]string{"body", jsonify})
 		case protoreflect.EnumKind:
-			bodyType = bodyField.Enum()
+			bodyType := bodyField.Enum()
+			enumModule := pluginutils.TSModule_TSProto(bodyType.ParentFile())
+			toJsonIdent := enumModule.Ident(g.TSProto_EnumToJSONFuncName(bodyType))
+			toJsonFunc := g.QualifiedTSIdent(toJsonIdent)
+			initRes = append(initRes, [2]string{"body", toJsonFunc + `(` + g.must("fullReq", *httpBody) + `)`})
 		default:
 			glog.Fatalf("unsupported body field type: %s", bodyField.Kind())
 		}
-		initRes = append(initRes, [2]string{"body", TSProtoJsonify(g.must("fullReq", *httpBody), bodyType)})
 	}
 
 	fields := make([]string, 0, len(initRes))
@@ -131,4 +135,8 @@ func (g *Generator) must(rootName string, path string) string {
 	fieldName = strings.Join(fields, "?.")
 
 	return fmt.Sprintf(`must(%s.%s)`, rootName, fieldName)
+}
+
+func (g *Generator) TSProto_EnumToJSONFuncName(enum protoreflect.EnumDescriptor) string {
+	return pluginutils.FunctionCase(string(enum.Name())) + "ToJSON"
 }
