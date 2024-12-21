@@ -67,41 +67,46 @@ func (g *Generator) applyService(service *protogen.Service) {
 }
 
 func (g *Generator) applyMethod(method *protogen.Method) {
-	for _, leadingDetached := range method.Comments.LeadingDetached {
-		g.P(leadingDetached)
-	}
+	input := method.Input
+	output := method.Output
 	g.P(method.Comments.Leading)
 	glog.V(3).Infof("method location: %s, %s", method.Location.SourceFile, method.Location.Path)
 	if method.Desc.IsStreamingServer() {
-		tmpl := `
-	{{.GoName}}(
-		req: Partial<{{tsType .Input, .Location}}>,
-		entityNotifier?: fm.NotifyStreamEntityArrival<{{tsType .Output .Location}}>,
-		initReq?: fm.InitReq
-	): Promise<void> {
-		return fm.fetchStreamingRequest<{{tsType .Output .Location}}>({{renderURL .}}, entityNotifier, {...initReq, {{buildInitReq .}}});
-  	},
-`
-		g.PTmplStr(tmpl, method)
 		g.Pf(`
 	%s(
-		req: Partial<{{tsType .Input, .Location}}>,
-		entityNotifier?: fm.NotifyStreamEntityArrival<{{tsType .Output .Location}}>,
+		req: Partial<%s>,
+		entityNotifier?: fm.NotifyStreamEntityArrival<%s>,
 		initReq?: fm.InitReq
 	): Promise<void> {
-		return fm.fetchStreamingRequest<{{tsType .Output .Location}}>({{renderURL .}}, entityNotifier, {...initReq, {{buildInitReq .}}});
+		return fm.fetchStreamingRequest<%s>(%s, entityNotifier, {...initReq, %s});
   	},
-`, method.GoName)
+`,
+			method.GoName,
+			g.QualifiedTSIdent(pluginutils.TSModule_TSProto(input.Desc.ParentFile()).Ident(input.GoIdent.GoName)),
+			g.QualifiedTSIdent(pluginutils.TSModule_TSProto(output.Desc.ParentFile()).Ident(output.GoIdent.GoName)),
+			g.QualifiedTSIdent(pluginutils.TSModule_TSProto(output.Desc.ParentFile()).Ident(output.GoIdent.GoName)),
+			g.renderURL(&g.TSOption)(method),
+			g.buildInitReq(method),
+		)
+
 	} else {
-		tmpl := `
-	{{.GoName}}(
-		req: Partial<{{tsType .Input .Location}}>, 
-		options?: CallOptions
-	): Promise<{{tsType .Output .Location}}> {
-		return fm.fetchRequest<{{tsType .Output .Location}}>({{renderURL .}}, {...initReq, {{buildInitReq .}}});
+		g.Pf(`
+	%s(
+		req: Partial<%s>, 
+		options?: %s
+	): Promise<%s> {
+		// return fm.fetchRequest<%s>(%s, {...initReq, %s});
+		throw new Error("Not implemented");
 	},
-`
-		g.PTmplStr(tmpl, method)
+`,
+			pluginutils.FunctionCase(method.GoName),
+			g.QualifiedTSIdent(pluginutils.TSModule_TSProto(input.Desc.ParentFile()).Ident(input.GoIdent.GoName)),
+			g.QualifiedTSIdent(niceGrpcWeb.Ident("CallOptions")),
+			g.QualifiedTSIdent(pluginutils.TSModule_TSProto(output.Desc.ParentFile()).Ident(output.GoIdent.GoName)),
+			g.QualifiedTSIdent(pluginutils.TSModule_TSProto(output.Desc.ParentFile()).Ident(output.GoIdent.GoName)),
+			g.renderURL(&g.TSOption)(method),
+			g.buildInitReq(method),
+		)
 	}
 	g.P(method.Comments.Trailing)
 }

@@ -1,3 +1,4 @@
 package cli
 
-//go:generate buf generate
+///// go:generate buf generate
+//TODO: generate later

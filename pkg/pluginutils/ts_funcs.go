@@ -155,8 +155,8 @@ func (r *TSRegistry) QualifiedTSIdent(ident TSIdent) string {
 // ServiceTemplate gets the template for the primary typescript file.
 func (r *TSRegistry) ServiceFmap() template.FuncMap {
 	fMap := template.FuncMap{
-		"tsType":       r.tsType,
-		"functionCase": functionCase,
+		"tsType":       r.TsType,
+		"functionCase": FunctionCase,
 		// "tsTypeKey":    tsTypeKey(r),
 		// "tsTypeDef":    tsTypeDef(r),
 		// "fieldName":    fieldName(r),
@@ -194,7 +194,7 @@ func isASCIILower(c byte) bool {
 
 // Takes a service name or method name in the form SomeMethod or HTTPMethod and
 // return someMethod or httpMethod.
-func functionCase(s string) string {
+func FunctionCase(s string) string {
 	if len(s) == 0 {
 		return s
 	}
@@ -241,13 +241,13 @@ func FieldName(opt *TSOption) func(name string) string {
 }
 
 // location: the location of the field or method that references the type
-func (r *TSRegistry) tsType(def *protogen.Message, location protogen.Location) string {
+func (r *TSRegistry) TsType(def *protogen.Message, location protogen.Location) string {
 	glog.V(3).Infof("tsType: %s", def.GoIdent.GoName)
 	// Map entry type
 	if def.Desc.IsMapEntry() {
 		glog.V(3).Infof("tsType is map entry %s", def.GoIdent.GoName)
-		keyType := r.tsType(def.Fields[0].Message, location)   //TODO: enums?
-		valueType := r.tsType(def.Fields[1].Message, location) //TODO: enums?
+		keyType := r.TsType(def.Fields[0].Message, location)   //TODO: enums?
+		valueType := r.TsType(def.Fields[1].Message, location) //TODO: enums?
 
 		return fmt.Sprintf("Record<%s, %s>", keyType, valueType)
 	}
@@ -325,13 +325,9 @@ func mapScalaType(protoType string) string {
 // fileName: memos.proto
 func GetModuleName(file protoreflect.FileDescriptor) string {
 	packageName, fileName := string(file.Package()), string(file.Path())
-	glog.V(3).Infof("GetModuleName packageName: %s, fileName %s", packageName, fileName)
 	baseName := filepath.Base(fileName)
-	glog.V(3).Infof("GetModuleName baseName: %s", baseName)
 	ext := filepath.Ext(fileName)
-	glog.V(3).Infof("GetModuleName ext: %s", ext)
 	name := baseName[0 : len(baseName)-len(ext)]
-	glog.V(3).Infof("GetModuleName name: %s", name)
 
 	return strcase.ToCamel(packageName) + strcase.ToCamel(name)
 }
