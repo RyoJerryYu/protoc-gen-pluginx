@@ -4,7 +4,7 @@ plugins:
     out: .
     opt:
       - paths=source_relative
-  - local: ./protoc-gen-go-json
+  - local: protoc-gen-go-json
     out: .
     opt:
       - paths=source_relative

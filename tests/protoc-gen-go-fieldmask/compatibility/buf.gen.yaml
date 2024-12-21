@@ -4,7 +4,7 @@ plugins:
     out: .
     opt:
       - paths=source_relative
-  - local: ./protoc-gen-go-fieldmask
+  - local: protoc-gen-go-fieldmask
     out: .
     opt:
       - paths=source_relative

@@ -16,7 +16,7 @@ plugins:
     out: .
     opt:
       - paths=source_relative
-  - local: ./protoc-gen-go-adapter
+  - local: protoc-gen-go-adapter
     out: .
     opt:
       - paths=source_relative
