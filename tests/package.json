@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@bufbuild/protobuf": "^2.2.3",
-    "nice-grpc-web": "^3.3.5",
+    "nice-grpc-common": "^2.0.2",
     "prettier": "^3.4.2"
   }
 }

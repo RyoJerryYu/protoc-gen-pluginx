@@ -47,6 +47,24 @@ export function schemeFromJSON(object: any): Scheme {
   }
 }
 
+export function schemeToJSON(object: Scheme): string {
+  switch (object) {
+    case Scheme.UNKNOWN:
+      return "UNKNOWN";
+    case Scheme.HTTP:
+      return "HTTP";
+    case Scheme.HTTPS:
+      return "HTTPS";
+    case Scheme.WS:
+      return "WS";
+    case Scheme.WSS:
+      return "WSS";
+    case Scheme.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
 export function schemeToNumber(object: Scheme): number {
   switch (object) {
     case Scheme.UNKNOWN:
@@ -363,6 +381,26 @@ export function headerParameter_TypeFromJSON(
     case "UNRECOGNIZED":
     default:
       return HeaderParameter_Type.UNRECOGNIZED;
+  }
+}
+
+export function headerParameter_TypeToJSON(
+  object: HeaderParameter_Type,
+): string {
+  switch (object) {
+    case HeaderParameter_Type.UNKNOWN:
+      return "UNKNOWN";
+    case HeaderParameter_Type.STRING:
+      return "STRING";
+    case HeaderParameter_Type.NUMBER:
+      return "NUMBER";
+    case HeaderParameter_Type.INTEGER:
+      return "INTEGER";
+    case HeaderParameter_Type.BOOLEAN:
+      return "BOOLEAN";
+    case HeaderParameter_Type.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
   }
 }
 
@@ -775,6 +813,32 @@ export function jSONSchema_JSONSchemaSimpleTypesFromJSON(
   }
 }
 
+export function jSONSchema_JSONSchemaSimpleTypesToJSON(
+  object: JSONSchema_JSONSchemaSimpleTypes,
+): string {
+  switch (object) {
+    case JSONSchema_JSONSchemaSimpleTypes.UNKNOWN:
+      return "UNKNOWN";
+    case JSONSchema_JSONSchemaSimpleTypes.ARRAY:
+      return "ARRAY";
+    case JSONSchema_JSONSchemaSimpleTypes.BOOLEAN:
+      return "BOOLEAN";
+    case JSONSchema_JSONSchemaSimpleTypes.INTEGER:
+      return "INTEGER";
+    case JSONSchema_JSONSchemaSimpleTypes.NULL:
+      return "NULL";
+    case JSONSchema_JSONSchemaSimpleTypes.NUMBER:
+      return "NUMBER";
+    case JSONSchema_JSONSchemaSimpleTypes.OBJECT:
+      return "OBJECT";
+    case JSONSchema_JSONSchemaSimpleTypes.STRING:
+      return "STRING";
+    case JSONSchema_JSONSchemaSimpleTypes.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
 export function jSONSchema_JSONSchemaSimpleTypesToNumber(
   object: JSONSchema_JSONSchemaSimpleTypes,
 ): number {
@@ -969,6 +1033,22 @@ export function securityScheme_TypeFromJSON(object: any): SecurityScheme_Type {
   }
 }
 
+export function securityScheme_TypeToJSON(object: SecurityScheme_Type): string {
+  switch (object) {
+    case SecurityScheme_Type.TYPE_INVALID:
+      return "TYPE_INVALID";
+    case SecurityScheme_Type.TYPE_BASIC:
+      return "TYPE_BASIC";
+    case SecurityScheme_Type.TYPE_API_KEY:
+      return "TYPE_API_KEY";
+    case SecurityScheme_Type.TYPE_OAUTH2:
+      return "TYPE_OAUTH2";
+    case SecurityScheme_Type.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
 export function securityScheme_TypeToNumber(
   object: SecurityScheme_Type,
 ): number {
@@ -1010,6 +1090,20 @@ export function securityScheme_InFromJSON(object: any): SecurityScheme_In {
     case "UNRECOGNIZED":
     default:
       return SecurityScheme_In.UNRECOGNIZED;
+  }
+}
+
+export function securityScheme_InToJSON(object: SecurityScheme_In): string {
+  switch (object) {
+    case SecurityScheme_In.IN_INVALID:
+      return "IN_INVALID";
+    case SecurityScheme_In.IN_QUERY:
+      return "IN_QUERY";
+    case SecurityScheme_In.IN_HEADER:
+      return "IN_HEADER";
+    case SecurityScheme_In.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
   }
 }
 
@@ -1061,6 +1155,24 @@ export function securityScheme_FlowFromJSON(object: any): SecurityScheme_Flow {
     case "UNRECOGNIZED":
     default:
       return SecurityScheme_Flow.UNRECOGNIZED;
+  }
+}
+
+export function securityScheme_FlowToJSON(object: SecurityScheme_Flow): string {
+  switch (object) {
+    case SecurityScheme_Flow.FLOW_INVALID:
+      return "FLOW_INVALID";
+    case SecurityScheme_Flow.FLOW_IMPLICIT:
+      return "FLOW_IMPLICIT";
+    case SecurityScheme_Flow.FLOW_PASSWORD:
+      return "FLOW_PASSWORD";
+    case SecurityScheme_Flow.FLOW_APPLICATION:
+      return "FLOW_APPLICATION";
+    case SecurityScheme_Flow.FLOW_ACCESS_CODE:
+      return "FLOW_ACCESS_CODE";
+    case SecurityScheme_Flow.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
   }
 }
 
@@ -1380,6 +1492,113 @@ export const Swagger: MessageFns<Swagger> = {
     return message;
   },
 
+  fromJSON(object: any): Swagger {
+    return {
+      swagger: isSet(object.swagger) ? globalThis.String(object.swagger) : "",
+      info: isSet(object.info) ? Info.fromJSON(object.info) : undefined,
+      host: isSet(object.host) ? globalThis.String(object.host) : "",
+      basePath: isSet(object.basePath)
+        ? globalThis.String(object.basePath)
+        : "",
+      schemes: globalThis.Array.isArray(object?.schemes)
+        ? object.schemes.map((e: any) => schemeFromJSON(e))
+        : [],
+      consumes: globalThis.Array.isArray(object?.consumes)
+        ? object.consumes.map((e: any) => globalThis.String(e))
+        : [],
+      produces: globalThis.Array.isArray(object?.produces)
+        ? object.produces.map((e: any) => globalThis.String(e))
+        : [],
+      responses: isObject(object.responses)
+        ? Object.entries(object.responses).reduce<{ [key: string]: Response }>(
+            (acc, [key, value]) => {
+              acc[key] = Response.fromJSON(value);
+              return acc;
+            },
+            {},
+          )
+        : {},
+      securityDefinitions: isSet(object.securityDefinitions)
+        ? SecurityDefinitions.fromJSON(object.securityDefinitions)
+        : undefined,
+      security: globalThis.Array.isArray(object?.security)
+        ? object.security.map((e: any) => SecurityRequirement.fromJSON(e))
+        : [],
+      tags: globalThis.Array.isArray(object?.tags)
+        ? object.tags.map((e: any) => Tag.fromJSON(e))
+        : [],
+      externalDocs: isSet(object.externalDocs)
+        ? ExternalDocumentation.fromJSON(object.externalDocs)
+        : undefined,
+      extensions: isObject(object.extensions)
+        ? Object.entries(object.extensions).reduce<{
+            [key: string]: any | undefined;
+          }>((acc, [key, value]) => {
+            acc[key] = value as any | undefined;
+            return acc;
+          }, {})
+        : {},
+    };
+  },
+
+  toJSON(message: Swagger): unknown {
+    const obj: any = {};
+    if (message.swagger !== "") {
+      obj.swagger = message.swagger;
+    }
+    if (message.info !== undefined) {
+      obj.info = Info.toJSON(message.info);
+    }
+    if (message.host !== "") {
+      obj.host = message.host;
+    }
+    if (message.basePath !== "") {
+      obj.basePath = message.basePath;
+    }
+    if (message.schemes?.length) {
+      obj.schemes = message.schemes.map((e) => schemeToJSON(e));
+    }
+    if (message.consumes?.length) {
+      obj.consumes = message.consumes;
+    }
+    if (message.produces?.length) {
+      obj.produces = message.produces;
+    }
+    if (message.responses) {
+      const entries = Object.entries(message.responses);
+      if (entries.length > 0) {
+        obj.responses = {};
+        entries.forEach(([k, v]) => {
+          obj.responses[k] = Response.toJSON(v);
+        });
+      }
+    }
+    if (message.securityDefinitions !== undefined) {
+      obj.securityDefinitions = SecurityDefinitions.toJSON(
+        message.securityDefinitions,
+      );
+    }
+    if (message.security?.length) {
+      obj.security = message.security.map((e) => SecurityRequirement.toJSON(e));
+    }
+    if (message.tags?.length) {
+      obj.tags = message.tags.map((e) => Tag.toJSON(e));
+    }
+    if (message.externalDocs !== undefined) {
+      obj.externalDocs = ExternalDocumentation.toJSON(message.externalDocs);
+    }
+    if (message.extensions) {
+      const entries = Object.entries(message.extensions);
+      if (entries.length > 0) {
+        obj.extensions = {};
+        entries.forEach(([k, v]) => {
+          obj.extensions[k] = v;
+        });
+      }
+    }
+    return obj;
+  },
+
   create(base?: DeepPartial<Swagger>): Swagger {
     return Swagger.fromPartial(base ?? {});
   },
@@ -1481,6 +1700,24 @@ export const Swagger_ResponsesEntry: MessageFns<Swagger_ResponsesEntry> = {
     return message;
   },
 
+  fromJSON(object: any): Swagger_ResponsesEntry {
+    return {
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
+      value: isSet(object.value) ? Response.fromJSON(object.value) : undefined,
+    };
+  },
+
+  toJSON(message: Swagger_ResponsesEntry): unknown {
+    const obj: any = {};
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = Response.toJSON(message.value);
+    }
+    return obj;
+  },
+
   create(base?: DeepPartial<Swagger_ResponsesEntry>): Swagger_ResponsesEntry {
     return Swagger_ResponsesEntry.fromPartial(base ?? {});
   },
@@ -1549,6 +1786,24 @@ export const Swagger_ExtensionsEntry: MessageFns<Swagger_ExtensionsEntry> = {
       reader.skip(tag & 7);
     }
     return message;
+  },
+
+  fromJSON(object: any): Swagger_ExtensionsEntry {
+    return {
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
+      value: isSet(object?.value) ? object.value : undefined,
+    };
+  },
+
+  toJSON(message: Swagger_ExtensionsEntry): unknown {
+    const obj: any = {};
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = message.value;
+    }
+    return obj;
   },
 
   create(base?: DeepPartial<Swagger_ExtensionsEntry>): Swagger_ExtensionsEntry {
@@ -1790,6 +2045,115 @@ export const Operation: MessageFns<Operation> = {
     return message;
   },
 
+  fromJSON(object: any): Operation {
+    return {
+      tags: globalThis.Array.isArray(object?.tags)
+        ? object.tags.map((e: any) => globalThis.String(e))
+        : [],
+      summary: isSet(object.summary) ? globalThis.String(object.summary) : "",
+      description: isSet(object.description)
+        ? globalThis.String(object.description)
+        : "",
+      externalDocs: isSet(object.externalDocs)
+        ? ExternalDocumentation.fromJSON(object.externalDocs)
+        : undefined,
+      operationId: isSet(object.operationId)
+        ? globalThis.String(object.operationId)
+        : "",
+      consumes: globalThis.Array.isArray(object?.consumes)
+        ? object.consumes.map((e: any) => globalThis.String(e))
+        : [],
+      produces: globalThis.Array.isArray(object?.produces)
+        ? object.produces.map((e: any) => globalThis.String(e))
+        : [],
+      responses: isObject(object.responses)
+        ? Object.entries(object.responses).reduce<{ [key: string]: Response }>(
+            (acc, [key, value]) => {
+              acc[key] = Response.fromJSON(value);
+              return acc;
+            },
+            {},
+          )
+        : {},
+      schemes: globalThis.Array.isArray(object?.schemes)
+        ? object.schemes.map((e: any) => schemeFromJSON(e))
+        : [],
+      deprecated: isSet(object.deprecated)
+        ? globalThis.Boolean(object.deprecated)
+        : false,
+      security: globalThis.Array.isArray(object?.security)
+        ? object.security.map((e: any) => SecurityRequirement.fromJSON(e))
+        : [],
+      extensions: isObject(object.extensions)
+        ? Object.entries(object.extensions).reduce<{
+            [key: string]: any | undefined;
+          }>((acc, [key, value]) => {
+            acc[key] = value as any | undefined;
+            return acc;
+          }, {})
+        : {},
+      parameters: isSet(object.parameters)
+        ? Parameters.fromJSON(object.parameters)
+        : undefined,
+    };
+  },
+
+  toJSON(message: Operation): unknown {
+    const obj: any = {};
+    if (message.tags?.length) {
+      obj.tags = message.tags;
+    }
+    if (message.summary !== "") {
+      obj.summary = message.summary;
+    }
+    if (message.description !== "") {
+      obj.description = message.description;
+    }
+    if (message.externalDocs !== undefined) {
+      obj.externalDocs = ExternalDocumentation.toJSON(message.externalDocs);
+    }
+    if (message.operationId !== "") {
+      obj.operationId = message.operationId;
+    }
+    if (message.consumes?.length) {
+      obj.consumes = message.consumes;
+    }
+    if (message.produces?.length) {
+      obj.produces = message.produces;
+    }
+    if (message.responses) {
+      const entries = Object.entries(message.responses);
+      if (entries.length > 0) {
+        obj.responses = {};
+        entries.forEach(([k, v]) => {
+          obj.responses[k] = Response.toJSON(v);
+        });
+      }
+    }
+    if (message.schemes?.length) {
+      obj.schemes = message.schemes.map((e) => schemeToJSON(e));
+    }
+    if (message.deprecated !== false) {
+      obj.deprecated = message.deprecated;
+    }
+    if (message.security?.length) {
+      obj.security = message.security.map((e) => SecurityRequirement.toJSON(e));
+    }
+    if (message.extensions) {
+      const entries = Object.entries(message.extensions);
+      if (entries.length > 0) {
+        obj.extensions = {};
+        entries.forEach(([k, v]) => {
+          obj.extensions[k] = v;
+        });
+      }
+    }
+    if (message.parameters !== undefined) {
+      obj.parameters = Parameters.toJSON(message.parameters);
+    }
+    return obj;
+  },
+
   create(base?: DeepPartial<Operation>): Operation {
     return Operation.fromPartial(base ?? {});
   },
@@ -1887,6 +2251,24 @@ export const Operation_ResponsesEntry: MessageFns<Operation_ResponsesEntry> = {
     return message;
   },
 
+  fromJSON(object: any): Operation_ResponsesEntry {
+    return {
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
+      value: isSet(object.value) ? Response.fromJSON(object.value) : undefined,
+    };
+  },
+
+  toJSON(message: Operation_ResponsesEntry): unknown {
+    const obj: any = {};
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = Response.toJSON(message.value);
+    }
+    return obj;
+  },
+
   create(
     base?: DeepPartial<Operation_ResponsesEntry>,
   ): Operation_ResponsesEntry {
@@ -1963,6 +2345,24 @@ export const Operation_ExtensionsEntry: MessageFns<Operation_ExtensionsEntry> =
       return message;
     },
 
+    fromJSON(object: any): Operation_ExtensionsEntry {
+      return {
+        key: isSet(object.key) ? globalThis.String(object.key) : "",
+        value: isSet(object?.value) ? object.value : undefined,
+      };
+    },
+
+    toJSON(message: Operation_ExtensionsEntry): unknown {
+      const obj: any = {};
+      if (message.key !== "") {
+        obj.key = message.key;
+      }
+      if (message.value !== undefined) {
+        obj.value = message.value;
+      }
+      return obj;
+    },
+
     create(
       base?: DeepPartial<Operation_ExtensionsEntry>,
     ): Operation_ExtensionsEntry {
@@ -2016,6 +2416,22 @@ export const Parameters: MessageFns<Parameters> = {
       reader.skip(tag & 7);
     }
     return message;
+  },
+
+  fromJSON(object: any): Parameters {
+    return {
+      headers: globalThis.Array.isArray(object?.headers)
+        ? object.headers.map((e: any) => HeaderParameter.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: Parameters): unknown {
+    const obj: any = {};
+    if (message.headers?.length) {
+      obj.headers = message.headers.map((e) => HeaderParameter.toJSON(e));
+    }
+    return obj;
   },
 
   create(base?: DeepPartial<Parameters>): Parameters {
@@ -2119,6 +2535,42 @@ export const HeaderParameter: MessageFns<HeaderParameter> = {
     return message;
   },
 
+  fromJSON(object: any): HeaderParameter {
+    return {
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      description: isSet(object.description)
+        ? globalThis.String(object.description)
+        : "",
+      type: isSet(object.type)
+        ? headerParameter_TypeFromJSON(object.type)
+        : HeaderParameter_Type.UNKNOWN,
+      format: isSet(object.format) ? globalThis.String(object.format) : "",
+      required: isSet(object.required)
+        ? globalThis.Boolean(object.required)
+        : false,
+    };
+  },
+
+  toJSON(message: HeaderParameter): unknown {
+    const obj: any = {};
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.description !== "") {
+      obj.description = message.description;
+    }
+    if (message.type !== HeaderParameter_Type.UNKNOWN) {
+      obj.type = headerParameter_TypeToJSON(message.type);
+    }
+    if (message.format !== "") {
+      obj.format = message.format;
+    }
+    if (message.required !== false) {
+      obj.required = message.required;
+    }
+    return obj;
+  },
+
   create(base?: DeepPartial<HeaderParameter>): HeaderParameter {
     return HeaderParameter.fromPartial(base ?? {});
   },
@@ -2215,6 +2667,38 @@ export const Header: MessageFns<Header> = {
       reader.skip(tag & 7);
     }
     return message;
+  },
+
+  fromJSON(object: any): Header {
+    return {
+      description: isSet(object.description)
+        ? globalThis.String(object.description)
+        : "",
+      type: isSet(object.type) ? globalThis.String(object.type) : "",
+      format: isSet(object.format) ? globalThis.String(object.format) : "",
+      default: isSet(object.default) ? globalThis.String(object.default) : "",
+      pattern: isSet(object.pattern) ? globalThis.String(object.pattern) : "",
+    };
+  },
+
+  toJSON(message: Header): unknown {
+    const obj: any = {};
+    if (message.description !== "") {
+      obj.description = message.description;
+    }
+    if (message.type !== "") {
+      obj.type = message.type;
+    }
+    if (message.format !== "") {
+      obj.format = message.format;
+    }
+    if (message.default !== "") {
+      obj.default = message.default;
+    }
+    if (message.pattern !== "") {
+      obj.pattern = message.pattern;
+    }
+    return obj;
   },
 
   create(base?: DeepPartial<Header>): Header {
@@ -2344,6 +2828,79 @@ export const Response: MessageFns<Response> = {
     return message;
   },
 
+  fromJSON(object: any): Response {
+    return {
+      description: isSet(object.description)
+        ? globalThis.String(object.description)
+        : "",
+      schema: isSet(object.schema) ? Schema.fromJSON(object.schema) : undefined,
+      headers: isObject(object.headers)
+        ? Object.entries(object.headers).reduce<{ [key: string]: Header }>(
+            (acc, [key, value]) => {
+              acc[key] = Header.fromJSON(value);
+              return acc;
+            },
+            {},
+          )
+        : {},
+      examples: isObject(object.examples)
+        ? Object.entries(object.examples).reduce<{ [key: string]: string }>(
+            (acc, [key, value]) => {
+              acc[key] = String(value);
+              return acc;
+            },
+            {},
+          )
+        : {},
+      extensions: isObject(object.extensions)
+        ? Object.entries(object.extensions).reduce<{
+            [key: string]: any | undefined;
+          }>((acc, [key, value]) => {
+            acc[key] = value as any | undefined;
+            return acc;
+          }, {})
+        : {},
+    };
+  },
+
+  toJSON(message: Response): unknown {
+    const obj: any = {};
+    if (message.description !== "") {
+      obj.description = message.description;
+    }
+    if (message.schema !== undefined) {
+      obj.schema = Schema.toJSON(message.schema);
+    }
+    if (message.headers) {
+      const entries = Object.entries(message.headers);
+      if (entries.length > 0) {
+        obj.headers = {};
+        entries.forEach(([k, v]) => {
+          obj.headers[k] = Header.toJSON(v);
+        });
+      }
+    }
+    if (message.examples) {
+      const entries = Object.entries(message.examples);
+      if (entries.length > 0) {
+        obj.examples = {};
+        entries.forEach(([k, v]) => {
+          obj.examples[k] = v;
+        });
+      }
+    }
+    if (message.extensions) {
+      const entries = Object.entries(message.extensions);
+      if (entries.length > 0) {
+        obj.extensions = {};
+        entries.forEach(([k, v]) => {
+          obj.extensions[k] = v;
+        });
+      }
+    }
+    return obj;
+  },
+
   create(base?: DeepPartial<Response>): Response {
     return Response.fromPartial(base ?? {});
   },
@@ -2436,6 +2993,24 @@ export const Response_HeadersEntry: MessageFns<Response_HeadersEntry> = {
     return message;
   },
 
+  fromJSON(object: any): Response_HeadersEntry {
+    return {
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
+      value: isSet(object.value) ? Header.fromJSON(object.value) : undefined,
+    };
+  },
+
+  toJSON(message: Response_HeadersEntry): unknown {
+    const obj: any = {};
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = Header.toJSON(message.value);
+    }
+    return obj;
+  },
+
   create(base?: DeepPartial<Response_HeadersEntry>): Response_HeadersEntry {
     return Response_HeadersEntry.fromPartial(base ?? {});
   },
@@ -2506,6 +3081,24 @@ export const Response_ExamplesEntry: MessageFns<Response_ExamplesEntry> = {
     return message;
   },
 
+  fromJSON(object: any): Response_ExamplesEntry {
+    return {
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
+      value: isSet(object.value) ? globalThis.String(object.value) : "",
+    };
+  },
+
+  toJSON(message: Response_ExamplesEntry): unknown {
+    const obj: any = {};
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== "") {
+      obj.value = message.value;
+    }
+    return obj;
+  },
+
   create(base?: DeepPartial<Response_ExamplesEntry>): Response_ExamplesEntry {
     return Response_ExamplesEntry.fromPartial(base ?? {});
   },
@@ -2571,6 +3164,24 @@ export const Response_ExtensionsEntry: MessageFns<Response_ExtensionsEntry> = {
       reader.skip(tag & 7);
     }
     return message;
+  },
+
+  fromJSON(object: any): Response_ExtensionsEntry {
+    return {
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
+      value: isSet(object?.value) ? object.value : undefined,
+    };
+  },
+
+  toJSON(message: Response_ExtensionsEntry): unknown {
+    const obj: any = {};
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = message.value;
+    }
+    return obj;
   },
 
   create(
@@ -2710,6 +3321,65 @@ export const Info: MessageFns<Info> = {
     return message;
   },
 
+  fromJSON(object: any): Info {
+    return {
+      title: isSet(object.title) ? globalThis.String(object.title) : "",
+      description: isSet(object.description)
+        ? globalThis.String(object.description)
+        : "",
+      termsOfService: isSet(object.termsOfService)
+        ? globalThis.String(object.termsOfService)
+        : "",
+      contact: isSet(object.contact)
+        ? Contact.fromJSON(object.contact)
+        : undefined,
+      license: isSet(object.license)
+        ? License.fromJSON(object.license)
+        : undefined,
+      version: isSet(object.version) ? globalThis.String(object.version) : "",
+      extensions: isObject(object.extensions)
+        ? Object.entries(object.extensions).reduce<{
+            [key: string]: any | undefined;
+          }>((acc, [key, value]) => {
+            acc[key] = value as any | undefined;
+            return acc;
+          }, {})
+        : {},
+    };
+  },
+
+  toJSON(message: Info): unknown {
+    const obj: any = {};
+    if (message.title !== "") {
+      obj.title = message.title;
+    }
+    if (message.description !== "") {
+      obj.description = message.description;
+    }
+    if (message.termsOfService !== "") {
+      obj.termsOfService = message.termsOfService;
+    }
+    if (message.contact !== undefined) {
+      obj.contact = Contact.toJSON(message.contact);
+    }
+    if (message.license !== undefined) {
+      obj.license = License.toJSON(message.license);
+    }
+    if (message.version !== "") {
+      obj.version = message.version;
+    }
+    if (message.extensions) {
+      const entries = Object.entries(message.extensions);
+      if (entries.length > 0) {
+        obj.extensions = {};
+        entries.forEach(([k, v]) => {
+          obj.extensions[k] = v;
+        });
+      }
+    }
+    return obj;
+  },
+
   create(base?: DeepPartial<Info>): Info {
     return Info.fromPartial(base ?? {});
   },
@@ -2793,6 +3463,24 @@ export const Info_ExtensionsEntry: MessageFns<Info_ExtensionsEntry> = {
     return message;
   },
 
+  fromJSON(object: any): Info_ExtensionsEntry {
+    return {
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
+      value: isSet(object?.value) ? object.value : undefined,
+    };
+  },
+
+  toJSON(message: Info_ExtensionsEntry): unknown {
+    const obj: any = {};
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = message.value;
+    }
+    return obj;
+  },
+
   create(base?: DeepPartial<Info_ExtensionsEntry>): Info_ExtensionsEntry {
     return Info_ExtensionsEntry.fromPartial(base ?? {});
   },
@@ -2866,6 +3554,28 @@ export const Contact: MessageFns<Contact> = {
     return message;
   },
 
+  fromJSON(object: any): Contact {
+    return {
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      url: isSet(object.url) ? globalThis.String(object.url) : "",
+      email: isSet(object.email) ? globalThis.String(object.email) : "",
+    };
+  },
+
+  toJSON(message: Contact): unknown {
+    const obj: any = {};
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.url !== "") {
+      obj.url = message.url;
+    }
+    if (message.email !== "") {
+      obj.email = message.email;
+    }
+    return obj;
+  },
+
   create(base?: DeepPartial<Contact>): Contact {
     return Contact.fromPartial(base ?? {});
   },
@@ -2927,6 +3637,24 @@ export const License: MessageFns<License> = {
       reader.skip(tag & 7);
     }
     return message;
+  },
+
+  fromJSON(object: any): License {
+    return {
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      url: isSet(object.url) ? globalThis.String(object.url) : "",
+    };
+  },
+
+  toJSON(message: License): unknown {
+    const obj: any = {};
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.url !== "") {
+      obj.url = message.url;
+    }
+    return obj;
   },
 
   create(base?: DeepPartial<License>): License {
@@ -2992,6 +3720,26 @@ export const ExternalDocumentation: MessageFns<ExternalDocumentation> = {
       reader.skip(tag & 7);
     }
     return message;
+  },
+
+  fromJSON(object: any): ExternalDocumentation {
+    return {
+      description: isSet(object.description)
+        ? globalThis.String(object.description)
+        : "",
+      url: isSet(object.url) ? globalThis.String(object.url) : "",
+    };
+  },
+
+  toJSON(message: ExternalDocumentation): unknown {
+    const obj: any = {};
+    if (message.description !== "") {
+      obj.description = message.description;
+    }
+    if (message.url !== "") {
+      obj.url = message.url;
+    }
+    return obj;
   },
 
   create(base?: DeepPartial<ExternalDocumentation>): ExternalDocumentation {
@@ -3101,6 +3849,44 @@ export const Schema: MessageFns<Schema> = {
       reader.skip(tag & 7);
     }
     return message;
+  },
+
+  fromJSON(object: any): Schema {
+    return {
+      jsonSchema: isSet(object.jsonSchema)
+        ? JSONSchema.fromJSON(object.jsonSchema)
+        : undefined,
+      discriminator: isSet(object.discriminator)
+        ? globalThis.String(object.discriminator)
+        : "",
+      readOnly: isSet(object.readOnly)
+        ? globalThis.Boolean(object.readOnly)
+        : false,
+      externalDocs: isSet(object.externalDocs)
+        ? ExternalDocumentation.fromJSON(object.externalDocs)
+        : undefined,
+      example: isSet(object.example) ? globalThis.String(object.example) : "",
+    };
+  },
+
+  toJSON(message: Schema): unknown {
+    const obj: any = {};
+    if (message.jsonSchema !== undefined) {
+      obj.jsonSchema = JSONSchema.toJSON(message.jsonSchema);
+    }
+    if (message.discriminator !== "") {
+      obj.discriminator = message.discriminator;
+    }
+    if (message.readOnly !== false) {
+      obj.readOnly = message.readOnly;
+    }
+    if (message.externalDocs !== undefined) {
+      obj.externalDocs = ExternalDocumentation.toJSON(message.externalDocs);
+    }
+    if (message.example !== "") {
+      obj.example = message.example;
+    }
+    return obj;
   },
 
   create(base?: DeepPartial<Schema>): Schema {
@@ -3498,6 +4284,169 @@ export const JSONSchema: MessageFns<JSONSchema> = {
     return message;
   },
 
+  fromJSON(object: any): JSONSchema {
+    return {
+      ref: isSet(object.ref) ? globalThis.String(object.ref) : "",
+      title: isSet(object.title) ? globalThis.String(object.title) : "",
+      description: isSet(object.description)
+        ? globalThis.String(object.description)
+        : "",
+      default: isSet(object.default) ? globalThis.String(object.default) : "",
+      readOnly: isSet(object.readOnly)
+        ? globalThis.Boolean(object.readOnly)
+        : false,
+      example: isSet(object.example) ? globalThis.String(object.example) : "",
+      multipleOf: isSet(object.multipleOf)
+        ? globalThis.Number(object.multipleOf)
+        : 0,
+      maximum: isSet(object.maximum) ? globalThis.Number(object.maximum) : 0,
+      exclusiveMaximum: isSet(object.exclusiveMaximum)
+        ? globalThis.Boolean(object.exclusiveMaximum)
+        : false,
+      minimum: isSet(object.minimum) ? globalThis.Number(object.minimum) : 0,
+      exclusiveMinimum: isSet(object.exclusiveMinimum)
+        ? globalThis.Boolean(object.exclusiveMinimum)
+        : false,
+      maxLength: isSet(object.maxLength)
+        ? globalThis.Number(object.maxLength)
+        : 0,
+      minLength: isSet(object.minLength)
+        ? globalThis.Number(object.minLength)
+        : 0,
+      pattern: isSet(object.pattern) ? globalThis.String(object.pattern) : "",
+      maxItems: isSet(object.maxItems) ? globalThis.Number(object.maxItems) : 0,
+      minItems: isSet(object.minItems) ? globalThis.Number(object.minItems) : 0,
+      uniqueItems: isSet(object.uniqueItems)
+        ? globalThis.Boolean(object.uniqueItems)
+        : false,
+      maxProperties: isSet(object.maxProperties)
+        ? globalThis.Number(object.maxProperties)
+        : 0,
+      minProperties: isSet(object.minProperties)
+        ? globalThis.Number(object.minProperties)
+        : 0,
+      required: globalThis.Array.isArray(object?.required)
+        ? object.required.map((e: any) => globalThis.String(e))
+        : [],
+      array: globalThis.Array.isArray(object?.array)
+        ? object.array.map((e: any) => globalThis.String(e))
+        : [],
+      type: globalThis.Array.isArray(object?.type)
+        ? object.type.map((e: any) =>
+            jSONSchema_JSONSchemaSimpleTypesFromJSON(e),
+          )
+        : [],
+      format: isSet(object.format) ? globalThis.String(object.format) : "",
+      enum: globalThis.Array.isArray(object?.enum)
+        ? object.enum.map((e: any) => globalThis.String(e))
+        : [],
+      fieldConfiguration: isSet(object.fieldConfiguration)
+        ? JSONSchema_FieldConfiguration.fromJSON(object.fieldConfiguration)
+        : undefined,
+      extensions: isObject(object.extensions)
+        ? Object.entries(object.extensions).reduce<{
+            [key: string]: any | undefined;
+          }>((acc, [key, value]) => {
+            acc[key] = value as any | undefined;
+            return acc;
+          }, {})
+        : {},
+    };
+  },
+
+  toJSON(message: JSONSchema): unknown {
+    const obj: any = {};
+    if (message.ref !== "") {
+      obj.ref = message.ref;
+    }
+    if (message.title !== "") {
+      obj.title = message.title;
+    }
+    if (message.description !== "") {
+      obj.description = message.description;
+    }
+    if (message.default !== "") {
+      obj.default = message.default;
+    }
+    if (message.readOnly !== false) {
+      obj.readOnly = message.readOnly;
+    }
+    if (message.example !== "") {
+      obj.example = message.example;
+    }
+    if (message.multipleOf !== 0) {
+      obj.multipleOf = message.multipleOf;
+    }
+    if (message.maximum !== 0) {
+      obj.maximum = message.maximum;
+    }
+    if (message.exclusiveMaximum !== false) {
+      obj.exclusiveMaximum = message.exclusiveMaximum;
+    }
+    if (message.minimum !== 0) {
+      obj.minimum = message.minimum;
+    }
+    if (message.exclusiveMinimum !== false) {
+      obj.exclusiveMinimum = message.exclusiveMinimum;
+    }
+    if (message.maxLength !== 0) {
+      obj.maxLength = Math.round(message.maxLength);
+    }
+    if (message.minLength !== 0) {
+      obj.minLength = Math.round(message.minLength);
+    }
+    if (message.pattern !== "") {
+      obj.pattern = message.pattern;
+    }
+    if (message.maxItems !== 0) {
+      obj.maxItems = Math.round(message.maxItems);
+    }
+    if (message.minItems !== 0) {
+      obj.minItems = Math.round(message.minItems);
+    }
+    if (message.uniqueItems !== false) {
+      obj.uniqueItems = message.uniqueItems;
+    }
+    if (message.maxProperties !== 0) {
+      obj.maxProperties = Math.round(message.maxProperties);
+    }
+    if (message.minProperties !== 0) {
+      obj.minProperties = Math.round(message.minProperties);
+    }
+    if (message.required?.length) {
+      obj.required = message.required;
+    }
+    if (message.array?.length) {
+      obj.array = message.array;
+    }
+    if (message.type?.length) {
+      obj.type = message.type.map((e) =>
+        jSONSchema_JSONSchemaSimpleTypesToJSON(e),
+      );
+    }
+    if (message.format !== "") {
+      obj.format = message.format;
+    }
+    if (message.enum?.length) {
+      obj.enum = message.enum;
+    }
+    if (message.fieldConfiguration !== undefined) {
+      obj.fieldConfiguration = JSONSchema_FieldConfiguration.toJSON(
+        message.fieldConfiguration,
+      );
+    }
+    if (message.extensions) {
+      const entries = Object.entries(message.extensions);
+      if (entries.length > 0) {
+        obj.extensions = {};
+        entries.forEach(([k, v]) => {
+          obj.extensions[k] = v;
+        });
+      }
+    }
+    return obj;
+  },
+
   create(base?: DeepPartial<JSONSchema>): JSONSchema {
     return JSONSchema.fromPartial(base ?? {});
   },
@@ -3588,6 +4537,22 @@ export const JSONSchema_FieldConfiguration: MessageFns<JSONSchema_FieldConfigura
       return message;
     },
 
+    fromJSON(object: any): JSONSchema_FieldConfiguration {
+      return {
+        pathParamName: isSet(object.pathParamName)
+          ? globalThis.String(object.pathParamName)
+          : "",
+      };
+    },
+
+    toJSON(message: JSONSchema_FieldConfiguration): unknown {
+      const obj: any = {};
+      if (message.pathParamName !== "") {
+        obj.pathParamName = message.pathParamName;
+      }
+      return obj;
+    },
+
     create(
       base?: DeepPartial<JSONSchema_FieldConfiguration>,
     ): JSONSchema_FieldConfiguration {
@@ -3658,6 +4623,24 @@ export const JSONSchema_ExtensionsEntry: MessageFns<JSONSchema_ExtensionsEntry> 
         reader.skip(tag & 7);
       }
       return message;
+    },
+
+    fromJSON(object: any): JSONSchema_ExtensionsEntry {
+      return {
+        key: isSet(object.key) ? globalThis.String(object.key) : "",
+        value: isSet(object?.value) ? object.value : undefined,
+      };
+    },
+
+    toJSON(message: JSONSchema_ExtensionsEntry): unknown {
+      const obj: any = {};
+      if (message.key !== "") {
+        obj.key = message.key;
+      }
+      if (message.value !== undefined) {
+        obj.value = message.value;
+      }
+      return obj;
     },
 
     create(
@@ -3762,6 +4745,49 @@ export const Tag: MessageFns<Tag> = {
     return message;
   },
 
+  fromJSON(object: any): Tag {
+    return {
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      description: isSet(object.description)
+        ? globalThis.String(object.description)
+        : "",
+      externalDocs: isSet(object.externalDocs)
+        ? ExternalDocumentation.fromJSON(object.externalDocs)
+        : undefined,
+      extensions: isObject(object.extensions)
+        ? Object.entries(object.extensions).reduce<{
+            [key: string]: any | undefined;
+          }>((acc, [key, value]) => {
+            acc[key] = value as any | undefined;
+            return acc;
+          }, {})
+        : {},
+    };
+  },
+
+  toJSON(message: Tag): unknown {
+    const obj: any = {};
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.description !== "") {
+      obj.description = message.description;
+    }
+    if (message.externalDocs !== undefined) {
+      obj.externalDocs = ExternalDocumentation.toJSON(message.externalDocs);
+    }
+    if (message.extensions) {
+      const entries = Object.entries(message.extensions);
+      if (entries.length > 0) {
+        obj.extensions = {};
+        entries.forEach(([k, v]) => {
+          obj.extensions[k] = v;
+        });
+      }
+    }
+    return obj;
+  },
+
   create(base?: DeepPartial<Tag>): Tag {
     return Tag.fromPartial(base ?? {});
   },
@@ -3839,6 +4865,24 @@ export const Tag_ExtensionsEntry: MessageFns<Tag_ExtensionsEntry> = {
     return message;
   },
 
+  fromJSON(object: any): Tag_ExtensionsEntry {
+    return {
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
+      value: isSet(object?.value) ? object.value : undefined,
+    };
+  },
+
+  toJSON(message: Tag_ExtensionsEntry): unknown {
+    const obj: any = {};
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = message.value;
+    }
+    return obj;
+  },
+
   create(base?: DeepPartial<Tag_ExtensionsEntry>): Tag_ExtensionsEntry {
     return Tag_ExtensionsEntry.fromPartial(base ?? {});
   },
@@ -3900,6 +4944,33 @@ export const SecurityDefinitions: MessageFns<SecurityDefinitions> = {
       reader.skip(tag & 7);
     }
     return message;
+  },
+
+  fromJSON(object: any): SecurityDefinitions {
+    return {
+      security: isObject(object.security)
+        ? Object.entries(object.security).reduce<{
+            [key: string]: SecurityScheme;
+          }>((acc, [key, value]) => {
+            acc[key] = SecurityScheme.fromJSON(value);
+            return acc;
+          }, {})
+        : {},
+    };
+  },
+
+  toJSON(message: SecurityDefinitions): unknown {
+    const obj: any = {};
+    if (message.security) {
+      const entries = Object.entries(message.security);
+      if (entries.length > 0) {
+        obj.security = {};
+        entries.forEach(([k, v]) => {
+          obj.security[k] = SecurityScheme.toJSON(v);
+        });
+      }
+    }
+    return obj;
   },
 
   create(base?: DeepPartial<SecurityDefinitions>): SecurityDefinitions {
@@ -3972,6 +5043,26 @@ export const SecurityDefinitions_SecurityEntry: MessageFns<SecurityDefinitions_S
         reader.skip(tag & 7);
       }
       return message;
+    },
+
+    fromJSON(object: any): SecurityDefinitions_SecurityEntry {
+      return {
+        key: isSet(object.key) ? globalThis.String(object.key) : "",
+        value: isSet(object.value)
+          ? SecurityScheme.fromJSON(object.value)
+          : undefined,
+      };
+    },
+
+    toJSON(message: SecurityDefinitions_SecurityEntry): unknown {
+      const obj: any = {};
+      if (message.key !== "") {
+        obj.key = message.key;
+      }
+      if (message.value !== undefined) {
+        obj.value = SecurityScheme.toJSON(message.value);
+      }
+      return obj;
     },
 
     create(
@@ -4141,6 +5232,77 @@ export const SecurityScheme: MessageFns<SecurityScheme> = {
     return message;
   },
 
+  fromJSON(object: any): SecurityScheme {
+    return {
+      type: isSet(object.type)
+        ? securityScheme_TypeFromJSON(object.type)
+        : SecurityScheme_Type.TYPE_INVALID,
+      description: isSet(object.description)
+        ? globalThis.String(object.description)
+        : "",
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      in: isSet(object.in)
+        ? securityScheme_InFromJSON(object.in)
+        : SecurityScheme_In.IN_INVALID,
+      flow: isSet(object.flow)
+        ? securityScheme_FlowFromJSON(object.flow)
+        : SecurityScheme_Flow.FLOW_INVALID,
+      authorizationUrl: isSet(object.authorizationUrl)
+        ? globalThis.String(object.authorizationUrl)
+        : "",
+      tokenUrl: isSet(object.tokenUrl)
+        ? globalThis.String(object.tokenUrl)
+        : "",
+      scopes: isSet(object.scopes) ? Scopes.fromJSON(object.scopes) : undefined,
+      extensions: isObject(object.extensions)
+        ? Object.entries(object.extensions).reduce<{
+            [key: string]: any | undefined;
+          }>((acc, [key, value]) => {
+            acc[key] = value as any | undefined;
+            return acc;
+          }, {})
+        : {},
+    };
+  },
+
+  toJSON(message: SecurityScheme): unknown {
+    const obj: any = {};
+    if (message.type !== SecurityScheme_Type.TYPE_INVALID) {
+      obj.type = securityScheme_TypeToJSON(message.type);
+    }
+    if (message.description !== "") {
+      obj.description = message.description;
+    }
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.in !== SecurityScheme_In.IN_INVALID) {
+      obj.in = securityScheme_InToJSON(message.in);
+    }
+    if (message.flow !== SecurityScheme_Flow.FLOW_INVALID) {
+      obj.flow = securityScheme_FlowToJSON(message.flow);
+    }
+    if (message.authorizationUrl !== "") {
+      obj.authorizationUrl = message.authorizationUrl;
+    }
+    if (message.tokenUrl !== "") {
+      obj.tokenUrl = message.tokenUrl;
+    }
+    if (message.scopes !== undefined) {
+      obj.scopes = Scopes.toJSON(message.scopes);
+    }
+    if (message.extensions) {
+      const entries = Object.entries(message.extensions);
+      if (entries.length > 0) {
+        obj.extensions = {};
+        entries.forEach(([k, v]) => {
+          obj.extensions[k] = v;
+        });
+      }
+    }
+    return obj;
+  },
+
   create(base?: DeepPartial<SecurityScheme>): SecurityScheme {
     return SecurityScheme.fromPartial(base ?? {});
   },
@@ -4227,6 +5389,24 @@ export const SecurityScheme_ExtensionsEntry: MessageFns<SecurityScheme_Extension
       return message;
     },
 
+    fromJSON(object: any): SecurityScheme_ExtensionsEntry {
+      return {
+        key: isSet(object.key) ? globalThis.String(object.key) : "",
+        value: isSet(object?.value) ? object.value : undefined,
+      };
+    },
+
+    toJSON(message: SecurityScheme_ExtensionsEntry): unknown {
+      const obj: any = {};
+      if (message.key !== "") {
+        obj.key = message.key;
+      }
+      if (message.value !== undefined) {
+        obj.value = message.value;
+      }
+      return obj;
+    },
+
     create(
       base?: DeepPartial<SecurityScheme_ExtensionsEntry>,
     ): SecurityScheme_ExtensionsEntry {
@@ -4294,6 +5474,35 @@ export const SecurityRequirement: MessageFns<SecurityRequirement> = {
     return message;
   },
 
+  fromJSON(object: any): SecurityRequirement {
+    return {
+      securityRequirement: isObject(object.securityRequirement)
+        ? Object.entries(object.securityRequirement).reduce<{
+            [key: string]: SecurityRequirement_SecurityRequirementValue;
+          }>((acc, [key, value]) => {
+            acc[key] =
+              SecurityRequirement_SecurityRequirementValue.fromJSON(value);
+            return acc;
+          }, {})
+        : {},
+    };
+  },
+
+  toJSON(message: SecurityRequirement): unknown {
+    const obj: any = {};
+    if (message.securityRequirement) {
+      const entries = Object.entries(message.securityRequirement);
+      if (entries.length > 0) {
+        obj.securityRequirement = {};
+        entries.forEach(([k, v]) => {
+          obj.securityRequirement[k] =
+            SecurityRequirement_SecurityRequirementValue.toJSON(v);
+        });
+      }
+    }
+    return obj;
+  },
+
   create(base?: DeepPartial<SecurityRequirement>): SecurityRequirement {
     return SecurityRequirement.fromPartial(base ?? {});
   },
@@ -4357,6 +5566,22 @@ export const SecurityRequirement_SecurityRequirementValue: MessageFns<SecurityRe
         reader.skip(tag & 7);
       }
       return message;
+    },
+
+    fromJSON(object: any): SecurityRequirement_SecurityRequirementValue {
+      return {
+        scope: globalThis.Array.isArray(object?.scope)
+          ? object.scope.map((e: any) => globalThis.String(e))
+          : [],
+      };
+    },
+
+    toJSON(message: SecurityRequirement_SecurityRequirementValue): unknown {
+      const obj: any = {};
+      if (message.scope?.length) {
+        obj.scope = message.scope;
+      }
+      return obj;
     },
 
     create(
@@ -4436,6 +5661,28 @@ export const SecurityRequirement_SecurityRequirementEntry: MessageFns<SecurityRe
       return message;
     },
 
+    fromJSON(object: any): SecurityRequirement_SecurityRequirementEntry {
+      return {
+        key: isSet(object.key) ? globalThis.String(object.key) : "",
+        value: isSet(object.value)
+          ? SecurityRequirement_SecurityRequirementValue.fromJSON(object.value)
+          : undefined,
+      };
+    },
+
+    toJSON(message: SecurityRequirement_SecurityRequirementEntry): unknown {
+      const obj: any = {};
+      if (message.key !== "") {
+        obj.key = message.key;
+      }
+      if (message.value !== undefined) {
+        obj.value = SecurityRequirement_SecurityRequirementValue.toJSON(
+          message.value,
+        );
+      }
+      return obj;
+    },
+
     create(
       base?: DeepPartial<SecurityRequirement_SecurityRequirementEntry>,
     ): SecurityRequirement_SecurityRequirementEntry {
@@ -4502,6 +5749,34 @@ export const Scopes: MessageFns<Scopes> = {
       reader.skip(tag & 7);
     }
     return message;
+  },
+
+  fromJSON(object: any): Scopes {
+    return {
+      scope: isObject(object.scope)
+        ? Object.entries(object.scope).reduce<{ [key: string]: string }>(
+            (acc, [key, value]) => {
+              acc[key] = String(value);
+              return acc;
+            },
+            {},
+          )
+        : {},
+    };
+  },
+
+  toJSON(message: Scopes): unknown {
+    const obj: any = {};
+    if (message.scope) {
+      const entries = Object.entries(message.scope);
+      if (entries.length > 0) {
+        obj.scope = {};
+        entries.forEach(([k, v]) => {
+          obj.scope[k] = v;
+        });
+      }
+    }
+    return obj;
   },
 
   create(base?: DeepPartial<Scopes>): Scopes {
@@ -4572,6 +5847,24 @@ export const Scopes_ScopeEntry: MessageFns<Scopes_ScopeEntry> = {
     return message;
   },
 
+  fromJSON(object: any): Scopes_ScopeEntry {
+    return {
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
+      value: isSet(object.value) ? globalThis.String(object.value) : "",
+    };
+  },
+
+  toJSON(message: Scopes_ScopeEntry): unknown {
+    const obj: any = {};
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== "") {
+      obj.value = message.value;
+    }
+    return obj;
+  },
+
   create(base?: DeepPartial<Scopes_ScopeEntry>): Scopes_ScopeEntry {
     return Scopes_ScopeEntry.fromPartial(base ?? {});
   },
@@ -4613,9 +5906,19 @@ function longToNumber(int64: { toString(): string }): number {
   return num;
 }
 
+function isObject(value: any): boolean {
+  return typeof value === "object" && value !== null;
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
+}
+
 export interface MessageFns<T> {
   encode(message: T, writer?: BinaryWriter): BinaryWriter;
   decode(input: BinaryReader | Uint8Array, length?: number): T;
+  fromJSON(object: any): T;
+  toJSON(message: T): unknown;
   create(base?: DeepPartial<T>): T;
   fromPartial(object: DeepPartial<T>): T;
 }

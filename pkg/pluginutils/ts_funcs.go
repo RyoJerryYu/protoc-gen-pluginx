@@ -83,7 +83,8 @@ func TSImportPath(thisPath string, modulePath string) string {
 func (g *TSRegistry) ImportSegments() string {
 	thisModule := TSModule_TSProto(g.GenOpts.FileGenerator.F.Desc)
 	var imports []string
-	for moduleName, module := range g.ImportModules {
+	for _, module := range g.ImportModules {
+		moduleName := module.ModuleName
 		importPath := module.Path
 		if module.Relative {
 			importPath = TSImportPath(thisModule.Path, module.Path)
@@ -161,7 +162,7 @@ func (opt *TSRegistry) PTmplStr(tmpl string, data interface{}, funcs ...template
 
 func (r *TSRegistry) QualifiedTSIdent(ident TSIdent) string {
 	// glog.V(3).Infof("QualifiedTSIdent: %s", m.GoIdent.GoName)
-	r.ImportModules[ident.ModuleName] = ident.TSModule
+	r.ImportModules[ident.Path] = ident.TSModule
 	return ident.ModuleName + "." + ident.Name
 }
 

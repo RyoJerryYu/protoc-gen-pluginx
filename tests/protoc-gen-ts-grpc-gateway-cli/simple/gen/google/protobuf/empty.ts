@@ -46,6 +46,15 @@ export const Empty: MessageFns<Empty> = {
     return message;
   },
 
+  fromJSON(_: any): Empty {
+    return {};
+  },
+
+  toJSON(_: Empty): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
   create(base?: DeepPartial<Empty>): Empty {
     return Empty.fromPartial(base ?? {});
   },
@@ -77,6 +86,8 @@ export type DeepPartial<T> = T extends Builtin
 export interface MessageFns<T> {
   encode(message: T, writer?: BinaryWriter): BinaryWriter;
   decode(input: BinaryReader | Uint8Array, length?: number): T;
+  fromJSON(object: any): T;
+  toJSON(message: T): unknown;
   create(base?: DeepPartial<T>): T;
   fromPartial(object: DeepPartial<T>): T;
 }

@@ -30,6 +30,18 @@ export function exampleEnumFromJSON(object: any): ExampleEnum {
   }
 }
 
+export function exampleEnumToJSON(object: ExampleEnum): string {
+  switch (object) {
+    case ExampleEnum.EXAMPLE_ENUM_UNSPECIFIED:
+      return "EXAMPLE_ENUM_UNSPECIFIED";
+    case ExampleEnum.EXAMPLE_ENUM_FIRST:
+      return "EXAMPLE_ENUM_FIRST";
+    case ExampleEnum.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
 export function exampleEnumToNumber(object: ExampleEnum): number {
   switch (object) {
     case ExampleEnum.EXAMPLE_ENUM_UNSPECIFIED:
@@ -86,6 +98,22 @@ export const OneofEnumMessage: MessageFns<OneofEnumMessage> = {
     return message;
   },
 
+  fromJSON(object: any): OneofEnumMessage {
+    return {
+      exampleEnum: isSet(object.exampleEnum)
+        ? exampleEnumFromJSON(object.exampleEnum)
+        : undefined,
+    };
+  },
+
+  toJSON(message: OneofEnumMessage): unknown {
+    const obj: any = {};
+    if (message.exampleEnum !== undefined) {
+      obj.exampleEnum = exampleEnumToJSON(message.exampleEnum);
+    }
+    return obj;
+  },
+
   create(base?: DeepPartial<OneofEnumMessage>): OneofEnumMessage {
     return OneofEnumMessage.fromPartial(base ?? {});
   },
@@ -115,9 +143,15 @@ export type DeepPartial<T> = T extends Builtin
         ? { [K in keyof T]?: DeepPartial<T[K]> }
         : Partial<T>;
 
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
+}
+
 export interface MessageFns<T> {
   encode(message: T, writer?: BinaryWriter): BinaryWriter;
   decode(input: BinaryReader | Uint8Array, length?: number): T;
+  fromJSON(object: any): T;
+  toJSON(message: T): unknown;
   create(base?: DeepPartial<T>): T;
   fromPartial(object: DeepPartial<T>): T;
 }

@@ -30,6 +30,18 @@ export function pathEnumFromJSON(object: any): PathEnum {
   }
 }
 
+export function pathEnumToJSON(object: PathEnum): string {
+  switch (object) {
+    case PathEnum.ABC:
+      return "ABC";
+    case PathEnum.DEF:
+      return "DEF";
+    case PathEnum.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
 export function pathEnumToNumber(object: PathEnum): number {
   switch (object) {
     case PathEnum.ABC:
@@ -70,6 +82,18 @@ export function snakeCaseForImportFromJSON(object: any): snakeCaseForImport {
   }
 }
 
+export function snakeCaseForImportToJSON(object: snakeCaseForImport): string {
+  switch (object) {
+    case snakeCaseForImport.value_x:
+      return "value_x";
+    case snakeCaseForImport.value_y:
+      return "value_y";
+    case snakeCaseForImport.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
 export function snakeCaseForImportToNumber(object: snakeCaseForImport): number {
   switch (object) {
     case snakeCaseForImport.value_x:
@@ -104,6 +128,20 @@ export function messagePathEnum_NestedPathEnumFromJSON(
     case "UNRECOGNIZED":
     default:
       return MessagePathEnum_NestedPathEnum.UNRECOGNIZED;
+  }
+}
+
+export function messagePathEnum_NestedPathEnumToJSON(
+  object: MessagePathEnum_NestedPathEnum,
+): string {
+  switch (object) {
+    case MessagePathEnum_NestedPathEnum.GHI:
+      return "GHI";
+    case MessagePathEnum_NestedPathEnum.JKL:
+      return "JKL";
+    case MessagePathEnum_NestedPathEnum.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
   }
 }
 
@@ -158,6 +196,15 @@ export const MessagePathEnum: MessageFns<MessagePathEnum> = {
     return message;
   },
 
+  fromJSON(_: any): MessagePathEnum {
+    return {};
+  },
+
+  toJSON(_: MessagePathEnum): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
   create(base?: DeepPartial<MessagePathEnum>): MessagePathEnum {
     return MessagePathEnum.fromPartial(base ?? {});
   },
@@ -208,6 +255,22 @@ export const MessageWithPathEnum: MessageFns<MessageWithPathEnum> = {
       reader.skip(tag & 7);
     }
     return message;
+  },
+
+  fromJSON(object: any): MessageWithPathEnum {
+    return {
+      value: isSet(object.value)
+        ? pathEnumFromJSON(object.value)
+        : PathEnum.ABC,
+    };
+  },
+
+  toJSON(message: MessageWithPathEnum): unknown {
+    const obj: any = {};
+    if (message.value !== PathEnum.ABC) {
+      obj.value = pathEnumToJSON(message.value);
+    }
+    return obj;
   },
 
   create(base?: DeepPartial<MessageWithPathEnum>): MessageWithPathEnum {
@@ -268,6 +331,22 @@ export const MessageWithNestedPathEnum: MessageFns<MessageWithNestedPathEnum> =
       return message;
     },
 
+    fromJSON(object: any): MessageWithNestedPathEnum {
+      return {
+        value: isSet(object.value)
+          ? messagePathEnum_NestedPathEnumFromJSON(object.value)
+          : MessagePathEnum_NestedPathEnum.GHI,
+      };
+    },
+
+    toJSON(message: MessageWithNestedPathEnum): unknown {
+      const obj: any = {};
+      if (message.value !== MessagePathEnum_NestedPathEnum.GHI) {
+        obj.value = messagePathEnum_NestedPathEnumToJSON(message.value);
+      }
+      return obj;
+    },
+
     create(
       base?: DeepPartial<MessageWithNestedPathEnum>,
     ): MessageWithNestedPathEnum {
@@ -301,9 +380,15 @@ export type DeepPartial<T> = T extends Builtin
         ? { [K in keyof T]?: DeepPartial<T[K]> }
         : Partial<T>;
 
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
+}
+
 export interface MessageFns<T> {
   encode(message: T, writer?: BinaryWriter): BinaryWriter;
   decode(input: BinaryReader | Uint8Array, length?: number): T;
+  fromJSON(object: any): T;
+  toJSON(message: T): unknown;
   create(base?: DeepPartial<T>): T;
   fromPartial(object: DeepPartial<T>): T;
 }

@@ -33,6 +33,16 @@ export function nullValueFromJSON(object: any): NullValue {
   }
 }
 
+export function nullValueToJSON(object: NullValue): string {
+  switch (object) {
+    case NullValue.NULL_VALUE:
+      return "NULL_VALUE";
+    case NullValue.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
 export function nullValueToNumber(object: NullValue): number {
   switch (object) {
     case NullValue.NULL_VALUE:
@@ -144,6 +154,33 @@ export const Struct: MessageFns<Struct> & StructWrapperFns = {
     return message;
   },
 
+  fromJSON(object: any): Struct {
+    return {
+      fields: isObject(object.fields)
+        ? Object.entries(object.fields).reduce<{
+            [key: string]: any | undefined;
+          }>((acc, [key, value]) => {
+            acc[key] = value as any | undefined;
+            return acc;
+          }, {})
+        : {},
+    };
+  },
+
+  toJSON(message: Struct): unknown {
+    const obj: any = {};
+    if (message.fields) {
+      const entries = Object.entries(message.fields);
+      if (entries.length > 0) {
+        obj.fields = {};
+        entries.forEach(([k, v]) => {
+          obj.fields[k] = v;
+        });
+      }
+    }
+    return obj;
+  },
+
   create(base?: DeepPartial<Struct>): Struct {
     return Struct.fromPartial(base ?? {});
   },
@@ -234,6 +271,24 @@ export const Struct_FieldsEntry: MessageFns<Struct_FieldsEntry> = {
       reader.skip(tag & 7);
     }
     return message;
+  },
+
+  fromJSON(object: any): Struct_FieldsEntry {
+    return {
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
+      value: isSet(object?.value) ? object.value : undefined,
+    };
+  },
+
+  toJSON(message: Struct_FieldsEntry): unknown {
+    const obj: any = {};
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = message.value;
+    }
+    return obj;
   },
 
   create(base?: DeepPartial<Struct_FieldsEntry>): Struct_FieldsEntry {
@@ -359,6 +414,52 @@ export const Value: MessageFns<Value> & AnyValueWrapperFns = {
     return message;
   },
 
+  fromJSON(object: any): Value {
+    return {
+      nullValue: isSet(object.nullValue)
+        ? nullValueFromJSON(object.nullValue)
+        : undefined,
+      numberValue: isSet(object.numberValue)
+        ? globalThis.Number(object.numberValue)
+        : undefined,
+      stringValue: isSet(object.stringValue)
+        ? globalThis.String(object.stringValue)
+        : undefined,
+      boolValue: isSet(object.boolValue)
+        ? globalThis.Boolean(object.boolValue)
+        : undefined,
+      structValue: isObject(object.structValue)
+        ? object.structValue
+        : undefined,
+      listValue: globalThis.Array.isArray(object.listValue)
+        ? [...object.listValue]
+        : undefined,
+    };
+  },
+
+  toJSON(message: Value): unknown {
+    const obj: any = {};
+    if (message.nullValue !== undefined) {
+      obj.nullValue = nullValueToJSON(message.nullValue);
+    }
+    if (message.numberValue !== undefined) {
+      obj.numberValue = message.numberValue;
+    }
+    if (message.stringValue !== undefined) {
+      obj.stringValue = message.stringValue;
+    }
+    if (message.boolValue !== undefined) {
+      obj.boolValue = message.boolValue;
+    }
+    if (message.structValue !== undefined) {
+      obj.structValue = message.structValue;
+    }
+    if (message.listValue !== undefined) {
+      obj.listValue = message.listValue;
+    }
+    return obj;
+  },
+
   create(base?: DeepPartial<Value>): Value {
     return Value.fromPartial(base ?? {});
   },
@@ -455,6 +556,22 @@ export const ListValue: MessageFns<ListValue> & ListValueWrapperFns = {
     return message;
   },
 
+  fromJSON(object: any): ListValue {
+    return {
+      values: globalThis.Array.isArray(object?.values)
+        ? [...object.values]
+        : [],
+    };
+  },
+
+  toJSON(message: ListValue): unknown {
+    const obj: any = {};
+    if (message.values?.length) {
+      obj.values = message.values;
+    }
+    return obj;
+  },
+
   create(base?: DeepPartial<ListValue>): ListValue {
     return ListValue.fromPartial(base ?? {});
   },
@@ -501,9 +618,19 @@ export type DeepPartial<T> = T extends Builtin
         ? { [K in keyof T]?: DeepPartial<T[K]> }
         : Partial<T>;
 
+function isObject(value: any): boolean {
+  return typeof value === "object" && value !== null;
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
+}
+
 export interface MessageFns<T> {
   encode(message: T, writer?: BinaryWriter): BinaryWriter;
   decode(input: BinaryReader | Uint8Array, length?: number): T;
+  fromJSON(object: any): T;
+  toJSON(message: T): unknown;
   create(base?: DeepPartial<T>): T;
   fromPartial(object: DeepPartial<T>): T;
 }

@@ -11,9 +11,9 @@ importers:
       '@bufbuild/protobuf':
         specifier: ^2.2.3
         version: 2.2.3
-      nice-grpc-web:
-        specifier: ^3.3.5
-        version: 3.3.5(ws@8.18.0)
+      nice-grpc-common:
+        specifier: ^2.0.2
+        version: 2.0.2
       prettier:
         specifier: ^3.4.2
         version: 3.4.2
@@ -23,22 +23,8 @@ packages:
   '@bufbuild/protobuf@2.2.3':
     resolution: {integrity: sha512-tFQoXHJdkEOSwj5tRIZSPNUuXK3RaR7T1nUrPgbYX1pUbvqqaaZAsfo+NXBPsz5rZMSKVFrgK1WL8Q/MSLvprg==}
 
-  abort-controller-x@0.4.3:
-    resolution: {integrity: sha512-VtUwTNU8fpMwvWGn4xE93ywbogTYsuT+AUxAXOeelbXuQVIwNmC5YLeho9sH4vZ4ITW8414TTAOG1nW6uIVHCA==}
-
-  isomorphic-ws@5.0.0:
-    resolution: {integrity: sha512-muId7Zzn9ywDsyXgTIafTry2sV3nySZeUDe6YedVd1Hvuuep5AsIlqK+XefWpYTyJG5e503F2xIuT2lcU6rCSw==}
-    peerDependencies:
-      ws: '*'
-
-  js-base64@3.7.7:
-    resolution: {integrity: sha512-7rCnleh0z2CkXhH67J8K1Ytz0b2Y+yxTPL+/KOJoa20hfnVQ/3/T6W/KflYI4bRHRagNeXeU2bkNGI3v1oS/lw==}
-
   nice-grpc-common@2.0.2:
     resolution: {integrity: sha512-7RNWbls5kAL1QVUOXvBsv1uO0wPQK3lHv+cY1gwkTzirnG1Nop4cBJZubpgziNbaVc/bl9QJcyvsf/NQxa3rjQ==}
-
-  nice-grpc-web@3.3.5:
-    resolution: {integrity: sha512-+G+WcHUHCXZC/GcZ8OiuT7BSlvIBsujaojcemGIHClq8Dh3z31BzsC1E8bUv++WzQAHq1/8PnBySvcmF1tb90Q==}
 
   prettier@3.4.2:
     resolution: {integrity: sha512-e9MewbtFo+Fevyuxn/4rrcDAaq0IYxPGLvObpQjiZBMAzB9IGmzlnG9RZy3FFas+eBMu2vA0CszMeduow5dIuQ==}
@@ -48,45 +34,14 @@ packages:
   ts-error@1.0.6:
     resolution: {integrity: sha512-tLJxacIQUM82IR7JO1UUkKlYuUTmoY9HBJAmNWFzheSlDS5SPMcNIepejHJa4BpPQLAcbRhRf3GDJzyj6rbKvA==}
 
-  ws@8.18.0:
-    resolution: {integrity: sha512-8VbfWfHLbbwu3+N6OKsOMpBdT4kXPDDB9cJk2bJ6mh9ucxdlnNvH1e+roYkKmN9Nxw2yjz7VzeO9oOz2zJ04Pw==}
-    engines: {node: '>=10.0.0'}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: '>=5.0.2'
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
-
 snapshots:
 
   '@bufbuild/protobuf@2.2.3': {}
-
-  abort-controller-x@0.4.3: {}
-
-  isomorphic-ws@5.0.0(ws@8.18.0):
-    dependencies:
-      ws: 8.18.0
-
-  js-base64@3.7.7: {}
 
   nice-grpc-common@2.0.2:
     dependencies:
       ts-error: 1.0.6
 
-  nice-grpc-web@3.3.5(ws@8.18.0):
-    dependencies:
-      abort-controller-x: 0.4.3
-      isomorphic-ws: 5.0.0(ws@8.18.0)
-      js-base64: 3.7.7
-      nice-grpc-common: 2.0.2
-    transitivePeerDependencies:
-      - ws
-
   prettier@3.4.2: {}
 
   ts-error@1.0.6: {}
-
-  ws@8.18.0: {}

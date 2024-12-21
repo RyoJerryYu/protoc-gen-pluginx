@@ -12,7 +12,7 @@ plugins:
       - env=browser
       - useOptionals=messages
       - outputServices=generic-definitions
-      - outputJsonMethods=false
+      - outputServices=nice-grpc
       - useExactTypes=false
       - esModuleInterop=true
       - stringEnums=true

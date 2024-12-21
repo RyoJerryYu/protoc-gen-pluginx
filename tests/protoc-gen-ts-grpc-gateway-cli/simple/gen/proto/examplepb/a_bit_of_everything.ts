@@ -6,6 +6,7 @@
 
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
+import { type CallContext, type CallOptions } from "nice-grpc-common";
 import { Duration } from "../../google/protobuf/duration";
 import { Empty } from "../../google/protobuf/empty";
 import { FieldMask } from "../../google/protobuf/field_mask";
@@ -16,11 +17,13 @@ import { OneofEnumMessage } from "../oneofenum/oneof_enum";
 import {
   MessagePathEnum_NestedPathEnum,
   messagePathEnum_NestedPathEnumFromJSON,
+  messagePathEnum_NestedPathEnumToJSON,
   messagePathEnum_NestedPathEnumToNumber,
   MessageWithNestedPathEnum,
   MessageWithPathEnum,
   PathEnum,
   pathEnumFromJSON,
+  pathEnumToJSON,
   pathEnumToNumber,
 } from "../pathenum/path_enum";
 import { IdMessage } from "../sub2/message";
@@ -48,6 +51,18 @@ export function numericEnumFromJSON(object: any): NumericEnum {
     case "UNRECOGNIZED":
     default:
       return NumericEnum.UNRECOGNIZED;
+  }
+}
+
+export function numericEnumToJSON(object: NumericEnum): string {
+  switch (object) {
+    case NumericEnum.ZERO:
+      return "ZERO";
+    case NumericEnum.ONE:
+      return "ONE";
+    case NumericEnum.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
   }
 }
 
@@ -173,6 +188,20 @@ export function aBitOfEverything_Nested_DeepEnumFromJSON(
     case "UNRECOGNIZED":
     default:
       return ABitOfEverything_Nested_DeepEnum.UNRECOGNIZED;
+  }
+}
+
+export function aBitOfEverything_Nested_DeepEnumToJSON(
+  object: ABitOfEverything_Nested_DeepEnum,
+): string {
+  switch (object) {
+    case ABitOfEverything_Nested_DeepEnum.FALSE:
+      return "FALSE";
+    case ABitOfEverything_Nested_DeepEnum.TRUE:
+      return "TRUE";
+    case ABitOfEverything_Nested_DeepEnum.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
   }
 }
 
@@ -381,6 +410,24 @@ export const ErrorObject: MessageFns<ErrorObject> = {
       reader.skip(tag & 7);
     }
     return message;
+  },
+
+  fromJSON(object: any): ErrorObject {
+    return {
+      code: isSet(object.code) ? globalThis.Number(object.code) : 0,
+      message: isSet(object.message) ? globalThis.String(object.message) : "",
+    };
+  },
+
+  toJSON(message: ErrorObject): unknown {
+    const obj: any = {};
+    if (message.code !== 0) {
+      obj.code = Math.round(message.code);
+    }
+    if (message.message !== "") {
+      obj.message = message.message;
+    }
+    return obj;
   },
 
   create(base?: DeepPartial<ErrorObject>): ErrorObject {
@@ -1102,6 +1149,371 @@ export const ABitOfEverything: MessageFns<ABitOfEverything> = {
     return message;
   },
 
+  fromJSON(object: any): ABitOfEverything {
+    return {
+      singleNested: isSet(object.singleNested)
+        ? ABitOfEverything_Nested.fromJSON(object.singleNested)
+        : undefined,
+      uuid: isSet(object.uuid) ? globalThis.String(object.uuid) : "",
+      nested: globalThis.Array.isArray(object?.nested)
+        ? object.nested.map((e: any) => ABitOfEverything_Nested.fromJSON(e))
+        : [],
+      floatValue: isSet(object.floatValue)
+        ? globalThis.Number(object.floatValue)
+        : 0,
+      doubleValue: isSet(object.doubleValue)
+        ? globalThis.Number(object.doubleValue)
+        : 0,
+      int64Value: isSet(object.int64Value)
+        ? globalThis.Number(object.int64Value)
+        : 0,
+      uint64Value: isSet(object.uint64Value)
+        ? globalThis.Number(object.uint64Value)
+        : 0,
+      int32Value: isSet(object.int32Value)
+        ? globalThis.Number(object.int32Value)
+        : 0,
+      fixed64Value: isSet(object.fixed64Value)
+        ? globalThis.Number(object.fixed64Value)
+        : 0,
+      fixed32Value: isSet(object.fixed32Value)
+        ? globalThis.Number(object.fixed32Value)
+        : 0,
+      boolValue: isSet(object.boolValue)
+        ? globalThis.Boolean(object.boolValue)
+        : false,
+      stringValue: isSet(object.stringValue)
+        ? globalThis.String(object.stringValue)
+        : "",
+      bytesValue: isSet(object.bytesValue)
+        ? bytesFromBase64(object.bytesValue)
+        : new Uint8Array(0),
+      uint32Value: isSet(object.uint32Value)
+        ? globalThis.Number(object.uint32Value)
+        : 0,
+      enumValue: isSet(object.enumValue)
+        ? numericEnumFromJSON(object.enumValue)
+        : NumericEnum.ZERO,
+      pathEnumValue: isSet(object.pathEnumValue)
+        ? pathEnumFromJSON(object.pathEnumValue)
+        : PathEnum.ABC,
+      nestedPathEnumValue: isSet(object.nestedPathEnumValue)
+        ? messagePathEnum_NestedPathEnumFromJSON(object.nestedPathEnumValue)
+        : MessagePathEnum_NestedPathEnum.GHI,
+      sfixed32Value: isSet(object.sfixed32Value)
+        ? globalThis.Number(object.sfixed32Value)
+        : 0,
+      sfixed64Value: isSet(object.sfixed64Value)
+        ? globalThis.Number(object.sfixed64Value)
+        : 0,
+      sint32Value: isSet(object.sint32Value)
+        ? globalThis.Number(object.sint32Value)
+        : 0,
+      sint64Value: isSet(object.sint64Value)
+        ? globalThis.Number(object.sint64Value)
+        : 0,
+      repeatedStringValue: globalThis.Array.isArray(object?.repeatedStringValue)
+        ? object.repeatedStringValue.map((e: any) => globalThis.String(e))
+        : [],
+      oneofEmpty: isSet(object.oneofEmpty)
+        ? Empty.fromJSON(object.oneofEmpty)
+        : undefined,
+      oneofString: isSet(object.oneofString)
+        ? globalThis.String(object.oneofString)
+        : undefined,
+      mapValue: isObject(object.mapValue)
+        ? Object.entries(object.mapValue).reduce<{
+            [key: string]: NumericEnum;
+          }>((acc, [key, value]) => {
+            acc[key] = numericEnumFromJSON(value);
+            return acc;
+          }, {})
+        : {},
+      mappedStringValue: isObject(object.mappedStringValue)
+        ? Object.entries(object.mappedStringValue).reduce<{
+            [key: string]: string;
+          }>((acc, [key, value]) => {
+            acc[key] = String(value);
+            return acc;
+          }, {})
+        : {},
+      mappedNestedValue: isObject(object.mappedNestedValue)
+        ? Object.entries(object.mappedNestedValue).reduce<{
+            [key: string]: ABitOfEverything_Nested;
+          }>((acc, [key, value]) => {
+            acc[key] = ABitOfEverything_Nested.fromJSON(value);
+            return acc;
+          }, {})
+        : {},
+      timestampValue: isSet(object.timestampValue)
+        ? fromJsonTimestamp(object.timestampValue)
+        : undefined,
+      repeatedEnumValue: globalThis.Array.isArray(object?.repeatedEnumValue)
+        ? object.repeatedEnumValue.map((e: any) => numericEnumFromJSON(e))
+        : [],
+      repeatedEnumAnnotation: globalThis.Array.isArray(
+        object?.repeatedEnumAnnotation,
+      )
+        ? object.repeatedEnumAnnotation.map((e: any) => numericEnumFromJSON(e))
+        : [],
+      enumValueAnnotation: isSet(object.enumValueAnnotation)
+        ? numericEnumFromJSON(object.enumValueAnnotation)
+        : NumericEnum.ZERO,
+      repeatedStringAnnotation: globalThis.Array.isArray(
+        object?.repeatedStringAnnotation,
+      )
+        ? object.repeatedStringAnnotation.map((e: any) => globalThis.String(e))
+        : [],
+      repeatedNestedAnnotation: globalThis.Array.isArray(
+        object?.repeatedNestedAnnotation,
+      )
+        ? object.repeatedNestedAnnotation.map((e: any) =>
+            ABitOfEverything_Nested.fromJSON(e),
+          )
+        : [],
+      nestedAnnotation: isSet(object.nestedAnnotation)
+        ? ABitOfEverything_Nested.fromJSON(object.nestedAnnotation)
+        : undefined,
+      int64OverrideType: isSet(object.int64OverrideType)
+        ? globalThis.Number(object.int64OverrideType)
+        : 0,
+      requiredStringViaFieldBehaviorAnnotation: isSet(
+        object.requiredStringViaFieldBehaviorAnnotation,
+      )
+        ? globalThis.String(object.requiredStringViaFieldBehaviorAnnotation)
+        : "",
+      outputOnlyStringViaFieldBehaviorAnnotation: isSet(
+        object.outputOnlyStringViaFieldBehaviorAnnotation,
+      )
+        ? globalThis.String(object.outputOnlyStringViaFieldBehaviorAnnotation)
+        : "",
+      optionalStringValue: isSet(object.optionalStringValue)
+        ? globalThis.String(object.optionalStringValue)
+        : undefined,
+      productId: globalThis.Array.isArray(object?.productId)
+        ? object.productId.map((e: any) => globalThis.String(e))
+        : [],
+      optionalStringField: isSet(object.optionalStringField)
+        ? globalThis.String(object.optionalStringField)
+        : "",
+      requiredStringField1: isSet(object.requiredStringField1)
+        ? globalThis.String(object.requiredStringField1)
+        : "",
+      requiredStringField2: isSet(object.requiredStringField2)
+        ? globalThis.String(object.requiredStringField2)
+        : "",
+      requiredFieldBehaviorJsonName: isSet(
+        object.required_field_behavior_json_name_custom,
+      )
+        ? globalThis.String(object.required_field_behavior_json_name_custom)
+        : "",
+      requiredFieldSchemaJsonName: isSet(
+        object.required_field_schema_json_name_custom,
+      )
+        ? globalThis.String(object.required_field_schema_json_name_custom)
+        : "",
+      trailingOnly: isSet(object.trailingOnly)
+        ? globalThis.String(object.trailingOnly)
+        : "",
+      trailingOnlyDot: isSet(object.trailingOnlyDot)
+        ? globalThis.String(object.trailingOnlyDot)
+        : "",
+      trailingBoth: isSet(object.trailingBoth)
+        ? globalThis.String(object.trailingBoth)
+        : "",
+      trailingMultiline: isSet(object.trailingMultiline)
+        ? globalThis.String(object.trailingMultiline)
+        : "",
+      uuids: globalThis.Array.isArray(object?.uuids)
+        ? object.uuids.map((e: any) => globalThis.String(e))
+        : [],
+    };
+  },
+
+  toJSON(message: ABitOfEverything): unknown {
+    const obj: any = {};
+    if (message.singleNested !== undefined) {
+      obj.singleNested = ABitOfEverything_Nested.toJSON(message.singleNested);
+    }
+    if (message.uuid !== "") {
+      obj.uuid = message.uuid;
+    }
+    if (message.nested?.length) {
+      obj.nested = message.nested.map((e) => ABitOfEverything_Nested.toJSON(e));
+    }
+    if (message.floatValue !== 0) {
+      obj.floatValue = message.floatValue;
+    }
+    if (message.doubleValue !== 0) {
+      obj.doubleValue = message.doubleValue;
+    }
+    if (message.int64Value !== 0) {
+      obj.int64Value = Math.round(message.int64Value);
+    }
+    if (message.uint64Value !== 0) {
+      obj.uint64Value = Math.round(message.uint64Value);
+    }
+    if (message.int32Value !== 0) {
+      obj.int32Value = Math.round(message.int32Value);
+    }
+    if (message.fixed64Value !== 0) {
+      obj.fixed64Value = Math.round(message.fixed64Value);
+    }
+    if (message.fixed32Value !== 0) {
+      obj.fixed32Value = Math.round(message.fixed32Value);
+    }
+    if (message.boolValue !== false) {
+      obj.boolValue = message.boolValue;
+    }
+    if (message.stringValue !== "") {
+      obj.stringValue = message.stringValue;
+    }
+    if (message.bytesValue.length !== 0) {
+      obj.bytesValue = base64FromBytes(message.bytesValue);
+    }
+    if (message.uint32Value !== 0) {
+      obj.uint32Value = Math.round(message.uint32Value);
+    }
+    if (message.enumValue !== NumericEnum.ZERO) {
+      obj.enumValue = numericEnumToJSON(message.enumValue);
+    }
+    if (message.pathEnumValue !== PathEnum.ABC) {
+      obj.pathEnumValue = pathEnumToJSON(message.pathEnumValue);
+    }
+    if (message.nestedPathEnumValue !== MessagePathEnum_NestedPathEnum.GHI) {
+      obj.nestedPathEnumValue = messagePathEnum_NestedPathEnumToJSON(
+        message.nestedPathEnumValue,
+      );
+    }
+    if (message.sfixed32Value !== 0) {
+      obj.sfixed32Value = Math.round(message.sfixed32Value);
+    }
+    if (message.sfixed64Value !== 0) {
+      obj.sfixed64Value = Math.round(message.sfixed64Value);
+    }
+    if (message.sint32Value !== 0) {
+      obj.sint32Value = Math.round(message.sint32Value);
+    }
+    if (message.sint64Value !== 0) {
+      obj.sint64Value = Math.round(message.sint64Value);
+    }
+    if (message.repeatedStringValue?.length) {
+      obj.repeatedStringValue = message.repeatedStringValue;
+    }
+    if (message.oneofEmpty !== undefined) {
+      obj.oneofEmpty = Empty.toJSON(message.oneofEmpty);
+    }
+    if (message.oneofString !== undefined) {
+      obj.oneofString = message.oneofString;
+    }
+    if (message.mapValue) {
+      const entries = Object.entries(message.mapValue);
+      if (entries.length > 0) {
+        obj.mapValue = {};
+        entries.forEach(([k, v]) => {
+          obj.mapValue[k] = numericEnumToJSON(v);
+        });
+      }
+    }
+    if (message.mappedStringValue) {
+      const entries = Object.entries(message.mappedStringValue);
+      if (entries.length > 0) {
+        obj.mappedStringValue = {};
+        entries.forEach(([k, v]) => {
+          obj.mappedStringValue[k] = v;
+        });
+      }
+    }
+    if (message.mappedNestedValue) {
+      const entries = Object.entries(message.mappedNestedValue);
+      if (entries.length > 0) {
+        obj.mappedNestedValue = {};
+        entries.forEach(([k, v]) => {
+          obj.mappedNestedValue[k] = ABitOfEverything_Nested.toJSON(v);
+        });
+      }
+    }
+    if (message.timestampValue !== undefined) {
+      obj.timestampValue = message.timestampValue.toISOString();
+    }
+    if (message.repeatedEnumValue?.length) {
+      obj.repeatedEnumValue = message.repeatedEnumValue.map((e) =>
+        numericEnumToJSON(e),
+      );
+    }
+    if (message.repeatedEnumAnnotation?.length) {
+      obj.repeatedEnumAnnotation = message.repeatedEnumAnnotation.map((e) =>
+        numericEnumToJSON(e),
+      );
+    }
+    if (message.enumValueAnnotation !== NumericEnum.ZERO) {
+      obj.enumValueAnnotation = numericEnumToJSON(message.enumValueAnnotation);
+    }
+    if (message.repeatedStringAnnotation?.length) {
+      obj.repeatedStringAnnotation = message.repeatedStringAnnotation;
+    }
+    if (message.repeatedNestedAnnotation?.length) {
+      obj.repeatedNestedAnnotation = message.repeatedNestedAnnotation.map((e) =>
+        ABitOfEverything_Nested.toJSON(e),
+      );
+    }
+    if (message.nestedAnnotation !== undefined) {
+      obj.nestedAnnotation = ABitOfEverything_Nested.toJSON(
+        message.nestedAnnotation,
+      );
+    }
+    if (message.int64OverrideType !== 0) {
+      obj.int64OverrideType = Math.round(message.int64OverrideType);
+    }
+    if (message.requiredStringViaFieldBehaviorAnnotation !== "") {
+      obj.requiredStringViaFieldBehaviorAnnotation =
+        message.requiredStringViaFieldBehaviorAnnotation;
+    }
+    if (message.outputOnlyStringViaFieldBehaviorAnnotation !== "") {
+      obj.outputOnlyStringViaFieldBehaviorAnnotation =
+        message.outputOnlyStringViaFieldBehaviorAnnotation;
+    }
+    if (message.optionalStringValue !== undefined) {
+      obj.optionalStringValue = message.optionalStringValue;
+    }
+    if (message.productId?.length) {
+      obj.productId = message.productId;
+    }
+    if (message.optionalStringField !== "") {
+      obj.optionalStringField = message.optionalStringField;
+    }
+    if (message.requiredStringField1 !== "") {
+      obj.requiredStringField1 = message.requiredStringField1;
+    }
+    if (message.requiredStringField2 !== "") {
+      obj.requiredStringField2 = message.requiredStringField2;
+    }
+    if (message.requiredFieldBehaviorJsonName !== "") {
+      obj.required_field_behavior_json_name_custom =
+        message.requiredFieldBehaviorJsonName;
+    }
+    if (message.requiredFieldSchemaJsonName !== "") {
+      obj.required_field_schema_json_name_custom =
+        message.requiredFieldSchemaJsonName;
+    }
+    if (message.trailingOnly !== "") {
+      obj.trailingOnly = message.trailingOnly;
+    }
+    if (message.trailingOnlyDot !== "") {
+      obj.trailingOnlyDot = message.trailingOnlyDot;
+    }
+    if (message.trailingBoth !== "") {
+      obj.trailingBoth = message.trailingBoth;
+    }
+    if (message.trailingMultiline !== "") {
+      obj.trailingMultiline = message.trailingMultiline;
+    }
+    if (message.uuids?.length) {
+      obj.uuids = message.uuids;
+    }
+    return obj;
+  },
+
   create(base?: DeepPartial<ABitOfEverything>): ABitOfEverything {
     return ABitOfEverything.fromPartial(base ?? {});
   },
@@ -1273,6 +1685,30 @@ export const ABitOfEverything_Nested: MessageFns<ABitOfEverything_Nested> = {
     return message;
   },
 
+  fromJSON(object: any): ABitOfEverything_Nested {
+    return {
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      amount: isSet(object.amount) ? globalThis.Number(object.amount) : 0,
+      ok: isSet(object.ok)
+        ? aBitOfEverything_Nested_DeepEnumFromJSON(object.ok)
+        : ABitOfEverything_Nested_DeepEnum.FALSE,
+    };
+  },
+
+  toJSON(message: ABitOfEverything_Nested): unknown {
+    const obj: any = {};
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.amount !== 0) {
+      obj.amount = Math.round(message.amount);
+    }
+    if (message.ok !== ABitOfEverything_Nested_DeepEnum.FALSE) {
+      obj.ok = aBitOfEverything_Nested_DeepEnumToJSON(message.ok);
+    }
+    return obj;
+  },
+
   create(base?: DeepPartial<ABitOfEverything_Nested>): ABitOfEverything_Nested {
     return ABitOfEverything_Nested.fromPartial(base ?? {});
   },
@@ -1340,6 +1776,26 @@ export const ABitOfEverything_MapValueEntry: MessageFns<ABitOfEverything_MapValu
         reader.skip(tag & 7);
       }
       return message;
+    },
+
+    fromJSON(object: any): ABitOfEverything_MapValueEntry {
+      return {
+        key: isSet(object.key) ? globalThis.String(object.key) : "",
+        value: isSet(object.value)
+          ? numericEnumFromJSON(object.value)
+          : NumericEnum.ZERO,
+      };
+    },
+
+    toJSON(message: ABitOfEverything_MapValueEntry): unknown {
+      const obj: any = {};
+      if (message.key !== "") {
+        obj.key = message.key;
+      }
+      if (message.value !== NumericEnum.ZERO) {
+        obj.value = numericEnumToJSON(message.value);
+      }
+      return obj;
     },
 
     create(
@@ -1410,6 +1866,24 @@ export const ABitOfEverything_MappedStringValueEntry: MessageFns<ABitOfEverythin
         reader.skip(tag & 7);
       }
       return message;
+    },
+
+    fromJSON(object: any): ABitOfEverything_MappedStringValueEntry {
+      return {
+        key: isSet(object.key) ? globalThis.String(object.key) : "",
+        value: isSet(object.value) ? globalThis.String(object.value) : "",
+      };
+    },
+
+    toJSON(message: ABitOfEverything_MappedStringValueEntry): unknown {
+      const obj: any = {};
+      if (message.key !== "") {
+        obj.key = message.key;
+      }
+      if (message.value !== "") {
+        obj.value = message.value;
+      }
+      return obj;
     },
 
     create(
@@ -1486,6 +1960,26 @@ export const ABitOfEverything_MappedNestedValueEntry: MessageFns<ABitOfEverythin
         reader.skip(tag & 7);
       }
       return message;
+    },
+
+    fromJSON(object: any): ABitOfEverything_MappedNestedValueEntry {
+      return {
+        key: isSet(object.key) ? globalThis.String(object.key) : "",
+        value: isSet(object.value)
+          ? ABitOfEverything_Nested.fromJSON(object.value)
+          : undefined,
+      };
+    },
+
+    toJSON(message: ABitOfEverything_MappedNestedValueEntry): unknown {
+      const obj: any = {};
+      if (message.key !== "") {
+        obj.key = message.key;
+      }
+      if (message.value !== undefined) {
+        obj.value = ABitOfEverything_Nested.toJSON(message.value);
+      }
+      return obj;
     },
 
     create(
@@ -1915,6 +2409,168 @@ export const ABitOfEverythingRepeated: MessageFns<ABitOfEverythingRepeated> = {
     return message;
   },
 
+  fromJSON(object: any): ABitOfEverythingRepeated {
+    return {
+      pathRepeatedFloatValue: globalThis.Array.isArray(
+        object?.pathRepeatedFloatValue,
+      )
+        ? object.pathRepeatedFloatValue.map((e: any) => globalThis.Number(e))
+        : [],
+      pathRepeatedDoubleValue: globalThis.Array.isArray(
+        object?.pathRepeatedDoubleValue,
+      )
+        ? object.pathRepeatedDoubleValue.map((e: any) => globalThis.Number(e))
+        : [],
+      pathRepeatedInt64Value: globalThis.Array.isArray(
+        object?.pathRepeatedInt64Value,
+      )
+        ? object.pathRepeatedInt64Value.map((e: any) => globalThis.Number(e))
+        : [],
+      pathRepeatedUint64Value: globalThis.Array.isArray(
+        object?.pathRepeatedUint64Value,
+      )
+        ? object.pathRepeatedUint64Value.map((e: any) => globalThis.Number(e))
+        : [],
+      pathRepeatedInt32Value: globalThis.Array.isArray(
+        object?.pathRepeatedInt32Value,
+      )
+        ? object.pathRepeatedInt32Value.map((e: any) => globalThis.Number(e))
+        : [],
+      pathRepeatedFixed64Value: globalThis.Array.isArray(
+        object?.pathRepeatedFixed64Value,
+      )
+        ? object.pathRepeatedFixed64Value.map((e: any) => globalThis.Number(e))
+        : [],
+      pathRepeatedFixed32Value: globalThis.Array.isArray(
+        object?.pathRepeatedFixed32Value,
+      )
+        ? object.pathRepeatedFixed32Value.map((e: any) => globalThis.Number(e))
+        : [],
+      pathRepeatedBoolValue: globalThis.Array.isArray(
+        object?.pathRepeatedBoolValue,
+      )
+        ? object.pathRepeatedBoolValue.map((e: any) => globalThis.Boolean(e))
+        : [],
+      pathRepeatedStringValue: globalThis.Array.isArray(
+        object?.pathRepeatedStringValue,
+      )
+        ? object.pathRepeatedStringValue.map((e: any) => globalThis.String(e))
+        : [],
+      pathRepeatedBytesValue: globalThis.Array.isArray(
+        object?.pathRepeatedBytesValue,
+      )
+        ? object.pathRepeatedBytesValue.map((e: any) => bytesFromBase64(e))
+        : [],
+      pathRepeatedUint32Value: globalThis.Array.isArray(
+        object?.pathRepeatedUint32Value,
+      )
+        ? object.pathRepeatedUint32Value.map((e: any) => globalThis.Number(e))
+        : [],
+      pathRepeatedEnumValue: globalThis.Array.isArray(
+        object?.pathRepeatedEnumValue,
+      )
+        ? object.pathRepeatedEnumValue.map((e: any) => numericEnumFromJSON(e))
+        : [],
+      pathRepeatedSfixed32Value: globalThis.Array.isArray(
+        object?.pathRepeatedSfixed32Value,
+      )
+        ? object.pathRepeatedSfixed32Value.map((e: any) => globalThis.Number(e))
+        : [],
+      pathRepeatedSfixed64Value: globalThis.Array.isArray(
+        object?.pathRepeatedSfixed64Value,
+      )
+        ? object.pathRepeatedSfixed64Value.map((e: any) => globalThis.Number(e))
+        : [],
+      pathRepeatedSint32Value: globalThis.Array.isArray(
+        object?.pathRepeatedSint32Value,
+      )
+        ? object.pathRepeatedSint32Value.map((e: any) => globalThis.Number(e))
+        : [],
+      pathRepeatedSint64Value: globalThis.Array.isArray(
+        object?.pathRepeatedSint64Value,
+      )
+        ? object.pathRepeatedSint64Value.map((e: any) => globalThis.Number(e))
+        : [],
+    };
+  },
+
+  toJSON(message: ABitOfEverythingRepeated): unknown {
+    const obj: any = {};
+    if (message.pathRepeatedFloatValue?.length) {
+      obj.pathRepeatedFloatValue = message.pathRepeatedFloatValue;
+    }
+    if (message.pathRepeatedDoubleValue?.length) {
+      obj.pathRepeatedDoubleValue = message.pathRepeatedDoubleValue;
+    }
+    if (message.pathRepeatedInt64Value?.length) {
+      obj.pathRepeatedInt64Value = message.pathRepeatedInt64Value.map((e) =>
+        Math.round(e),
+      );
+    }
+    if (message.pathRepeatedUint64Value?.length) {
+      obj.pathRepeatedUint64Value = message.pathRepeatedUint64Value.map((e) =>
+        Math.round(e),
+      );
+    }
+    if (message.pathRepeatedInt32Value?.length) {
+      obj.pathRepeatedInt32Value = message.pathRepeatedInt32Value.map((e) =>
+        Math.round(e),
+      );
+    }
+    if (message.pathRepeatedFixed64Value?.length) {
+      obj.pathRepeatedFixed64Value = message.pathRepeatedFixed64Value.map((e) =>
+        Math.round(e),
+      );
+    }
+    if (message.pathRepeatedFixed32Value?.length) {
+      obj.pathRepeatedFixed32Value = message.pathRepeatedFixed32Value.map((e) =>
+        Math.round(e),
+      );
+    }
+    if (message.pathRepeatedBoolValue?.length) {
+      obj.pathRepeatedBoolValue = message.pathRepeatedBoolValue;
+    }
+    if (message.pathRepeatedStringValue?.length) {
+      obj.pathRepeatedStringValue = message.pathRepeatedStringValue;
+    }
+    if (message.pathRepeatedBytesValue?.length) {
+      obj.pathRepeatedBytesValue = message.pathRepeatedBytesValue.map((e) =>
+        base64FromBytes(e),
+      );
+    }
+    if (message.pathRepeatedUint32Value?.length) {
+      obj.pathRepeatedUint32Value = message.pathRepeatedUint32Value.map((e) =>
+        Math.round(e),
+      );
+    }
+    if (message.pathRepeatedEnumValue?.length) {
+      obj.pathRepeatedEnumValue = message.pathRepeatedEnumValue.map((e) =>
+        numericEnumToJSON(e),
+      );
+    }
+    if (message.pathRepeatedSfixed32Value?.length) {
+      obj.pathRepeatedSfixed32Value = message.pathRepeatedSfixed32Value.map(
+        (e) => Math.round(e),
+      );
+    }
+    if (message.pathRepeatedSfixed64Value?.length) {
+      obj.pathRepeatedSfixed64Value = message.pathRepeatedSfixed64Value.map(
+        (e) => Math.round(e),
+      );
+    }
+    if (message.pathRepeatedSint32Value?.length) {
+      obj.pathRepeatedSint32Value = message.pathRepeatedSint32Value.map((e) =>
+        Math.round(e),
+      );
+    }
+    if (message.pathRepeatedSint64Value?.length) {
+      obj.pathRepeatedSint64Value = message.pathRepeatedSint64Value.map((e) =>
+        Math.round(e),
+      );
+    }
+    return obj;
+  },
+
   create(
     base?: DeepPartial<ABitOfEverythingRepeated>,
   ): ABitOfEverythingRepeated {
@@ -2003,6 +2659,20 @@ export const CheckStatusResponse: MessageFns<CheckStatusResponse> = {
     return message;
   },
 
+  fromJSON(object: any): CheckStatusResponse {
+    return {
+      status: isSet(object.status) ? Status.fromJSON(object.status) : undefined,
+    };
+  },
+
+  toJSON(message: CheckStatusResponse): unknown {
+    const obj: any = {};
+    if (message.status !== undefined) {
+      obj.status = Status.toJSON(message.status);
+    }
+    return obj;
+  },
+
   create(base?: DeepPartial<CheckStatusResponse>): CheckStatusResponse {
     return CheckStatusResponse.fromPartial(base ?? {});
   },
@@ -2054,6 +2724,18 @@ export const Body: MessageFns<Body> = {
       reader.skip(tag & 7);
     }
     return message;
+  },
+
+  fromJSON(object: any): Body {
+    return { name: isSet(object.name) ? globalThis.String(object.name) : "" };
+  },
+
+  toJSON(message: Body): unknown {
+    const obj: any = {};
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    return obj;
   },
 
   create(base?: DeepPartial<Body>): Body {
@@ -2115,6 +2797,24 @@ export const MessageWithBody: MessageFns<MessageWithBody> = {
       reader.skip(tag & 7);
     }
     return message;
+  },
+
+  fromJSON(object: any): MessageWithBody {
+    return {
+      id: isSet(object.id) ? globalThis.String(object.id) : "",
+      data: isSet(object.data) ? Body.fromJSON(object.data) : undefined,
+    };
+  },
+
+  toJSON(message: MessageWithBody): unknown {
+    const obj: any = {};
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    if (message.data !== undefined) {
+      obj.data = Body.toJSON(message.data);
+    }
+    return obj;
   },
 
   create(base?: DeepPartial<MessageWithBody>): MessageWithBody {
@@ -2185,6 +2885,28 @@ export const UpdateV2Request: MessageFns<UpdateV2Request> = {
       reader.skip(tag & 7);
     }
     return message;
+  },
+
+  fromJSON(object: any): UpdateV2Request {
+    return {
+      abe: isSet(object.abe)
+        ? ABitOfEverything.fromJSON(object.abe)
+        : undefined,
+      updateMask: isSet(object.updateMask)
+        ? FieldMask.unwrap(FieldMask.fromJSON(object.updateMask))
+        : undefined,
+    };
+  },
+
+  toJSON(message: UpdateV2Request): unknown {
+    const obj: any = {};
+    if (message.abe !== undefined) {
+      obj.abe = ABitOfEverything.toJSON(message.abe);
+    }
+    if (message.updateMask !== undefined) {
+      obj.updateMask = FieldMask.toJSON(FieldMask.wrap(message.updateMask));
+    }
+    return obj;
   },
 
   create(base?: DeepPartial<UpdateV2Request>): UpdateV2Request {
@@ -2268,6 +2990,30 @@ export const Book: MessageFns<Book> = {
     return message;
   },
 
+  fromJSON(object: any): Book {
+    return {
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      id: isSet(object.id) ? globalThis.String(object.id) : "",
+      createTime: isSet(object.createTime)
+        ? fromJsonTimestamp(object.createTime)
+        : undefined,
+    };
+  },
+
+  toJSON(message: Book): unknown {
+    const obj: any = {};
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    if (message.createTime !== undefined) {
+      obj.createTime = message.createTime.toISOString();
+    }
+    return obj;
+  },
+
   create(base?: DeepPartial<Book>): Book {
     return Book.fromPartial(base ?? {});
   },
@@ -2340,6 +3086,28 @@ export const CreateBookRequest: MessageFns<CreateBookRequest> = {
       reader.skip(tag & 7);
     }
     return message;
+  },
+
+  fromJSON(object: any): CreateBookRequest {
+    return {
+      parent: isSet(object.parent) ? globalThis.String(object.parent) : "",
+      book: isSet(object.book) ? Book.fromJSON(object.book) : undefined,
+      bookId: isSet(object.bookId) ? globalThis.String(object.bookId) : "",
+    };
+  },
+
+  toJSON(message: CreateBookRequest): unknown {
+    const obj: any = {};
+    if (message.parent !== "") {
+      obj.parent = message.parent;
+    }
+    if (message.book !== undefined) {
+      obj.book = Book.toJSON(message.book);
+    }
+    if (message.bookId !== "") {
+      obj.bookId = message.bookId;
+    }
+    return obj;
   },
 
   create(base?: DeepPartial<CreateBookRequest>): CreateBookRequest {
@@ -2424,6 +3192,32 @@ export const UpdateBookRequest: MessageFns<UpdateBookRequest> = {
     return message;
   },
 
+  fromJSON(object: any): UpdateBookRequest {
+    return {
+      book: isSet(object.book) ? Book.fromJSON(object.book) : undefined,
+      updateMask: isSet(object.updateMask)
+        ? FieldMask.unwrap(FieldMask.fromJSON(object.updateMask))
+        : undefined,
+      allowMissing: isSet(object.allowMissing)
+        ? globalThis.Boolean(object.allowMissing)
+        : false,
+    };
+  },
+
+  toJSON(message: UpdateBookRequest): unknown {
+    const obj: any = {};
+    if (message.book !== undefined) {
+      obj.book = Book.toJSON(message.book);
+    }
+    if (message.updateMask !== undefined) {
+      obj.updateMask = FieldMask.toJSON(FieldMask.wrap(message.updateMask));
+    }
+    if (message.allowMissing !== false) {
+      obj.allowMissing = message.allowMissing;
+    }
+    return obj;
+  },
+
   create(base?: DeepPartial<UpdateBookRequest>): UpdateBookRequest {
     return UpdateBookRequest.fromPartial(base ?? {});
   },
@@ -2494,6 +3288,24 @@ export const RequiredMessageTypeRequest: MessageFns<RequiredMessageTypeRequest> 
       return message;
     },
 
+    fromJSON(object: any): RequiredMessageTypeRequest {
+      return {
+        id: isSet(object.id) ? globalThis.String(object.id) : "",
+        foo: isSet(object.foo) ? Foo.fromJSON(object.foo) : undefined,
+      };
+    },
+
+    toJSON(message: RequiredMessageTypeRequest): unknown {
+      const obj: any = {};
+      if (message.id !== "") {
+        obj.id = message.id;
+      }
+      if (message.foo !== undefined) {
+        obj.foo = Foo.toJSON(message.foo);
+      }
+      return obj;
+    },
+
     create(
       base?: DeepPartial<RequiredMessageTypeRequest>,
     ): RequiredMessageTypeRequest {
@@ -2552,6 +3364,18 @@ export const Foo: MessageFns<Foo> = {
     return message;
   },
 
+  fromJSON(object: any): Foo {
+    return { bar: isSet(object.bar) ? Bar.fromJSON(object.bar) : undefined };
+  },
+
+  toJSON(message: Foo): unknown {
+    const obj: any = {};
+    if (message.bar !== undefined) {
+      obj.bar = Bar.toJSON(message.bar);
+    }
+    return obj;
+  },
+
   create(base?: DeepPartial<Foo>): Foo {
     return Foo.fromPartial(base ?? {});
   },
@@ -2603,6 +3427,18 @@ export const Bar: MessageFns<Bar> = {
       reader.skip(tag & 7);
     }
     return message;
+  },
+
+  fromJSON(object: any): Bar {
+    return { id: isSet(object.id) ? globalThis.String(object.id) : "" };
+  },
+
+  toJSON(message: Bar): unknown {
+    const obj: any = {};
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    return obj;
   },
 
   create(base?: DeepPartial<Bar>): Bar {
@@ -3152,6 +3988,212 @@ export const ABitOfEverythingServiceDefinition = {
   },
 } as const;
 
+export interface ABitOfEverythingServiceImplementation<CallContextExt = {}> {
+  createBody(
+    request: ABitOfEverything,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<ABitOfEverything>>;
+  lookup(
+    request: IdMessage,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<ABitOfEverything>>;
+  custom(
+    request: ABitOfEverything,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<ABitOfEverything>>;
+  doubleColon(
+    request: ABitOfEverything,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<ABitOfEverything>>;
+  update(
+    request: ABitOfEverything,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<Empty>>;
+  updateV2(
+    request: UpdateV2Request,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<Empty>>;
+  delete(
+    request: IdMessage,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<Empty>>;
+  getQuery(
+    request: ABitOfEverything,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<Empty>>;
+  getRepeatedQuery(
+    request: ABitOfEverythingRepeated,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<ABitOfEverythingRepeated>>;
+  deepPathEcho(
+    request: ABitOfEverything,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<ABitOfEverything>>;
+  noBindings(
+    request: Duration,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<Empty>>;
+  timeout(
+    request: Empty,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<Empty>>;
+  errorWithDetails(
+    request: Empty,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<Empty>>;
+  getMessageWithBody(
+    request: MessageWithBody,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<Empty>>;
+  postWithEmptyBody(
+    request: Body,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<Empty>>;
+  checkGetQueryParams(
+    request: ABitOfEverything,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<ABitOfEverything>>;
+  checkNestedEnumGetQueryParams(
+    request: ABitOfEverything,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<ABitOfEverything>>;
+  checkPostQueryParams(
+    request: ABitOfEverything,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<ABitOfEverything>>;
+  overwriteRequestContentType(
+    request: Body,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<Empty>>;
+  overwriteResponseContentType(
+    request: Empty,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<StringValue>>;
+  checkExternalPathEnum(
+    request: MessageWithPathEnum,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<Empty>>;
+  checkExternalNestedPathEnum(
+    request: MessageWithNestedPathEnum,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<Empty>>;
+  checkStatus(
+    request: Empty,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<CheckStatusResponse>>;
+  postOneofEnum(
+    request: OneofEnumMessage,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<Empty>>;
+  postRequiredMessageType(
+    request: RequiredMessageTypeRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<Empty>>;
+}
+
+export interface ABitOfEverythingServiceClient<CallOptionsExt = {}> {
+  createBody(
+    request: DeepPartial<ABitOfEverything>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<ABitOfEverything>;
+  lookup(
+    request: DeepPartial<IdMessage>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<ABitOfEverything>;
+  custom(
+    request: DeepPartial<ABitOfEverything>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<ABitOfEverything>;
+  doubleColon(
+    request: DeepPartial<ABitOfEverything>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<ABitOfEverything>;
+  update(
+    request: DeepPartial<ABitOfEverything>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<Empty>;
+  updateV2(
+    request: DeepPartial<UpdateV2Request>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<Empty>;
+  delete(
+    request: DeepPartial<IdMessage>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<Empty>;
+  getQuery(
+    request: DeepPartial<ABitOfEverything>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<Empty>;
+  getRepeatedQuery(
+    request: DeepPartial<ABitOfEverythingRepeated>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<ABitOfEverythingRepeated>;
+  deepPathEcho(
+    request: DeepPartial<ABitOfEverything>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<ABitOfEverything>;
+  noBindings(
+    request: DeepPartial<Duration>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<Empty>;
+  timeout(
+    request: DeepPartial<Empty>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<Empty>;
+  errorWithDetails(
+    request: DeepPartial<Empty>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<Empty>;
+  getMessageWithBody(
+    request: DeepPartial<MessageWithBody>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<Empty>;
+  postWithEmptyBody(
+    request: DeepPartial<Body>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<Empty>;
+  checkGetQueryParams(
+    request: DeepPartial<ABitOfEverything>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<ABitOfEverything>;
+  checkNestedEnumGetQueryParams(
+    request: DeepPartial<ABitOfEverything>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<ABitOfEverything>;
+  checkPostQueryParams(
+    request: DeepPartial<ABitOfEverything>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<ABitOfEverything>;
+  overwriteRequestContentType(
+    request: DeepPartial<Body>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<Empty>;
+  overwriteResponseContentType(
+    request: DeepPartial<Empty>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<StringValue>;
+  checkExternalPathEnum(
+    request: DeepPartial<MessageWithPathEnum>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<Empty>;
+  checkExternalNestedPathEnum(
+    request: DeepPartial<MessageWithNestedPathEnum>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<Empty>;
+  checkStatus(
+    request: DeepPartial<Empty>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<CheckStatusResponse>;
+  postOneofEnum(
+    request: DeepPartial<OneofEnumMessage>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<Empty>;
+  postRequiredMessageType(
+    request: DeepPartial<RequiredMessageTypeRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<Empty>;
+}
+
 export type AnotherServiceWithNoBindingsDefinition =
   typeof AnotherServiceWithNoBindingsDefinition;
 export const AnotherServiceWithNoBindingsDefinition = {
@@ -3168,6 +4210,39 @@ export const AnotherServiceWithNoBindingsDefinition = {
     },
   },
 } as const;
+
+export interface AnotherServiceWithNoBindingsServiceImplementation<
+  CallContextExt = {},
+> {
+  noBindings(
+    request: Empty,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<Empty>>;
+}
+
+export interface AnotherServiceWithNoBindingsClient<CallOptionsExt = {}> {
+  noBindings(
+    request: DeepPartial<Empty>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<Empty>;
+}
+
+function bytesFromBase64(b64: string): Uint8Array {
+  const bin = globalThis.atob(b64);
+  const arr = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; ++i) {
+    arr[i] = bin.charCodeAt(i);
+  }
+  return arr;
+}
+
+function base64FromBytes(arr: Uint8Array): string {
+  const bin: string[] = [];
+  arr.forEach((byte) => {
+    bin.push(globalThis.String.fromCharCode(byte));
+  });
+  return globalThis.btoa(bin.join(""));
+}
 
 type Builtin =
   | Date
@@ -3200,6 +4275,16 @@ function fromTimestamp(t: Timestamp): Date {
   return new globalThis.Date(millis);
 }
 
+function fromJsonTimestamp(o: any): Date {
+  if (o instanceof globalThis.Date) {
+    return o;
+  } else if (typeof o === "string") {
+    return new globalThis.Date(o);
+  } else {
+    return fromTimestamp(Timestamp.fromJSON(o));
+  }
+}
+
 function longToNumber(int64: { toString(): string }): number {
   const num = globalThis.Number(int64.toString());
   if (num > globalThis.Number.MAX_SAFE_INTEGER) {
@@ -3211,9 +4296,19 @@ function longToNumber(int64: { toString(): string }): number {
   return num;
 }
 
+function isObject(value: any): boolean {
+  return typeof value === "object" && value !== null;
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
+}
+
 export interface MessageFns<T> {
   encode(message: T, writer?: BinaryWriter): BinaryWriter;
   decode(input: BinaryReader | Uint8Array, length?: number): T;
+  fromJSON(object: any): T;
+  toJSON(message: T): unknown;
   create(base?: DeepPartial<T>): T;
   fromPartial(object: DeepPartial<T>): T;
 }

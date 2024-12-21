@@ -254,6 +254,21 @@ export const FieldMask: MessageFns<FieldMask> & FieldMaskWrapperFns = {
     return message;
   },
 
+  fromJSON(object: any): FieldMask {
+    return {
+      paths:
+        typeof object === "string"
+          ? object.split(",").filter(globalThis.Boolean)
+          : globalThis.Array.isArray(object?.paths)
+            ? object.paths.map(globalThis.String)
+            : [],
+    };
+  },
+
+  toJSON(message: FieldMask): string {
+    return message.paths.join(",");
+  },
+
   create(base?: DeepPartial<FieldMask>): FieldMask {
     return FieldMask.fromPartial(base ?? {});
   },
@@ -296,6 +311,8 @@ export type DeepPartial<T> = T extends Builtin
 export interface MessageFns<T> {
   encode(message: T, writer?: BinaryWriter): BinaryWriter;
   decode(input: BinaryReader | Uint8Array, length?: number): T;
+  fromJSON(object: any): T;
+  toJSON(message: T): unknown;
   create(base?: DeepPartial<T>): T;
   fromPartial(object: DeepPartial<T>): T;
 }

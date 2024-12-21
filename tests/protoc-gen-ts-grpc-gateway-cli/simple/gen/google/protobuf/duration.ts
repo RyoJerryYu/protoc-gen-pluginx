@@ -138,6 +138,24 @@ export const Duration: MessageFns<Duration> = {
     return message;
   },
 
+  fromJSON(object: any): Duration {
+    return {
+      seconds: isSet(object.seconds) ? globalThis.Number(object.seconds) : 0,
+      nanos: isSet(object.nanos) ? globalThis.Number(object.nanos) : 0,
+    };
+  },
+
+  toJSON(message: Duration): unknown {
+    const obj: any = {};
+    if (message.seconds !== 0) {
+      obj.seconds = Math.round(message.seconds);
+    }
+    if (message.nanos !== 0) {
+      obj.nanos = Math.round(message.nanos);
+    }
+    return obj;
+  },
+
   create(base?: DeepPartial<Duration>): Duration {
     return Duration.fromPartial(base ?? {});
   },
@@ -179,9 +197,15 @@ function longToNumber(int64: { toString(): string }): number {
   return num;
 }
 
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
+}
+
 export interface MessageFns<T> {
   encode(message: T, writer?: BinaryWriter): BinaryWriter;
   decode(input: BinaryReader | Uint8Array, length?: number): T;
+  fromJSON(object: any): T;
+  toJSON(message: T): unknown;
   create(base?: DeepPartial<T>): T;
   fromPartial(object: DeepPartial<T>): T;
 }

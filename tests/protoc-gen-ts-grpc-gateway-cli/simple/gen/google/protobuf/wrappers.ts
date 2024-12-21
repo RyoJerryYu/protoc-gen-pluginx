@@ -139,6 +139,18 @@ export const DoubleValue: MessageFns<DoubleValue> = {
     return message;
   },
 
+  fromJSON(object: any): DoubleValue {
+    return { value: isSet(object.value) ? globalThis.Number(object.value) : 0 };
+  },
+
+  toJSON(message: DoubleValue): unknown {
+    const obj: any = {};
+    if (message.value !== 0) {
+      obj.value = message.value;
+    }
+    return obj;
+  },
+
   create(base?: DeepPartial<DoubleValue>): DoubleValue {
     return DoubleValue.fromPartial(base ?? {});
   },
@@ -187,6 +199,18 @@ export const FloatValue: MessageFns<FloatValue> = {
       reader.skip(tag & 7);
     }
     return message;
+  },
+
+  fromJSON(object: any): FloatValue {
+    return { value: isSet(object.value) ? globalThis.Number(object.value) : 0 };
+  },
+
+  toJSON(message: FloatValue): unknown {
+    const obj: any = {};
+    if (message.value !== 0) {
+      obj.value = message.value;
+    }
+    return obj;
   },
 
   create(base?: DeepPartial<FloatValue>): FloatValue {
@@ -239,6 +263,18 @@ export const Int64Value: MessageFns<Int64Value> = {
     return message;
   },
 
+  fromJSON(object: any): Int64Value {
+    return { value: isSet(object.value) ? globalThis.Number(object.value) : 0 };
+  },
+
+  toJSON(message: Int64Value): unknown {
+    const obj: any = {};
+    if (message.value !== 0) {
+      obj.value = Math.round(message.value);
+    }
+    return obj;
+  },
+
   create(base?: DeepPartial<Int64Value>): Int64Value {
     return Int64Value.fromPartial(base ?? {});
   },
@@ -287,6 +323,18 @@ export const UInt64Value: MessageFns<UInt64Value> = {
       reader.skip(tag & 7);
     }
     return message;
+  },
+
+  fromJSON(object: any): UInt64Value {
+    return { value: isSet(object.value) ? globalThis.Number(object.value) : 0 };
+  },
+
+  toJSON(message: UInt64Value): unknown {
+    const obj: any = {};
+    if (message.value !== 0) {
+      obj.value = Math.round(message.value);
+    }
+    return obj;
   },
 
   create(base?: DeepPartial<UInt64Value>): UInt64Value {
@@ -339,6 +387,18 @@ export const Int32Value: MessageFns<Int32Value> = {
     return message;
   },
 
+  fromJSON(object: any): Int32Value {
+    return { value: isSet(object.value) ? globalThis.Number(object.value) : 0 };
+  },
+
+  toJSON(message: Int32Value): unknown {
+    const obj: any = {};
+    if (message.value !== 0) {
+      obj.value = Math.round(message.value);
+    }
+    return obj;
+  },
+
   create(base?: DeepPartial<Int32Value>): Int32Value {
     return Int32Value.fromPartial(base ?? {});
   },
@@ -387,6 +447,18 @@ export const UInt32Value: MessageFns<UInt32Value> = {
       reader.skip(tag & 7);
     }
     return message;
+  },
+
+  fromJSON(object: any): UInt32Value {
+    return { value: isSet(object.value) ? globalThis.Number(object.value) : 0 };
+  },
+
+  toJSON(message: UInt32Value): unknown {
+    const obj: any = {};
+    if (message.value !== 0) {
+      obj.value = Math.round(message.value);
+    }
+    return obj;
   },
 
   create(base?: DeepPartial<UInt32Value>): UInt32Value {
@@ -439,6 +511,20 @@ export const BoolValue: MessageFns<BoolValue> = {
     return message;
   },
 
+  fromJSON(object: any): BoolValue {
+    return {
+      value: isSet(object.value) ? globalThis.Boolean(object.value) : false,
+    };
+  },
+
+  toJSON(message: BoolValue): unknown {
+    const obj: any = {};
+    if (message.value !== false) {
+      obj.value = message.value;
+    }
+    return obj;
+  },
+
   create(base?: DeepPartial<BoolValue>): BoolValue {
     return BoolValue.fromPartial(base ?? {});
   },
@@ -487,6 +573,20 @@ export const StringValue: MessageFns<StringValue> = {
       reader.skip(tag & 7);
     }
     return message;
+  },
+
+  fromJSON(object: any): StringValue {
+    return {
+      value: isSet(object.value) ? globalThis.String(object.value) : "",
+    };
+  },
+
+  toJSON(message: StringValue): unknown {
+    const obj: any = {};
+    if (message.value !== "") {
+      obj.value = message.value;
+    }
+    return obj;
   },
 
   create(base?: DeepPartial<StringValue>): StringValue {
@@ -539,6 +639,22 @@ export const BytesValue: MessageFns<BytesValue> = {
     return message;
   },
 
+  fromJSON(object: any): BytesValue {
+    return {
+      value: isSet(object.value)
+        ? bytesFromBase64(object.value)
+        : new Uint8Array(0),
+    };
+  },
+
+  toJSON(message: BytesValue): unknown {
+    const obj: any = {};
+    if (message.value.length !== 0) {
+      obj.value = base64FromBytes(message.value);
+    }
+    return obj;
+  },
+
   create(base?: DeepPartial<BytesValue>): BytesValue {
     return BytesValue.fromPartial(base ?? {});
   },
@@ -548,6 +664,23 @@ export const BytesValue: MessageFns<BytesValue> = {
     return message;
   },
 };
+
+function bytesFromBase64(b64: string): Uint8Array {
+  const bin = globalThis.atob(b64);
+  const arr = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; ++i) {
+    arr[i] = bin.charCodeAt(i);
+  }
+  return arr;
+}
+
+function base64FromBytes(arr: Uint8Array): string {
+  const bin: string[] = [];
+  arr.forEach((byte) => {
+    bin.push(globalThis.String.fromCharCode(byte));
+  });
+  return globalThis.btoa(bin.join(""));
+}
 
 type Builtin =
   | Date
@@ -579,9 +712,15 @@ function longToNumber(int64: { toString(): string }): number {
   return num;
 }
 
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
+}
+
 export interface MessageFns<T> {
   encode(message: T, writer?: BinaryWriter): BinaryWriter;
   decode(input: BinaryReader | Uint8Array, length?: number): T;
+  fromJSON(object: any): T;
+  toJSON(message: T): unknown;
   create(base?: DeepPartial<T>): T;
   fromPartial(object: DeepPartial<T>): T;
 }

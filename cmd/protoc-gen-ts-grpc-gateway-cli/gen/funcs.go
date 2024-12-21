@@ -22,7 +22,7 @@ type Options struct {
 }
 
 var (
-	niceGrpcWeb = pluginutils.TSModule{ModuleName: "NiceGrpcWeb", Path: "nice-grpc-web"}
+	niceGrpcCommon = pluginutils.TSModule{ModuleName: "NiceGrpcCommon", Path: "nice-grpc-common"}
 )
 
 type Generator struct {
@@ -41,7 +41,7 @@ func (g *Generator) PTmplStr(tmpl string, data interface{}, funcs ...template.Fu
 }
 
 func (g *Generator) ApplyTemplate() error {
-	g.applyFile()
+	// g.applyFile()
 
 	// services do not nest, so we can apply them directly
 	for _, s := range g.Generator.F.Services {
@@ -53,11 +53,25 @@ func (g *Generator) ApplyTemplate() error {
 
 func (g *Generator) applyFile() {
 	g.P(`
-// PartialDeep allow all fields and all sub-fields to be optional.
+type Builtin =
+  | Date
+  | Function
+  | Uint8Array
+  | string
+  | number
+  | boolean
+  | undefined;
+// DeepPartial allow all fields and all sub-fields to be optional.
 // Used for rpc Request types.
-type PartialDeep<T> = T extends object ? {
-    [P in keyof T]?: PartialDeep<T[P]>;
-} : T;
+type DeepPartial<T> = T extends Builtin
+  ? T
+  : T extends globalThis.Array<infer U>
+    ? globalThis.Array<DeepPartial<U>>
+    : T extends ReadonlyArray<infer U>
+      ? ReadonlyArray<DeepPartial<U>>
+      : T extends {}
+        ? { [K in keyof T]?: DeepPartial<T[K]> }
+        : Partial<T>;
 `)
 }
 
@@ -67,7 +81,7 @@ func (g *Generator) applyService(service *protogen.Service) {
 		g.P(leadingDetached)
 	}
 	g.P(service.Comments.Leading)
-	g.P("export function new", service.GoName, "(): ", niceGrpcWeb.Ident("Client"), "<", serviceModule.Ident(service.GoName+"Definition"), "> {")
+	g.P("export function new", service.GoName, "(): ", serviceModule.Ident(service.GoName+"Client"), " {")
 	g.P("return {")
 
 	for _, method := range service.Methods {
@@ -79,13 +93,14 @@ func (g *Generator) applyService(service *protogen.Service) {
 }
 
 func (g *Generator) applyMethod(method *protogen.Method) {
-	input := method.Input
-	output := method.Output
+	input := pluginutils.TSModule_TSProto(method.Input.Desc.ParentFile()).Ident(method.Input.GoIdent.GoName)
+	output := pluginutils.TSModule_TSProto(method.Output.Desc.ParentFile()).Ident(method.Output.GoIdent.GoName)
+	methodModule := pluginutils.TSModule_TSProto(method.Desc.ParentFile())
 	g.P(method.Comments.Leading)
 	glog.V(3).Infof("method location: %s, %s", method.Location.SourceFile, method.Location.Path)
 	if method.Desc.IsStreamingServer() {
 		g.Pf(`%s(
-		req: PartialDeep<%s>,
+		req: %s<%s>,
 		entityNotifier?: fm.NotifyStreamEntityArrival<%s>,
 		initReq?: fm.InitReq,
 	): Promise<void> {
@@ -93,27 +108,28 @@ func (g *Generator) applyMethod(method *protogen.Method) {
   	},
 `,
 			method.GoName,
-			pluginutils.TSModule_TSProto(input.Desc.ParentFile()).Ident(input.GoIdent.GoName),
-			pluginutils.TSModule_TSProto(output.Desc.ParentFile()).Ident(output.GoIdent.GoName),
-			pluginutils.TSModule_TSProto(output.Desc.ParentFile()).Ident(output.GoIdent.GoName),
+			niceGrpcCommon.Ident("DeepPartial"),
+			input,
+			output,
+			output,
 			g.renderURL(&g.TSOption)(method),
 			g.buildInitReq(method),
 		)
 
 	} else {
 		g.Pf(`%s(
-		req: PartialDeep<%s>, 
+		req: %s<%s>, 
 		options?: %s,
 	): Promise<%s> {
-		// return fm.fetchRequest<%s>(%s, {...initReq, %s});
-		throw new Error("Not implemented");
+		return fm.fetchRequest<%s>(%s, {...initReq, %s});
 	},
 `,
 			pluginutils.FunctionCase(method.GoName),
-			pluginutils.TSModule_TSProto(input.Desc.ParentFile()).Ident(input.GoIdent.GoName),
-			niceGrpcWeb.Ident("CallOptions"),
-			pluginutils.TSModule_TSProto(output.Desc.ParentFile()).Ident(output.GoIdent.GoName),
-			pluginutils.TSModule_TSProto(output.Desc.ParentFile()).Ident(output.GoIdent.GoName),
+			methodModule.Ident("DeepPartial"),
+			input,
+			niceGrpcCommon.Ident("CallOptions"),
+			output,
+			output,
 			g.renderURL(&g.TSOption)(method),
 			g.buildInitReq(method),
 		)

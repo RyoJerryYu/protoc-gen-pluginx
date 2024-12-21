@@ -101,6 +101,30 @@ export const Status: MessageFns<Status> = {
     return message;
   },
 
+  fromJSON(object: any): Status {
+    return {
+      code: isSet(object.code) ? globalThis.Number(object.code) : 0,
+      message: isSet(object.message) ? globalThis.String(object.message) : "",
+      details: globalThis.Array.isArray(object?.details)
+        ? object.details.map((e: any) => Any.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: Status): unknown {
+    const obj: any = {};
+    if (message.code !== 0) {
+      obj.code = Math.round(message.code);
+    }
+    if (message.message !== "") {
+      obj.message = message.message;
+    }
+    if (message.details?.length) {
+      obj.details = message.details.map((e) => Any.toJSON(e));
+    }
+    return obj;
+  },
+
   create(base?: DeepPartial<Status>): Status {
     return Status.fromPartial(base ?? {});
   },
@@ -132,9 +156,15 @@ export type DeepPartial<T> = T extends Builtin
         ? { [K in keyof T]?: DeepPartial<T[K]> }
         : Partial<T>;
 
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
+}
+
 export interface MessageFns<T> {
   encode(message: T, writer?: BinaryWriter): BinaryWriter;
   decode(input: BinaryReader | Uint8Array, length?: number): T;
+  fromJSON(object: any): T;
+  toJSON(message: T): unknown;
   create(base?: DeepPartial<T>): T;
   fromPartial(object: DeepPartial<T>): T;
 }
