@@ -74,19 +74,32 @@ func (g *Generator) applyMethod(method *protogen.Method) {
 	glog.V(3).Infof("method location: %s, %s", method.Location.SourceFile, method.Location.Path)
 	if method.Desc.IsStreamingServer() {
 		tmpl := `
-  {{.GoName}}(req: Partial<{{tsType .Input, .Location}}>, entityNotifier?: fm.NotifyStreamEntityArrival<{{tsType .Output .Location}}>, initReq?: fm.InitReq): Promise<void> {
-    return fm.fetchStreamingRequest<{{tsType .Output .Location}}>({{renderURL .}}, entityNotifier, {...initReq, {{buildInitReq .}}});
-  }
+	{{.GoName}}(
+		req: Partial<{{tsType .Input, .Location}}>,
+		entityNotifier?: fm.NotifyStreamEntityArrival<{{tsType .Output .Location}}>,
+		initReq?: fm.InitReq
+	): Promise<void> {
+		return fm.fetchStreamingRequest<{{tsType .Output .Location}}>({{renderURL .}}, entityNotifier, {...initReq, {{buildInitReq .}}});
+  	},
 `
 		g.PTmplStr(tmpl, method)
+		g.Pf(`
+	%s(
+		req: Partial<{{tsType .Input, .Location}}>,
+		entityNotifier?: fm.NotifyStreamEntityArrival<{{tsType .Output .Location}}>,
+		initReq?: fm.InitReq
+	): Promise<void> {
+		return fm.fetchStreamingRequest<{{tsType .Output .Location}}>({{renderURL .}}, entityNotifier, {...initReq, {{buildInitReq .}}});
+  	},
+`, method.GoName)
 	} else {
 		tmpl := `
-  {{.GoName}}(
-    req: Partial<{{tsType .Input .Location}}>, 
-    options?: CallOptions
-  ): Promise<{{tsType .Output .Location}}> {
-    return fm.fetchRequest<{{tsType .Output .Location}}>({{renderURL .}}, {...initReq, {{buildInitReq .}}});
-  }
+	{{.GoName}}(
+		req: Partial<{{tsType .Input .Location}}>, 
+		options?: CallOptions
+	): Promise<{{tsType .Output .Location}}> {
+		return fm.fetchRequest<{{tsType .Output .Location}}>({{renderURL .}}, {...initReq, {{buildInitReq .}}});
+	},
 `
 		g.PTmplStr(tmpl, method)
 	}

@@ -42,7 +42,8 @@ func (g *TSRegistry) Apply(w io.Writer) error {
 
 type TSModule struct {
 	ModuleName string
-	Path       string // path relative to the generate root
+	Path       string // path relative to the generate root, or the absolute path
+	Relative   bool   // whether the path is relative to the current file
 }
 
 func (m TSModule) Ident(name string) TSIdent {
@@ -62,6 +63,7 @@ func TSModule_TSProto(file protoreflect.FileDescriptor) TSModule {
 	return TSModule{
 		ModuleName: GetModuleName(file),
 		Path:       strings.TrimSuffix(protoPath, ".proto") + ".ts",
+		Relative:   true,
 	}
 }
 
@@ -82,9 +84,12 @@ func (g *TSRegistry) ImportSegments() string {
 	thisModule := TSModule_TSProto(g.GenOpts.FileGenerator.F.Desc)
 	var imports []string
 	for moduleName, module := range g.ImportModules {
-		relativePath := TSImportPath(thisModule.Path, module.Path)
-		glog.V(3).Infof("ImportSegments: thisPath: %s, modulePath: %s, relativePath: %s", thisModule, module, relativePath)
-		imports = append(imports, fmt.Sprintf("import * as %s from '%s';", moduleName, relativePath))
+		importPath := module.Path
+		if module.Relative {
+			importPath = TSImportPath(thisModule.Path, module.Path)
+		}
+		glog.V(3).Infof("ImportSegments: thisPath: %s, modulePath: %s, importPath: %s", thisModule, module, importPath)
+		imports = append(imports, fmt.Sprintf("import * as %s from '%s';", moduleName, importPath))
 	}
 	return strings.Join(imports, "\n")
 }
