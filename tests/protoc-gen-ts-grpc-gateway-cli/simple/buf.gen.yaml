@@ -5,6 +5,7 @@ plugins:
     opt:
       - paths=source_relative
       - logtostderr=true
+      - v=3
   - remote: buf.build/community/stephenh-ts-proto
     out: gen
     # reference: https://github.com/deeplay-io/nice-grpc/blob/master/packages/nice-grpc-web/README.md#using-ts-proto

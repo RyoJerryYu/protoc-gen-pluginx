@@ -9,6 +9,7 @@ import (
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils"
 	"github.com/golang/glog"
 	"google.golang.org/protobuf/compiler/protogen"
+	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 type httpOptions struct {
@@ -91,12 +92,35 @@ func (g *Generator) buildInitReq(method *protogen.Method) string {
 	httpOpts := g.httpOptions(method)
 	httpMethod := httpOpts.Method
 	httpBody := httpOpts.Body
-	m := `method: "` + httpMethod + `"`
-	fields := []string{m}
+
+	initRes := [][2]string{
+		{"method", fmt.Sprintf(`"%s"`, httpMethod)},
+	}
+
+	TSProtoJsonify := func(in string, desc protoreflect.Descriptor) string {
+		ident := g.QualifiedTSIdent(pluginutils.TSModule_TSProto(desc.ParentFile()).Ident(string(desc.Name())))
+		return `JSON.stringify(` + ident + `.toJSON(` + in + `))`
+	}
 	if httpBody == nil || *httpBody == "*" {
-		fields = append(fields, "body: JSON.stringify(req, fm.replacer)")
+		bodyMsg := method.Input.Desc
+		initRes = append(initRes, [2]string{"body", TSProtoJsonify("fullReq", bodyMsg)})
 	} else if *httpBody != "" {
-		fields = append(fields, `body: JSON.stringify(req["`+*httpBody+`"], fm.replacer)`)
+		bodyField := method.Input.Desc.Fields().ByTextName(*httpBody)
+		var bodyType protoreflect.Descriptor
+		switch bodyField.Kind() {
+		case protoreflect.MessageKind:
+			bodyType = bodyField.Message()
+		case protoreflect.EnumKind:
+			bodyType = bodyField.Enum()
+		default:
+			glog.Fatalf("unsupported body field type: %s", bodyField.Kind())
+		}
+		initRes = append(initRes, [2]string{"body", TSProtoJsonify(`fullReq.`+*httpBody, bodyType)})
+	}
+
+	fields := make([]string, 0, len(initRes))
+	for _, v := range initRes {
+		fields = append(fields, fmt.Sprintf(`%s: %s`, v[0], v[1]))
 	}
 
 	return strings.Join(fields, ", ")

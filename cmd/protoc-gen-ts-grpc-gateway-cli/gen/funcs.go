@@ -82,6 +82,7 @@ func (g *Generator) applyService(service *protogen.Service) {
 	}
 	g.P(service.Comments.Leading)
 	g.P("export function new", service.GoName, "(): ", serviceModule.Ident(service.GoName+"Client"), " {")
+	g.P("  const initReq = {}")
 	g.P("return {")
 
 	for _, method := range service.Methods {
@@ -96,15 +97,17 @@ func (g *Generator) applyMethod(method *protogen.Method) {
 	input := pluginutils.TSModule_TSProto(method.Input.Desc.ParentFile()).Ident(method.Input.GoIdent.GoName)
 	output := pluginutils.TSModule_TSProto(method.Output.Desc.ParentFile()).Ident(method.Output.GoIdent.GoName)
 	methodModule := pluginutils.TSModule_TSProto(method.Desc.ParentFile())
+
 	g.P(method.Comments.Leading)
 	glog.V(3).Infof("method location: %s, %s", method.Location.SourceFile, method.Location.Path)
+
 	if method.Desc.IsStreamingServer() {
 		g.Pf(`%s(
 		req: %s<%s>,
 		entityNotifier?: fm.NotifyStreamEntityArrival<%s>,
 		initReq?: fm.InitReq,
 	): Promise<void> {
-		return fm.fetchStreamingRequest<%s>(%s, entityNotifier, {...initReq, %s});
+		return fm.fetchStreamingRequest<%s>(%s, entityNotifier, {...req, %s});
   	},
 `,
 			method.GoName,
@@ -117,22 +120,27 @@ func (g *Generator) applyMethod(method *protogen.Method) {
 		)
 
 	} else {
-		g.Pf(`%s(
-		req: %s<%s>, 
-		options?: %s,
-	): Promise<%s> {
-		return fm.fetchRequest<%s>(%s, {...initReq, %s});
-	},
-`,
-			pluginutils.FunctionCase(method.GoName),
-			methodModule.Ident("DeepPartial"),
-			input,
-			niceGrpcCommon.Ident("CallOptions"),
-			output,
-			output,
-			g.renderURL(&g.TSOption)(method),
-			g.buildInitReq(method),
-		)
+		// return fm.fetchRequest<%s>(%s, {...req, %s});
+		// output,
+		// g.renderURL(&g.TSOption)(method),
+		// g.buildInitReq(method),
+		g.Pf("%s(", pluginutils.FunctionCase(method.GoName))
+		g.Pf("  req: %s<%s>,", methodModule.Ident("DeepPartial"), input)
+		g.Pf("  options?: %s,", niceGrpcCommon.Ident("CallOptions"))
+		g.Pf("): Promise<%s> {", output)
+		g.Pf("  const fullReq = %s.fromPartial(req);", input)
+		g.Pf("  return fetch(%s, {...initReq, %s}).then((res) =>", g.renderURL(&g.TSOption)(method), g.buildInitReq(method))
+		g.Pf("    res")
+		g.Pf("      .json()")
+		g.Pf("      .catch((_err) => {")
+		g.Pf("        throw res;")
+		g.Pf("      })")
+		g.Pf("      .then((body) => {")
+		g.Pf("        if (!res.ok) throw body;")
+		g.Pf("        return %s.fromJSON(body);", output)
+		g.Pf("      })")
+		g.Pf("  );")
+		g.Pf("},")
 	}
 	g.P(method.Comments.Trailing)
 }

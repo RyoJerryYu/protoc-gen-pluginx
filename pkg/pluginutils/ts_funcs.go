@@ -100,7 +100,7 @@ func (g *TSRegistry) ImportSegments() string {
 			importPath = TSImportPath(thisModule.Path, module.Path)
 		}
 		glog.V(3).Infof("ImportSegments: thisPath: %s, modulePath: %s, importPath: %s", thisModule, module, importPath)
-		imports = append(imports, fmt.Sprintf("import * as %s from '%s';", moduleName, importPath))
+		imports = append(imports, fmt.Sprintf(`import * as %s from "%s";`, moduleName, importPath))
 	}
 	return strings.Join(imports, "\n")
 }
