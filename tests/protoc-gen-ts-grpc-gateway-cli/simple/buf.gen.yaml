@@ -1,6 +1,6 @@
 version: v2
 plugins:
-  - local: ./protoc-gen-ts-grpc-gateway-cli
+  - local: protoc-gen-ts-grpc-gateway-cli
     out: gen
     opt:
       - paths=source_relative
