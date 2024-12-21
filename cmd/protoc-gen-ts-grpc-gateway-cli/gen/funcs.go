@@ -124,22 +124,15 @@ func (g *Generator) applyMethod(method *protogen.Method) {
 		// output,
 		// g.renderURL(&g.TSOption)(method),
 		// g.buildInitReq(method),
-		g.Pf("%s(", pluginutils.FunctionCase(method.GoName))
+		g.Pf("async %s(", pluginutils.FunctionCase(method.GoName))
 		g.Pf("  req: %s<%s>,", methodModule.Ident("DeepPartial"), input)
 		g.Pf("  options?: %s,", niceGrpcCommon.Ident("CallOptions"))
 		g.Pf("): Promise<%s> {", output)
 		g.Pf("  const fullReq = %s.fromPartial(req);", input)
-		g.Pf("  return fetch(%s, {...initReq, %s}).then((res) =>", g.renderURL(&g.TSOption)(method), g.buildInitReq(method))
-		g.Pf("    res")
-		g.Pf("      .json()")
-		g.Pf("      .catch((_err) => {")
-		g.Pf("        throw res;")
-		g.Pf("      })")
-		g.Pf("      .then((body) => {")
-		g.Pf("        if (!res.ok) throw body;")
-		g.Pf("        return %s.fromJSON(body);", output)
-		g.Pf("      })")
-		g.Pf("  );")
+		g.Pf("  const res = await fetch(%s, {...initReq, %s});", g.renderURL(&g.TSOption)(method), g.buildInitReq(method))
+		g.Pf("  const body = await res.json();")
+		g.Pf("  if (!res.ok) throw body;")
+		g.Pf("  return %s.fromJSON(body);", output)
 		g.Pf("},")
 	}
 	g.P(method.Comments.Trailing)

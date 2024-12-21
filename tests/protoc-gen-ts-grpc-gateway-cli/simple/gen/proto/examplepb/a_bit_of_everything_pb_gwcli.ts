@@ -11,198 +11,137 @@ import * as ProtoSub2Message from "../sub2/message";
 export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABitOfEverythingServiceClient {
   const initReq = {};
   return {
-    createBody(
+    async createBody(
       req: ProtoExamplepbABitOfEverything.DeepPartial<ProtoExamplepbABitOfEverything.ABitOfEverything>,
       options?: NiceGrpcCommon.CallOptions,
     ): Promise<ProtoExamplepbABitOfEverything.ABitOfEverything> {
       const fullReq =
         ProtoExamplepbABitOfEverything.ABitOfEverything.fromPartial(req);
-      return fetch(`/v1/example/a_bit_of_everything`, {
+      const res = await fetch(`/v1/example/a_bit_of_everything`, {
         ...initReq,
         method: "POST",
         body: JSON.stringify(
           ProtoExamplepbABitOfEverything.ABitOfEverything.toJSON(fullReq),
         ),
-      }).then((res) =>
-        res
-          .json()
-          .catch((_err) => {
-            throw res;
-          })
-          .then((body) => {
-            if (!res.ok) throw body;
-            return ProtoExamplepbABitOfEverything.ABitOfEverything.fromJSON(
-              body,
-            );
-          }),
-      );
+      });
+      const body = await res.json();
+      if (!res.ok) throw body;
+      return ProtoExamplepbABitOfEverything.ABitOfEverything.fromJSON(body);
     },
 
-    lookup(
+    async lookup(
       req: ProtoExamplepbABitOfEverything.DeepPartial<ProtoSub2Message.IdMessage>,
       options?: NiceGrpcCommon.CallOptions,
     ): Promise<ProtoExamplepbABitOfEverything.ABitOfEverything> {
       const fullReq = ProtoSub2Message.IdMessage.fromPartial(req);
-      return fetch(
+      const res = await fetch(
         `/v1/example/a_bit_of_everything/${req.uuid}?${fm.renderURLSearchParams(req, ["uuid"])}`,
         { ...initReq, method: "GET" },
-      ).then((res) =>
-        res
-          .json()
-          .catch((_err) => {
-            throw res;
-          })
-          .then((body) => {
-            if (!res.ok) throw body;
-            return ProtoExamplepbABitOfEverything.ABitOfEverything.fromJSON(
-              body,
-            );
-          }),
       );
+      const body = await res.json();
+      if (!res.ok) throw body;
+      return ProtoExamplepbABitOfEverything.ABitOfEverything.fromJSON(body);
     },
 
-    custom(
+    async custom(
       req: ProtoExamplepbABitOfEverything.DeepPartial<ProtoExamplepbABitOfEverything.ABitOfEverything>,
       options?: NiceGrpcCommon.CallOptions,
     ): Promise<ProtoExamplepbABitOfEverything.ABitOfEverything> {
       const fullReq =
         ProtoExamplepbABitOfEverything.ABitOfEverything.fromPartial(req);
-      return fetch(`/v1/example/a_bit_of_everything/${req.uuid}:custom`, {
-        ...initReq,
-        method: "POST",
-      }).then((res) =>
-        res
-          .json()
-          .catch((_err) => {
-            throw res;
-          })
-          .then((body) => {
-            if (!res.ok) throw body;
-            return ProtoExamplepbABitOfEverything.ABitOfEverything.fromJSON(
-              body,
-            );
-          }),
+      const res = await fetch(
+        `/v1/example/a_bit_of_everything/${req.uuid}:custom`,
+        { ...initReq, method: "POST" },
       );
+      const body = await res.json();
+      if (!res.ok) throw body;
+      return ProtoExamplepbABitOfEverything.ABitOfEverything.fromJSON(body);
     },
 
-    doubleColon(
+    async doubleColon(
       req: ProtoExamplepbABitOfEverything.DeepPartial<ProtoExamplepbABitOfEverything.ABitOfEverything>,
       options?: NiceGrpcCommon.CallOptions,
     ): Promise<ProtoExamplepbABitOfEverything.ABitOfEverything> {
       const fullReq =
         ProtoExamplepbABitOfEverything.ABitOfEverything.fromPartial(req);
-      return fetch(
+      const res = await fetch(
         `/v1/example/a_bit_of_everything/${req.uuid}:custom:custom`,
         { ...initReq, method: "POST" },
-      ).then((res) =>
-        res
-          .json()
-          .catch((_err) => {
-            throw res;
-          })
-          .then((body) => {
-            if (!res.ok) throw body;
-            return ProtoExamplepbABitOfEverything.ABitOfEverything.fromJSON(
-              body,
-            );
-          }),
       );
+      const body = await res.json();
+      if (!res.ok) throw body;
+      return ProtoExamplepbABitOfEverything.ABitOfEverything.fromJSON(body);
     },
 
-    update(
+    async update(
       req: ProtoExamplepbABitOfEverything.DeepPartial<ProtoExamplepbABitOfEverything.ABitOfEverything>,
       options?: NiceGrpcCommon.CallOptions,
     ): Promise<GoogleProtobufEmpty.Empty> {
       const fullReq =
         ProtoExamplepbABitOfEverything.ABitOfEverything.fromPartial(req);
-      return fetch(`/v1/example/a_bit_of_everything/${req.uuid}`, {
+      const res = await fetch(`/v1/example/a_bit_of_everything/${req.uuid}`, {
         ...initReq,
         method: "PUT",
         body: JSON.stringify(
           ProtoExamplepbABitOfEverything.ABitOfEverything.toJSON(fullReq),
         ),
-      }).then((res) =>
-        res
-          .json()
-          .catch((_err) => {
-            throw res;
-          })
-          .then((body) => {
-            if (!res.ok) throw body;
-            return GoogleProtobufEmpty.Empty.fromJSON(body);
-          }),
-      );
+      });
+      const body = await res.json();
+      if (!res.ok) throw body;
+      return GoogleProtobufEmpty.Empty.fromJSON(body);
     },
 
-    updateV2(
+    async updateV2(
       req: ProtoExamplepbABitOfEverything.DeepPartial<ProtoExamplepbABitOfEverything.UpdateV2Request>,
       options?: NiceGrpcCommon.CallOptions,
     ): Promise<GoogleProtobufEmpty.Empty> {
       const fullReq =
         ProtoExamplepbABitOfEverything.UpdateV2Request.fromPartial(req);
-      return fetch(`/v2/example/a_bit_of_everything/${req.abe.uuid}`, {
-        ...initReq,
-        method: "PUT",
-        body: JSON.stringify(
-          ProtoExamplepbABitOfEverything.ABitOfEverything.toJSON(fullReq.abe),
-        ),
-      }).then((res) =>
-        res
-          .json()
-          .catch((_err) => {
-            throw res;
-          })
-          .then((body) => {
-            if (!res.ok) throw body;
-            return GoogleProtobufEmpty.Empty.fromJSON(body);
-          }),
+      const res = await fetch(
+        `/v2/example/a_bit_of_everything/${req.abe.uuid}`,
+        {
+          ...initReq,
+          method: "PUT",
+          body: JSON.stringify(
+            ProtoExamplepbABitOfEverything.ABitOfEverything.toJSON(fullReq.abe),
+          ),
+        },
       );
+      const body = await res.json();
+      if (!res.ok) throw body;
+      return GoogleProtobufEmpty.Empty.fromJSON(body);
     },
 
-    delete(
+    async delete(
       req: ProtoExamplepbABitOfEverything.DeepPartial<ProtoSub2Message.IdMessage>,
       options?: NiceGrpcCommon.CallOptions,
     ): Promise<GoogleProtobufEmpty.Empty> {
       const fullReq = ProtoSub2Message.IdMessage.fromPartial(req);
-      return fetch(
+      const res = await fetch(
         `/v1/example/a_bit_of_everything/${req.uuid}?${fm.renderURLSearchParams(req, ["uuid"])}`,
         { ...initReq, method: "DELETE" },
-      ).then((res) =>
-        res
-          .json()
-          .catch((_err) => {
-            throw res;
-          })
-          .then((body) => {
-            if (!res.ok) throw body;
-            return GoogleProtobufEmpty.Empty.fromJSON(body);
-          }),
       );
+      const body = await res.json();
+      if (!res.ok) throw body;
+      return GoogleProtobufEmpty.Empty.fromJSON(body);
     },
 
-    getQuery(
+    async getQuery(
       req: ProtoExamplepbABitOfEverything.DeepPartial<ProtoExamplepbABitOfEverything.ABitOfEverything>,
       options?: NiceGrpcCommon.CallOptions,
     ): Promise<GoogleProtobufEmpty.Empty> {
       const fullReq =
         ProtoExamplepbABitOfEverything.ABitOfEverything.fromPartial(req);
-      return fetch(
+      const res = await fetch(
         `/v1/example/a_bit_of_everything/query/${req.uuid}?${fm.renderURLSearchParams(req, ["uuid"])}`,
         { ...initReq, method: "GET" },
-      ).then((res) =>
-        res
-          .json()
-          .catch((_err) => {
-            throw res;
-          })
-          .then((body) => {
-            if (!res.ok) throw body;
-            return GoogleProtobufEmpty.Empty.fromJSON(body);
-          }),
       );
+      const body = await res.json();
+      if (!res.ok) throw body;
+      return GoogleProtobufEmpty.Empty.fromJSON(body);
     },
 
-    getRepeatedQuery(
+    async getRepeatedQuery(
       req: ProtoExamplepbABitOfEverything.DeepPartial<ProtoExamplepbABitOfEverything.ABitOfEverythingRepeated>,
       options?: NiceGrpcCommon.CallOptions,
     ): Promise<ProtoExamplepbABitOfEverything.ABitOfEverythingRepeated> {
@@ -210,219 +149,156 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
         ProtoExamplepbABitOfEverything.ABitOfEverythingRepeated.fromPartial(
           req,
         );
-      return fetch(
+      const res = await fetch(
         `/v1/example/a_bit_of_everything_repeated/${req.pathRepeatedFloatValue}/${req.pathRepeatedDoubleValue}/${req.pathRepeatedInt64Value}/${req.pathRepeatedUint64Value}/${req.pathRepeatedInt32Value}/${req.pathRepeatedFixed64Value}/${req.pathRepeatedFixed32Value}/${req.pathRepeatedBoolValue}/${req.pathRepeatedStringValue}/${req.pathRepeatedBytesValue}/${req.pathRepeatedUint32Value}/${req.pathRepeatedEnumValue}/${req.pathRepeatedSfixed32Value}/${req.pathRepeatedSfixed64Value}/${req.pathRepeatedSint32Value}/${req.pathRepeatedSint64Value}?${fm.renderURLSearchParams(req, ["pathRepeatedFloatValue", "pathRepeatedDoubleValue", "pathRepeatedInt64Value", "pathRepeatedUint64Value", "pathRepeatedInt32Value", "pathRepeatedFixed64Value", "pathRepeatedFixed32Value", "pathRepeatedBoolValue", "pathRepeatedStringValue", "pathRepeatedBytesValue", "pathRepeatedUint32Value", "pathRepeatedEnumValue", "pathRepeatedSfixed32Value", "pathRepeatedSfixed64Value", "pathRepeatedSint32Value", "pathRepeatedSint64Value"])}`,
         { ...initReq, method: "GET" },
-      ).then((res) =>
-        res
-          .json()
-          .catch((_err) => {
-            throw res;
-          })
-          .then((body) => {
-            if (!res.ok) throw body;
-            return ProtoExamplepbABitOfEverything.ABitOfEverythingRepeated.fromJSON(
-              body,
-            );
-          }),
+      );
+      const body = await res.json();
+      if (!res.ok) throw body;
+      return ProtoExamplepbABitOfEverything.ABitOfEverythingRepeated.fromJSON(
+        body,
       );
     },
 
-    deepPathEcho(
+    async deepPathEcho(
       req: ProtoExamplepbABitOfEverything.DeepPartial<ProtoExamplepbABitOfEverything.ABitOfEverything>,
       options?: NiceGrpcCommon.CallOptions,
     ): Promise<ProtoExamplepbABitOfEverything.ABitOfEverything> {
       const fullReq =
         ProtoExamplepbABitOfEverything.ABitOfEverything.fromPartial(req);
-      return fetch(`/v1/example/deep_path/${req.singleNested.name}`, {
-        ...initReq,
-        method: "POST",
-        body: JSON.stringify(
-          ProtoExamplepbABitOfEverything.ABitOfEverything.toJSON(fullReq),
-        ),
-      }).then((res) =>
-        res
-          .json()
-          .catch((_err) => {
-            throw res;
-          })
-          .then((body) => {
-            if (!res.ok) throw body;
-            return ProtoExamplepbABitOfEverything.ABitOfEverything.fromJSON(
-              body,
-            );
-          }),
+      const res = await fetch(
+        `/v1/example/deep_path/${req.singleNested.name}`,
+        {
+          ...initReq,
+          method: "POST",
+          body: JSON.stringify(
+            ProtoExamplepbABitOfEverything.ABitOfEverything.toJSON(fullReq),
+          ),
+        },
       );
+      const body = await res.json();
+      if (!res.ok) throw body;
+      return ProtoExamplepbABitOfEverything.ABitOfEverything.fromJSON(body);
     },
 
-    noBindings(
+    async noBindings(
       req: ProtoExamplepbABitOfEverything.DeepPartial<GoogleProtobufDuration.Duration>,
       options?: NiceGrpcCommon.CallOptions,
     ): Promise<GoogleProtobufEmpty.Empty> {
       const fullReq = GoogleProtobufDuration.Duration.fromPartial(req);
-      return fetch(`/proto.examplepb.ABitOfEverythingService/NoBindings`, {
-        ...initReq,
-        method: "POST",
-        body: JSON.stringify(GoogleProtobufDuration.Duration.toJSON(fullReq)),
-      }).then((res) =>
-        res
-          .json()
-          .catch((_err) => {
-            throw res;
-          })
-          .then((body) => {
-            if (!res.ok) throw body;
-            return GoogleProtobufEmpty.Empty.fromJSON(body);
-          }),
+      const res = await fetch(
+        `/proto.examplepb.ABitOfEverythingService/NoBindings`,
+        {
+          ...initReq,
+          method: "POST",
+          body: JSON.stringify(GoogleProtobufDuration.Duration.toJSON(fullReq)),
+        },
       );
+      const body = await res.json();
+      if (!res.ok) throw body;
+      return GoogleProtobufEmpty.Empty.fromJSON(body);
     },
 
-    timeout(
+    async timeout(
       req: ProtoExamplepbABitOfEverything.DeepPartial<GoogleProtobufEmpty.Empty>,
       options?: NiceGrpcCommon.CallOptions,
     ): Promise<GoogleProtobufEmpty.Empty> {
       const fullReq = GoogleProtobufEmpty.Empty.fromPartial(req);
-      return fetch(`/v2/example/timeout?${fm.renderURLSearchParams(req, [])}`, {
-        ...initReq,
-        method: "GET",
-      }).then((res) =>
-        res
-          .json()
-          .catch((_err) => {
-            throw res;
-          })
-          .then((body) => {
-            if (!res.ok) throw body;
-            return GoogleProtobufEmpty.Empty.fromJSON(body);
-          }),
+      const res = await fetch(
+        `/v2/example/timeout?${fm.renderURLSearchParams(req, [])}`,
+        { ...initReq, method: "GET" },
       );
+      const body = await res.json();
+      if (!res.ok) throw body;
+      return GoogleProtobufEmpty.Empty.fromJSON(body);
     },
 
-    errorWithDetails(
+    async errorWithDetails(
       req: ProtoExamplepbABitOfEverything.DeepPartial<GoogleProtobufEmpty.Empty>,
       options?: NiceGrpcCommon.CallOptions,
     ): Promise<GoogleProtobufEmpty.Empty> {
       const fullReq = GoogleProtobufEmpty.Empty.fromPartial(req);
-      return fetch(
+      const res = await fetch(
         `/v2/example/errorwithdetails?${fm.renderURLSearchParams(req, [])}`,
         { ...initReq, method: "GET" },
-      ).then((res) =>
-        res
-          .json()
-          .catch((_err) => {
-            throw res;
-          })
-          .then((body) => {
-            if (!res.ok) throw body;
-            return GoogleProtobufEmpty.Empty.fromJSON(body);
-          }),
       );
+      const body = await res.json();
+      if (!res.ok) throw body;
+      return GoogleProtobufEmpty.Empty.fromJSON(body);
     },
 
-    getMessageWithBody(
+    async getMessageWithBody(
       req: ProtoExamplepbABitOfEverything.DeepPartial<ProtoExamplepbABitOfEverything.MessageWithBody>,
       options?: NiceGrpcCommon.CallOptions,
     ): Promise<GoogleProtobufEmpty.Empty> {
       const fullReq =
         ProtoExamplepbABitOfEverything.MessageWithBody.fromPartial(req);
-      return fetch(`/v2/example/withbody/${req.id}`, {
+      const res = await fetch(`/v2/example/withbody/${req.id}`, {
         ...initReq,
         method: "POST",
         body: JSON.stringify(
           ProtoExamplepbABitOfEverything.Body.toJSON(fullReq.data),
         ),
-      }).then((res) =>
-        res
-          .json()
-          .catch((_err) => {
-            throw res;
-          })
-          .then((body) => {
-            if (!res.ok) throw body;
-            return GoogleProtobufEmpty.Empty.fromJSON(body);
-          }),
-      );
+      });
+      const body = await res.json();
+      if (!res.ok) throw body;
+      return GoogleProtobufEmpty.Empty.fromJSON(body);
     },
 
-    postWithEmptyBody(
+    async postWithEmptyBody(
       req: ProtoExamplepbABitOfEverything.DeepPartial<ProtoExamplepbABitOfEverything.Body>,
       options?: NiceGrpcCommon.CallOptions,
     ): Promise<GoogleProtobufEmpty.Empty> {
       const fullReq = ProtoExamplepbABitOfEverything.Body.fromPartial(req);
-      return fetch(`/v2/example/postwithemptybody/${req.name}`, {
+      const res = await fetch(`/v2/example/postwithemptybody/${req.name}`, {
         ...initReq,
         method: "POST",
         body: JSON.stringify(
           ProtoExamplepbABitOfEverything.Body.toJSON(fullReq),
         ),
-      }).then((res) =>
-        res
-          .json()
-          .catch((_err) => {
-            throw res;
-          })
-          .then((body) => {
-            if (!res.ok) throw body;
-            return GoogleProtobufEmpty.Empty.fromJSON(body);
-          }),
-      );
+      });
+      const body = await res.json();
+      if (!res.ok) throw body;
+      return GoogleProtobufEmpty.Empty.fromJSON(body);
     },
 
-    checkGetQueryParams(
+    async checkGetQueryParams(
       req: ProtoExamplepbABitOfEverything.DeepPartial<ProtoExamplepbABitOfEverything.ABitOfEverything>,
       options?: NiceGrpcCommon.CallOptions,
     ): Promise<ProtoExamplepbABitOfEverything.ABitOfEverything> {
       const fullReq =
         ProtoExamplepbABitOfEverything.ABitOfEverything.fromPartial(req);
-      return fetch(
+      const res = await fetch(
         `/v1/example/a_bit_of_everything/params/get/${req.singleNested.name}?${fm.renderURLSearchParams(req, ["singleNested.name"])}`,
         { ...initReq, method: "GET" },
-      ).then((res) =>
-        res
-          .json()
-          .catch((_err) => {
-            throw res;
-          })
-          .then((body) => {
-            if (!res.ok) throw body;
-            return ProtoExamplepbABitOfEverything.ABitOfEverything.fromJSON(
-              body,
-            );
-          }),
       );
+      const body = await res.json();
+      if (!res.ok) throw body;
+      return ProtoExamplepbABitOfEverything.ABitOfEverything.fromJSON(body);
     },
 
-    checkNestedEnumGetQueryParams(
+    async checkNestedEnumGetQueryParams(
       req: ProtoExamplepbABitOfEverything.DeepPartial<ProtoExamplepbABitOfEverything.ABitOfEverything>,
       options?: NiceGrpcCommon.CallOptions,
     ): Promise<ProtoExamplepbABitOfEverything.ABitOfEverything> {
       const fullReq =
         ProtoExamplepbABitOfEverything.ABitOfEverything.fromPartial(req);
-      return fetch(
+      const res = await fetch(
         `/v1/example/a_bit_of_everything/params/get/nested_enum/${req.singleNested.ok}?${fm.renderURLSearchParams(req, ["singleNested.ok"])}`,
         { ...initReq, method: "GET" },
-      ).then((res) =>
-        res
-          .json()
-          .catch((_err) => {
-            throw res;
-          })
-          .then((body) => {
-            if (!res.ok) throw body;
-            return ProtoExamplepbABitOfEverything.ABitOfEverything.fromJSON(
-              body,
-            );
-          }),
       );
+      const body = await res.json();
+      if (!res.ok) throw body;
+      return ProtoExamplepbABitOfEverything.ABitOfEverything.fromJSON(body);
     },
 
-    checkPostQueryParams(
+    async checkPostQueryParams(
       req: ProtoExamplepbABitOfEverything.DeepPartial<ProtoExamplepbABitOfEverything.ABitOfEverything>,
       options?: NiceGrpcCommon.CallOptions,
     ): Promise<ProtoExamplepbABitOfEverything.ABitOfEverything> {
       const fullReq =
         ProtoExamplepbABitOfEverything.ABitOfEverything.fromPartial(req);
-      return fetch(
+      const res = await fetch(
         `/v1/example/a_bit_of_everything/params/post/${req.stringValue}`,
         {
           ...initReq,
@@ -431,157 +307,104 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
             ProtoExamplepbABitOfEverything.Nested.toJSON(fullReq.single_nested),
           ),
         },
-      ).then((res) =>
-        res
-          .json()
-          .catch((_err) => {
-            throw res;
-          })
-          .then((body) => {
-            if (!res.ok) throw body;
-            return ProtoExamplepbABitOfEverything.ABitOfEverything.fromJSON(
-              body,
-            );
-          }),
       );
+      const body = await res.json();
+      if (!res.ok) throw body;
+      return ProtoExamplepbABitOfEverything.ABitOfEverything.fromJSON(body);
     },
 
-    overwriteRequestContentType(
+    async overwriteRequestContentType(
       req: ProtoExamplepbABitOfEverything.DeepPartial<ProtoExamplepbABitOfEverything.Body>,
       options?: NiceGrpcCommon.CallOptions,
     ): Promise<GoogleProtobufEmpty.Empty> {
       const fullReq = ProtoExamplepbABitOfEverything.Body.fromPartial(req);
-      return fetch(`/v2/example/overwriterequestcontenttype`, {
+      const res = await fetch(`/v2/example/overwriterequestcontenttype`, {
         ...initReq,
         method: "POST",
         body: JSON.stringify(
           ProtoExamplepbABitOfEverything.Body.toJSON(fullReq),
         ),
-      }).then((res) =>
-        res
-          .json()
-          .catch((_err) => {
-            throw res;
-          })
-          .then((body) => {
-            if (!res.ok) throw body;
-            return GoogleProtobufEmpty.Empty.fromJSON(body);
-          }),
-      );
+      });
+      const body = await res.json();
+      if (!res.ok) throw body;
+      return GoogleProtobufEmpty.Empty.fromJSON(body);
     },
 
-    overwriteResponseContentType(
+    async overwriteResponseContentType(
       req: ProtoExamplepbABitOfEverything.DeepPartial<GoogleProtobufEmpty.Empty>,
       options?: NiceGrpcCommon.CallOptions,
     ): Promise<GoogleProtobufWrappers.StringValue> {
       const fullReq = GoogleProtobufEmpty.Empty.fromPartial(req);
-      return fetch(
+      const res = await fetch(
         `/v2/example/overwriteresponsecontenttype?${fm.renderURLSearchParams(req, [])}`,
         { ...initReq, method: "GET" },
-      ).then((res) =>
-        res
-          .json()
-          .catch((_err) => {
-            throw res;
-          })
-          .then((body) => {
-            if (!res.ok) throw body;
-            return GoogleProtobufWrappers.StringValue.fromJSON(body);
-          }),
       );
+      const body = await res.json();
+      if (!res.ok) throw body;
+      return GoogleProtobufWrappers.StringValue.fromJSON(body);
     },
 
-    checkExternalPathEnum(
+    async checkExternalPathEnum(
       req: ProtoExamplepbABitOfEverything.DeepPartial<PathenumPathEnum.MessageWithPathEnum>,
       options?: NiceGrpcCommon.CallOptions,
     ): Promise<GoogleProtobufEmpty.Empty> {
       const fullReq = PathenumPathEnum.MessageWithPathEnum.fromPartial(req);
-      return fetch(
+      const res = await fetch(
         `/v2/${req.value}:check?${fm.renderURLSearchParams(req, ["value"])}`,
         { ...initReq, method: "GET" },
-      ).then((res) =>
-        res
-          .json()
-          .catch((_err) => {
-            throw res;
-          })
-          .then((body) => {
-            if (!res.ok) throw body;
-            return GoogleProtobufEmpty.Empty.fromJSON(body);
-          }),
       );
+      const body = await res.json();
+      if (!res.ok) throw body;
+      return GoogleProtobufEmpty.Empty.fromJSON(body);
     },
 
-    checkExternalNestedPathEnum(
+    async checkExternalNestedPathEnum(
       req: ProtoExamplepbABitOfEverything.DeepPartial<PathenumPathEnum.MessageWithNestedPathEnum>,
       options?: NiceGrpcCommon.CallOptions,
     ): Promise<GoogleProtobufEmpty.Empty> {
       const fullReq =
         PathenumPathEnum.MessageWithNestedPathEnum.fromPartial(req);
-      return fetch(
+      const res = await fetch(
         `/v3/${req.value}:check?${fm.renderURLSearchParams(req, ["value"])}`,
         { ...initReq, method: "GET" },
-      ).then((res) =>
-        res
-          .json()
-          .catch((_err) => {
-            throw res;
-          })
-          .then((body) => {
-            if (!res.ok) throw body;
-            return GoogleProtobufEmpty.Empty.fromJSON(body);
-          }),
       );
+      const body = await res.json();
+      if (!res.ok) throw body;
+      return GoogleProtobufEmpty.Empty.fromJSON(body);
     },
 
-    checkStatus(
+    async checkStatus(
       req: ProtoExamplepbABitOfEverything.DeepPartial<GoogleProtobufEmpty.Empty>,
       options?: NiceGrpcCommon.CallOptions,
     ): Promise<ProtoExamplepbABitOfEverything.CheckStatusResponse> {
       const fullReq = GoogleProtobufEmpty.Empty.fromPartial(req);
-      return fetch(
+      const res = await fetch(
         `/v1/example/checkStatus?${fm.renderURLSearchParams(req, [])}`,
         { ...initReq, method: "GET" },
-      ).then((res) =>
-        res
-          .json()
-          .catch((_err) => {
-            throw res;
-          })
-          .then((body) => {
-            if (!res.ok) throw body;
-            return ProtoExamplepbABitOfEverything.CheckStatusResponse.fromJSON(
-              body,
-            );
-          }),
       );
+      const body = await res.json();
+      if (!res.ok) throw body;
+      return ProtoExamplepbABitOfEverything.CheckStatusResponse.fromJSON(body);
     },
 
-    postOneofEnum(
+    async postOneofEnum(
       req: ProtoExamplepbABitOfEverything.DeepPartial<ProtoOneofenumOneofEnum.OneofEnumMessage>,
       options?: NiceGrpcCommon.CallOptions,
     ): Promise<GoogleProtobufEmpty.Empty> {
       const fullReq = ProtoOneofenumOneofEnum.OneofEnumMessage.fromPartial(req);
-      return fetch(`/v1/example/oneofenum`, {
+      const res = await fetch(`/v1/example/oneofenum`, {
         ...initReq,
         method: "POST",
         body: JSON.stringify(
           ProtoOneofenumOneofEnum.ExampleEnum.toJSON(fullReq.example_enum),
         ),
-      }).then((res) =>
-        res
-          .json()
-          .catch((_err) => {
-            throw res;
-          })
-          .then((body) => {
-            if (!res.ok) throw body;
-            return GoogleProtobufEmpty.Empty.fromJSON(body);
-          }),
-      );
+      });
+      const body = await res.json();
+      if (!res.ok) throw body;
+      return GoogleProtobufEmpty.Empty.fromJSON(body);
     },
 
-    postRequiredMessageType(
+    async postRequiredMessageType(
       req: ProtoExamplepbABitOfEverything.DeepPartial<ProtoExamplepbABitOfEverything.RequiredMessageTypeRequest>,
       options?: NiceGrpcCommon.CallOptions,
     ): Promise<GoogleProtobufEmpty.Empty> {
@@ -589,7 +412,7 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
         ProtoExamplepbABitOfEverything.RequiredMessageTypeRequest.fromPartial(
           req,
         );
-      return fetch(`/v1/example/requiredmessagetype`, {
+      const res = await fetch(`/v1/example/requiredmessagetype`, {
         ...initReq,
         method: "POST",
         body: JSON.stringify(
@@ -597,17 +420,10 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
             fullReq,
           ),
         ),
-      }).then((res) =>
-        res
-          .json()
-          .catch((_err) => {
-            throw res;
-          })
-          .then((body) => {
-            if (!res.ok) throw body;
-            return GoogleProtobufEmpty.Empty.fromJSON(body);
-          }),
-      );
+      });
+      const body = await res.json();
+      if (!res.ok) throw body;
+      return GoogleProtobufEmpty.Empty.fromJSON(body);
     },
   };
 }
@@ -615,26 +431,22 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
 export function newAnotherServiceWithNoBindings(): ProtoExamplepbABitOfEverything.AnotherServiceWithNoBindingsClient {
   const initReq = {};
   return {
-    noBindings(
+    async noBindings(
       req: ProtoExamplepbABitOfEverything.DeepPartial<GoogleProtobufEmpty.Empty>,
       options?: NiceGrpcCommon.CallOptions,
     ): Promise<GoogleProtobufEmpty.Empty> {
       const fullReq = GoogleProtobufEmpty.Empty.fromPartial(req);
-      return fetch(`/proto.examplepb.AnotherServiceWithNoBindings/NoBindings`, {
-        ...initReq,
-        method: "POST",
-        body: JSON.stringify(GoogleProtobufEmpty.Empty.toJSON(fullReq)),
-      }).then((res) =>
-        res
-          .json()
-          .catch((_err) => {
-            throw res;
-          })
-          .then((body) => {
-            if (!res.ok) throw body;
-            return GoogleProtobufEmpty.Empty.fromJSON(body);
-          }),
+      const res = await fetch(
+        `/proto.examplepb.AnotherServiceWithNoBindings/NoBindings`,
+        {
+          ...initReq,
+          method: "POST",
+          body: JSON.stringify(GoogleProtobufEmpty.Empty.toJSON(fullReq)),
+        },
       );
+      const body = await res.json();
+      if (!res.ok) throw body;
+      return GoogleProtobufEmpty.Empty.fromJSON(body);
     },
   };
 }
