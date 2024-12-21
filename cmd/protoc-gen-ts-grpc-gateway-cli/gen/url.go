@@ -44,7 +44,6 @@ var (
 )
 
 func (g *Generator) renderURL(r *pluginutils.TSOption) func(method *protogen.Method) string {
-	fieldNameFn := pluginutils.FieldName(r)
 	return func(method *protogen.Method) string {
 		// httpMethod, httpURL :=
 		httpOpts := g.httpOptions(method)
@@ -58,9 +57,9 @@ func (g *Generator) renderURL(r *pluginutils.TSOption) func(method *protogen.Met
 				expToReplace := m[0]
 				fieldNameRaw := m[1]
 				// fieldValuePattern := m[2]
-				fieldName := fieldNameFn(fieldNameRaw)
-				part := fmt.Sprintf(`${req.%s}`, fieldName)
+				part := fmt.Sprintf(`${%s}`, g.must("req", fieldNameRaw))
 				methodURL = strings.ReplaceAll(methodURL, expToReplace, part)
+				fieldName := pluginutils.FieldName(r)(fieldNameRaw)
 				fieldsInPath = append(fieldsInPath, fmt.Sprintf(`"%s"`, fieldName))
 			}
 		}
@@ -115,7 +114,7 @@ func (g *Generator) buildInitReq(method *protogen.Method) string {
 		default:
 			glog.Fatalf("unsupported body field type: %s", bodyField.Kind())
 		}
-		initRes = append(initRes, [2]string{"body", TSProtoJsonify(`fullReq.`+*httpBody, bodyType)})
+		initRes = append(initRes, [2]string{"body", TSProtoJsonify(g.must("fullReq", *httpBody), bodyType)})
 	}
 
 	fields := make([]string, 0, len(initRes))
@@ -124,4 +123,12 @@ func (g *Generator) buildInitReq(method *protogen.Method) string {
 	}
 
 	return strings.Join(fields, ", ")
+}
+
+func (g *Generator) must(rootName string, path string) string {
+	fieldName := pluginutils.FieldName(&g.TSOption)(path)
+	fields := strings.Split(fieldName, ".")
+	fieldName = strings.Join(fields, "?.")
+
+	return fmt.Sprintf(`must(%s.%s)`, rootName, fieldName)
 }

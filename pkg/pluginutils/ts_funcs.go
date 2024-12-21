@@ -37,7 +37,8 @@ func (g *TSRegistry) Apply(w io.Writer) error {
 	}
 	content := g.buf.Bytes()
 	imports := g.ImportSegments()
-	_, err := w.Write([]byte(fmt.Sprintf("%s\n%s", imports, content)))
+	res := fmt.Sprintf("%s\n\n%s", imports, content)
+	_, err := w.Write([]byte(res))
 	return err
 }
 
@@ -260,7 +261,12 @@ func FieldName(opt *TSOption) func(name string) string {
 		if opt.UseProtoNames {
 			return name
 		}
-		return JSONCamelCase(name)
+
+		fields := strings.Split(name, ".")
+		for i, field := range fields {
+			fields[i] = JSONCamelCase(field)
+		}
+		return strings.Join(fields, ".")
 	}
 }
 

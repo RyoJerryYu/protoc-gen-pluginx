@@ -145,8 +145,20 @@ function renderURLSearchParams<T extends RequestPayload>(
   );
 
   return new URLSearchParams(urlSearchParams).toString();
-}`
+}
+
+/**
+ * must is a utility function that throws an error if the given value is null or undefined
+ */
+function must<T>(value: T | null | undefined): T {
+  if (value === null || value === undefined) {
+    throw new Error("Value is null or undefined");
+  }
+  return value;
+}
+`
 	g.P(s)
+	g.P("")
 }
 
 func (g *Generator) applyService(service *protogen.Service) {

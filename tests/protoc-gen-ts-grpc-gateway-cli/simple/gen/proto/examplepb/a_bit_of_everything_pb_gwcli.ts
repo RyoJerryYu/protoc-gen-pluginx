@@ -100,6 +100,17 @@ function renderURLSearchParams<T extends RequestPayload>(
 
   return new URLSearchParams(urlSearchParams).toString();
 }
+
+/**
+ * must is a utility function that throws an error if the given value is null or undefined
+ */
+function must<T>(value: T | null | undefined): T {
+  if (value === null || value === undefined) {
+    throw new Error("Value is null or undefined");
+  }
+  return value;
+}
+
 // ABitOfEverything service is used to validate that APIs with complicated
 // proto messages and URL templates are still processed correctly.
 export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABitOfEverythingServiceClient {
@@ -129,7 +140,7 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
     ): Promise<ProtoExamplepbABitOfEverything.ABitOfEverything> {
       const fullReq = ProtoSub2Message.IdMessage.fromPartial(req);
       const res = await fetch(
-        `/v1/example/a_bit_of_everything/${req.uuid}?${renderURLSearchParams(req, ["uuid"])}`,
+        `/v1/example/a_bit_of_everything/${must(req.uuid)}?${renderURLSearchParams(req, ["uuid"])}`,
         { ...initReq, method: "GET" },
       );
       const body = await res.json();
@@ -144,7 +155,7 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
       const fullReq =
         ProtoExamplepbABitOfEverything.ABitOfEverything.fromPartial(req);
       const res = await fetch(
-        `/v1/example/a_bit_of_everything/${req.uuid}:custom`,
+        `/v1/example/a_bit_of_everything/${must(req.uuid)}:custom`,
         { ...initReq, method: "POST" },
       );
       const body = await res.json();
@@ -159,7 +170,7 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
       const fullReq =
         ProtoExamplepbABitOfEverything.ABitOfEverything.fromPartial(req);
       const res = await fetch(
-        `/v1/example/a_bit_of_everything/${req.uuid}:custom:custom`,
+        `/v1/example/a_bit_of_everything/${must(req.uuid)}:custom:custom`,
         { ...initReq, method: "POST" },
       );
       const body = await res.json();
@@ -173,13 +184,16 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
     ): Promise<GoogleProtobufEmpty.Empty> {
       const fullReq =
         ProtoExamplepbABitOfEverything.ABitOfEverything.fromPartial(req);
-      const res = await fetch(`/v1/example/a_bit_of_everything/${req.uuid}`, {
-        ...initReq,
-        method: "PUT",
-        body: JSON.stringify(
-          ProtoExamplepbABitOfEverything.ABitOfEverything.toJSON(fullReq),
-        ),
-      });
+      const res = await fetch(
+        `/v1/example/a_bit_of_everything/${must(req.uuid)}`,
+        {
+          ...initReq,
+          method: "PUT",
+          body: JSON.stringify(
+            ProtoExamplepbABitOfEverything.ABitOfEverything.toJSON(fullReq),
+          ),
+        },
+      );
       const body = await res.json();
       if (!res.ok) throw body;
       return GoogleProtobufEmpty.Empty.fromJSON(body);
@@ -192,12 +206,14 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
       const fullReq =
         ProtoExamplepbABitOfEverything.UpdateV2Request.fromPartial(req);
       const res = await fetch(
-        `/v2/example/a_bit_of_everything/${req.abe.uuid}`,
+        `/v2/example/a_bit_of_everything/${must(req.abe?.uuid)}`,
         {
           ...initReq,
           method: "PUT",
           body: JSON.stringify(
-            ProtoExamplepbABitOfEverything.ABitOfEverything.toJSON(fullReq.abe),
+            ProtoExamplepbABitOfEverything.ABitOfEverything.toJSON(
+              must(fullReq.abe),
+            ),
           ),
         },
       );
@@ -212,7 +228,7 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
     ): Promise<GoogleProtobufEmpty.Empty> {
       const fullReq = ProtoSub2Message.IdMessage.fromPartial(req);
       const res = await fetch(
-        `/v1/example/a_bit_of_everything/${req.uuid}?${renderURLSearchParams(req, ["uuid"])}`,
+        `/v1/example/a_bit_of_everything/${must(req.uuid)}?${renderURLSearchParams(req, ["uuid"])}`,
         { ...initReq, method: "DELETE" },
       );
       const body = await res.json();
@@ -227,7 +243,7 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
       const fullReq =
         ProtoExamplepbABitOfEverything.ABitOfEverything.fromPartial(req);
       const res = await fetch(
-        `/v1/example/a_bit_of_everything/query/${req.uuid}?${renderURLSearchParams(req, ["uuid"])}`,
+        `/v1/example/a_bit_of_everything/query/${must(req.uuid)}?${renderURLSearchParams(req, ["uuid"])}`,
         { ...initReq, method: "GET" },
       );
       const body = await res.json();
@@ -244,7 +260,7 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
           req,
         );
       const res = await fetch(
-        `/v1/example/a_bit_of_everything_repeated/${req.pathRepeatedFloatValue}/${req.pathRepeatedDoubleValue}/${req.pathRepeatedInt64Value}/${req.pathRepeatedUint64Value}/${req.pathRepeatedInt32Value}/${req.pathRepeatedFixed64Value}/${req.pathRepeatedFixed32Value}/${req.pathRepeatedBoolValue}/${req.pathRepeatedStringValue}/${req.pathRepeatedBytesValue}/${req.pathRepeatedUint32Value}/${req.pathRepeatedEnumValue}/${req.pathRepeatedSfixed32Value}/${req.pathRepeatedSfixed64Value}/${req.pathRepeatedSint32Value}/${req.pathRepeatedSint64Value}?${renderURLSearchParams(req, ["pathRepeatedFloatValue", "pathRepeatedDoubleValue", "pathRepeatedInt64Value", "pathRepeatedUint64Value", "pathRepeatedInt32Value", "pathRepeatedFixed64Value", "pathRepeatedFixed32Value", "pathRepeatedBoolValue", "pathRepeatedStringValue", "pathRepeatedBytesValue", "pathRepeatedUint32Value", "pathRepeatedEnumValue", "pathRepeatedSfixed32Value", "pathRepeatedSfixed64Value", "pathRepeatedSint32Value", "pathRepeatedSint64Value"])}`,
+        `/v1/example/a_bit_of_everything_repeated/${must(req.pathRepeatedFloatValue)}/${must(req.pathRepeatedDoubleValue)}/${must(req.pathRepeatedInt64Value)}/${must(req.pathRepeatedUint64Value)}/${must(req.pathRepeatedInt32Value)}/${must(req.pathRepeatedFixed64Value)}/${must(req.pathRepeatedFixed32Value)}/${must(req.pathRepeatedBoolValue)}/${must(req.pathRepeatedStringValue)}/${must(req.pathRepeatedBytesValue)}/${must(req.pathRepeatedUint32Value)}/${must(req.pathRepeatedEnumValue)}/${must(req.pathRepeatedSfixed32Value)}/${must(req.pathRepeatedSfixed64Value)}/${must(req.pathRepeatedSint32Value)}/${must(req.pathRepeatedSint64Value)}?${renderURLSearchParams(req, ["pathRepeatedFloatValue", "pathRepeatedDoubleValue", "pathRepeatedInt64Value", "pathRepeatedUint64Value", "pathRepeatedInt32Value", "pathRepeatedFixed64Value", "pathRepeatedFixed32Value", "pathRepeatedBoolValue", "pathRepeatedStringValue", "pathRepeatedBytesValue", "pathRepeatedUint32Value", "pathRepeatedEnumValue", "pathRepeatedSfixed32Value", "pathRepeatedSfixed64Value", "pathRepeatedSint32Value", "pathRepeatedSint64Value"])}`,
         { ...initReq, method: "GET" },
       );
       const body = await res.json();
@@ -261,7 +277,7 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
       const fullReq =
         ProtoExamplepbABitOfEverything.ABitOfEverything.fromPartial(req);
       const res = await fetch(
-        `/v1/example/deep_path/${req.singleNested.name}`,
+        `/v1/example/deep_path/${must(req.singleNested?.name)}`,
         {
           ...initReq,
           method: "POST",
@@ -327,11 +343,11 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
     ): Promise<GoogleProtobufEmpty.Empty> {
       const fullReq =
         ProtoExamplepbABitOfEverything.MessageWithBody.fromPartial(req);
-      const res = await fetch(`/v2/example/withbody/${req.id}`, {
+      const res = await fetch(`/v2/example/withbody/${must(req.id)}`, {
         ...initReq,
         method: "POST",
         body: JSON.stringify(
-          ProtoExamplepbABitOfEverything.Body.toJSON(fullReq.data),
+          ProtoExamplepbABitOfEverything.Body.toJSON(must(fullReq.data)),
         ),
       });
       const body = await res.json();
@@ -344,13 +360,16 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
       options?: NiceGrpcCommon.CallOptions,
     ): Promise<GoogleProtobufEmpty.Empty> {
       const fullReq = ProtoExamplepbABitOfEverything.Body.fromPartial(req);
-      const res = await fetch(`/v2/example/postwithemptybody/${req.name}`, {
-        ...initReq,
-        method: "POST",
-        body: JSON.stringify(
-          ProtoExamplepbABitOfEverything.Body.toJSON(fullReq),
-        ),
-      });
+      const res = await fetch(
+        `/v2/example/postwithemptybody/${must(req.name)}`,
+        {
+          ...initReq,
+          method: "POST",
+          body: JSON.stringify(
+            ProtoExamplepbABitOfEverything.Body.toJSON(fullReq),
+          ),
+        },
+      );
       const body = await res.json();
       if (!res.ok) throw body;
       return GoogleProtobufEmpty.Empty.fromJSON(body);
@@ -363,7 +382,7 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
       const fullReq =
         ProtoExamplepbABitOfEverything.ABitOfEverything.fromPartial(req);
       const res = await fetch(
-        `/v1/example/a_bit_of_everything/params/get/${req.singleNested.name}?${renderURLSearchParams(req, ["singleNested.name"])}`,
+        `/v1/example/a_bit_of_everything/params/get/${must(req.singleNested?.name)}&${renderURLSearchParams(req, ["singleNested.name"])}`,
         { ...initReq, method: "GET" },
       );
       const body = await res.json();
@@ -378,7 +397,7 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
       const fullReq =
         ProtoExamplepbABitOfEverything.ABitOfEverything.fromPartial(req);
       const res = await fetch(
-        `/v1/example/a_bit_of_everything/params/get/nested_enum/${req.singleNested.ok}?${renderURLSearchParams(req, ["singleNested.ok"])}`,
+        `/v1/example/a_bit_of_everything/params/get/nested_enum/${must(req.singleNested?.ok)}&${renderURLSearchParams(req, ["singleNested.ok"])}`,
         { ...initReq, method: "GET" },
       );
       const body = await res.json();
@@ -393,12 +412,14 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
       const fullReq =
         ProtoExamplepbABitOfEverything.ABitOfEverything.fromPartial(req);
       const res = await fetch(
-        `/v1/example/a_bit_of_everything/params/post/${req.stringValue}`,
+        `/v1/example/a_bit_of_everything/params/post/${must(req.stringValue)}`,
         {
           ...initReq,
           method: "POST",
           body: JSON.stringify(
-            ProtoExamplepbABitOfEverything.Nested.toJSON(fullReq.single_nested),
+            ProtoExamplepbABitOfEverything.Nested.toJSON(
+              must(fullReq.singleNested),
+            ),
           ),
         },
       );
@@ -444,7 +465,7 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
     ): Promise<GoogleProtobufEmpty.Empty> {
       const fullReq = PathenumPathEnum.MessageWithPathEnum.fromPartial(req);
       const res = await fetch(
-        `/v2/${req.value}:check?${renderURLSearchParams(req, ["value"])}`,
+        `/v2/${must(req.value)}:check?${renderURLSearchParams(req, ["value"])}`,
         { ...initReq, method: "GET" },
       );
       const body = await res.json();
@@ -459,7 +480,7 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
       const fullReq =
         PathenumPathEnum.MessageWithNestedPathEnum.fromPartial(req);
       const res = await fetch(
-        `/v3/${req.value}:check?${renderURLSearchParams(req, ["value"])}`,
+        `/v3/${must(req.value)}:check?${renderURLSearchParams(req, ["value"])}`,
         { ...initReq, method: "GET" },
       );
       const body = await res.json();
@@ -490,7 +511,7 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
         ...initReq,
         method: "POST",
         body: JSON.stringify(
-          ProtoOneofenumOneofEnum.ExampleEnum.toJSON(fullReq.example_enum),
+          ProtoOneofenumOneofEnum.ExampleEnum.toJSON(must(fullReq.exampleEnum)),
         ),
       });
       const body = await res.json();
