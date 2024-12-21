@@ -96,28 +96,28 @@ func (g *Generator) buildInitReq(method *protogen.Method) string {
 		{"method", fmt.Sprintf(`"%s"`, httpMethod)},
 	}
 
-	TSProtoJsonify := func(in string, desc protoreflect.Descriptor) string {
-		ident := g.QualifiedTSIdent(pluginutils.TSModule_TSProto(desc.ParentFile()).Ident(string(desc.Name())))
+	TSProtoJsonify := func(in string, msg *protogen.Message) string {
+		ident := g.QualifiedTSIdent(pluginutils.TSIdent_TSProto_Message(msg))
 		return `JSON.stringify(` + ident + `.toJSON(` + in + `))`
 	}
 	if httpBody == nil || *httpBody == "*" {
-		bodyMsg := method.Input.Desc
+		bodyMsg := method.Input
 		initRes = append(initRes, [2]string{"body", TSProtoJsonify("fullReq", bodyMsg)})
 	} else if *httpBody != "" {
-		bodyField := method.Input.Desc.Fields().ByTextName(*httpBody)
-		switch bodyField.Kind() {
+		bodyField := pluginutils.FindFieldByTextName(method.Input, *httpBody)
+		switch bodyField.Desc.Kind() {
 		case protoreflect.MessageKind:
-			bodyType := bodyField.Message()
+			bodyType := bodyField.Message
 			jsonify := TSProtoJsonify(g.must("fullReq", *httpBody), bodyType)
 			initRes = append(initRes, [2]string{"body", jsonify})
 		case protoreflect.EnumKind:
-			bodyType := bodyField.Enum()
-			enumModule := pluginutils.TSModule_TSProto(bodyType.ParentFile())
-			toJsonIdent := enumModule.Ident(g.TSProto_EnumToJSONFuncName(bodyType))
+			bodyType := bodyField.Enum
+			enumModule := pluginutils.TSModule_TSProto(bodyType.Desc.ParentFile())
+			toJsonIdent := enumModule.Ident(g.TSProto_EnumToJSONFuncName(bodyType.Desc))
 			toJsonFunc := g.QualifiedTSIdent(toJsonIdent)
 			initRes = append(initRes, [2]string{"body", toJsonFunc + `(` + g.must("fullReq", *httpBody) + `)`})
 		default:
-			glog.Fatalf("unsupported body field type: %s", bodyField.Kind())
+			glog.Fatalf("unsupported body field type: %s", bodyField.Desc.Kind())
 		}
 	}
 

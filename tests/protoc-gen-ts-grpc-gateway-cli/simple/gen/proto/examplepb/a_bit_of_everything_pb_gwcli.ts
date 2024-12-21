@@ -417,7 +417,7 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
           ...initReq,
           method: "POST",
           body: JSON.stringify(
-            ProtoExamplepbABitOfEverything.Nested.toJSON(
+            ProtoExamplepbABitOfEverything.ABitOfEverything_Nested.toJSON(
               must(fullReq.singleNested),
             ),
           ),

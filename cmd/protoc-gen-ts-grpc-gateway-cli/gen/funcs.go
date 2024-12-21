@@ -180,8 +180,8 @@ func (g *Generator) applyService(service *protogen.Service) {
 }
 
 func (g *Generator) applyMethod(method *protogen.Method) {
-	input := pluginutils.TSModule_TSProto(method.Input.Desc.ParentFile()).Ident(method.Input.GoIdent.GoName)
-	output := pluginutils.TSModule_TSProto(method.Output.Desc.ParentFile()).Ident(method.Output.GoIdent.GoName)
+	input := pluginutils.TSIdent_TSProto_Message(method.Input)
+	output := pluginutils.TSIdent_TSProto_Message(method.Output)
 	methodModule := pluginutils.TSModule_TSProto(method.Desc.ParentFile())
 
 	g.P(method.Comments.Leading)

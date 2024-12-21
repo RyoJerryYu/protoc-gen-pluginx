@@ -69,6 +69,10 @@ func TSModule_TSProto(file protoreflect.FileDescriptor) TSModule {
 	}
 }
 
+func TSIdent_TSProto_Message(msg *protogen.Message) TSIdent {
+	return TSModule_TSProto(msg.Desc.ParentFile()).Ident(msg.GoIdent.GoName)
+}
+
 func TSImportPath(thisPath string, modulePath string) string {
 	thisDir := filepath.Dir(thisPath)
 	relativePath, err := filepath.Rel(thisDir, modulePath)
