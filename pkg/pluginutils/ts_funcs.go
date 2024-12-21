@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"path/filepath"
+	"sort"
 	"strings"
 	"text/template"
 
@@ -83,7 +84,16 @@ func TSImportPath(thisPath string, modulePath string) string {
 func (g *TSRegistry) ImportSegments() string {
 	thisModule := TSModule_TSProto(g.GenOpts.FileGenerator.F.Desc)
 	var imports []string
+	modules := make([]TSModule, 0, len(g.ImportModules))
 	for _, module := range g.ImportModules {
+		modules = append(modules, module)
+	}
+	// sort by module import path
+	sort.Slice(modules, func(i, j int) bool {
+		return modules[i].Path < modules[j].Path
+	})
+
+	for _, module := range modules {
 		moduleName := module.ModuleName
 		importPath := module.Path
 		if module.Relative {

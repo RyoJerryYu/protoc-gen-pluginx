@@ -1,11 +1,11 @@
-import * as ProtoExamplepbABitOfEverything from "./a_bit_of_everything";
-import * as NiceGrpcCommon from "nice-grpc-common";
-import * as ProtoSub2Message from "../sub2/message";
-import * as GoogleProtobufEmpty from "../../google/protobuf/empty";
 import * as GoogleProtobufDuration from "../../google/protobuf/duration";
+import * as GoogleProtobufEmpty from "../../google/protobuf/empty";
 import * as GoogleProtobufWrappers from "../../google/protobuf/wrappers";
-import * as PathenumPathEnum from "../pathenum/path_enum";
+import * as NiceGrpcCommon from "nice-grpc-common";
+import * as ProtoExamplepbABitOfEverything from "./a_bit_of_everything";
 import * as ProtoOneofenumOneofEnum from "../oneofenum/oneof_enum";
+import * as PathenumPathEnum from "../pathenum/path_enum";
+import * as ProtoSub2Message from "../sub2/message";
 // ABitOfEverything service is used to validate that APIs with complicated
 // proto messages and URL templates are still processed correctly.
 export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABitOfEverythingServiceClient {
