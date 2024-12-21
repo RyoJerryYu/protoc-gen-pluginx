@@ -75,7 +75,7 @@ func (g *Generator) renderURL(r *pluginutils.TSOption) func(method *protogen.Met
 			if err != nil {
 				return fmt.Sprintf("`%s`", methodURL)
 			}
-			renderURLSearchParamsFn := fmt.Sprintf("${fm.renderURLSearchParams(req, %s)}", urlPathParams)
+			renderURLSearchParamsFn := fmt.Sprintf("${renderURLSearchParams(req, %s)}", urlPathParams)
 			// prepend "&" if query string is present otherwise prepend "?"
 			// trim leading "&" if present before prepending it
 			if parsedURL.RawQuery != "" {

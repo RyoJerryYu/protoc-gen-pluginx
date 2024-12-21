@@ -6,6 +6,100 @@ import * as ProtoExamplepbABitOfEverything from "./a_bit_of_everything";
 import * as ProtoOneofenumOneofEnum from "../oneofenum/oneof_enum";
 import * as PathenumPathEnum from "../pathenum/path_enum";
 import * as ProtoSub2Message from "../sub2/message";
+
+type Primitive = string | boolean | number;
+type RequestPayload = Record<string, unknown>;
+type FlattenedRequestPayload = Record<string, Primitive | Primitive[]>;
+
+/**
+ * Checks if given value is a plain object
+ * Logic copied and adapted from below source:
+ * https://github.com/char0n/ramda-adjunct/blob/master/src/isPlainObj.js
+ */
+function isPlainObject(value: unknown): boolean {
+  const isObject =
+    Object.prototype.toString.call(value).slice(8, -1) === "Object";
+  const isObjLike = value !== null && isObject;
+
+  if (!isObjLike || !isObject) {
+    return false;
+  }
+
+  const proto: unknown = Object.getPrototypeOf(value);
+
+  const hasObjectConstructor = !!(
+    proto &&
+    typeof proto === "object" &&
+    proto.constructor === Object.prototype.constructor
+  );
+
+  return hasObjectConstructor;
+}
+
+/**
+ * Checks if given value is of a primitive type
+ */
+function isPrimitive(value: unknown): boolean {
+  return ["string", "number", "boolean"].some((t) => typeof value === t);
+}
+
+/**
+ * Flattens a deeply nested request payload and returns an object
+ * with only primitive values and non-empty array of primitive values
+ * as per https://github.com/googleapis/googleapis/blob/master/google/api/http.proto
+ */
+function flattenRequestPayload<T extends RequestPayload>(
+  requestPayload: T,
+  path = "",
+): FlattenedRequestPayload {
+  return Object.keys(requestPayload).reduce((acc: T, key: string): T => {
+    const value = requestPayload[key];
+    const newPath = path ? [path, key].join(".") : key;
+
+    const isNonEmptyPrimitiveArray =
+      Array.isArray(value) &&
+      value.every((v) => isPrimitive(v)) &&
+      value.length > 0;
+
+    let objectToMerge = {};
+
+    if (isPlainObject(value)) {
+      objectToMerge = flattenRequestPayload(value as RequestPayload, newPath);
+    } else if (isPrimitive(value) || isNonEmptyPrimitiveArray) {
+      objectToMerge = { [newPath]: value };
+    }
+
+    return { ...acc, ...objectToMerge };
+  }, {} as T) as FlattenedRequestPayload;
+}
+
+/**
+ * Renders a deeply nested request payload into a string of URL search
+ * parameters by first flattening the request payload and then removing keys
+ * which are already present in the URL path.
+ */
+function renderURLSearchParams<T extends RequestPayload>(
+  requestPayload: T,
+  urlPathParams: string[] = [],
+): string {
+  const flattenedRequestPayload = flattenRequestPayload(requestPayload);
+
+  const urlSearchParams = Object.keys(flattenedRequestPayload).reduce(
+    (acc: string[][], key: string): string[][] => {
+      // key should not be present in the url path as a parameter
+      const value = flattenedRequestPayload[key];
+      if (urlPathParams.find((f) => f === key)) {
+        return acc;
+      }
+      return Array.isArray(value)
+        ? [...acc, ...value.map((m) => [key, m.toString()])]
+        : (acc = [...acc, [key, value.toString()]]);
+    },
+    [] as string[][],
+  );
+
+  return new URLSearchParams(urlSearchParams).toString();
+}
 // ABitOfEverything service is used to validate that APIs with complicated
 // proto messages and URL templates are still processed correctly.
 export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABitOfEverythingServiceClient {
@@ -35,7 +129,7 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
     ): Promise<ProtoExamplepbABitOfEverything.ABitOfEverything> {
       const fullReq = ProtoSub2Message.IdMessage.fromPartial(req);
       const res = await fetch(
-        `/v1/example/a_bit_of_everything/${req.uuid}?${fm.renderURLSearchParams(req, ["uuid"])}`,
+        `/v1/example/a_bit_of_everything/${req.uuid}?${renderURLSearchParams(req, ["uuid"])}`,
         { ...initReq, method: "GET" },
       );
       const body = await res.json();
@@ -118,7 +212,7 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
     ): Promise<GoogleProtobufEmpty.Empty> {
       const fullReq = ProtoSub2Message.IdMessage.fromPartial(req);
       const res = await fetch(
-        `/v1/example/a_bit_of_everything/${req.uuid}?${fm.renderURLSearchParams(req, ["uuid"])}`,
+        `/v1/example/a_bit_of_everything/${req.uuid}?${renderURLSearchParams(req, ["uuid"])}`,
         { ...initReq, method: "DELETE" },
       );
       const body = await res.json();
@@ -133,7 +227,7 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
       const fullReq =
         ProtoExamplepbABitOfEverything.ABitOfEverything.fromPartial(req);
       const res = await fetch(
-        `/v1/example/a_bit_of_everything/query/${req.uuid}?${fm.renderURLSearchParams(req, ["uuid"])}`,
+        `/v1/example/a_bit_of_everything/query/${req.uuid}?${renderURLSearchParams(req, ["uuid"])}`,
         { ...initReq, method: "GET" },
       );
       const body = await res.json();
@@ -150,7 +244,7 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
           req,
         );
       const res = await fetch(
-        `/v1/example/a_bit_of_everything_repeated/${req.pathRepeatedFloatValue}/${req.pathRepeatedDoubleValue}/${req.pathRepeatedInt64Value}/${req.pathRepeatedUint64Value}/${req.pathRepeatedInt32Value}/${req.pathRepeatedFixed64Value}/${req.pathRepeatedFixed32Value}/${req.pathRepeatedBoolValue}/${req.pathRepeatedStringValue}/${req.pathRepeatedBytesValue}/${req.pathRepeatedUint32Value}/${req.pathRepeatedEnumValue}/${req.pathRepeatedSfixed32Value}/${req.pathRepeatedSfixed64Value}/${req.pathRepeatedSint32Value}/${req.pathRepeatedSint64Value}?${fm.renderURLSearchParams(req, ["pathRepeatedFloatValue", "pathRepeatedDoubleValue", "pathRepeatedInt64Value", "pathRepeatedUint64Value", "pathRepeatedInt32Value", "pathRepeatedFixed64Value", "pathRepeatedFixed32Value", "pathRepeatedBoolValue", "pathRepeatedStringValue", "pathRepeatedBytesValue", "pathRepeatedUint32Value", "pathRepeatedEnumValue", "pathRepeatedSfixed32Value", "pathRepeatedSfixed64Value", "pathRepeatedSint32Value", "pathRepeatedSint64Value"])}`,
+        `/v1/example/a_bit_of_everything_repeated/${req.pathRepeatedFloatValue}/${req.pathRepeatedDoubleValue}/${req.pathRepeatedInt64Value}/${req.pathRepeatedUint64Value}/${req.pathRepeatedInt32Value}/${req.pathRepeatedFixed64Value}/${req.pathRepeatedFixed32Value}/${req.pathRepeatedBoolValue}/${req.pathRepeatedStringValue}/${req.pathRepeatedBytesValue}/${req.pathRepeatedUint32Value}/${req.pathRepeatedEnumValue}/${req.pathRepeatedSfixed32Value}/${req.pathRepeatedSfixed64Value}/${req.pathRepeatedSint32Value}/${req.pathRepeatedSint64Value}?${renderURLSearchParams(req, ["pathRepeatedFloatValue", "pathRepeatedDoubleValue", "pathRepeatedInt64Value", "pathRepeatedUint64Value", "pathRepeatedInt32Value", "pathRepeatedFixed64Value", "pathRepeatedFixed32Value", "pathRepeatedBoolValue", "pathRepeatedStringValue", "pathRepeatedBytesValue", "pathRepeatedUint32Value", "pathRepeatedEnumValue", "pathRepeatedSfixed32Value", "pathRepeatedSfixed64Value", "pathRepeatedSint32Value", "pathRepeatedSint64Value"])}`,
         { ...initReq, method: "GET" },
       );
       const body = await res.json();
@@ -205,7 +299,7 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
     ): Promise<GoogleProtobufEmpty.Empty> {
       const fullReq = GoogleProtobufEmpty.Empty.fromPartial(req);
       const res = await fetch(
-        `/v2/example/timeout?${fm.renderURLSearchParams(req, [])}`,
+        `/v2/example/timeout?${renderURLSearchParams(req, [])}`,
         { ...initReq, method: "GET" },
       );
       const body = await res.json();
@@ -219,7 +313,7 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
     ): Promise<GoogleProtobufEmpty.Empty> {
       const fullReq = GoogleProtobufEmpty.Empty.fromPartial(req);
       const res = await fetch(
-        `/v2/example/errorwithdetails?${fm.renderURLSearchParams(req, [])}`,
+        `/v2/example/errorwithdetails?${renderURLSearchParams(req, [])}`,
         { ...initReq, method: "GET" },
       );
       const body = await res.json();
@@ -269,7 +363,7 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
       const fullReq =
         ProtoExamplepbABitOfEverything.ABitOfEverything.fromPartial(req);
       const res = await fetch(
-        `/v1/example/a_bit_of_everything/params/get/${req.singleNested.name}?${fm.renderURLSearchParams(req, ["singleNested.name"])}`,
+        `/v1/example/a_bit_of_everything/params/get/${req.singleNested.name}?${renderURLSearchParams(req, ["singleNested.name"])}`,
         { ...initReq, method: "GET" },
       );
       const body = await res.json();
@@ -284,7 +378,7 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
       const fullReq =
         ProtoExamplepbABitOfEverything.ABitOfEverything.fromPartial(req);
       const res = await fetch(
-        `/v1/example/a_bit_of_everything/params/get/nested_enum/${req.singleNested.ok}?${fm.renderURLSearchParams(req, ["singleNested.ok"])}`,
+        `/v1/example/a_bit_of_everything/params/get/nested_enum/${req.singleNested.ok}?${renderURLSearchParams(req, ["singleNested.ok"])}`,
         { ...initReq, method: "GET" },
       );
       const body = await res.json();
@@ -336,7 +430,7 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
     ): Promise<GoogleProtobufWrappers.StringValue> {
       const fullReq = GoogleProtobufEmpty.Empty.fromPartial(req);
       const res = await fetch(
-        `/v2/example/overwriteresponsecontenttype?${fm.renderURLSearchParams(req, [])}`,
+        `/v2/example/overwriteresponsecontenttype?${renderURLSearchParams(req, [])}`,
         { ...initReq, method: "GET" },
       );
       const body = await res.json();
@@ -350,7 +444,7 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
     ): Promise<GoogleProtobufEmpty.Empty> {
       const fullReq = PathenumPathEnum.MessageWithPathEnum.fromPartial(req);
       const res = await fetch(
-        `/v2/${req.value}:check?${fm.renderURLSearchParams(req, ["value"])}`,
+        `/v2/${req.value}:check?${renderURLSearchParams(req, ["value"])}`,
         { ...initReq, method: "GET" },
       );
       const body = await res.json();
@@ -365,7 +459,7 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
       const fullReq =
         PathenumPathEnum.MessageWithNestedPathEnum.fromPartial(req);
       const res = await fetch(
-        `/v3/${req.value}:check?${fm.renderURLSearchParams(req, ["value"])}`,
+        `/v3/${req.value}:check?${renderURLSearchParams(req, ["value"])}`,
         { ...initReq, method: "GET" },
       );
       const body = await res.json();
@@ -379,7 +473,7 @@ export function newABitOfEverythingService(): ProtoExamplepbABitOfEverything.ABi
     ): Promise<ProtoExamplepbABitOfEverything.CheckStatusResponse> {
       const fullReq = GoogleProtobufEmpty.Empty.fromPartial(req);
       const res = await fetch(
-        `/v1/example/checkStatus?${fm.renderURLSearchParams(req, [])}`,
+        `/v1/example/checkStatus?${renderURLSearchParams(req, [])}`,
         { ...initReq, method: "GET" },
       );
       const body = await res.json();

@@ -41,7 +41,7 @@ func (g *Generator) PTmplStr(tmpl string, data interface{}, funcs ...template.Fu
 }
 
 func (g *Generator) ApplyTemplate() error {
-	// g.applyFile()
+	g.applyHelperFunc()
 
 	// services do not nest, so we can apply them directly
 	for _, s := range g.Generator.F.Services {
@@ -51,28 +51,102 @@ func (g *Generator) ApplyTemplate() error {
 	return nil
 }
 
-func (g *Generator) applyFile() {
-	g.P(`
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined;
-// DeepPartial allow all fields and all sub-fields to be optional.
-// Used for rpc Request types.
-type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends globalThis.Array<infer U>
-    ? globalThis.Array<DeepPartial<U>>
-    : T extends ReadonlyArray<infer U>
-      ? ReadonlyArray<DeepPartial<U>>
-      : T extends {}
-        ? { [K in keyof T]?: DeepPartial<T[K]> }
-        : Partial<T>;
-`)
+func (g *Generator) applyHelperFunc() {
+	s := `
+type Primitive = string | boolean | number;
+type RequestPayload = Record<string, unknown>;
+type FlattenedRequestPayload = Record<string, Primitive | Primitive[]>;
+
+/**
+ * Checks if given value is a plain object
+ * Logic copied and adapted from below source:
+ * https://github.com/char0n/ramda-adjunct/blob/master/src/isPlainObj.js
+ */
+function isPlainObject(value: unknown): boolean {
+  const isObject =
+    Object.prototype.toString.call(value).slice(8, -1) === "Object";
+  const isObjLike = value !== null && isObject;
+
+  if (!isObjLike || !isObject) {
+    return false;
+  }
+
+  const proto: unknown = Object.getPrototypeOf(value);
+
+  const hasObjectConstructor = !!(
+    proto &&
+    typeof proto === "object" &&
+    proto.constructor === Object.prototype.constructor
+  );
+
+  return hasObjectConstructor;
+}
+
+/**
+ * Checks if given value is of a primitive type
+ */
+function isPrimitive(value: unknown): boolean {
+  return ["string", "number", "boolean"].some((t) => typeof value === t);
+}
+
+/**
+ * Flattens a deeply nested request payload and returns an object
+ * with only primitive values and non-empty array of primitive values
+ * as per https://github.com/googleapis/googleapis/blob/master/google/api/http.proto
+ */
+function flattenRequestPayload<T extends RequestPayload>(
+  requestPayload: T,
+  path = ""
+): FlattenedRequestPayload {
+  return Object.keys(requestPayload).reduce((acc: T, key: string): T => {
+    const value = requestPayload[key];
+    const newPath = path ? [path, key].join(".") : key;
+
+    const isNonEmptyPrimitiveArray =
+      Array.isArray(value) &&
+      value.every((v) => isPrimitive(v)) &&
+      value.length > 0;
+
+    let objectToMerge = {};
+
+    if (isPlainObject(value)) {
+      objectToMerge = flattenRequestPayload(value as RequestPayload, newPath);
+    } else if (isPrimitive(value) || isNonEmptyPrimitiveArray) {
+      objectToMerge = { [newPath]: value };
+    }
+
+    return { ...acc, ...objectToMerge };
+  }, {} as T) as FlattenedRequestPayload;
+}
+
+/**
+ * Renders a deeply nested request payload into a string of URL search
+ * parameters by first flattening the request payload and then removing keys
+ * which are already present in the URL path.
+ */
+function renderURLSearchParams<T extends RequestPayload>(
+  requestPayload: T,
+  urlPathParams: string[] = []
+): string {
+  const flattenedRequestPayload = flattenRequestPayload(requestPayload);
+
+  const urlSearchParams = Object.keys(flattenedRequestPayload).reduce(
+    (acc: string[][], key: string): string[][] => {
+      // key should not be present in the url path as a parameter
+      const value = flattenedRequestPayload[key];
+      if (urlPathParams.find((f) => f === key)) {
+        return acc;
+      }
+      return Array.isArray(value)
+        ? [...acc, ...value.map((m) => [key, m.toString()])]
+        : (acc = [...acc, [key, value.toString()]]);
+    },
+    [] as string[][]
+  );
+
+  return new URLSearchParams(urlSearchParams).toString();
+}`
+	g.P(s)
 }
 
 func (g *Generator) applyService(service *protogen.Service) {
