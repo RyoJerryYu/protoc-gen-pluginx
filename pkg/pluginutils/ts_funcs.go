@@ -18,15 +18,15 @@ import (
 )
 
 type TSRegistry struct {
-	buf           bytes.Buffer
-	GenOpts       GenerateOptions
-	ImportModules map[string]TSModule // map<module_name, file_descriptor>
+	buf          bytes.Buffer
+	GenOpts      GenerateOptions
+	ImportIdents map[string][]TSIdent // map<module_path, TSIdent>
 }
 
 func NewTSRegistry(opts GenerateOptions) *TSRegistry {
 	return &TSRegistry{
-		GenOpts:       opts,
-		ImportModules: make(map[string]TSModule),
+		GenOpts:      opts,
+		ImportIdents: make(map[string][]TSIdent),
 	}
 }
 
@@ -89,25 +89,46 @@ func TSImportPath(thisPath string, modulePath string) string {
 func (g *TSRegistry) ImportSegments() string {
 	thisModule := TSModule_TSProto(g.GenOpts.FileGenerator.F.Desc)
 	var imports []string
-	modules := make([]TSModule, 0, len(g.ImportModules))
-	for _, module := range g.ImportModules {
-		modules = append(modules, module)
+	modulePaths := make([]string, 0, len(g.ImportIdents))
+	for path := range g.ImportIdents {
+		modulePaths = append(modulePaths, path)
 	}
 	// sort by module import path
-	sort.Slice(modules, func(i, j int) bool {
-		return modules[i].Path < modules[j].Path
+	sort.Slice(modulePaths, func(i, j int) bool {
+		return modulePaths[i] < modulePaths[j]
 	})
 
-	for _, module := range modules {
-		moduleName := module.ModuleName
+	for _, modulePath := range modulePaths {
+		idents := g.ImportIdents[modulePath]
+		module := idents[0].TSModule
 		importPath := module.Path
 		if module.Relative {
 			importPath = TSImportPath(thisModule.Path, module.Path)
 		}
-		glog.V(3).Infof("ImportSegments: thisPath: %s, modulePath: %s, importPath: %s", thisModule, module, importPath)
-		imports = append(imports, fmt.Sprintf(`import * as %s from "%s";`, moduleName, importPath))
+		glog.V(3).Infof("ImportSegments: thisPath: %s, modulePath: %s, importPath: %s", thisModule.Path, module.Path, importPath)
+		imports = append(imports, g.importSegmentDirect(importPath, idents))
 	}
 	return strings.Join(imports, "\n")
+}
+
+func (g *TSRegistry) importSegmentDirect(importPath string, idents []TSIdent) string {
+	identNames := make([]string, 0, len(idents))
+	for _, ident := range idents {
+		identNames = append(identNames, ident.Name)
+	}
+	nameSet := make(map[string]struct{})
+	for _, name := range identNames {
+		nameSet[name] = struct{}{}
+	}
+	identNames = make([]string, 0, len(nameSet))
+	for name := range nameSet {
+		identNames = append(identNames, name)
+	}
+	sort.Slice(identNames, func(i, j int) bool {
+		return identNames[i] < identNames[j]
+	})
+	return fmt.Sprintf(`import { %s } from "%s";`,
+		strings.Join(identNames, ", "), importPath)
 }
 
 func (g *TSRegistry) Write(p []byte) (n int, err error) {
@@ -177,8 +198,11 @@ func (opt *TSRegistry) PTmplStr(tmpl string, data interface{}, funcs ...template
 
 func (r *TSRegistry) QualifiedTSIdent(ident TSIdent) string {
 	// glog.V(3).Infof("QualifiedTSIdent: %s", m.GoIdent.GoName)
-	r.ImportModules[ident.Path] = ident.TSModule
-	return ident.ModuleName + "." + ident.Name
+	if _, ok := r.ImportIdents[ident.Path]; !ok {
+		r.ImportIdents[ident.Path] = []TSIdent{}
+	}
+	r.ImportIdents[ident.Path] = append(r.ImportIdents[ident.Path], ident)
+	return ident.Name
 }
 
 // ServiceTemplate gets the template for the primary typescript file.
