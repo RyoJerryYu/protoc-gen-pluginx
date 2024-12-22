@@ -186,35 +186,26 @@ func (g *Generator) applyMethod(method *protogen.Method) {
 	g.P(method.Comments.Leading)
 	glog.V(3).Infof("method location: %s, %s", method.Location.SourceFile, method.Location.Path)
 
-	// 	if method.Desc.IsStreamingServer() {
-	// 		g.Pf(`%s(
-	// 		req: %s<%s>,
-	// 		entityNotifier?: fm.NotifyStreamEntityArrival<%s>,
-	// 		initReq?: fm.InitReq,
-	// 	): Promise<void> {
-	// 		return fm.fetchStreamingRequest<%s>(%s, entityNotifier, {...req, %s});
-	//   	},
-	// `,
-	// 			method.GoName,
-	// 			niceGrpcCommon.Ident("DeepPartial"),
-	// 			input,
-	// 			output,
-	// 			output,
-	// 			g.renderURL(&g.TSOption)(method),
-	// 			g.buildInitReq(method),
-	// 		)
+	if method.Desc.IsStreamingServer() {
+		g.Pf("%s(", pluginutils.FunctionCase_TSProto(method.GoName))
+		g.Pf("  req: %s<%s>,", methodModule.Ident("DeepPartial"), input)
+		g.Pf("  options?: %s,", niceGrpcCommon.Ident("CallOptions"))
+		g.Pf("): AsyncIterable<%s> {", output)
+		g.Pf("  throw new Error('not implemented');")
+		g.Pf("},")
 
-	// 	} else {
-	g.Pf("async %s(", pluginutils.FunctionCase_TSProto(method.GoName))
-	g.Pf("  req: %s<%s>,", methodModule.Ident("DeepPartial"), input)
-	g.Pf("  options?: %s,", niceGrpcCommon.Ident("CallOptions"))
-	g.Pf("): Promise<%s> {", output)
-	g.Pf("  const fullReq = %s.fromPartial(req);", input)
-	g.Pf("  const url = new URL(%s, baseUrl).href;", g.renderURL(&g.TSOption)(method))
-	g.Pf("  const res = await fetch(url, {...initReq, %s});", g.buildInitReq(method))
-	g.Pf("  const body = await res.json();")
-	g.Pf("  if (!res.ok) throw body;")
-	g.Pf("  return %s.fromJSON(body);", output)
-	g.Pf("},")
+	} else {
+		g.Pf("async %s(", pluginutils.FunctionCase_TSProto(method.GoName))
+		g.Pf("  req: %s<%s>,", methodModule.Ident("DeepPartial"), input)
+		g.Pf("  options?: %s,", niceGrpcCommon.Ident("CallOptions"))
+		g.Pf("): Promise<%s> {", output)
+		g.Pf("  const fullReq = %s.fromPartial(req);", input)
+		g.Pf("  const url = new URL(%s, baseUrl).href;", g.renderURL(&g.TSOption)(method))
+		g.Pf("  const res = await fetch(url, {...initReq, %s});", g.buildInitReq(method))
+		g.Pf("  const body = await res.json();")
+		g.Pf("  if (!res.ok) throw body;")
+		g.Pf("  return %s.fromJSON(body);", output)
+		g.Pf("},")
+	}
 	g.P(method.Comments.Trailing)
 }
