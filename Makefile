@@ -1,7 +1,8 @@
 VERSION := "unknown"
 
 BIN := $(shell pwd)/bin
-export PATH := $(BIN):$(PATH)
+NODE_BIN := $(shell pwd)/tests/node_modules/.bin
+export PATH := $(BIN):$(NODE_BIN):$(PATH)
 
 .PHONY: bins
 bins:
@@ -14,6 +15,7 @@ tools:
 	@echo "Installing tools..."
 	@cd tests && go mod tidy
 	@./tests/tools/tools.sh
+	@cd tests && pnpm install
 	@echo "Tools installed."
 
 .PHONY: generate
@@ -23,15 +25,15 @@ generate: tools bins
 	@cd tests && go generate ./...
 	@echo "Code generated."
 
-.PHONY: test test-unit test-integration
-test: test-unit test-integration
+.PHONY: test test-unit test-generation
+test: test-unit test-generation
 
 test-unit:
 	@echo "Running unit tests..."
 	@go test -v ./...
 	@echo "Unit tests passed."
 
-test-integration: generate
+test-generation: generate
 	@echo "Running tests..."
 	@cd tests && go test -v ./...
 	@echo "Tests passed."
@@ -57,6 +59,10 @@ tag: write_version
 	@git commit -m "Bump version to $(VERSION)"
 	@git push origin release/$(VERSION)
 
+# the release command for ci
+# do not execute this command locally
+# use `make tag` , then create a PR and merge it
+# the ci will release the version
 .PHONY: release
 release:
 	@echo "Releasing version..."

@@ -1,0 +1,28 @@
+{
+  "name": "integration",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "./run.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@bufbuild/protobuf": "^2.2.3",
+    "@types/chai": "^4.3.16",
+    "@types/mocha": "^10.0.6",
+    "@types/ramda": "^0.30.0",
+    "@web/dev-server-esbuild": "^1.0.2",
+    "@web/test-runner": "^0.18.2",
+    "@web/test-runner-puppeteer": "^0.17.0",
+    "chai": "^5.1.1",
+    "lodash.camelcase": "^4.3.0",
+    "mocha": "^10.4.0",
+    "nice-grpc-common": "^2.0.2",
+    "tree-kill": "^1.2.2",
+    "typescript": "^5.4.5"
+  }
+}

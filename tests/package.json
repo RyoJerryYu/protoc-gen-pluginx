@@ -1,0 +1,22 @@
+{
+  "name": "tests",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@bufbuild/protobuf": "^2.2.3",
+    "chai": "^5.1.2",
+    "nice-grpc-common": "^2.0.2",
+    "prettier": "^3.4.2"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "mocha": "^11.0.1"
+  }
+}
