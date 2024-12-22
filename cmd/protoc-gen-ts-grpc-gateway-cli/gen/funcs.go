@@ -222,24 +222,24 @@ func (g *Generator) applyMethod(method *protogen.Method) {
 		g.Pf("  options?: %s,", niceGrpcCommon.Ident("CallOptions"))
 		g.Pf("): Promise<%s> {", output)
 		g.Pf("  const fullReq = %s.fromPartial(req);", input)
-		// path, return pathParams
-		renderedPath, pathParams := g.renderPath(&g.TSOption)(method)
-		g.Pf("  const rpcPath = `%s`;", renderedPath)
-		// queryParams
-		queryParams := g.renderQueryString(&g.TSOption)(method, pathParams)
-		g.Pf("  const queryParams = %s;", queryParams)
 		// METHOD
 		methodMethod := g.httpOptions(method).Method
-		g.Pf("  const method = %s;", fmt.Sprintf(`"%s"`, methodMethod))
+		// path, return pathParams
+		renderedPath, pathParams := g.renderPath(&g.TSOption)(method)
+		// queryParams
+		queryParams := g.renderQueryString(&g.TSOption)(method, pathParams)
 		// body
 		renderedBody := g.renderBody(&g.TSOption)(method)
-		g.Pf("  const body = %s;", renderedBody)
 
 		g.Pf("  const res = await transport.call({")
-		g.Pf("    url: rpcPath,")
-		g.Pf("    method: method,")
-		g.Pf("    queryParams: queryParams,")
-		g.Pf("    body: body,")
+		g.Pf("    url: `%s`,", renderedPath)
+		g.Pf(`    method: "%s",`, methodMethod)
+		if queryParams != "" {
+			g.Pf("    queryParams: %s,", queryParams)
+		}
+		if renderedBody != "" {
+			g.Pf("    body: %s,", renderedBody)
+		}
 		g.Pf("  });")
 		g.Pf("  return %s.fromJSON(res);", output)
 		g.Pf("},")
@@ -276,7 +276,7 @@ func (g *Generator) renderQueryString(r *pluginutils.TSOption) func(method *prot
 		httpOpts := g.httpOptions(method)
 		methodMethod := httpOpts.Method
 		if method.Desc.IsStreamingClient() || (methodMethod != "GET" && methodMethod != "DELETE") {
-			return "[] as string[][]"
+			return ""
 		}
 		urlPathParamStrs := make([]string, 0, len(urlPathParams))
 		for _, pathParam := range urlPathParams {
@@ -301,7 +301,7 @@ func (g *Generator) renderBody(r *pluginutils.TSOption) func(method *protogen.Me
 			bodyMsg := method.Input
 			return TSProtoJsonify("fullReq", bodyMsg)
 		} else if *httpBody == "" {
-			return `""`
+			return ""
 		}
 
 		// body in a field
@@ -318,7 +318,7 @@ func (g *Generator) renderBody(r *pluginutils.TSOption) func(method *protogen.Me
 			return toJsonFunc + `(` + g.must("fullReq", *httpBody) + `)`
 		default:
 			glog.Fatalf("unsupported body field type: %s", bodyField.Desc.Kind())
-			return "null"
+			return ""
 		}
 	}
 }

@@ -156,15 +156,10 @@ export function newCounterService(transport: Transport): CounterServiceClient {
       options?: CallOptions,
     ): Promise<UnaryResponse> {
       const fullReq = UnaryRequest.fromPartial(req);
-      const rpcPath = `/main.CounterService/Increment`;
-      const queryParams = [] as string[][];
-      const method = "POST";
-      const body = JSON.stringify(UnaryRequest.toJSON(fullReq));
       const res = await transport.call({
-        url: rpcPath,
-        method: method,
-        queryParams: queryParams,
-        body: body,
+        url: `/main.CounterService/Increment`,
+        method: "POST",
+        body: JSON.stringify(UnaryRequest.toJSON(fullReq)),
       });
       return UnaryResponse.fromJSON(res);
     },
@@ -181,15 +176,10 @@ export function newCounterService(transport: Transport): CounterServiceClient {
       options?: CallOptions,
     ): Promise<UnaryResponse> {
       const fullReq = UnaryRequest.fromPartial(req);
-      const rpcPath = `/main.CounterService/FailingIncrement`;
-      const queryParams = [] as string[][];
-      const method = "POST";
-      const body = JSON.stringify(UnaryRequest.toJSON(fullReq));
       const res = await transport.call({
-        url: rpcPath,
-        method: method,
-        queryParams: queryParams,
-        body: body,
+        url: `/main.CounterService/FailingIncrement`,
+        method: "POST",
+        body: JSON.stringify(UnaryRequest.toJSON(fullReq)),
       });
       return UnaryResponse.fromJSON(res);
     },
@@ -199,15 +189,10 @@ export function newCounterService(transport: Transport): CounterServiceClient {
       options?: CallOptions,
     ): Promise<BinaryResponse> {
       const fullReq = BinaryRequest.fromPartial(req);
-      const rpcPath = `/main.CounterService/EchoBinary`;
-      const queryParams = [] as string[][];
-      const method = "POST";
-      const body = JSON.stringify(BinaryRequest.toJSON(fullReq));
       const res = await transport.call({
-        url: rpcPath,
-        method: method,
-        queryParams: queryParams,
-        body: body,
+        url: `/main.CounterService/EchoBinary`,
+        method: "POST",
+        body: JSON.stringify(BinaryRequest.toJSON(fullReq)),
       });
       return BinaryResponse.fromJSON(res);
     },
@@ -217,15 +202,10 @@ export function newCounterService(transport: Transport): CounterServiceClient {
       options?: CallOptions,
     ): Promise<HttpGetResponse> {
       const fullReq = HttpGetRequest.fromPartial(req);
-      const rpcPath = `/api/${must(fullReq.numToIncrease)}`;
-      const queryParams = renderURLSearchParams(req, ["numToIncrease"]);
-      const method = "GET";
-      const body = "";
       const res = await transport.call({
-        url: rpcPath,
-        method: method,
-        queryParams: queryParams,
-        body: body,
+        url: `/api/${must(fullReq.numToIncrease)}`,
+        method: "GET",
+        queryParams: renderURLSearchParams(req, ["numToIncrease"]),
       });
       return HttpGetResponse.fromJSON(res);
     },
@@ -235,15 +215,10 @@ export function newCounterService(transport: Transport): CounterServiceClient {
       options?: CallOptions,
     ): Promise<HttpPostResponse> {
       const fullReq = HttpPostRequest.fromPartial(req);
-      const rpcPath = `/post/${must(fullReq.a)}`;
-      const queryParams = [] as string[][];
-      const method = "POST";
-      const body = JSON.stringify(PostRequest.toJSON(must(fullReq.req)));
       const res = await transport.call({
-        url: rpcPath,
-        method: method,
-        queryParams: queryParams,
-        body: body,
+        url: `/post/${must(fullReq.a)}`,
+        method: "POST",
+        body: JSON.stringify(PostRequest.toJSON(must(fullReq.req))),
       });
       return HttpPostResponse.fromJSON(res);
     },
@@ -253,15 +228,10 @@ export function newCounterService(transport: Transport): CounterServiceClient {
       options?: CallOptions,
     ): Promise<HttpPostResponse> {
       const fullReq = HttpPostRequest.fromPartial(req);
-      const rpcPath = `/post/${must(fullReq.a)}/${must(fullReq.c)}`;
-      const queryParams = [] as string[][];
-      const method = "POST";
-      const body = JSON.stringify(HttpPostRequest.toJSON(fullReq));
       const res = await transport.call({
-        url: rpcPath,
-        method: method,
-        queryParams: queryParams,
-        body: body,
+        url: `/post/${must(fullReq.a)}/${must(fullReq.c)}`,
+        method: "POST",
+        body: JSON.stringify(HttpPostRequest.toJSON(fullReq)),
       });
       return HttpPostResponse.fromJSON(res);
     },
@@ -271,15 +241,10 @@ export function newCounterService(transport: Transport): CounterServiceClient {
       options?: CallOptions,
     ): Promise<HttpPatchResponse> {
       const fullReq = HttpPatchRequest.fromPartial(req);
-      const rpcPath = `/patch`;
-      const queryParams = [] as string[][];
-      const method = "PATCH";
-      const body = JSON.stringify(HttpPatchRequest.toJSON(fullReq));
       const res = await transport.call({
-        url: rpcPath,
-        method: method,
-        queryParams: queryParams,
-        body: body,
+        url: `/patch`,
+        method: "PATCH",
+        body: JSON.stringify(HttpPatchRequest.toJSON(fullReq)),
       });
       return HttpPatchResponse.fromJSON(res);
     },
@@ -289,15 +254,10 @@ export function newCounterService(transport: Transport): CounterServiceClient {
       options?: CallOptions,
     ): Promise<Empty> {
       const fullReq = HttpDeleteRequest.fromPartial(req);
-      const rpcPath = `/delete/${must(fullReq.a)}`;
-      const queryParams = renderURLSearchParams(req, ["a"]);
-      const method = "DELETE";
-      const body = "";
       const res = await transport.call({
-        url: rpcPath,
-        method: method,
-        queryParams: queryParams,
-        body: body,
+        url: `/delete/${must(fullReq.a)}`,
+        method: "DELETE",
+        queryParams: renderURLSearchParams(req, ["a"]),
       });
       return Empty.fromJSON(res);
     },
@@ -307,15 +267,10 @@ export function newCounterService(transport: Transport): CounterServiceClient {
       options?: CallOptions,
     ): Promise<HttpDeleteWithParamsResponse> {
       const fullReq = HttpDeleteWithParamsRequest.fromPartial(req);
-      const rpcPath = `/delete/${must(fullReq.id)}`;
-      const queryParams = renderURLSearchParams(req, ["id"]);
-      const method = "DELETE";
-      const body = "";
       const res = await transport.call({
-        url: rpcPath,
-        method: method,
-        queryParams: queryParams,
-        body: body,
+        url: `/delete/${must(fullReq.id)}`,
+        method: "DELETE",
+        queryParams: renderURLSearchParams(req, ["id"]),
       });
       return HttpDeleteWithParamsResponse.fromJSON(res);
     },
@@ -325,15 +280,10 @@ export function newCounterService(transport: Transport): CounterServiceClient {
       options?: CallOptions,
     ): Promise<ExternalResponse> {
       const fullReq = ExternalRequest.fromPartial(req);
-      const rpcPath = `/main.CounterService/ExternalMessage`;
-      const queryParams = [] as string[][];
-      const method = "POST";
-      const body = JSON.stringify(ExternalRequest.toJSON(fullReq));
       const res = await transport.call({
-        url: rpcPath,
-        method: method,
-        queryParams: queryParams,
-        body: body,
+        url: `/main.CounterService/ExternalMessage`,
+        method: "POST",
+        body: JSON.stringify(ExternalRequest.toJSON(fullReq)),
       });
       return ExternalResponse.fromJSON(res);
     },
@@ -343,15 +293,10 @@ export function newCounterService(transport: Transport): CounterServiceClient {
       options?: CallOptions,
     ): Promise<HTTPGetWithURLSearchParamsResponse> {
       const fullReq = HTTPGetWithURLSearchParamsRequest.fromPartial(req);
-      const rpcPath = `/api/query/${must(fullReq.a)}`;
-      const queryParams = renderURLSearchParams(req, ["a"]);
-      const method = "GET";
-      const body = "";
       const res = await transport.call({
-        url: rpcPath,
-        method: method,
-        queryParams: queryParams,
-        body: body,
+        url: `/api/query/${must(fullReq.a)}`,
+        method: "GET",
+        queryParams: renderURLSearchParams(req, ["a"]),
       });
       return HTTPGetWithURLSearchParamsResponse.fromJSON(res);
     },
@@ -362,15 +307,10 @@ export function newCounterService(transport: Transport): CounterServiceClient {
     ): Promise<HTTPGetWithZeroValueURLSearchParamsResponse> {
       const fullReq =
         HTTPGetWithZeroValueURLSearchParamsRequest.fromPartial(req);
-      const rpcPath = `/path/query`;
-      const queryParams = renderURLSearchParams(req, []);
-      const method = "GET";
-      const body = "";
       const res = await transport.call({
-        url: rpcPath,
-        method: method,
-        queryParams: queryParams,
-        body: body,
+        url: `/path/query`,
+        method: "GET",
+        queryParams: renderURLSearchParams(req, []),
       });
       return HTTPGetWithZeroValueURLSearchParamsResponse.fromJSON(res);
     },
@@ -380,15 +320,10 @@ export function newCounterService(transport: Transport): CounterServiceClient {
       options?: CallOptions,
     ): Promise<OptionalFieldsResponse> {
       const fullReq = OptionalFieldsRequest.fromPartial(req);
-      const rpcPath = `/optional`;
-      const queryParams = renderURLSearchParams(req, []);
-      const method = "GET";
-      const body = "";
       const res = await transport.call({
-        url: rpcPath,
-        method: method,
-        queryParams: queryParams,
-        body: body,
+        url: `/optional`,
+        method: "GET",
+        queryParams: renderURLSearchParams(req, []),
       });
       return OptionalFieldsResponse.fromJSON(res);
     },

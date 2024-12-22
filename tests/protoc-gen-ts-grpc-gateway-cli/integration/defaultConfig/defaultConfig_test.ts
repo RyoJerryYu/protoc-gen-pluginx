@@ -35,7 +35,9 @@ function fetchTransport(
 }
 
 describe("test default configuration", () => {
-  const CounterService = newCounterService(fetchTransport("http://localhost:8081"));
+  const CounterService = newCounterService(
+    fetchTransport("http://localhost:8081"),
+  );
 
   it("unary request", async () => {
     const result = await CounterService.increment({ counter: 199 });
