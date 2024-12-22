@@ -209,7 +209,7 @@ func (r *TSRegistry) QualifiedTSIdent(ident TSIdent) string {
 func (r *TSRegistry) ServiceFmap() template.FuncMap {
 	fMap := template.FuncMap{
 		"tsType":       r.TsType,
-		"functionCase": FunctionCase,
+		"functionCase": FunctionCase_TSProto,
 		// "tsTypeKey":    tsTypeKey(r),
 		// "tsTypeDef":    tsTypeDef(r),
 		// "fieldName":    fieldName(r),
@@ -245,9 +245,39 @@ func isASCIILower(c byte) bool {
 	return 'a' <= c && c <= 'z'
 }
 
+// TSProto Function Case
+func FunctionCase_TSProto(s string) string {
+	if len(s) == 0 {
+		return s
+	}
+
+	// Find the position of the first non-uppercase letter after the initial uppercase sequence
+	firstLowerPos := -1
+	for i := range len(s) {
+		if isASCIILower(s[i]) {
+			firstLowerPos = i
+			break
+		}
+	}
+
+	switch firstLowerPos {
+	case -1:
+		// If no lowercase letter is found, return the string in lowercase
+		return strings.ToLower(s)
+
+	case 0:
+		// If the first letter is lowercase, return the string as is.
+		return s
+
+	default:
+		// default, we want to lowercase the first letter.
+		return strings.ToLower(s[:1]) + s[1:]
+	}
+}
+
 // Takes a service name or method name in the form SomeMethod or HTTPMethod and
 // return someMethod or httpMethod.
-func FunctionCase(s string) string {
+func functionCase(s string) string {
 	if len(s) == 0 {
 		return s
 	}

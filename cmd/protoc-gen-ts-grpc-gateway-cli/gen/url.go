@@ -138,5 +138,5 @@ func (g *Generator) must(rootName string, path string) string {
 }
 
 func (g *Generator) TSProto_EnumToJSONFuncName(enum protoreflect.EnumDescriptor) string {
-	return pluginutils.FunctionCase(string(enum.Name())) + "ToJSON"
+	return pluginutils.FunctionCase_TSProto(string(enum.Name())) + "ToJSON"
 }

@@ -205,7 +205,7 @@ func (g *Generator) applyMethod(method *protogen.Method) {
 	// 		)
 
 	// 	} else {
-	g.Pf("async %s(", pluginutils.FunctionCase(method.GoName))
+	g.Pf("async %s(", pluginutils.FunctionCase_TSProto(method.GoName))
 	g.Pf("  req: %s<%s>,", methodModule.Ident("DeepPartial"), input)
 	g.Pf("  options?: %s,", niceGrpcCommon.Ident("CallOptions"))
 	g.Pf("): Promise<%s> {", output)
