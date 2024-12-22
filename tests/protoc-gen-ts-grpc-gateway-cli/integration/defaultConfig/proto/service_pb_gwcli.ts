@@ -137,7 +137,7 @@ function must<T>(value: T | null | undefined): T {
  * CallParams is a type that represents the parameters that are passed to the transport's call method
  */
 export type CallParams = {
-  url: string;
+  path: string;
   method: string;
   headers?: Headers | null;
   queryParams?: string[][];
@@ -177,7 +177,7 @@ export function newCounterService(transport: Transport): CounterServiceClient {
         : undefined;
       const fullReq = UnaryRequest.fromPartial(req);
       const res = await transport.call({
-        url: `/main.CounterService/Increment`,
+        path: `/main.CounterService/Increment`,
         method: "POST",
         headers: headers,
         body: JSON.stringify(UnaryRequest.toJSON(fullReq)),
@@ -201,7 +201,7 @@ export function newCounterService(transport: Transport): CounterServiceClient {
         : undefined;
       const fullReq = UnaryRequest.fromPartial(req);
       const res = await transport.call({
-        url: `/main.CounterService/FailingIncrement`,
+        path: `/main.CounterService/FailingIncrement`,
         method: "POST",
         headers: headers,
         body: JSON.stringify(UnaryRequest.toJSON(fullReq)),
@@ -218,7 +218,7 @@ export function newCounterService(transport: Transport): CounterServiceClient {
         : undefined;
       const fullReq = BinaryRequest.fromPartial(req);
       const res = await transport.call({
-        url: `/main.CounterService/EchoBinary`,
+        path: `/main.CounterService/EchoBinary`,
         method: "POST",
         headers: headers,
         body: JSON.stringify(BinaryRequest.toJSON(fullReq)),
@@ -235,7 +235,7 @@ export function newCounterService(transport: Transport): CounterServiceClient {
         : undefined;
       const fullReq = HttpGetRequest.fromPartial(req);
       const res = await transport.call({
-        url: `/api/${must(fullReq.numToIncrease)}`,
+        path: `/api/${must(fullReq.numToIncrease)}`,
         method: "GET",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["numToIncrease"]),
@@ -252,7 +252,7 @@ export function newCounterService(transport: Transport): CounterServiceClient {
         : undefined;
       const fullReq = HttpPostRequest.fromPartial(req);
       const res = await transport.call({
-        url: `/post/${must(fullReq.a)}`,
+        path: `/post/${must(fullReq.a)}`,
         method: "POST",
         headers: headers,
         body: JSON.stringify(PostRequest.toJSON(must(fullReq.req))),
@@ -269,7 +269,7 @@ export function newCounterService(transport: Transport): CounterServiceClient {
         : undefined;
       const fullReq = HttpPostRequest.fromPartial(req);
       const res = await transport.call({
-        url: `/post/${must(fullReq.a)}/${must(fullReq.c)}`,
+        path: `/post/${must(fullReq.a)}/${must(fullReq.c)}`,
         method: "POST",
         headers: headers,
         body: JSON.stringify(HttpPostRequest.toJSON(fullReq)),
@@ -286,7 +286,7 @@ export function newCounterService(transport: Transport): CounterServiceClient {
         : undefined;
       const fullReq = HttpPatchRequest.fromPartial(req);
       const res = await transport.call({
-        url: `/patch`,
+        path: `/patch`,
         method: "PATCH",
         headers: headers,
         body: JSON.stringify(HttpPatchRequest.toJSON(fullReq)),
@@ -303,7 +303,7 @@ export function newCounterService(transport: Transport): CounterServiceClient {
         : undefined;
       const fullReq = HttpDeleteRequest.fromPartial(req);
       const res = await transport.call({
-        url: `/delete/${must(fullReq.a)}`,
+        path: `/delete/${must(fullReq.a)}`,
         method: "DELETE",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["a"]),
@@ -320,7 +320,7 @@ export function newCounterService(transport: Transport): CounterServiceClient {
         : undefined;
       const fullReq = HttpDeleteWithParamsRequest.fromPartial(req);
       const res = await transport.call({
-        url: `/delete/${must(fullReq.id)}`,
+        path: `/delete/${must(fullReq.id)}`,
         method: "DELETE",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["id"]),
@@ -337,7 +337,7 @@ export function newCounterService(transport: Transport): CounterServiceClient {
         : undefined;
       const fullReq = ExternalRequest.fromPartial(req);
       const res = await transport.call({
-        url: `/main.CounterService/ExternalMessage`,
+        path: `/main.CounterService/ExternalMessage`,
         method: "POST",
         headers: headers,
         body: JSON.stringify(ExternalRequest.toJSON(fullReq)),
@@ -354,7 +354,7 @@ export function newCounterService(transport: Transport): CounterServiceClient {
         : undefined;
       const fullReq = HTTPGetWithURLSearchParamsRequest.fromPartial(req);
       const res = await transport.call({
-        url: `/api/query/${must(fullReq.a)}`,
+        path: `/api/query/${must(fullReq.a)}`,
         method: "GET",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["a"]),
@@ -372,7 +372,7 @@ export function newCounterService(transport: Transport): CounterServiceClient {
       const fullReq =
         HTTPGetWithZeroValueURLSearchParamsRequest.fromPartial(req);
       const res = await transport.call({
-        url: `/path/query`,
+        path: `/path/query`,
         method: "GET",
         headers: headers,
         queryParams: renderURLSearchParams(req, []),
@@ -389,7 +389,7 @@ export function newCounterService(transport: Transport): CounterServiceClient {
         : undefined;
       const fullReq = OptionalFieldsRequest.fromPartial(req);
       const res = await transport.call({
-        url: `/optional`,
+        path: `/optional`,
         method: "GET",
         headers: headers,
         queryParams: renderURLSearchParams(req, []),

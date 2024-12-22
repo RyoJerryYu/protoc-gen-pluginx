@@ -12,16 +12,16 @@ function fetchTransport(
 ): Transport {
   return {
     async call({
-      url,
+      path,
       method,
       headers,
-      queryParams = [],
+      queryParams,
       body,
     }: CallParams): Promise<any> {
-      let rpcUrl = url;
-      if (queryParams.length > 0) {
+      let rpcPath = path;
+      if (queryParams && queryParams.length > 0) {
         const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
+        rpcPath += "?" + searchParams.toString();
       }
       const callReq = { ...initReq, method: method };
       if (body) {
@@ -30,7 +30,7 @@ function fetchTransport(
       if (headers) {
         callReq.headers = headers;
       }
-      const res = await fetch(new URL(rpcUrl, baseUrl).href, callReq);
+      const res = await fetch(new URL(rpcPath, baseUrl).href, callReq);
       const resBody = await res.json();
       if (!res.ok) throw resBody;
       return resBody;

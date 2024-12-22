@@ -165,7 +165,7 @@ function must<T>(value: T | null | undefined): T {
  * CallParams is a type that represents the parameters that are passed to the transport's call method
  */
 export type CallParams = {
-    url: string,
+    path: string,
     method: string,
 	headers?: Headers | null,
     queryParams?: string[][],
@@ -253,7 +253,7 @@ func (g *Generator) applyMethod(method *protogen.Method) {
 		renderedBody := g.renderBody(&g.TSOption)(method)
 
 		g.Pf("  const res = await transport.call({")
-		g.Pf("    url: `%s`,", renderedPath)
+		g.Pf("    path: `%s`,", renderedPath)
 		g.Pf(`    method: "%s",`, methodMethod)
 		g.Pf("    headers: headers,")
 		if queryParams != "" {
