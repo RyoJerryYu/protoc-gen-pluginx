@@ -1,11 +1,14 @@
 package gen
 
 import (
+	"fmt"
+	"strings"
 	"text/template"
 
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils"
 	"github.com/golang/glog"
 	"google.golang.org/protobuf/compiler/protogen"
+	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 type Options struct {
@@ -201,15 +204,108 @@ func (g *Generator) applyMethod(method *protogen.Method) {
 		g.Pf("): Promise<%s> {", output)
 		g.Pf("  const fullReq = %s.fromPartial(req);", input)
 		// path, return pathParams
+		renderedPath, pathParams := g.renderPath(&g.TSOption)(method)
+		g.Pf("  const rpcPath = `%s`;", renderedPath)
 		// queryParams
+		queryParams := g.renderQueryString(&g.TSOption)(method, pathParams)
+		g.Pf("  const queryParams = %s;", queryParams)
 		// METHOD
+		methodMethod := g.httpOptions(method).Method
+		g.Pf("  const method = %s;", fmt.Sprintf(`"%s"`, methodMethod))
 		// body
-		g.Pf("  const url = new URL(%s, baseUrl).href;", g.renderURL(&g.TSOption)(method))
-		g.Pf("  const res = await fetch(url, {...initReq, %s});", g.buildInitReq(method))
+		renderedBody := g.renderBody(&g.TSOption)(method)
+		g.Pf("  const body = %s;", renderedBody)
+		g.Pf("  let rpcUrl = rpcPath")
+		g.Pf("  if (queryParams.length > 0) {")
+		g.Pf("    const searchParams = new URLSearchParams(queryParams);")
+		g.Pf("    rpcUrl += '?' + searchParams.toString();")
+		g.Pf("  }")
+		g.Pf("  let callReq = {...initReq, method: method}")
+		g.Pf("  if (body) {")
+		g.Pf("    callReq.body = body;")
+		g.Pf("  }")
+		g.Pf("  const url = new URL(rpcUrl, baseUrl).href;")
+		g.Pf("  const res = await fetch(url, callReq);")
 		g.Pf("  const resBody = await res.json();")
 		g.Pf("  if (!res.ok) throw resBody;")
 		g.Pf("  return %s.fromJSON(resBody);", output)
 		g.Pf("},")
 	}
 	g.P(method.Comments.Trailing)
+}
+
+// return the URL string and the pathParams
+func (g *Generator) renderPath(r *pluginutils.TSOption) func(method *protogen.Method) (string, []string) {
+	return func(method *protogen.Method) (string, []string) {
+		httpOpts := g.httpOptions(method)
+		methodURL := httpOpts.URL
+		matches := pathParamRegexp.FindAllStringSubmatch(methodURL, -1)
+		fieldsInPath := make([]string, 0, len(matches))
+		if len(matches) > 0 {
+			glog.V(2).Infof("url matches: %+v", matches)
+			for _, m := range matches {
+				expToReplace := m[0]
+				fieldNameRaw := m[1]
+				// fieldValuePattern := m[2]
+				part := fmt.Sprintf(`${%s}`, g.must("fullReq", fieldNameRaw))
+				methodURL = strings.ReplaceAll(methodURL, expToReplace, part)
+				fieldName := pluginutils.FieldName(r)(fieldNameRaw)
+				fieldsInPath = append(fieldsInPath, fieldName)
+			}
+		}
+
+		return methodURL, fieldsInPath
+	}
+}
+
+func (g *Generator) renderQueryString(r *pluginutils.TSOption) func(method *protogen.Method, urlPathParams []string) string {
+	return func(method *protogen.Method, urlPathParams []string) string {
+		httpOpts := g.httpOptions(method)
+		methodMethod := httpOpts.Method
+		if method.Desc.IsStreamingClient() || (methodMethod != "GET" && methodMethod != "DELETE") {
+			return "[] as string[][]"
+		}
+		urlPathParamStrs := make([]string, 0, len(urlPathParams))
+		for _, pathParam := range urlPathParams {
+			urlPathParamStrs = append(urlPathParamStrs, fmt.Sprintf(`"%s"`, pathParam))
+		}
+		urlPathParamStr := fmt.Sprintf("[%s]", strings.Join(urlPathParamStrs, ", "))
+		renderURLSearchParams := fmt.Sprintf("renderURLSearchParams(req, %s)", urlPathParamStr)
+		return renderURLSearchParams
+	}
+}
+
+func (g *Generator) renderBody(r *pluginutils.TSOption) func(method *protogen.Method) string {
+	return func(method *protogen.Method) string {
+		httpOpts := g.httpOptions(method)
+		httpBody := httpOpts.Body
+
+		TSProtoJsonify := func(in string, msg *protogen.Message) string {
+			ident := g.QualifiedTSIdent(pluginutils.TSIdent_TSProto_Message(msg))
+			return `JSON.stringify(` + ident + `.toJSON(` + in + `))`
+		}
+		if httpBody == nil || *httpBody == "*" {
+			bodyMsg := method.Input
+			return TSProtoJsonify("fullReq", bodyMsg)
+		} else if *httpBody == "" {
+			return `""`
+		}
+
+		// body in a field
+		bodyField := pluginutils.FindFieldByTextName(method.Input, *httpBody)
+		switch bodyField.Desc.Kind() {
+		case protoreflect.MessageKind:
+			bodyType := bodyField.Message
+			return TSProtoJsonify(g.must("fullReq", *httpBody), bodyType)
+		case protoreflect.EnumKind:
+			bodyType := bodyField.Enum
+			enumModule := pluginutils.TSModule_TSProto(bodyType.Desc.ParentFile())
+			toJsonIdent := enumModule.Ident(g.TSProto_EnumToJSONFuncName(bodyType.Desc))
+			toJsonFunc := g.QualifiedTSIdent(toJsonIdent)
+			return toJsonFunc + `(` + g.must("fullReq", *httpBody) + `)`
+		default:
+			glog.Fatalf("unsupported body field type: %s", bodyField.Desc.Kind())
+			return "null"
+		}
+	}
 }

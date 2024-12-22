@@ -142,12 +142,21 @@ export function newCounterService(
       options?: CallOptions,
     ): Promise<UnaryResponse> {
       const fullReq = UnaryRequest.fromPartial(req);
-      const url = new URL(`/main.CounterService/Increment`, baseUrl).href;
-      const res = await fetch(url, {
-        ...initReq,
-        method: "POST",
-        body: JSON.stringify(UnaryRequest.toJSON(fullReq)),
-      });
+      const rpcPath = `/main.CounterService/Increment`;
+      const queryParams = [] as string[][];
+      const method = "POST";
+      const body = JSON.stringify(UnaryRequest.toJSON(fullReq));
+      let rpcUrl = rpcPath;
+      if (queryParams.length > 0) {
+        const searchParams = new URLSearchParams(queryParams);
+        rpcUrl += "?" + searchParams.toString();
+      }
+      let callReq = { ...initReq, method: method };
+      if (body) {
+        callReq.body = body;
+      }
+      const url = new URL(rpcUrl, baseUrl).href;
+      const res = await fetch(url, callReq);
       const resBody = await res.json();
       if (!res.ok) throw resBody;
       return UnaryResponse.fromJSON(resBody);
@@ -165,13 +174,21 @@ export function newCounterService(
       options?: CallOptions,
     ): Promise<UnaryResponse> {
       const fullReq = UnaryRequest.fromPartial(req);
-      const url = new URL(`/main.CounterService/FailingIncrement`, baseUrl)
-        .href;
-      const res = await fetch(url, {
-        ...initReq,
-        method: "POST",
-        body: JSON.stringify(UnaryRequest.toJSON(fullReq)),
-      });
+      const rpcPath = `/main.CounterService/FailingIncrement`;
+      const queryParams = [] as string[][];
+      const method = "POST";
+      const body = JSON.stringify(UnaryRequest.toJSON(fullReq));
+      let rpcUrl = rpcPath;
+      if (queryParams.length > 0) {
+        const searchParams = new URLSearchParams(queryParams);
+        rpcUrl += "?" + searchParams.toString();
+      }
+      let callReq = { ...initReq, method: method };
+      if (body) {
+        callReq.body = body;
+      }
+      const url = new URL(rpcUrl, baseUrl).href;
+      const res = await fetch(url, callReq);
       const resBody = await res.json();
       if (!res.ok) throw resBody;
       return UnaryResponse.fromJSON(resBody);
@@ -182,12 +199,21 @@ export function newCounterService(
       options?: CallOptions,
     ): Promise<BinaryResponse> {
       const fullReq = BinaryRequest.fromPartial(req);
-      const url = new URL(`/main.CounterService/EchoBinary`, baseUrl).href;
-      const res = await fetch(url, {
-        ...initReq,
-        method: "POST",
-        body: JSON.stringify(BinaryRequest.toJSON(fullReq)),
-      });
+      const rpcPath = `/main.CounterService/EchoBinary`;
+      const queryParams = [] as string[][];
+      const method = "POST";
+      const body = JSON.stringify(BinaryRequest.toJSON(fullReq));
+      let rpcUrl = rpcPath;
+      if (queryParams.length > 0) {
+        const searchParams = new URLSearchParams(queryParams);
+        rpcUrl += "?" + searchParams.toString();
+      }
+      let callReq = { ...initReq, method: method };
+      if (body) {
+        callReq.body = body;
+      }
+      const url = new URL(rpcUrl, baseUrl).href;
+      const res = await fetch(url, callReq);
       const resBody = await res.json();
       if (!res.ok) throw resBody;
       return BinaryResponse.fromJSON(resBody);
@@ -198,11 +224,21 @@ export function newCounterService(
       options?: CallOptions,
     ): Promise<HttpGetResponse> {
       const fullReq = HttpGetRequest.fromPartial(req);
-      const url = new URL(
-        `/api/${must(fullReq.numToIncrease)}?${new URLSearchParams(renderURLSearchParams(req, ["numToIncrease"])).toString()}`,
-        baseUrl,
-      ).href;
-      const res = await fetch(url, { ...initReq, method: "GET" });
+      const rpcPath = `/api/${must(fullReq.numToIncrease)}`;
+      const queryParams = renderURLSearchParams(req, ["numToIncrease"]);
+      const method = "GET";
+      const body = "";
+      let rpcUrl = rpcPath;
+      if (queryParams.length > 0) {
+        const searchParams = new URLSearchParams(queryParams);
+        rpcUrl += "?" + searchParams.toString();
+      }
+      let callReq = { ...initReq, method: method };
+      if (body) {
+        callReq.body = body;
+      }
+      const url = new URL(rpcUrl, baseUrl).href;
+      const res = await fetch(url, callReq);
       const resBody = await res.json();
       if (!res.ok) throw resBody;
       return HttpGetResponse.fromJSON(resBody);
@@ -213,12 +249,21 @@ export function newCounterService(
       options?: CallOptions,
     ): Promise<HttpPostResponse> {
       const fullReq = HttpPostRequest.fromPartial(req);
-      const url = new URL(`/post/${must(fullReq.a)}`, baseUrl).href;
-      const res = await fetch(url, {
-        ...initReq,
-        method: "POST",
-        body: JSON.stringify(PostRequest.toJSON(must(fullReq.req))),
-      });
+      const rpcPath = `/post/${must(fullReq.a)}`;
+      const queryParams = [] as string[][];
+      const method = "POST";
+      const body = JSON.stringify(PostRequest.toJSON(must(fullReq.req)));
+      let rpcUrl = rpcPath;
+      if (queryParams.length > 0) {
+        const searchParams = new URLSearchParams(queryParams);
+        rpcUrl += "?" + searchParams.toString();
+      }
+      let callReq = { ...initReq, method: method };
+      if (body) {
+        callReq.body = body;
+      }
+      const url = new URL(rpcUrl, baseUrl).href;
+      const res = await fetch(url, callReq);
       const resBody = await res.json();
       if (!res.ok) throw resBody;
       return HttpPostResponse.fromJSON(resBody);
@@ -229,15 +274,21 @@ export function newCounterService(
       options?: CallOptions,
     ): Promise<HttpPostResponse> {
       const fullReq = HttpPostRequest.fromPartial(req);
-      const url = new URL(
-        `/post/${must(fullReq.a)}/${must(fullReq.c)}`,
-        baseUrl,
-      ).href;
-      const res = await fetch(url, {
-        ...initReq,
-        method: "POST",
-        body: JSON.stringify(HttpPostRequest.toJSON(fullReq)),
-      });
+      const rpcPath = `/post/${must(fullReq.a)}/${must(fullReq.c)}`;
+      const queryParams = [] as string[][];
+      const method = "POST";
+      const body = JSON.stringify(HttpPostRequest.toJSON(fullReq));
+      let rpcUrl = rpcPath;
+      if (queryParams.length > 0) {
+        const searchParams = new URLSearchParams(queryParams);
+        rpcUrl += "?" + searchParams.toString();
+      }
+      let callReq = { ...initReq, method: method };
+      if (body) {
+        callReq.body = body;
+      }
+      const url = new URL(rpcUrl, baseUrl).href;
+      const res = await fetch(url, callReq);
       const resBody = await res.json();
       if (!res.ok) throw resBody;
       return HttpPostResponse.fromJSON(resBody);
@@ -248,12 +299,21 @@ export function newCounterService(
       options?: CallOptions,
     ): Promise<HttpPatchResponse> {
       const fullReq = HttpPatchRequest.fromPartial(req);
-      const url = new URL(`/patch`, baseUrl).href;
-      const res = await fetch(url, {
-        ...initReq,
-        method: "PATCH",
-        body: JSON.stringify(HttpPatchRequest.toJSON(fullReq)),
-      });
+      const rpcPath = `/patch`;
+      const queryParams = [] as string[][];
+      const method = "PATCH";
+      const body = JSON.stringify(HttpPatchRequest.toJSON(fullReq));
+      let rpcUrl = rpcPath;
+      if (queryParams.length > 0) {
+        const searchParams = new URLSearchParams(queryParams);
+        rpcUrl += "?" + searchParams.toString();
+      }
+      let callReq = { ...initReq, method: method };
+      if (body) {
+        callReq.body = body;
+      }
+      const url = new URL(rpcUrl, baseUrl).href;
+      const res = await fetch(url, callReq);
       const resBody = await res.json();
       if (!res.ok) throw resBody;
       return HttpPatchResponse.fromJSON(resBody);
@@ -264,11 +324,21 @@ export function newCounterService(
       options?: CallOptions,
     ): Promise<Empty> {
       const fullReq = HttpDeleteRequest.fromPartial(req);
-      const url = new URL(
-        `/delete/${must(fullReq.a)}?${new URLSearchParams(renderURLSearchParams(req, ["a"])).toString()}`,
-        baseUrl,
-      ).href;
-      const res = await fetch(url, { ...initReq, method: "DELETE" });
+      const rpcPath = `/delete/${must(fullReq.a)}`;
+      const queryParams = renderURLSearchParams(req, ["a"]);
+      const method = "DELETE";
+      const body = "";
+      let rpcUrl = rpcPath;
+      if (queryParams.length > 0) {
+        const searchParams = new URLSearchParams(queryParams);
+        rpcUrl += "?" + searchParams.toString();
+      }
+      let callReq = { ...initReq, method: method };
+      if (body) {
+        callReq.body = body;
+      }
+      const url = new URL(rpcUrl, baseUrl).href;
+      const res = await fetch(url, callReq);
       const resBody = await res.json();
       if (!res.ok) throw resBody;
       return Empty.fromJSON(resBody);
@@ -279,11 +349,21 @@ export function newCounterService(
       options?: CallOptions,
     ): Promise<HttpDeleteWithParamsResponse> {
       const fullReq = HttpDeleteWithParamsRequest.fromPartial(req);
-      const url = new URL(
-        `/delete/${must(fullReq.id)}?${new URLSearchParams(renderURLSearchParams(req, ["id"])).toString()}`,
-        baseUrl,
-      ).href;
-      const res = await fetch(url, { ...initReq, method: "DELETE" });
+      const rpcPath = `/delete/${must(fullReq.id)}`;
+      const queryParams = renderURLSearchParams(req, ["id"]);
+      const method = "DELETE";
+      const body = "";
+      let rpcUrl = rpcPath;
+      if (queryParams.length > 0) {
+        const searchParams = new URLSearchParams(queryParams);
+        rpcUrl += "?" + searchParams.toString();
+      }
+      let callReq = { ...initReq, method: method };
+      if (body) {
+        callReq.body = body;
+      }
+      const url = new URL(rpcUrl, baseUrl).href;
+      const res = await fetch(url, callReq);
       const resBody = await res.json();
       if (!res.ok) throw resBody;
       return HttpDeleteWithParamsResponse.fromJSON(resBody);
@@ -294,12 +374,21 @@ export function newCounterService(
       options?: CallOptions,
     ): Promise<ExternalResponse> {
       const fullReq = ExternalRequest.fromPartial(req);
-      const url = new URL(`/main.CounterService/ExternalMessage`, baseUrl).href;
-      const res = await fetch(url, {
-        ...initReq,
-        method: "POST",
-        body: JSON.stringify(ExternalRequest.toJSON(fullReq)),
-      });
+      const rpcPath = `/main.CounterService/ExternalMessage`;
+      const queryParams = [] as string[][];
+      const method = "POST";
+      const body = JSON.stringify(ExternalRequest.toJSON(fullReq));
+      let rpcUrl = rpcPath;
+      if (queryParams.length > 0) {
+        const searchParams = new URLSearchParams(queryParams);
+        rpcUrl += "?" + searchParams.toString();
+      }
+      let callReq = { ...initReq, method: method };
+      if (body) {
+        callReq.body = body;
+      }
+      const url = new URL(rpcUrl, baseUrl).href;
+      const res = await fetch(url, callReq);
       const resBody = await res.json();
       if (!res.ok) throw resBody;
       return ExternalResponse.fromJSON(resBody);
@@ -310,11 +399,21 @@ export function newCounterService(
       options?: CallOptions,
     ): Promise<HTTPGetWithURLSearchParamsResponse> {
       const fullReq = HTTPGetWithURLSearchParamsRequest.fromPartial(req);
-      const url = new URL(
-        `/api/query/${must(fullReq.a)}?${new URLSearchParams(renderURLSearchParams(req, ["a"])).toString()}`,
-        baseUrl,
-      ).href;
-      const res = await fetch(url, { ...initReq, method: "GET" });
+      const rpcPath = `/api/query/${must(fullReq.a)}`;
+      const queryParams = renderURLSearchParams(req, ["a"]);
+      const method = "GET";
+      const body = "";
+      let rpcUrl = rpcPath;
+      if (queryParams.length > 0) {
+        const searchParams = new URLSearchParams(queryParams);
+        rpcUrl += "?" + searchParams.toString();
+      }
+      let callReq = { ...initReq, method: method };
+      if (body) {
+        callReq.body = body;
+      }
+      const url = new URL(rpcUrl, baseUrl).href;
+      const res = await fetch(url, callReq);
       const resBody = await res.json();
       if (!res.ok) throw resBody;
       return HTTPGetWithURLSearchParamsResponse.fromJSON(resBody);
@@ -326,11 +425,21 @@ export function newCounterService(
     ): Promise<HTTPGetWithZeroValueURLSearchParamsResponse> {
       const fullReq =
         HTTPGetWithZeroValueURLSearchParamsRequest.fromPartial(req);
-      const url = new URL(
-        `/path/query?${new URLSearchParams(renderURLSearchParams(req, [])).toString()}`,
-        baseUrl,
-      ).href;
-      const res = await fetch(url, { ...initReq, method: "GET" });
+      const rpcPath = `/path/query`;
+      const queryParams = renderURLSearchParams(req, []);
+      const method = "GET";
+      const body = "";
+      let rpcUrl = rpcPath;
+      if (queryParams.length > 0) {
+        const searchParams = new URLSearchParams(queryParams);
+        rpcUrl += "?" + searchParams.toString();
+      }
+      let callReq = { ...initReq, method: method };
+      if (body) {
+        callReq.body = body;
+      }
+      const url = new URL(rpcUrl, baseUrl).href;
+      const res = await fetch(url, callReq);
       const resBody = await res.json();
       if (!res.ok) throw resBody;
       return HTTPGetWithZeroValueURLSearchParamsResponse.fromJSON(resBody);
@@ -341,11 +450,21 @@ export function newCounterService(
       options?: CallOptions,
     ): Promise<OptionalFieldsResponse> {
       const fullReq = OptionalFieldsRequest.fromPartial(req);
-      const url = new URL(
-        `/optional?${new URLSearchParams(renderURLSearchParams(req, [])).toString()}`,
-        baseUrl,
-      ).href;
-      const res = await fetch(url, { ...initReq, method: "GET" });
+      const rpcPath = `/optional`;
+      const queryParams = renderURLSearchParams(req, []);
+      const method = "GET";
+      const body = "";
+      let rpcUrl = rpcPath;
+      if (queryParams.length > 0) {
+        const searchParams = new URLSearchParams(queryParams);
+        rpcUrl += "?" + searchParams.toString();
+      }
+      let callReq = { ...initReq, method: method };
+      if (body) {
+        callReq.body = body;
+      }
+      const url = new URL(rpcUrl, baseUrl).href;
+      const res = await fetch(url, callReq);
       const resBody = await res.json();
       if (!res.ok) throw resBody;
       return OptionalFieldsResponse.fromJSON(resBody);
