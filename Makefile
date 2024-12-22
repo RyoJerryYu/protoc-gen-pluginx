@@ -25,15 +25,15 @@ generate: tools bins
 	@cd tests && go generate ./...
 	@echo "Code generated."
 
-.PHONY: test test-unit test-integration
-test: test-unit test-integration
+.PHONY: test test-unit test-generation
+test: test-unit test-generation
 
 test-unit:
 	@echo "Running unit tests..."
 	@go test -v ./...
 	@echo "Unit tests passed."
 
-test-integration: generate
+test-generation: generate
 	@echo "Running tests..."
 	@cd tests && go test -v ./...
 	@echo "Tests passed."

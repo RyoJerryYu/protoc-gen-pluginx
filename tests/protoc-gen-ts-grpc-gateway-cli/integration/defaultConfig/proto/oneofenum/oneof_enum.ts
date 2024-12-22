@@ -5,7 +5,6 @@
 // source: proto/oneofenum/oneof_enum.proto
 
 /* eslint-disable */
-import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 
 export const protobufPackage = "proto.oneofenum";
 
@@ -42,18 +41,6 @@ export function exampleEnumToJSON(object: ExampleEnum): string {
   }
 }
 
-export function exampleEnumToNumber(object: ExampleEnum): number {
-  switch (object) {
-    case ExampleEnum.EXAMPLE_ENUM_UNSPECIFIED:
-      return 0;
-    case ExampleEnum.EXAMPLE_ENUM_FIRST:
-      return 1;
-    case ExampleEnum.UNRECOGNIZED:
-    default:
-      return -1;
-  }
-}
-
 export interface OneofEnumMessage {
   exampleEnum?: ExampleEnum | undefined;
 }
@@ -63,41 +50,6 @@ function createBaseOneofEnumMessage(): OneofEnumMessage {
 }
 
 export const OneofEnumMessage: MessageFns<OneofEnumMessage> = {
-  encode(
-    message: OneofEnumMessage,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
-    if (message.exampleEnum !== undefined) {
-      writer.uint32(8).int32(exampleEnumToNumber(message.exampleEnum));
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): OneofEnumMessage {
-    const reader =
-      input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseOneofEnumMessage();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 8) {
-            break;
-          }
-
-          message.exampleEnum = exampleEnumFromJSON(reader.int32());
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-
   fromJSON(object: any): OneofEnumMessage {
     return {
       exampleEnum: isSet(object.exampleEnum)
@@ -148,8 +100,6 @@ function isSet(value: any): boolean {
 }
 
 export interface MessageFns<T> {
-  encode(message: T, writer?: BinaryWriter): BinaryWriter;
-  decode(input: BinaryReader | Uint8Array, length?: number): T;
   fromJSON(object: any): T;
   toJSON(message: T): unknown;
   create(base?: DeepPartial<T>): T;

@@ -5,7 +5,6 @@
 // source: proto/sub2/message.proto
 
 /* eslint-disable */
-import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 
 export const protobufPackage = "proto.sub2";
 
@@ -18,41 +17,6 @@ function createBaseIdMessage(): IdMessage {
 }
 
 export const IdMessage: MessageFns<IdMessage> = {
-  encode(
-    message: IdMessage,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
-    if (message.uuid !== "") {
-      writer.uint32(10).string(message.uuid);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): IdMessage {
-    const reader =
-      input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseIdMessage();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.uuid = reader.string();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-
   fromJSON(object: any): IdMessage {
     return { uuid: isSet(object.uuid) ? globalThis.String(object.uuid) : "" };
   },
@@ -99,8 +63,6 @@ function isSet(value: any): boolean {
 }
 
 export interface MessageFns<T> {
-  encode(message: T, writer?: BinaryWriter): BinaryWriter;
-  decode(input: BinaryReader | Uint8Array, length?: number): T;
   fromJSON(object: any): T;
   toJSON(message: T): unknown;
   create(base?: DeepPartial<T>): T;

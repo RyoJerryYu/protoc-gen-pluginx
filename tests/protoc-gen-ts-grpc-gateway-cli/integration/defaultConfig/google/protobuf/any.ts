@@ -5,7 +5,6 @@
 // source: google/protobuf/any.proto
 
 /* eslint-disable */
-import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 
 export const protobufPackage = "google.protobuf";
 
@@ -137,52 +136,6 @@ function createBaseAny(): Any {
 }
 
 export const Any: MessageFns<Any> = {
-  encode(
-    message: Any,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
-    if (message.typeUrl !== "") {
-      writer.uint32(10).string(message.typeUrl);
-    }
-    if (message.value.length !== 0) {
-      writer.uint32(18).bytes(message.value);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): Any {
-    const reader =
-      input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseAny();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.typeUrl = reader.string();
-          continue;
-        }
-        case 2: {
-          if (tag !== 18) {
-            break;
-          }
-
-          message.value = reader.bytes();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-
   fromJSON(object: any): Any {
     return {
       typeUrl: isSet(object.typeUrl) ? globalThis.String(object.typeUrl) : "",
@@ -255,8 +208,6 @@ function isSet(value: any): boolean {
 }
 
 export interface MessageFns<T> {
-  encode(message: T, writer?: BinaryWriter): BinaryWriter;
-  decode(input: BinaryReader | Uint8Array, length?: number): T;
   fromJSON(object: any): T;
   toJSON(message: T): unknown;
   create(base?: DeepPartial<T>): T;

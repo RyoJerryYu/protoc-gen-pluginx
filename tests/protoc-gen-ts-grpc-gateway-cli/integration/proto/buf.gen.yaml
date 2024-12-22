@@ -38,6 +38,8 @@ plugins:
       - useOptionals=messages
       - outputServices=generic-definitions
       - outputServices=nice-grpc
+      - outputEncodeMethods=false
+      - outputJsonMethods=true
       - useExactTypes=false
       - esModuleInterop=true
       - stringEnums=true

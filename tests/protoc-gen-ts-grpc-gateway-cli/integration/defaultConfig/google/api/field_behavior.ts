@@ -143,29 +143,3 @@ export function fieldBehaviorToJSON(object: FieldBehavior): string {
       return "UNRECOGNIZED";
   }
 }
-
-export function fieldBehaviorToNumber(object: FieldBehavior): number {
-  switch (object) {
-    case FieldBehavior.FIELD_BEHAVIOR_UNSPECIFIED:
-      return 0;
-    case FieldBehavior.OPTIONAL:
-      return 1;
-    case FieldBehavior.REQUIRED:
-      return 2;
-    case FieldBehavior.OUTPUT_ONLY:
-      return 3;
-    case FieldBehavior.INPUT_ONLY:
-      return 4;
-    case FieldBehavior.IMMUTABLE:
-      return 5;
-    case FieldBehavior.UNORDERED_LIST:
-      return 6;
-    case FieldBehavior.NON_EMPTY_DEFAULT:
-      return 7;
-    case FieldBehavior.IDENTIFIER:
-      return 8;
-    case FieldBehavior.UNRECOGNIZED:
-    default:
-      return -1;
-  }
-}

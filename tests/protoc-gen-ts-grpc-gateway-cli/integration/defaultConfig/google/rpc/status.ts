@@ -5,7 +5,6 @@
 // source: google/rpc/status.proto
 
 /* eslint-disable */
-import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 import { Any } from "../protobuf/any";
 
 export const protobufPackage = "google.rpc";
@@ -44,63 +43,6 @@ function createBaseStatus(): Status {
 }
 
 export const Status: MessageFns<Status> = {
-  encode(
-    message: Status,
-    writer: BinaryWriter = new BinaryWriter(),
-  ): BinaryWriter {
-    if (message.code !== 0) {
-      writer.uint32(8).int32(message.code);
-    }
-    if (message.message !== "") {
-      writer.uint32(18).string(message.message);
-    }
-    for (const v of message.details) {
-      Any.encode(v!, writer.uint32(26).fork()).join();
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): Status {
-    const reader =
-      input instanceof BinaryReader ? input : new BinaryReader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseStatus();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 8) {
-            break;
-          }
-
-          message.code = reader.int32();
-          continue;
-        }
-        case 2: {
-          if (tag !== 18) {
-            break;
-          }
-
-          message.message = reader.string();
-          continue;
-        }
-        case 3: {
-          if (tag !== 26) {
-            break;
-          }
-
-          message.details.push(Any.decode(reader, reader.uint32()));
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-
   fromJSON(object: any): Status {
     return {
       code: isSet(object.code) ? globalThis.Number(object.code) : 0,
@@ -161,8 +103,6 @@ function isSet(value: any): boolean {
 }
 
 export interface MessageFns<T> {
-  encode(message: T, writer?: BinaryWriter): BinaryWriter;
-  decode(input: BinaryReader | Uint8Array, length?: number): T;
   fromJSON(object: any): T;
   toJSON(message: T): unknown;
   create(base?: DeepPartial<T>): T;
