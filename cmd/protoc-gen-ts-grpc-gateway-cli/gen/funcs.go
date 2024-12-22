@@ -26,6 +26,7 @@ type Options struct {
 
 var (
 	niceGrpcCommon = pluginutils.TSModule{ModuleName: "NiceGrpcCommon", Path: "nice-grpc-common"}
+	jsBase64       = pluginutils.TSModule{ModuleName: "JsBase64", Path: "js-base64"}
 )
 
 type Generator struct {
@@ -164,8 +165,9 @@ function must<T>(value: T | null | undefined): T {
  * CallParams is a type that represents the parameters that are passed to the transport's call method
  */
 export type CallParams = {
-    url: string,
+    path: string,
     method: string,
+	headers?: Headers | null,
     queryParams?: string[][],
     body?: BodyInit | null,
 }
@@ -180,6 +182,24 @@ export type Transport = {
 }
 `
 	g.P(s)
+	g.Pf(`function metadataToHeaders(metadata: %s): Headers {
+  const headers = new Headers();
+
+  for (const [key, values] of metadata) {
+    for (const value of values) {
+      headers.append(
+        key,
+        typeof value === 'string' ? value : %s.fromUint8Array(value),
+      );
+    }
+  }
+
+  return headers;
+}
+`,
+		niceGrpcCommon.Ident("Metadata"),
+		jsBase64.Ident("Base64"),
+	)
 	g.P("")
 }
 
@@ -221,6 +241,7 @@ func (g *Generator) applyMethod(method *protogen.Method) {
 		g.Pf("  req: %s<%s>,", methodModule.Ident("DeepPartial"), input)
 		g.Pf("  options?: %s,", niceGrpcCommon.Ident("CallOptions"))
 		g.Pf("): Promise<%s> {", output)
+		g.Pf("  const headers = options?.metadata ? metadataToHeaders(options.metadata) : undefined;")
 		g.Pf("  const fullReq = %s.fromPartial(req);", input)
 		// METHOD
 		methodMethod := g.httpOptions(method).Method
@@ -232,8 +253,9 @@ func (g *Generator) applyMethod(method *protogen.Method) {
 		renderedBody := g.renderBody(&g.TSOption)(method)
 
 		g.Pf("  const res = await transport.call({")
-		g.Pf("    url: `%s`,", renderedPath)
+		g.Pf("    path: `%s`,", renderedPath)
 		g.Pf(`    method: "%s",`, methodMethod)
+		g.Pf("    headers: headers,")
 		if queryParams != "" {
 			g.Pf("    queryParams: %s,", queryParams)
 		}

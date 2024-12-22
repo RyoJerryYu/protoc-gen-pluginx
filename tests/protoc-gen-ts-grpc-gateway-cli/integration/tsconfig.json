@@ -10,7 +10,7 @@
     "module": "commonjs",
     "noImplicitAny": true,
     "outDir": "tmp",
-    "target": "ES5",
+    "target": "es2015",
     "sourceMap": true,
     "types" : [
       "mocha",

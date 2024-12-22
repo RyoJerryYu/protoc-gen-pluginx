@@ -1,7 +1,8 @@
 import { Duration } from "../../google/protobuf/duration";
 import { Empty } from "../../google/protobuf/empty";
 import { StringValue } from "../../google/protobuf/wrappers";
-import { CallOptions } from "nice-grpc-common";
+import { Base64 } from "js-base64";
+import { CallOptions, Metadata } from "nice-grpc-common";
 import {
   ABitOfEverything,
   ABitOfEverythingRepeated,
@@ -130,8 +131,9 @@ function must<T>(value: T | null | undefined): T {
  * CallParams is a type that represents the parameters that are passed to the transport's call method
  */
 export type CallParams = {
-  url: string;
+  path: string;
   method: string;
+  headers?: Headers | null;
   queryParams?: string[][];
   body?: BodyInit | null;
 };
@@ -143,6 +145,21 @@ export type Transport = {
   call(params: CallParams): Promise<any>;
 };
 
+function metadataToHeaders(metadata: Metadata): Headers {
+  const headers = new Headers();
+
+  for (const [key, values] of metadata) {
+    for (const value of values) {
+      headers.append(
+        key,
+        typeof value === "string" ? value : Base64.fromUint8Array(value),
+      );
+    }
+  }
+
+  return headers;
+}
+
 // ABitOfEverything service is used to validate that APIs with complicated
 // proto messages and URL templates are still processed correctly.
 export function newABitOfEverythingService(
@@ -153,10 +170,14 @@ export function newABitOfEverythingService(
       req: DeepPartial<ABitOfEverything>,
       options?: CallOptions,
     ): Promise<ABitOfEverything> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = ABitOfEverything.fromPartial(req);
       const res = await transport.call({
-        url: `/v1/example/a_bit_of_everything`,
+        path: `/v1/example/a_bit_of_everything`,
         method: "POST",
+        headers: headers,
         body: JSON.stringify(ABitOfEverything.toJSON(fullReq)),
       });
       return ABitOfEverything.fromJSON(res);
@@ -166,10 +187,14 @@ export function newABitOfEverythingService(
       req: DeepPartial<IdMessage>,
       options?: CallOptions,
     ): Promise<ABitOfEverything> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = IdMessage.fromPartial(req);
       const res = await transport.call({
-        url: `/v1/example/a_bit_of_everything/${must(fullReq.uuid)}`,
+        path: `/v1/example/a_bit_of_everything/${must(fullReq.uuid)}`,
         method: "GET",
+        headers: headers,
         queryParams: renderURLSearchParams(req, ["uuid"]),
       });
       return ABitOfEverything.fromJSON(res);
@@ -179,10 +204,14 @@ export function newABitOfEverythingService(
       req: DeepPartial<ABitOfEverything>,
       options?: CallOptions,
     ): Promise<ABitOfEverything> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = ABitOfEverything.fromPartial(req);
       const res = await transport.call({
-        url: `/v1/example/a_bit_of_everything/${must(fullReq.uuid)}:custom`,
+        path: `/v1/example/a_bit_of_everything/${must(fullReq.uuid)}:custom`,
         method: "POST",
+        headers: headers,
       });
       return ABitOfEverything.fromJSON(res);
     },
@@ -191,10 +220,14 @@ export function newABitOfEverythingService(
       req: DeepPartial<ABitOfEverything>,
       options?: CallOptions,
     ): Promise<ABitOfEverything> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = ABitOfEverything.fromPartial(req);
       const res = await transport.call({
-        url: `/v1/example/a_bit_of_everything/${must(fullReq.uuid)}:custom:custom`,
+        path: `/v1/example/a_bit_of_everything/${must(fullReq.uuid)}:custom:custom`,
         method: "POST",
+        headers: headers,
       });
       return ABitOfEverything.fromJSON(res);
     },
@@ -203,10 +236,14 @@ export function newABitOfEverythingService(
       req: DeepPartial<ABitOfEverything>,
       options?: CallOptions,
     ): Promise<Empty> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = ABitOfEverything.fromPartial(req);
       const res = await transport.call({
-        url: `/v1/example/a_bit_of_everything/${must(fullReq.uuid)}`,
+        path: `/v1/example/a_bit_of_everything/${must(fullReq.uuid)}`,
         method: "PUT",
+        headers: headers,
         body: JSON.stringify(ABitOfEverything.toJSON(fullReq)),
       });
       return Empty.fromJSON(res);
@@ -216,10 +253,14 @@ export function newABitOfEverythingService(
       req: DeepPartial<UpdateV2Request>,
       options?: CallOptions,
     ): Promise<Empty> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = UpdateV2Request.fromPartial(req);
       const res = await transport.call({
-        url: `/v2/example/a_bit_of_everything/${must(fullReq.abe?.uuid)}`,
+        path: `/v2/example/a_bit_of_everything/${must(fullReq.abe?.uuid)}`,
         method: "PUT",
+        headers: headers,
         body: JSON.stringify(ABitOfEverything.toJSON(must(fullReq.abe))),
       });
       return Empty.fromJSON(res);
@@ -229,10 +270,14 @@ export function newABitOfEverythingService(
       req: DeepPartial<IdMessage>,
       options?: CallOptions,
     ): Promise<Empty> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = IdMessage.fromPartial(req);
       const res = await transport.call({
-        url: `/v1/example/a_bit_of_everything/${must(fullReq.uuid)}`,
+        path: `/v1/example/a_bit_of_everything/${must(fullReq.uuid)}`,
         method: "DELETE",
+        headers: headers,
         queryParams: renderURLSearchParams(req, ["uuid"]),
       });
       return Empty.fromJSON(res);
@@ -242,10 +287,14 @@ export function newABitOfEverythingService(
       req: DeepPartial<ABitOfEverything>,
       options?: CallOptions,
     ): Promise<Empty> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = ABitOfEverything.fromPartial(req);
       const res = await transport.call({
-        url: `/v1/example/a_bit_of_everything/query/${must(fullReq.uuid)}`,
+        path: `/v1/example/a_bit_of_everything/query/${must(fullReq.uuid)}`,
         method: "GET",
+        headers: headers,
         queryParams: renderURLSearchParams(req, ["uuid"]),
       });
       return Empty.fromJSON(res);
@@ -255,10 +304,14 @@ export function newABitOfEverythingService(
       req: DeepPartial<ABitOfEverythingRepeated>,
       options?: CallOptions,
     ): Promise<ABitOfEverythingRepeated> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = ABitOfEverythingRepeated.fromPartial(req);
       const res = await transport.call({
-        url: `/v1/example/a_bit_of_everything_repeated/${must(fullReq.pathRepeatedFloatValue)}/${must(fullReq.pathRepeatedDoubleValue)}/${must(fullReq.pathRepeatedInt64Value)}/${must(fullReq.pathRepeatedUint64Value)}/${must(fullReq.pathRepeatedInt32Value)}/${must(fullReq.pathRepeatedFixed64Value)}/${must(fullReq.pathRepeatedFixed32Value)}/${must(fullReq.pathRepeatedBoolValue)}/${must(fullReq.pathRepeatedStringValue)}/${must(fullReq.pathRepeatedBytesValue)}/${must(fullReq.pathRepeatedUint32Value)}/${must(fullReq.pathRepeatedEnumValue)}/${must(fullReq.pathRepeatedSfixed32Value)}/${must(fullReq.pathRepeatedSfixed64Value)}/${must(fullReq.pathRepeatedSint32Value)}/${must(fullReq.pathRepeatedSint64Value)}`,
+        path: `/v1/example/a_bit_of_everything_repeated/${must(fullReq.pathRepeatedFloatValue)}/${must(fullReq.pathRepeatedDoubleValue)}/${must(fullReq.pathRepeatedInt64Value)}/${must(fullReq.pathRepeatedUint64Value)}/${must(fullReq.pathRepeatedInt32Value)}/${must(fullReq.pathRepeatedFixed64Value)}/${must(fullReq.pathRepeatedFixed32Value)}/${must(fullReq.pathRepeatedBoolValue)}/${must(fullReq.pathRepeatedStringValue)}/${must(fullReq.pathRepeatedBytesValue)}/${must(fullReq.pathRepeatedUint32Value)}/${must(fullReq.pathRepeatedEnumValue)}/${must(fullReq.pathRepeatedSfixed32Value)}/${must(fullReq.pathRepeatedSfixed64Value)}/${must(fullReq.pathRepeatedSint32Value)}/${must(fullReq.pathRepeatedSint64Value)}`,
         method: "GET",
+        headers: headers,
         queryParams: renderURLSearchParams(req, [
           "pathRepeatedFloatValue",
           "pathRepeatedDoubleValue",
@@ -285,10 +338,14 @@ export function newABitOfEverythingService(
       req: DeepPartial<ABitOfEverything>,
       options?: CallOptions,
     ): Promise<ABitOfEverything> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = ABitOfEverything.fromPartial(req);
       const res = await transport.call({
-        url: `/v1/example/deep_path/${must(fullReq.singleNested?.name)}`,
+        path: `/v1/example/deep_path/${must(fullReq.singleNested?.name)}`,
         method: "POST",
+        headers: headers,
         body: JSON.stringify(ABitOfEverything.toJSON(fullReq)),
       });
       return ABitOfEverything.fromJSON(res);
@@ -298,10 +355,14 @@ export function newABitOfEverythingService(
       req: DeepPartial<Duration>,
       options?: CallOptions,
     ): Promise<Empty> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = Duration.fromPartial(req);
       const res = await transport.call({
-        url: `/proto.examplepb.ABitOfEverythingService/NoBindings`,
+        path: `/proto.examplepb.ABitOfEverythingService/NoBindings`,
         method: "POST",
+        headers: headers,
         body: JSON.stringify(Duration.toJSON(fullReq)),
       });
       return Empty.fromJSON(res);
@@ -311,10 +372,14 @@ export function newABitOfEverythingService(
       req: DeepPartial<Empty>,
       options?: CallOptions,
     ): Promise<Empty> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = Empty.fromPartial(req);
       const res = await transport.call({
-        url: `/v2/example/timeout`,
+        path: `/v2/example/timeout`,
         method: "GET",
+        headers: headers,
         queryParams: renderURLSearchParams(req, []),
       });
       return Empty.fromJSON(res);
@@ -324,10 +389,14 @@ export function newABitOfEverythingService(
       req: DeepPartial<Empty>,
       options?: CallOptions,
     ): Promise<Empty> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = Empty.fromPartial(req);
       const res = await transport.call({
-        url: `/v2/example/errorwithdetails`,
+        path: `/v2/example/errorwithdetails`,
         method: "GET",
+        headers: headers,
         queryParams: renderURLSearchParams(req, []),
       });
       return Empty.fromJSON(res);
@@ -337,10 +406,14 @@ export function newABitOfEverythingService(
       req: DeepPartial<MessageWithBody>,
       options?: CallOptions,
     ): Promise<Empty> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = MessageWithBody.fromPartial(req);
       const res = await transport.call({
-        url: `/v2/example/withbody/${must(fullReq.id)}`,
+        path: `/v2/example/withbody/${must(fullReq.id)}`,
         method: "POST",
+        headers: headers,
         body: JSON.stringify(Body.toJSON(must(fullReq.data))),
       });
       return Empty.fromJSON(res);
@@ -350,10 +423,14 @@ export function newABitOfEverythingService(
       req: DeepPartial<Body>,
       options?: CallOptions,
     ): Promise<Empty> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = Body.fromPartial(req);
       const res = await transport.call({
-        url: `/v2/example/postwithemptybody/${must(fullReq.name)}`,
+        path: `/v2/example/postwithemptybody/${must(fullReq.name)}`,
         method: "POST",
+        headers: headers,
         body: JSON.stringify(Body.toJSON(fullReq)),
       });
       return Empty.fromJSON(res);
@@ -363,10 +440,14 @@ export function newABitOfEverythingService(
       req: DeepPartial<ABitOfEverything>,
       options?: CallOptions,
     ): Promise<ABitOfEverything> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = ABitOfEverything.fromPartial(req);
       const res = await transport.call({
-        url: `/v1/example/a_bit_of_everything/params/get/${must(fullReq.singleNested?.name)}`,
+        path: `/v1/example/a_bit_of_everything/params/get/${must(fullReq.singleNested?.name)}`,
         method: "GET",
+        headers: headers,
         queryParams: renderURLSearchParams(req, ["singleNested.name"]),
       });
       return ABitOfEverything.fromJSON(res);
@@ -376,10 +457,14 @@ export function newABitOfEverythingService(
       req: DeepPartial<ABitOfEverything>,
       options?: CallOptions,
     ): Promise<ABitOfEverything> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = ABitOfEverything.fromPartial(req);
       const res = await transport.call({
-        url: `/v1/example/a_bit_of_everything/params/get/nested_enum/${must(fullReq.singleNested?.ok)}`,
+        path: `/v1/example/a_bit_of_everything/params/get/nested_enum/${must(fullReq.singleNested?.ok)}`,
         method: "GET",
+        headers: headers,
         queryParams: renderURLSearchParams(req, ["singleNested.ok"]),
       });
       return ABitOfEverything.fromJSON(res);
@@ -389,10 +474,14 @@ export function newABitOfEverythingService(
       req: DeepPartial<ABitOfEverything>,
       options?: CallOptions,
     ): Promise<ABitOfEverything> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = ABitOfEverything.fromPartial(req);
       const res = await transport.call({
-        url: `/v1/example/a_bit_of_everything/params/post/${must(fullReq.stringValue)}`,
+        path: `/v1/example/a_bit_of_everything/params/post/${must(fullReq.stringValue)}`,
         method: "POST",
+        headers: headers,
         body: JSON.stringify(
           ABitOfEverything_Nested.toJSON(must(fullReq.singleNested)),
         ),
@@ -404,10 +493,14 @@ export function newABitOfEverythingService(
       req: DeepPartial<Body>,
       options?: CallOptions,
     ): Promise<Empty> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = Body.fromPartial(req);
       const res = await transport.call({
-        url: `/v2/example/overwriterequestcontenttype`,
+        path: `/v2/example/overwriterequestcontenttype`,
         method: "POST",
+        headers: headers,
         body: JSON.stringify(Body.toJSON(fullReq)),
       });
       return Empty.fromJSON(res);
@@ -417,10 +510,14 @@ export function newABitOfEverythingService(
       req: DeepPartial<Empty>,
       options?: CallOptions,
     ): Promise<StringValue> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = Empty.fromPartial(req);
       const res = await transport.call({
-        url: `/v2/example/overwriteresponsecontenttype`,
+        path: `/v2/example/overwriteresponsecontenttype`,
         method: "GET",
+        headers: headers,
         queryParams: renderURLSearchParams(req, []),
       });
       return StringValue.fromJSON(res);
@@ -430,10 +527,14 @@ export function newABitOfEverythingService(
       req: DeepPartial<MessageWithPathEnum>,
       options?: CallOptions,
     ): Promise<Empty> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = MessageWithPathEnum.fromPartial(req);
       const res = await transport.call({
-        url: `/v2/${must(fullReq.value)}:check`,
+        path: `/v2/${must(fullReq.value)}:check`,
         method: "GET",
+        headers: headers,
         queryParams: renderURLSearchParams(req, ["value"]),
       });
       return Empty.fromJSON(res);
@@ -443,10 +544,14 @@ export function newABitOfEverythingService(
       req: DeepPartial<MessageWithNestedPathEnum>,
       options?: CallOptions,
     ): Promise<Empty> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = MessageWithNestedPathEnum.fromPartial(req);
       const res = await transport.call({
-        url: `/v3/${must(fullReq.value)}:check`,
+        path: `/v3/${must(fullReq.value)}:check`,
         method: "GET",
+        headers: headers,
         queryParams: renderURLSearchParams(req, ["value"]),
       });
       return Empty.fromJSON(res);
@@ -456,10 +561,14 @@ export function newABitOfEverythingService(
       req: DeepPartial<Empty>,
       options?: CallOptions,
     ): Promise<CheckStatusResponse> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = Empty.fromPartial(req);
       const res = await transport.call({
-        url: `/v1/example/checkStatus`,
+        path: `/v1/example/checkStatus`,
         method: "GET",
+        headers: headers,
         queryParams: renderURLSearchParams(req, []),
       });
       return CheckStatusResponse.fromJSON(res);
@@ -469,10 +578,14 @@ export function newABitOfEverythingService(
       req: DeepPartial<OneofEnumMessage>,
       options?: CallOptions,
     ): Promise<Empty> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = OneofEnumMessage.fromPartial(req);
       const res = await transport.call({
-        url: `/v1/example/oneofenum`,
+        path: `/v1/example/oneofenum`,
         method: "POST",
+        headers: headers,
         body: exampleEnumToJSON(must(fullReq.exampleEnum)),
       });
       return Empty.fromJSON(res);
@@ -482,10 +595,14 @@ export function newABitOfEverythingService(
       req: DeepPartial<RequiredMessageTypeRequest>,
       options?: CallOptions,
     ): Promise<Empty> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = RequiredMessageTypeRequest.fromPartial(req);
       const res = await transport.call({
-        url: `/v1/example/requiredmessagetype`,
+        path: `/v1/example/requiredmessagetype`,
         method: "POST",
+        headers: headers,
         body: JSON.stringify(RequiredMessageTypeRequest.toJSON(fullReq)),
       });
       return Empty.fromJSON(res);
@@ -501,10 +618,14 @@ export function newAnotherServiceWithNoBindings(
       req: DeepPartial<Empty>,
       options?: CallOptions,
     ): Promise<Empty> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = Empty.fromPartial(req);
       const res = await transport.call({
-        url: `/proto.examplepb.AnotherServiceWithNoBindings/NoBindings`,
+        path: `/proto.examplepb.AnotherServiceWithNoBindings/NoBindings`,
         method: "POST",
+        headers: headers,
         body: JSON.stringify(Empty.toJSON(fullReq)),
       });
       return Empty.fromJSON(res);
