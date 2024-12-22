@@ -132,10 +132,24 @@ function must<T>(value: T | null | undefined): T {
   return value;
 }
 
-export function newCounterService(
-  baseUrl: string,
-  initReq: Partial<RequestInit> = {},
-): CounterServiceClient {
+/**
+ * CallParams is a type that represents the parameters that are passed to the transport's call method
+ */
+export type CallParams = {
+  url: string;
+  method: string;
+  queryParams?: string[][];
+  body?: BodyInit | null;
+};
+
+/**
+ * Transport is a type that represents the interface of a transport object
+ */
+export type Transport = {
+  call(params: CallParams): Promise<any>;
+};
+
+export function newCounterService(transport: Transport): CounterServiceClient {
   return {
     async increment(
       req: DeepPartial<UnaryRequest>,
@@ -146,20 +160,13 @@ export function newCounterService(
       const queryParams = [] as string[][];
       const method = "POST";
       const body = JSON.stringify(UnaryRequest.toJSON(fullReq));
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return UnaryResponse.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return UnaryResponse.fromJSON(res);
     },
 
     streamingIncrements(
@@ -178,20 +185,13 @@ export function newCounterService(
       const queryParams = [] as string[][];
       const method = "POST";
       const body = JSON.stringify(UnaryRequest.toJSON(fullReq));
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return UnaryResponse.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return UnaryResponse.fromJSON(res);
     },
 
     async echoBinary(
@@ -203,20 +203,13 @@ export function newCounterService(
       const queryParams = [] as string[][];
       const method = "POST";
       const body = JSON.stringify(BinaryRequest.toJSON(fullReq));
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return BinaryResponse.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return BinaryResponse.fromJSON(res);
     },
 
     async hTTPGet(
@@ -228,20 +221,13 @@ export function newCounterService(
       const queryParams = renderURLSearchParams(req, ["numToIncrease"]);
       const method = "GET";
       const body = "";
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return HttpGetResponse.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return HttpGetResponse.fromJSON(res);
     },
 
     async hTTPPostWithNestedBodyPath(
@@ -253,20 +239,13 @@ export function newCounterService(
       const queryParams = [] as string[][];
       const method = "POST";
       const body = JSON.stringify(PostRequest.toJSON(must(fullReq.req)));
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return HttpPostResponse.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return HttpPostResponse.fromJSON(res);
     },
 
     async hTTPPostWithStarBodyPath(
@@ -278,20 +257,13 @@ export function newCounterService(
       const queryParams = [] as string[][];
       const method = "POST";
       const body = JSON.stringify(HttpPostRequest.toJSON(fullReq));
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return HttpPostResponse.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return HttpPostResponse.fromJSON(res);
     },
 
     async hTTPPatch(
@@ -303,20 +275,13 @@ export function newCounterService(
       const queryParams = [] as string[][];
       const method = "PATCH";
       const body = JSON.stringify(HttpPatchRequest.toJSON(fullReq));
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return HttpPatchResponse.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return HttpPatchResponse.fromJSON(res);
     },
 
     async hTTPDelete(
@@ -328,20 +293,13 @@ export function newCounterService(
       const queryParams = renderURLSearchParams(req, ["a"]);
       const method = "DELETE";
       const body = "";
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return Empty.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return Empty.fromJSON(res);
     },
 
     async hTTPDeleteWithParams(
@@ -353,20 +311,13 @@ export function newCounterService(
       const queryParams = renderURLSearchParams(req, ["id"]);
       const method = "DELETE";
       const body = "";
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return HttpDeleteWithParamsResponse.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return HttpDeleteWithParamsResponse.fromJSON(res);
     },
 
     async externalMessage(
@@ -378,20 +329,13 @@ export function newCounterService(
       const queryParams = [] as string[][];
       const method = "POST";
       const body = JSON.stringify(ExternalRequest.toJSON(fullReq));
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return ExternalResponse.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return ExternalResponse.fromJSON(res);
     },
 
     async hTTPGetWithURLSearchParams(
@@ -403,20 +347,13 @@ export function newCounterService(
       const queryParams = renderURLSearchParams(req, ["a"]);
       const method = "GET";
       const body = "";
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return HTTPGetWithURLSearchParamsResponse.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return HTTPGetWithURLSearchParamsResponse.fromJSON(res);
     },
 
     async hTTPGetWithZeroValueURLSearchParams(
@@ -429,20 +366,13 @@ export function newCounterService(
       const queryParams = renderURLSearchParams(req, []);
       const method = "GET";
       const body = "";
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return HTTPGetWithZeroValueURLSearchParamsResponse.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return HTTPGetWithZeroValueURLSearchParamsResponse.fromJSON(res);
     },
 
     async hTTPGetWithOptionalFields(
@@ -454,20 +384,13 @@ export function newCounterService(
       const queryParams = renderURLSearchParams(req, []);
       const method = "GET";
       const body = "";
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return OptionalFieldsResponse.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return OptionalFieldsResponse.fromJSON(res);
     },
   };
 }

@@ -27,7 +27,6 @@ function waitForServer(port = 8081, host = "localhost") {
       });
 
       client.on("error", () => {
-        console.log("Waiting for server...");
         setTimeout(checkServer, interval);
       });
     };

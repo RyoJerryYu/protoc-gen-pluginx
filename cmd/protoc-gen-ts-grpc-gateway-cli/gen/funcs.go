@@ -159,6 +159,25 @@ function must<T>(value: T | null | undefined): T {
   }
   return value;
 }
+
+/**
+ * CallParams is a type that represents the parameters that are passed to the transport's call method
+ */
+export type CallParams = {
+    url: string,
+    method: string,
+    queryParams?: string[][],
+    body?: BodyInit | null,
+}
+
+/**
+ * Transport is a type that represents the interface of a transport object
+ */
+export type Transport = {
+  call(
+    params: CallParams,
+  ): Promise<any>;
+}
 `
 	g.P(s)
 	g.P("")
@@ -170,7 +189,7 @@ func (g *Generator) applyService(service *protogen.Service) {
 		g.P(leadingDetached)
 	}
 	g.P(service.Comments.Leading)
-	g.P("export function new", service.GoName, "(baseUrl: string, initReq: Partial<RequestInit> = {}): ", serviceModule.Ident(service.GoName+"Client"), " {")
+	g.P("export function new", service.GoName, "(transport: Transport): ", serviceModule.Ident(service.GoName+"Client"), " {")
 	g.P("return {")
 
 	for _, method := range service.Methods {
@@ -215,20 +234,14 @@ func (g *Generator) applyMethod(method *protogen.Method) {
 		// body
 		renderedBody := g.renderBody(&g.TSOption)(method)
 		g.Pf("  const body = %s;", renderedBody)
-		g.Pf("  let rpcUrl = rpcPath")
-		g.Pf("  if (queryParams.length > 0) {")
-		g.Pf("    const searchParams = new URLSearchParams(queryParams);")
-		g.Pf("    rpcUrl += '?' + searchParams.toString();")
-		g.Pf("  }")
-		g.Pf("  let callReq = {...initReq, method: method}")
-		g.Pf("  if (body) {")
-		g.Pf("    callReq.body = body;")
-		g.Pf("  }")
-		g.Pf("  const url = new URL(rpcUrl, baseUrl).href;")
-		g.Pf("  const res = await fetch(url, callReq);")
-		g.Pf("  const resBody = await res.json();")
-		g.Pf("  if (!res.ok) throw resBody;")
-		g.Pf("  return %s.fromJSON(resBody);", output)
+
+		g.Pf("  const res = await transport.call({")
+		g.Pf("    url: rpcPath,")
+		g.Pf("    method: method,")
+		g.Pf("    queryParams: queryParams,")
+		g.Pf("    body: body,")
+		g.Pf("  });")
+		g.Pf("  return %s.fromJSON(res);", output)
 		g.Pf("},")
 	}
 	g.P(method.Comments.Trailing)

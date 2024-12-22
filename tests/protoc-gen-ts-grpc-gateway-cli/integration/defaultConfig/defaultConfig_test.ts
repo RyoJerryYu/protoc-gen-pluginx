@@ -1,9 +1,41 @@
 import { expect } from "chai";
-import { newCounterService } from "./proto/service_pb_gwcli";
+import {
+  newCounterService,
+  CallParams,
+  Transport,
+} from "./proto/service_pb_gwcli";
 import { CounterServiceClient, HttpGetRequest } from "./proto/service";
 
+function fetchTransport(
+  baseUrl: string,
+  initReq: Partial<RequestInit> = {},
+): Transport {
+  return {
+    async call({
+      url,
+      method,
+      queryParams = [],
+      body,
+    }: CallParams): Promise<any> {
+      let rpcUrl = url;
+      if (queryParams.length > 0) {
+        const searchParams = new URLSearchParams(queryParams);
+        rpcUrl += "?" + searchParams.toString();
+      }
+      const callReq = { ...initReq, method: method };
+      if (body) {
+        callReq.body = body;
+      }
+      const res = await fetch(new URL(rpcUrl, baseUrl).href, callReq);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return resBody;
+    },
+  };
+}
+
 describe("test default configuration", () => {
-  const CounterService = newCounterService("http://localhost:8081");
+  const CounterService = newCounterService(fetchTransport("http://localhost:8081"));
 
   it("unary request", async () => {
     const result = await CounterService.increment({ counter: 199 });

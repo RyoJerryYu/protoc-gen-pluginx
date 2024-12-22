@@ -126,11 +126,27 @@ function must<T>(value: T | null | undefined): T {
   return value;
 }
 
+/**
+ * CallParams is a type that represents the parameters that are passed to the transport's call method
+ */
+export type CallParams = {
+  url: string;
+  method: string;
+  queryParams?: string[][];
+  body?: BodyInit | null;
+};
+
+/**
+ * Transport is a type that represents the interface of a transport object
+ */
+export type Transport = {
+  call(params: CallParams): Promise<any>;
+};
+
 // ABitOfEverything service is used to validate that APIs with complicated
 // proto messages and URL templates are still processed correctly.
 export function newABitOfEverythingService(
-  baseUrl: string,
-  initReq: Partial<RequestInit> = {},
+  transport: Transport,
 ): ABitOfEverythingServiceClient {
   return {
     async createBody(
@@ -142,20 +158,13 @@ export function newABitOfEverythingService(
       const queryParams = [] as string[][];
       const method = "POST";
       const body = JSON.stringify(ABitOfEverything.toJSON(fullReq));
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return ABitOfEverything.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return ABitOfEverything.fromJSON(res);
     },
 
     async lookup(
@@ -167,20 +176,13 @@ export function newABitOfEverythingService(
       const queryParams = renderURLSearchParams(req, ["uuid"]);
       const method = "GET";
       const body = "";
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return ABitOfEverything.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return ABitOfEverything.fromJSON(res);
     },
 
     async custom(
@@ -192,20 +194,13 @@ export function newABitOfEverythingService(
       const queryParams = [] as string[][];
       const method = "POST";
       const body = "";
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return ABitOfEverything.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return ABitOfEverything.fromJSON(res);
     },
 
     async doubleColon(
@@ -217,20 +212,13 @@ export function newABitOfEverythingService(
       const queryParams = [] as string[][];
       const method = "POST";
       const body = "";
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return ABitOfEverything.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return ABitOfEverything.fromJSON(res);
     },
 
     async update(
@@ -242,20 +230,13 @@ export function newABitOfEverythingService(
       const queryParams = [] as string[][];
       const method = "PUT";
       const body = JSON.stringify(ABitOfEverything.toJSON(fullReq));
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return Empty.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return Empty.fromJSON(res);
     },
 
     async updateV2(
@@ -267,20 +248,13 @@ export function newABitOfEverythingService(
       const queryParams = [] as string[][];
       const method = "PUT";
       const body = JSON.stringify(ABitOfEverything.toJSON(must(fullReq.abe)));
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return Empty.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return Empty.fromJSON(res);
     },
 
     async delete(
@@ -292,20 +266,13 @@ export function newABitOfEverythingService(
       const queryParams = renderURLSearchParams(req, ["uuid"]);
       const method = "DELETE";
       const body = "";
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return Empty.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return Empty.fromJSON(res);
     },
 
     async getQuery(
@@ -317,20 +284,13 @@ export function newABitOfEverythingService(
       const queryParams = renderURLSearchParams(req, ["uuid"]);
       const method = "GET";
       const body = "";
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return Empty.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return Empty.fromJSON(res);
     },
 
     async getRepeatedQuery(
@@ -359,20 +319,13 @@ export function newABitOfEverythingService(
       ]);
       const method = "GET";
       const body = "";
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return ABitOfEverythingRepeated.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return ABitOfEverythingRepeated.fromJSON(res);
     },
 
     async deepPathEcho(
@@ -384,20 +337,13 @@ export function newABitOfEverythingService(
       const queryParams = [] as string[][];
       const method = "POST";
       const body = JSON.stringify(ABitOfEverything.toJSON(fullReq));
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return ABitOfEverything.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return ABitOfEverything.fromJSON(res);
     },
 
     async noBindings(
@@ -409,20 +355,13 @@ export function newABitOfEverythingService(
       const queryParams = [] as string[][];
       const method = "POST";
       const body = JSON.stringify(Duration.toJSON(fullReq));
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return Empty.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return Empty.fromJSON(res);
     },
 
     async timeout(
@@ -434,20 +373,13 @@ export function newABitOfEverythingService(
       const queryParams = renderURLSearchParams(req, []);
       const method = "GET";
       const body = "";
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return Empty.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return Empty.fromJSON(res);
     },
 
     async errorWithDetails(
@@ -459,20 +391,13 @@ export function newABitOfEverythingService(
       const queryParams = renderURLSearchParams(req, []);
       const method = "GET";
       const body = "";
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return Empty.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return Empty.fromJSON(res);
     },
 
     async getMessageWithBody(
@@ -484,20 +409,13 @@ export function newABitOfEverythingService(
       const queryParams = [] as string[][];
       const method = "POST";
       const body = JSON.stringify(Body.toJSON(must(fullReq.data)));
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return Empty.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return Empty.fromJSON(res);
     },
 
     async postWithEmptyBody(
@@ -509,20 +427,13 @@ export function newABitOfEverythingService(
       const queryParams = [] as string[][];
       const method = "POST";
       const body = JSON.stringify(Body.toJSON(fullReq));
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return Empty.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return Empty.fromJSON(res);
     },
 
     async checkGetQueryParams(
@@ -534,20 +445,13 @@ export function newABitOfEverythingService(
       const queryParams = renderURLSearchParams(req, ["singleNested.name"]);
       const method = "GET";
       const body = "";
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return ABitOfEverything.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return ABitOfEverything.fromJSON(res);
     },
 
     async checkNestedEnumGetQueryParams(
@@ -559,20 +463,13 @@ export function newABitOfEverythingService(
       const queryParams = renderURLSearchParams(req, ["singleNested.ok"]);
       const method = "GET";
       const body = "";
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return ABitOfEverything.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return ABitOfEverything.fromJSON(res);
     },
 
     async checkPostQueryParams(
@@ -586,20 +483,13 @@ export function newABitOfEverythingService(
       const body = JSON.stringify(
         ABitOfEverything_Nested.toJSON(must(fullReq.singleNested)),
       );
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return ABitOfEverything.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return ABitOfEverything.fromJSON(res);
     },
 
     async overwriteRequestContentType(
@@ -611,20 +501,13 @@ export function newABitOfEverythingService(
       const queryParams = [] as string[][];
       const method = "POST";
       const body = JSON.stringify(Body.toJSON(fullReq));
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return Empty.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return Empty.fromJSON(res);
     },
 
     async overwriteResponseContentType(
@@ -636,20 +519,13 @@ export function newABitOfEverythingService(
       const queryParams = renderURLSearchParams(req, []);
       const method = "GET";
       const body = "";
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return StringValue.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return StringValue.fromJSON(res);
     },
 
     async checkExternalPathEnum(
@@ -661,20 +537,13 @@ export function newABitOfEverythingService(
       const queryParams = renderURLSearchParams(req, ["value"]);
       const method = "GET";
       const body = "";
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return Empty.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return Empty.fromJSON(res);
     },
 
     async checkExternalNestedPathEnum(
@@ -686,20 +555,13 @@ export function newABitOfEverythingService(
       const queryParams = renderURLSearchParams(req, ["value"]);
       const method = "GET";
       const body = "";
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return Empty.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return Empty.fromJSON(res);
     },
 
     async checkStatus(
@@ -711,20 +573,13 @@ export function newABitOfEverythingService(
       const queryParams = renderURLSearchParams(req, []);
       const method = "GET";
       const body = "";
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return CheckStatusResponse.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return CheckStatusResponse.fromJSON(res);
     },
 
     async postOneofEnum(
@@ -736,20 +591,13 @@ export function newABitOfEverythingService(
       const queryParams = [] as string[][];
       const method = "POST";
       const body = exampleEnumToJSON(must(fullReq.exampleEnum));
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return Empty.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return Empty.fromJSON(res);
     },
 
     async postRequiredMessageType(
@@ -761,27 +609,19 @@ export function newABitOfEverythingService(
       const queryParams = [] as string[][];
       const method = "POST";
       const body = JSON.stringify(RequiredMessageTypeRequest.toJSON(fullReq));
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return Empty.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return Empty.fromJSON(res);
     },
   };
 }
 
 export function newAnotherServiceWithNoBindings(
-  baseUrl: string,
-  initReq: Partial<RequestInit> = {},
+  transport: Transport,
 ): AnotherServiceWithNoBindingsClient {
   return {
     async noBindings(
@@ -793,20 +633,13 @@ export function newAnotherServiceWithNoBindings(
       const queryParams = [] as string[][];
       const method = "POST";
       const body = JSON.stringify(Empty.toJSON(fullReq));
-      let rpcUrl = rpcPath;
-      if (queryParams.length > 0) {
-        const searchParams = new URLSearchParams(queryParams);
-        rpcUrl += "?" + searchParams.toString();
-      }
-      let callReq = { ...initReq, method: method };
-      if (body) {
-        callReq.body = body;
-      }
-      const url = new URL(rpcUrl, baseUrl).href;
-      const res = await fetch(url, callReq);
-      const resBody = await res.json();
-      if (!res.ok) throw resBody;
-      return Empty.fromJSON(resBody);
+      const res = await transport.call({
+        url: rpcPath,
+        method: method,
+        queryParams: queryParams,
+        body: body,
+      });
+      return Empty.fromJSON(res);
     },
   };
 }
