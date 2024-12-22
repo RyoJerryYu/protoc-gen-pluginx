@@ -14,6 +14,7 @@ function fetchTransport(
     async call({
       url,
       method,
+      headers,
       queryParams = [],
       body,
     }: CallParams): Promise<any> {
@@ -25,6 +26,9 @@ function fetchTransport(
       const callReq = { ...initReq, method: method };
       if (body) {
         callReq.body = body;
+      }
+      if (headers) {
+        callReq.headers = headers;
       }
       const res = await fetch(new URL(rpcUrl, baseUrl).href, callReq);
       const resBody = await res.json();

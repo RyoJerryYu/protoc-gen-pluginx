@@ -1,5 +1,6 @@
 import { Empty } from "../google/protobuf/empty";
-import { CallOptions } from "nice-grpc-common";
+import { Base64 } from "js-base64";
+import { CallOptions, Metadata } from "nice-grpc-common";
 import { ExternalRequest, ExternalResponse } from "./msg";
 import {
   BinaryRequest,
@@ -138,6 +139,7 @@ function must<T>(value: T | null | undefined): T {
 export type CallParams = {
   url: string;
   method: string;
+  headers?: Headers | null;
   queryParams?: string[][];
   body?: BodyInit | null;
 };
@@ -149,16 +151,35 @@ export type Transport = {
   call(params: CallParams): Promise<any>;
 };
 
+function metadataToHeaders(metadata: Metadata): Headers {
+  const headers = new Headers();
+
+  for (const [key, values] of metadata) {
+    for (const value of values) {
+      headers.append(
+        key,
+        typeof value === "string" ? value : Base64.fromUint8Array(value),
+      );
+    }
+  }
+
+  return headers;
+}
+
 export function newCounterService(transport: Transport): CounterServiceClient {
   return {
     async increment(
       req: DeepPartial<UnaryRequest>,
       options?: CallOptions,
     ): Promise<UnaryResponse> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = UnaryRequest.fromPartial(req);
       const res = await transport.call({
         url: `/main.CounterService/Increment`,
         method: "POST",
+        headers: headers,
         body: JSON.stringify(UnaryRequest.toJSON(fullReq)),
       });
       return UnaryResponse.fromJSON(res);
@@ -175,10 +196,14 @@ export function newCounterService(transport: Transport): CounterServiceClient {
       req: DeepPartial<UnaryRequest>,
       options?: CallOptions,
     ): Promise<UnaryResponse> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = UnaryRequest.fromPartial(req);
       const res = await transport.call({
         url: `/main.CounterService/FailingIncrement`,
         method: "POST",
+        headers: headers,
         body: JSON.stringify(UnaryRequest.toJSON(fullReq)),
       });
       return UnaryResponse.fromJSON(res);
@@ -188,10 +213,14 @@ export function newCounterService(transport: Transport): CounterServiceClient {
       req: DeepPartial<BinaryRequest>,
       options?: CallOptions,
     ): Promise<BinaryResponse> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = BinaryRequest.fromPartial(req);
       const res = await transport.call({
         url: `/main.CounterService/EchoBinary`,
         method: "POST",
+        headers: headers,
         body: JSON.stringify(BinaryRequest.toJSON(fullReq)),
       });
       return BinaryResponse.fromJSON(res);
@@ -201,10 +230,14 @@ export function newCounterService(transport: Transport): CounterServiceClient {
       req: DeepPartial<HttpGetRequest>,
       options?: CallOptions,
     ): Promise<HttpGetResponse> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = HttpGetRequest.fromPartial(req);
       const res = await transport.call({
         url: `/api/${must(fullReq.numToIncrease)}`,
         method: "GET",
+        headers: headers,
         queryParams: renderURLSearchParams(req, ["numToIncrease"]),
       });
       return HttpGetResponse.fromJSON(res);
@@ -214,10 +247,14 @@ export function newCounterService(transport: Transport): CounterServiceClient {
       req: DeepPartial<HttpPostRequest>,
       options?: CallOptions,
     ): Promise<HttpPostResponse> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = HttpPostRequest.fromPartial(req);
       const res = await transport.call({
         url: `/post/${must(fullReq.a)}`,
         method: "POST",
+        headers: headers,
         body: JSON.stringify(PostRequest.toJSON(must(fullReq.req))),
       });
       return HttpPostResponse.fromJSON(res);
@@ -227,10 +264,14 @@ export function newCounterService(transport: Transport): CounterServiceClient {
       req: DeepPartial<HttpPostRequest>,
       options?: CallOptions,
     ): Promise<HttpPostResponse> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = HttpPostRequest.fromPartial(req);
       const res = await transport.call({
         url: `/post/${must(fullReq.a)}/${must(fullReq.c)}`,
         method: "POST",
+        headers: headers,
         body: JSON.stringify(HttpPostRequest.toJSON(fullReq)),
       });
       return HttpPostResponse.fromJSON(res);
@@ -240,10 +281,14 @@ export function newCounterService(transport: Transport): CounterServiceClient {
       req: DeepPartial<HttpPatchRequest>,
       options?: CallOptions,
     ): Promise<HttpPatchResponse> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = HttpPatchRequest.fromPartial(req);
       const res = await transport.call({
         url: `/patch`,
         method: "PATCH",
+        headers: headers,
         body: JSON.stringify(HttpPatchRequest.toJSON(fullReq)),
       });
       return HttpPatchResponse.fromJSON(res);
@@ -253,10 +298,14 @@ export function newCounterService(transport: Transport): CounterServiceClient {
       req: DeepPartial<HttpDeleteRequest>,
       options?: CallOptions,
     ): Promise<Empty> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = HttpDeleteRequest.fromPartial(req);
       const res = await transport.call({
         url: `/delete/${must(fullReq.a)}`,
         method: "DELETE",
+        headers: headers,
         queryParams: renderURLSearchParams(req, ["a"]),
       });
       return Empty.fromJSON(res);
@@ -266,10 +315,14 @@ export function newCounterService(transport: Transport): CounterServiceClient {
       req: DeepPartial<HttpDeleteWithParamsRequest>,
       options?: CallOptions,
     ): Promise<HttpDeleteWithParamsResponse> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = HttpDeleteWithParamsRequest.fromPartial(req);
       const res = await transport.call({
         url: `/delete/${must(fullReq.id)}`,
         method: "DELETE",
+        headers: headers,
         queryParams: renderURLSearchParams(req, ["id"]),
       });
       return HttpDeleteWithParamsResponse.fromJSON(res);
@@ -279,10 +332,14 @@ export function newCounterService(transport: Transport): CounterServiceClient {
       req: DeepPartial<ExternalRequest>,
       options?: CallOptions,
     ): Promise<ExternalResponse> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = ExternalRequest.fromPartial(req);
       const res = await transport.call({
         url: `/main.CounterService/ExternalMessage`,
         method: "POST",
+        headers: headers,
         body: JSON.stringify(ExternalRequest.toJSON(fullReq)),
       });
       return ExternalResponse.fromJSON(res);
@@ -292,10 +349,14 @@ export function newCounterService(transport: Transport): CounterServiceClient {
       req: DeepPartial<HTTPGetWithURLSearchParamsRequest>,
       options?: CallOptions,
     ): Promise<HTTPGetWithURLSearchParamsResponse> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = HTTPGetWithURLSearchParamsRequest.fromPartial(req);
       const res = await transport.call({
         url: `/api/query/${must(fullReq.a)}`,
         method: "GET",
+        headers: headers,
         queryParams: renderURLSearchParams(req, ["a"]),
       });
       return HTTPGetWithURLSearchParamsResponse.fromJSON(res);
@@ -305,11 +366,15 @@ export function newCounterService(transport: Transport): CounterServiceClient {
       req: DeepPartial<HTTPGetWithZeroValueURLSearchParamsRequest>,
       options?: CallOptions,
     ): Promise<HTTPGetWithZeroValueURLSearchParamsResponse> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq =
         HTTPGetWithZeroValueURLSearchParamsRequest.fromPartial(req);
       const res = await transport.call({
         url: `/path/query`,
         method: "GET",
+        headers: headers,
         queryParams: renderURLSearchParams(req, []),
       });
       return HTTPGetWithZeroValueURLSearchParamsResponse.fromJSON(res);
@@ -319,10 +384,14 @@ export function newCounterService(transport: Transport): CounterServiceClient {
       req: DeepPartial<OptionalFieldsRequest>,
       options?: CallOptions,
     ): Promise<OptionalFieldsResponse> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
       const fullReq = OptionalFieldsRequest.fromPartial(req);
       const res = await transport.call({
         url: `/optional`,
         method: "GET",
+        headers: headers,
         queryParams: renderURLSearchParams(req, []),
       });
       return OptionalFieldsResponse.fromJSON(res);
