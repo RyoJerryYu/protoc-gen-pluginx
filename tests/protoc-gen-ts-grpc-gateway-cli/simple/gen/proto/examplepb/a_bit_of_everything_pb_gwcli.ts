@@ -96,7 +96,7 @@ function flattenRequestPayload<T extends RequestPayload>(
 function renderURLSearchParams<T extends RequestPayload>(
   requestPayload: T,
   urlPathParams: string[] = [],
-): string {
+): string[][] {
   const flattenedRequestPayload = flattenRequestPayload(requestPayload);
 
   const urlSearchParams = Object.keys(flattenedRequestPayload).reduce(
@@ -113,7 +113,7 @@ function renderURLSearchParams<T extends RequestPayload>(
     [] as string[][],
   );
 
-  return new URLSearchParams(urlSearchParams).toString();
+  return urlSearchParams;
 }
 
 /**
@@ -155,7 +155,7 @@ export function newABitOfEverythingService(
     ): Promise<ABitOfEverything> {
       const fullReq = IdMessage.fromPartial(req);
       const url = new URL(
-        `/v1/example/a_bit_of_everything/${must(fullReq.uuid)}?${renderURLSearchParams(req, ["uuid"])}`,
+        `/v1/example/a_bit_of_everything/${must(fullReq.uuid)}?${new URLSearchParams(renderURLSearchParams(req, ["uuid"])).toString()}`,
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "GET" });
@@ -238,7 +238,7 @@ export function newABitOfEverythingService(
     ): Promise<Empty> {
       const fullReq = IdMessage.fromPartial(req);
       const url = new URL(
-        `/v1/example/a_bit_of_everything/${must(fullReq.uuid)}?${renderURLSearchParams(req, ["uuid"])}`,
+        `/v1/example/a_bit_of_everything/${must(fullReq.uuid)}?${new URLSearchParams(renderURLSearchParams(req, ["uuid"])).toString()}`,
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "DELETE" });
@@ -253,7 +253,7 @@ export function newABitOfEverythingService(
     ): Promise<Empty> {
       const fullReq = ABitOfEverything.fromPartial(req);
       const url = new URL(
-        `/v1/example/a_bit_of_everything/query/${must(fullReq.uuid)}?${renderURLSearchParams(req, ["uuid"])}`,
+        `/v1/example/a_bit_of_everything/query/${must(fullReq.uuid)}?${new URLSearchParams(renderURLSearchParams(req, ["uuid"])).toString()}`,
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "GET" });
@@ -268,7 +268,7 @@ export function newABitOfEverythingService(
     ): Promise<ABitOfEverythingRepeated> {
       const fullReq = ABitOfEverythingRepeated.fromPartial(req);
       const url = new URL(
-        `/v1/example/a_bit_of_everything_repeated/${must(fullReq.pathRepeatedFloatValue)}/${must(fullReq.pathRepeatedDoubleValue)}/${must(fullReq.pathRepeatedInt64Value)}/${must(fullReq.pathRepeatedUint64Value)}/${must(fullReq.pathRepeatedInt32Value)}/${must(fullReq.pathRepeatedFixed64Value)}/${must(fullReq.pathRepeatedFixed32Value)}/${must(fullReq.pathRepeatedBoolValue)}/${must(fullReq.pathRepeatedStringValue)}/${must(fullReq.pathRepeatedBytesValue)}/${must(fullReq.pathRepeatedUint32Value)}/${must(fullReq.pathRepeatedEnumValue)}/${must(fullReq.pathRepeatedSfixed32Value)}/${must(fullReq.pathRepeatedSfixed64Value)}/${must(fullReq.pathRepeatedSint32Value)}/${must(fullReq.pathRepeatedSint64Value)}?${renderURLSearchParams(req, ["pathRepeatedFloatValue", "pathRepeatedDoubleValue", "pathRepeatedInt64Value", "pathRepeatedUint64Value", "pathRepeatedInt32Value", "pathRepeatedFixed64Value", "pathRepeatedFixed32Value", "pathRepeatedBoolValue", "pathRepeatedStringValue", "pathRepeatedBytesValue", "pathRepeatedUint32Value", "pathRepeatedEnumValue", "pathRepeatedSfixed32Value", "pathRepeatedSfixed64Value", "pathRepeatedSint32Value", "pathRepeatedSint64Value"])}`,
+        `/v1/example/a_bit_of_everything_repeated/${must(fullReq.pathRepeatedFloatValue)}/${must(fullReq.pathRepeatedDoubleValue)}/${must(fullReq.pathRepeatedInt64Value)}/${must(fullReq.pathRepeatedUint64Value)}/${must(fullReq.pathRepeatedInt32Value)}/${must(fullReq.pathRepeatedFixed64Value)}/${must(fullReq.pathRepeatedFixed32Value)}/${must(fullReq.pathRepeatedBoolValue)}/${must(fullReq.pathRepeatedStringValue)}/${must(fullReq.pathRepeatedBytesValue)}/${must(fullReq.pathRepeatedUint32Value)}/${must(fullReq.pathRepeatedEnumValue)}/${must(fullReq.pathRepeatedSfixed32Value)}/${must(fullReq.pathRepeatedSfixed64Value)}/${must(fullReq.pathRepeatedSint32Value)}/${must(fullReq.pathRepeatedSint64Value)}?${new URLSearchParams(renderURLSearchParams(req, ["pathRepeatedFloatValue", "pathRepeatedDoubleValue", "pathRepeatedInt64Value", "pathRepeatedUint64Value", "pathRepeatedInt32Value", "pathRepeatedFixed64Value", "pathRepeatedFixed32Value", "pathRepeatedBoolValue", "pathRepeatedStringValue", "pathRepeatedBytesValue", "pathRepeatedUint32Value", "pathRepeatedEnumValue", "pathRepeatedSfixed32Value", "pathRepeatedSfixed64Value", "pathRepeatedSint32Value", "pathRepeatedSint64Value"])).toString()}`,
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "GET" });
@@ -321,7 +321,7 @@ export function newABitOfEverythingService(
     ): Promise<Empty> {
       const fullReq = Empty.fromPartial(req);
       const url = new URL(
-        `/v2/example/timeout?${renderURLSearchParams(req, [])}`,
+        `/v2/example/timeout?${new URLSearchParams(renderURLSearchParams(req, [])).toString()}`,
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "GET" });
@@ -336,7 +336,7 @@ export function newABitOfEverythingService(
     ): Promise<Empty> {
       const fullReq = Empty.fromPartial(req);
       const url = new URL(
-        `/v2/example/errorwithdetails?${renderURLSearchParams(req, [])}`,
+        `/v2/example/errorwithdetails?${new URLSearchParams(renderURLSearchParams(req, [])).toString()}`,
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "GET" });
@@ -387,7 +387,7 @@ export function newABitOfEverythingService(
     ): Promise<ABitOfEverything> {
       const fullReq = ABitOfEverything.fromPartial(req);
       const url = new URL(
-        `/v1/example/a_bit_of_everything/params/get/${must(fullReq.singleNested?.name)}&${renderURLSearchParams(req, ["singleNested.name"])}`,
+        `/v1/example/a_bit_of_everything/params/get/${must(fullReq.singleNested?.name)}&${new URLSearchParams(renderURLSearchParams(req, ["singleNested.name"])).toString()}`,
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "GET" });
@@ -402,7 +402,7 @@ export function newABitOfEverythingService(
     ): Promise<ABitOfEverything> {
       const fullReq = ABitOfEverything.fromPartial(req);
       const url = new URL(
-        `/v1/example/a_bit_of_everything/params/get/nested_enum/${must(fullReq.singleNested?.ok)}&${renderURLSearchParams(req, ["singleNested.ok"])}`,
+        `/v1/example/a_bit_of_everything/params/get/nested_enum/${must(fullReq.singleNested?.ok)}&${new URLSearchParams(renderURLSearchParams(req, ["singleNested.ok"])).toString()}`,
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "GET" });
@@ -455,7 +455,7 @@ export function newABitOfEverythingService(
     ): Promise<StringValue> {
       const fullReq = Empty.fromPartial(req);
       const url = new URL(
-        `/v2/example/overwriteresponsecontenttype?${renderURLSearchParams(req, [])}`,
+        `/v2/example/overwriteresponsecontenttype?${new URLSearchParams(renderURLSearchParams(req, [])).toString()}`,
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "GET" });
@@ -470,7 +470,7 @@ export function newABitOfEverythingService(
     ): Promise<Empty> {
       const fullReq = MessageWithPathEnum.fromPartial(req);
       const url = new URL(
-        `/v2/${must(fullReq.value)}:check?${renderURLSearchParams(req, ["value"])}`,
+        `/v2/${must(fullReq.value)}:check?${new URLSearchParams(renderURLSearchParams(req, ["value"])).toString()}`,
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "GET" });
@@ -485,7 +485,7 @@ export function newABitOfEverythingService(
     ): Promise<Empty> {
       const fullReq = MessageWithNestedPathEnum.fromPartial(req);
       const url = new URL(
-        `/v3/${must(fullReq.value)}:check?${renderURLSearchParams(req, ["value"])}`,
+        `/v3/${must(fullReq.value)}:check?${new URLSearchParams(renderURLSearchParams(req, ["value"])).toString()}`,
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "GET" });
@@ -500,7 +500,7 @@ export function newABitOfEverythingService(
     ): Promise<CheckStatusResponse> {
       const fullReq = Empty.fromPartial(req);
       const url = new URL(
-        `/v1/example/checkStatus?${renderURLSearchParams(req, [])}`,
+        `/v1/example/checkStatus?${new URLSearchParams(renderURLSearchParams(req, [])).toString()}`,
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "GET" });

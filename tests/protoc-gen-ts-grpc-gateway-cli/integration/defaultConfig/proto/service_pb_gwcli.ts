@@ -102,7 +102,7 @@ function flattenRequestPayload<T extends RequestPayload>(
 function renderURLSearchParams<T extends RequestPayload>(
   requestPayload: T,
   urlPathParams: string[] = [],
-): string {
+): string[][] {
   const flattenedRequestPayload = flattenRequestPayload(requestPayload);
 
   const urlSearchParams = Object.keys(flattenedRequestPayload).reduce(
@@ -119,7 +119,7 @@ function renderURLSearchParams<T extends RequestPayload>(
     [] as string[][],
   );
 
-  return new URLSearchParams(urlSearchParams).toString();
+  return urlSearchParams;
 }
 
 /**
@@ -199,7 +199,7 @@ export function newCounterService(
     ): Promise<HttpGetResponse> {
       const fullReq = HttpGetRequest.fromPartial(req);
       const url = new URL(
-        `/api/${must(fullReq.numToIncrease)}?${renderURLSearchParams(req, ["numToIncrease"])}`,
+        `/api/${must(fullReq.numToIncrease)}?${new URLSearchParams(renderURLSearchParams(req, ["numToIncrease"])).toString()}`,
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "GET" });
@@ -265,7 +265,7 @@ export function newCounterService(
     ): Promise<Empty> {
       const fullReq = HttpDeleteRequest.fromPartial(req);
       const url = new URL(
-        `/delete/${must(fullReq.a)}?${renderURLSearchParams(req, ["a"])}`,
+        `/delete/${must(fullReq.a)}?${new URLSearchParams(renderURLSearchParams(req, ["a"])).toString()}`,
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "DELETE" });
@@ -280,7 +280,7 @@ export function newCounterService(
     ): Promise<HttpDeleteWithParamsResponse> {
       const fullReq = HttpDeleteWithParamsRequest.fromPartial(req);
       const url = new URL(
-        `/delete/${must(fullReq.id)}?${renderURLSearchParams(req, ["id"])}`,
+        `/delete/${must(fullReq.id)}?${new URLSearchParams(renderURLSearchParams(req, ["id"])).toString()}`,
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "DELETE" });
@@ -311,7 +311,7 @@ export function newCounterService(
     ): Promise<HTTPGetWithURLSearchParamsResponse> {
       const fullReq = HTTPGetWithURLSearchParamsRequest.fromPartial(req);
       const url = new URL(
-        `/api/query/${must(fullReq.a)}?${renderURLSearchParams(req, ["a"])}`,
+        `/api/query/${must(fullReq.a)}?${new URLSearchParams(renderURLSearchParams(req, ["a"])).toString()}`,
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "GET" });
@@ -327,7 +327,7 @@ export function newCounterService(
       const fullReq =
         HTTPGetWithZeroValueURLSearchParamsRequest.fromPartial(req);
       const url = new URL(
-        `/path/query?${renderURLSearchParams(req, [])}`,
+        `/path/query?${new URLSearchParams(renderURLSearchParams(req, [])).toString()}`,
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "GET" });
@@ -342,7 +342,7 @@ export function newCounterService(
     ): Promise<OptionalFieldsResponse> {
       const fullReq = OptionalFieldsRequest.fromPartial(req);
       const url = new URL(
-        `/optional?${renderURLSearchParams(req, [])}`,
+        `/optional?${new URLSearchParams(renderURLSearchParams(req, [])).toString()}`,
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "GET" });

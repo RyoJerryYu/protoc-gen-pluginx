@@ -52,58 +52,62 @@ describe("test default configuration", () => {
   });
 
   it("http post body check request with nested body path", async () => {
-    const result = await CounterService.hTTPPostWithNestedBodyPath(
-      { a: 10, req: { b: 15 }, c: 0 },
-    );
+    const result = await CounterService.hTTPPostWithNestedBodyPath({
+      a: 10,
+      req: { b: 15 },
+      c: 0,
+    });
     expect(result.postResult).to.equal(25);
   });
 
   it("http post body check request with star in path", async () => {
-    const result = await CounterService.hTTPPostWithStarBodyPath(
-      { a: 10, req: { b: 15 }, c: 23 },
-    );
+    const result = await CounterService.hTTPPostWithStarBodyPath({
+      a: 10,
+      req: { b: 15 },
+      c: 23,
+    });
     expect(result.postResult).to.equal(48);
   });
 
   it("able to communicate with external message reference without package defined", async () => {
-    const result = await CounterService.externalMessage(
-      { content: "hello" },
-    );
+    const result = await CounterService.externalMessage({ content: "hello" });
     expect(result.result).to.equal("hello!!");
   });
 
   it("http patch request with star in path", async () => {
-    const result = await CounterService.hTTPPatch(
-      { a: 10, c: 23 },
-    );
+    const result = await CounterService.hTTPPatch({ a: 10, c: 23 });
     expect(result.patchResult).to.equal(33);
   });
 
   it("http delete check request", async () => {
-    const result = await CounterService.hTTPDelete(
-      { a: 10 },
-    );
+    const result = await CounterService.hTTPDelete({ a: 10 });
     expect(result).to.be.empty;
   });
 
   it("http delete with query params", async () => {
-    const result = await CounterService.hTTPDeleteWithParams(
-      { id: 10, reason: "test" },
-    );
+    const result = await CounterService.hTTPDeleteWithParams({
+      id: 10,
+      reason: "test",
+    });
     expect(result.reason).to.be.equal("test");
   });
 
   it("http get request with url search parameters", async () => {
-    const result = await CounterService.hTTPGetWithURLSearchParams(
-      { a: 10, b: { b: 0 }, c: [23, 25], d: { d: 12 } },
-    );
+    const result = await CounterService.hTTPGetWithURLSearchParams({
+      a: 10,
+      b: { b: 0 },
+      c: [23, 25],
+      d: { d: 12 },
+    });
     expect(result.urlSearchParamsResult).to.equal(70);
   });
 
   it("http get request with zero value url search parameters", async () => {
-    const result = await CounterService.hTTPGetWithZeroValueURLSearchParams(
-      { a: "A", b: "", c: { c: 1, d: [1, 0, 2], e: false } },
-    );
+    const result = await CounterService.hTTPGetWithZeroValueURLSearchParams({
+      a: "A",
+      b: "",
+      c: { c: 1, d: [1, 0, 2], e: false },
+    });
     expect(result).to.deep.equal({
       a: "A",
       b: "hello",
@@ -112,19 +116,17 @@ describe("test default configuration", () => {
   });
 
   it("http get request with optional fields", async () => {
-    const result = await CounterService.hTTPGetWithOptionalFields(
-      {},
-    );
+    const result = await CounterService.hTTPGetWithOptionalFields({});
 
     expect(result).to.deep.equal({
       // empty scalar fields included
       emptyStr: "",
       emptyNumber: 0,
       // empty message fields not included
-      emptyMsg: undefined, 
+      emptyMsg: undefined,
 
       // empty optional fields not included, even if scalar
-      emptyOptStr: undefined, 
+      emptyOptStr: undefined,
       emptyOptNumber: undefined,
       emptyOptMsg: undefined,
 
