@@ -2,8 +2,6 @@ module github.com/RyoJerryYu/protoc-gen-pluginx/tests
 
 go 1.22.7
 
-toolchain go1.23.4
-
 require (
 	github.com/RyoJerryYu/go-utilx/cmd/gogenx v1.0.0
 	github.com/RyoJerryYu/protoc-gen-pluginx v0.0.0-00010101000000-000000000000

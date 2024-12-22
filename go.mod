@@ -1,6 +1,6 @@
 module github.com/RyoJerryYu/protoc-gen-pluginx
 
-go 1.22.3
+go 1.22.7
 
 require (
 	github.com/go-task/slim-sprig/v3 v3.0.0
