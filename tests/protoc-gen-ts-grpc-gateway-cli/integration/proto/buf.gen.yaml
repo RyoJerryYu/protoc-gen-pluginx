@@ -23,6 +23,8 @@ plugins:
     out: ../server
     opt:
       - paths=source_relative
+      - logtostderr=true
+      - generate_unbound_methods=true
 
   # client, defaultConfig
   - local: protoc-gen-ts-grpc-gateway-cli

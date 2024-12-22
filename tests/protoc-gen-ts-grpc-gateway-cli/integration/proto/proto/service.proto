@@ -1,0 +1,234 @@
+syntax = "proto3";
+package main;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "proto/msg.proto";
+
+option go_package = "./;main";
+
+enum reasons {
+  FOO = 0;
+  BAR = 1;
+  BAZ = 2;
+}
+
+enum animals {
+  CAT = 0;
+  DOG = 1;
+  FISH = 2;
+}
+
+message UnaryRequest {
+  int32 counter = 1;
+}
+
+message UnaryResponse {
+  int32 result = 1;
+}
+
+message BinaryRequest {
+  bytes data = 1;
+}
+
+message BinaryResponse {
+  bytes data = 1;
+}
+
+message StreamingRequest {
+  int32 counter = 1;
+}
+
+message StreamingResponse {
+  int32 result = 1;
+}
+
+message HttpGetRequest {
+  int32 num_to_increase = 1;
+}
+
+message HttpGetResponse {
+  int32 result = 1;
+}
+
+message HttpPostRequest {
+  int32 a = 1;
+  PostRequest req = 2;
+  int32 c = 3;
+}
+
+message PostRequest {
+  int32 b = 1;
+}
+
+message HttpPostResponse {
+  int32 post_result = 1;
+}
+
+message HttpPatchRequest {
+  int32 a = 1;
+  int32 c = 2;
+}
+
+message HttpPatchResponse {
+  int32 patch_result = 2;
+}
+
+message HttpDeleteRequest {
+  int32 a = 1;
+}
+
+message HttpDeleteWithParamsRequest {
+  int32 id = 1;
+  string reason = 2;
+}
+
+message HttpDeleteWithParamsResponse {
+  string reason = 1;
+}
+
+message HTTPGetWithURLSearchParamsRequest {
+  int32 a = 1;
+  PostRequest b = 2;
+  repeated int32 c = 3;
+  ExternalMessage d = 4;
+}
+
+message HTTPGetWithURLSearchParamsResponse {
+  int32 url_search_params_result = 1;
+}
+
+message ZeroValueMsg {
+  int32 c = 1;
+  repeated int32 d = 2;
+  bool e = 3;
+}
+
+message HTTPGetWithZeroValueURLSearchParamsRequest {
+  string a = 1;
+  string b = 2;
+  ZeroValueMsg c = 3;
+}
+
+message HTTPGetWithZeroValueURLSearchParamsResponse {
+  string a = 1;
+  string b = 2;
+  ZeroValueMsg zero_value_msg = 3;
+}
+
+message OptionalFieldsRequest {}
+
+message OptionalFieldsResponse {
+  string empty_str = 1;
+  int32 empty_number = 2;
+  OptionalFieldsSubMsg empty_msg = 3;
+  optional string empty_opt_str = 4;
+  optional int32 empty_opt_number = 5;
+  optional OptionalFieldsSubMsg empty_opt_msg = 6;
+
+  string zero_str = 7;
+  int32 zero_number = 8;
+  OptionalFieldsSubMsg zero_msg = 9;
+  optional string zero_opt_str = 10;
+  optional int32 zero_opt_number = 11;
+  optional OptionalFieldsSubMsg zero_opt_msg = 12;
+
+  string defined_str = 13;
+  int32 defined_number = 14;
+  OptionalFieldsSubMsg defined_msg = 15;
+  optional string defined_opt_str = 16;
+  optional int32 defined_opt_number = 17;
+  optional OptionalFieldsSubMsg defined_opt_msg = 18;
+}
+
+message OptionalFieldsSubMsg {
+  string str = 1;
+  optional string opt_str = 2;
+}
+
+message Names {
+  string foo_bar = 1;
+  string bazbam = 2;
+  string binbom3 = 3;
+  string tin3tam = 4;
+  string ting3_tang = 5;
+  string king_3kong = 6;
+  string frim_3_fram = 7;
+  string k8s_field = 8;
+}
+
+message DeprecatedMessage {
+  option deprecated = true;
+  string field = 1;
+}
+
+message MessageWithDeprecatedFields {
+  string field = 1;
+  string deprecated_field = 2 [deprecated = true];
+}
+
+message OneofMessageWithDeprecatedFields {
+  string field = 1;
+  string deprecated_field = 2 [deprecated = true];
+
+  oneof oneof_field {
+    string oneof = 3;
+    string deprecated_oneof = 4 [deprecated = true];
+  }
+}
+
+message MessageWithMultipleOneOfFields {
+  string id = 1;
+  oneof a_string {
+    string a = 2;
+    string b = 3;
+  }
+  oneof a_number {
+    int32 c = 4;
+    int64 d = 5;
+  }
+}
+
+service CounterService {
+  rpc Increment(UnaryRequest) returns (UnaryResponse);
+  rpc StreamingIncrements(StreamingRequest) returns (stream StreamingResponse);
+  rpc FailingIncrement(UnaryRequest) returns (UnaryResponse);
+  rpc EchoBinary(BinaryRequest) returns (BinaryResponse);
+  rpc HTTPGet(HttpGetRequest) returns (HttpGetResponse) {
+    option (google.api.http) = {get: "/api/{num_to_increase}"};
+  }
+  rpc HTTPPostWithNestedBodyPath(HttpPostRequest) returns (HttpPostResponse) {
+    option (google.api.http) = {
+      post: "/post/{a}"
+      body: "req"
+    };
+  }
+  rpc HTTPPostWithStarBodyPath(HttpPostRequest) returns (HttpPostResponse) {
+    option (google.api.http) = {
+      post: "/post/{a}/{c}"
+      body: "*"
+    };
+  }
+  rpc HTTPPatch(HttpPatchRequest) returns (HttpPatchResponse) {
+    option (google.api.http) = {
+      patch: "/patch"
+      body: "*"
+    };
+  }
+  rpc HTTPDelete(HttpDeleteRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {delete: "/delete/{a}"};
+  }
+  rpc HTTPDeleteWithParams(HttpDeleteWithParamsRequest) returns (HttpDeleteWithParamsResponse) {
+    option (google.api.http) = {delete: "/delete/{id}"};
+  }
+  rpc ExternalMessage(ExternalRequest) returns (ExternalResponse);
+  rpc HTTPGetWithURLSearchParams(HTTPGetWithURLSearchParamsRequest) returns (HTTPGetWithURLSearchParamsResponse) {
+    option (google.api.http) = {get: "/api/query/{a}"};
+  }
+  rpc HTTPGetWithZeroValueURLSearchParams(HTTPGetWithZeroValueURLSearchParamsRequest) returns (HTTPGetWithZeroValueURLSearchParamsResponse) {
+    option (google.api.http) = {get: "/path/query"};
+  }
+  rpc HTTPGetWithOptionalFields(OptionalFieldsRequest) returns (OptionalFieldsResponse) {
+    option (google.api.http) = {get: "/optional"};
+  }
+}
