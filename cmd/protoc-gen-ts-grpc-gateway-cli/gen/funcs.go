@@ -167,8 +167,7 @@ func (g *Generator) applyService(service *protogen.Service) {
 		g.P(leadingDetached)
 	}
 	g.P(service.Comments.Leading)
-	g.P("export function new", service.GoName, "(): ", serviceModule.Ident(service.GoName+"Client"), " {")
-	g.P("  const initReq = {}")
+	g.P("export function new", service.GoName, "(baseUrl: string, initReq: Partial<RequestInit> = {}): ", serviceModule.Ident(service.GoName+"Client"), " {")
 	g.P("return {")
 
 	for _, method := range service.Methods {
@@ -187,39 +186,35 @@ func (g *Generator) applyMethod(method *protogen.Method) {
 	g.P(method.Comments.Leading)
 	glog.V(3).Infof("method location: %s, %s", method.Location.SourceFile, method.Location.Path)
 
-	if method.Desc.IsStreamingServer() {
-		g.Pf(`%s(
-		req: %s<%s>,
-		entityNotifier?: fm.NotifyStreamEntityArrival<%s>,
-		initReq?: fm.InitReq,
-	): Promise<void> {
-		return fm.fetchStreamingRequest<%s>(%s, entityNotifier, {...req, %s});
-  	},
-`,
-			method.GoName,
-			niceGrpcCommon.Ident("DeepPartial"),
-			input,
-			output,
-			output,
-			g.renderURL(&g.TSOption)(method),
-			g.buildInitReq(method),
-		)
+	// 	if method.Desc.IsStreamingServer() {
+	// 		g.Pf(`%s(
+	// 		req: %s<%s>,
+	// 		entityNotifier?: fm.NotifyStreamEntityArrival<%s>,
+	// 		initReq?: fm.InitReq,
+	// 	): Promise<void> {
+	// 		return fm.fetchStreamingRequest<%s>(%s, entityNotifier, {...req, %s});
+	//   	},
+	// `,
+	// 			method.GoName,
+	// 			niceGrpcCommon.Ident("DeepPartial"),
+	// 			input,
+	// 			output,
+	// 			output,
+	// 			g.renderURL(&g.TSOption)(method),
+	// 			g.buildInitReq(method),
+	// 		)
 
-	} else {
-		// return fm.fetchRequest<%s>(%s, {...req, %s});
-		// output,
-		// g.renderURL(&g.TSOption)(method),
-		// g.buildInitReq(method),
-		g.Pf("async %s(", pluginutils.FunctionCase(method.GoName))
-		g.Pf("  req: %s<%s>,", methodModule.Ident("DeepPartial"), input)
-		g.Pf("  options?: %s,", niceGrpcCommon.Ident("CallOptions"))
-		g.Pf("): Promise<%s> {", output)
-		g.Pf("  const fullReq = %s.fromPartial(req);", input)
-		g.Pf("  const res = await fetch(%s, {...initReq, %s});", g.renderURL(&g.TSOption)(method), g.buildInitReq(method))
-		g.Pf("  const body = await res.json();")
-		g.Pf("  if (!res.ok) throw body;")
-		g.Pf("  return %s.fromJSON(body);", output)
-		g.Pf("},")
-	}
+	// 	} else {
+	g.Pf("async %s(", pluginutils.FunctionCase(method.GoName))
+	g.Pf("  req: %s<%s>,", methodModule.Ident("DeepPartial"), input)
+	g.Pf("  options?: %s,", niceGrpcCommon.Ident("CallOptions"))
+	g.Pf("): Promise<%s> {", output)
+	g.Pf("  const fullReq = %s.fromPartial(req);", input)
+	g.Pf("  const url = new URL(%s, baseUrl).href;", g.renderURL(&g.TSOption)(method))
+	g.Pf("  const res = await fetch(url, {...initReq, %s});", g.buildInitReq(method))
+	g.Pf("  const body = await res.json();")
+	g.Pf("  if (!res.ok) throw body;")
+	g.Pf("  return %s.fromJSON(body);", output)
+	g.Pf("},")
 	g.P(method.Comments.Trailing)
 }
