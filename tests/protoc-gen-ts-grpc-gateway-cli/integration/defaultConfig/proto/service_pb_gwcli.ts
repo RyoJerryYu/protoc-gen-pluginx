@@ -148,9 +148,9 @@ export function newCounterService(
         method: "POST",
         body: JSON.stringify(UnaryRequest.toJSON(fullReq)),
       });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return UnaryResponse.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return UnaryResponse.fromJSON(resBody);
     },
 
     streamingIncrements(
@@ -172,9 +172,9 @@ export function newCounterService(
         method: "POST",
         body: JSON.stringify(UnaryRequest.toJSON(fullReq)),
       });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return UnaryResponse.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return UnaryResponse.fromJSON(resBody);
     },
 
     async echoBinary(
@@ -188,9 +188,9 @@ export function newCounterService(
         method: "POST",
         body: JSON.stringify(BinaryRequest.toJSON(fullReq)),
       });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return BinaryResponse.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return BinaryResponse.fromJSON(resBody);
     },
 
     async hTTPGet(
@@ -203,9 +203,9 @@ export function newCounterService(
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "GET" });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return HttpGetResponse.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return HttpGetResponse.fromJSON(resBody);
     },
 
     async hTTPPostWithNestedBodyPath(
@@ -219,9 +219,9 @@ export function newCounterService(
         method: "POST",
         body: JSON.stringify(PostRequest.toJSON(must(fullReq.req))),
       });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return HttpPostResponse.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return HttpPostResponse.fromJSON(resBody);
     },
 
     async hTTPPostWithStarBodyPath(
@@ -238,9 +238,9 @@ export function newCounterService(
         method: "POST",
         body: JSON.stringify(HttpPostRequest.toJSON(fullReq)),
       });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return HttpPostResponse.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return HttpPostResponse.fromJSON(resBody);
     },
 
     async hTTPPatch(
@@ -254,9 +254,9 @@ export function newCounterService(
         method: "PATCH",
         body: JSON.stringify(HttpPatchRequest.toJSON(fullReq)),
       });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return HttpPatchResponse.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return HttpPatchResponse.fromJSON(resBody);
     },
 
     async hTTPDelete(
@@ -269,9 +269,9 @@ export function newCounterService(
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "DELETE" });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return Empty.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return Empty.fromJSON(resBody);
     },
 
     async hTTPDeleteWithParams(
@@ -284,9 +284,9 @@ export function newCounterService(
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "DELETE" });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return HttpDeleteWithParamsResponse.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return HttpDeleteWithParamsResponse.fromJSON(resBody);
     },
 
     async externalMessage(
@@ -300,9 +300,9 @@ export function newCounterService(
         method: "POST",
         body: JSON.stringify(ExternalRequest.toJSON(fullReq)),
       });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return ExternalResponse.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return ExternalResponse.fromJSON(resBody);
     },
 
     async hTTPGetWithURLSearchParams(
@@ -315,9 +315,9 @@ export function newCounterService(
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "GET" });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return HTTPGetWithURLSearchParamsResponse.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return HTTPGetWithURLSearchParamsResponse.fromJSON(resBody);
     },
 
     async hTTPGetWithZeroValueURLSearchParams(
@@ -331,9 +331,9 @@ export function newCounterService(
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "GET" });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return HTTPGetWithZeroValueURLSearchParamsResponse.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return HTTPGetWithZeroValueURLSearchParamsResponse.fromJSON(resBody);
     },
 
     async hTTPGetWithOptionalFields(
@@ -346,9 +346,9 @@ export function newCounterService(
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "GET" });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return OptionalFieldsResponse.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return OptionalFieldsResponse.fromJSON(resBody);
     },
   };
 }

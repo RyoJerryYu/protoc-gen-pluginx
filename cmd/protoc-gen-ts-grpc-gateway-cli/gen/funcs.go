@@ -200,11 +200,15 @@ func (g *Generator) applyMethod(method *protogen.Method) {
 		g.Pf("  options?: %s,", niceGrpcCommon.Ident("CallOptions"))
 		g.Pf("): Promise<%s> {", output)
 		g.Pf("  const fullReq = %s.fromPartial(req);", input)
+		// path, return pathParams
+		// queryParams
+		// METHOD
+		// body
 		g.Pf("  const url = new URL(%s, baseUrl).href;", g.renderURL(&g.TSOption)(method))
 		g.Pf("  const res = await fetch(url, {...initReq, %s});", g.buildInitReq(method))
-		g.Pf("  const body = await res.json();")
-		g.Pf("  if (!res.ok) throw body;")
-		g.Pf("  return %s.fromJSON(body);", output)
+		g.Pf("  const resBody = await res.json();")
+		g.Pf("  if (!res.ok) throw resBody;")
+		g.Pf("  return %s.fromJSON(resBody);", output)
 		g.Pf("},")
 	}
 	g.P(method.Comments.Trailing)

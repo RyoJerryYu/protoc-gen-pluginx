@@ -144,9 +144,9 @@ export function newABitOfEverythingService(
         method: "POST",
         body: JSON.stringify(ABitOfEverything.toJSON(fullReq)),
       });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return ABitOfEverything.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return ABitOfEverything.fromJSON(resBody);
     },
 
     async lookup(
@@ -159,9 +159,9 @@ export function newABitOfEverythingService(
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "GET" });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return ABitOfEverything.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return ABitOfEverything.fromJSON(resBody);
     },
 
     async custom(
@@ -174,9 +174,9 @@ export function newABitOfEverythingService(
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "POST" });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return ABitOfEverything.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return ABitOfEverything.fromJSON(resBody);
     },
 
     async doubleColon(
@@ -189,9 +189,9 @@ export function newABitOfEverythingService(
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "POST" });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return ABitOfEverything.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return ABitOfEverything.fromJSON(resBody);
     },
 
     async update(
@@ -208,9 +208,9 @@ export function newABitOfEverythingService(
         method: "PUT",
         body: JSON.stringify(ABitOfEverything.toJSON(fullReq)),
       });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return Empty.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return Empty.fromJSON(resBody);
     },
 
     async updateV2(
@@ -227,9 +227,9 @@ export function newABitOfEverythingService(
         method: "PUT",
         body: JSON.stringify(ABitOfEverything.toJSON(must(fullReq.abe))),
       });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return Empty.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return Empty.fromJSON(resBody);
     },
 
     async delete(
@@ -242,9 +242,9 @@ export function newABitOfEverythingService(
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "DELETE" });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return Empty.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return Empty.fromJSON(resBody);
     },
 
     async getQuery(
@@ -257,9 +257,9 @@ export function newABitOfEverythingService(
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "GET" });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return Empty.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return Empty.fromJSON(resBody);
     },
 
     async getRepeatedQuery(
@@ -272,9 +272,9 @@ export function newABitOfEverythingService(
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "GET" });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return ABitOfEverythingRepeated.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return ABitOfEverythingRepeated.fromJSON(resBody);
     },
 
     async deepPathEcho(
@@ -291,9 +291,9 @@ export function newABitOfEverythingService(
         method: "POST",
         body: JSON.stringify(ABitOfEverything.toJSON(fullReq)),
       });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return ABitOfEverything.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return ABitOfEverything.fromJSON(resBody);
     },
 
     async noBindings(
@@ -310,9 +310,9 @@ export function newABitOfEverythingService(
         method: "POST",
         body: JSON.stringify(Duration.toJSON(fullReq)),
       });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return Empty.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return Empty.fromJSON(resBody);
     },
 
     async timeout(
@@ -325,9 +325,9 @@ export function newABitOfEverythingService(
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "GET" });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return Empty.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return Empty.fromJSON(resBody);
     },
 
     async errorWithDetails(
@@ -340,9 +340,9 @@ export function newABitOfEverythingService(
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "GET" });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return Empty.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return Empty.fromJSON(resBody);
     },
 
     async getMessageWithBody(
@@ -357,9 +357,9 @@ export function newABitOfEverythingService(
         method: "POST",
         body: JSON.stringify(Body.toJSON(must(fullReq.data))),
       });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return Empty.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return Empty.fromJSON(resBody);
     },
 
     async postWithEmptyBody(
@@ -376,9 +376,9 @@ export function newABitOfEverythingService(
         method: "POST",
         body: JSON.stringify(Body.toJSON(fullReq)),
       });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return Empty.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return Empty.fromJSON(resBody);
     },
 
     async checkGetQueryParams(
@@ -391,9 +391,9 @@ export function newABitOfEverythingService(
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "GET" });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return ABitOfEverything.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return ABitOfEverything.fromJSON(resBody);
     },
 
     async checkNestedEnumGetQueryParams(
@@ -406,9 +406,9 @@ export function newABitOfEverythingService(
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "GET" });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return ABitOfEverything.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return ABitOfEverything.fromJSON(resBody);
     },
 
     async checkPostQueryParams(
@@ -427,9 +427,9 @@ export function newABitOfEverythingService(
           ABitOfEverything_Nested.toJSON(must(fullReq.singleNested)),
         ),
       });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return ABitOfEverything.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return ABitOfEverything.fromJSON(resBody);
     },
 
     async overwriteRequestContentType(
@@ -444,9 +444,9 @@ export function newABitOfEverythingService(
         method: "POST",
         body: JSON.stringify(Body.toJSON(fullReq)),
       });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return Empty.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return Empty.fromJSON(resBody);
     },
 
     async overwriteResponseContentType(
@@ -459,9 +459,9 @@ export function newABitOfEverythingService(
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "GET" });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return StringValue.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return StringValue.fromJSON(resBody);
     },
 
     async checkExternalPathEnum(
@@ -474,9 +474,9 @@ export function newABitOfEverythingService(
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "GET" });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return Empty.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return Empty.fromJSON(resBody);
     },
 
     async checkExternalNestedPathEnum(
@@ -489,9 +489,9 @@ export function newABitOfEverythingService(
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "GET" });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return Empty.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return Empty.fromJSON(resBody);
     },
 
     async checkStatus(
@@ -504,9 +504,9 @@ export function newABitOfEverythingService(
         baseUrl,
       ).href;
       const res = await fetch(url, { ...initReq, method: "GET" });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return CheckStatusResponse.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return CheckStatusResponse.fromJSON(resBody);
     },
 
     async postOneofEnum(
@@ -520,9 +520,9 @@ export function newABitOfEverythingService(
         method: "POST",
         body: exampleEnumToJSON(must(fullReq.exampleEnum)),
       });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return Empty.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return Empty.fromJSON(resBody);
     },
 
     async postRequiredMessageType(
@@ -536,9 +536,9 @@ export function newABitOfEverythingService(
         method: "POST",
         body: JSON.stringify(RequiredMessageTypeRequest.toJSON(fullReq)),
       });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return Empty.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return Empty.fromJSON(resBody);
     },
   };
 }
@@ -562,9 +562,9 @@ export function newAnotherServiceWithNoBindings(
         method: "POST",
         body: JSON.stringify(Empty.toJSON(fullReq)),
       });
-      const body = await res.json();
-      if (!res.ok) throw body;
-      return Empty.fromJSON(body);
+      const resBody = await res.json();
+      if (!res.ok) throw resBody;
+      return Empty.fromJSON(resBody);
     },
   };
 }
