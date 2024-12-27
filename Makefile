@@ -41,6 +41,7 @@ test.generation: generate
 test.integration: generate
 	@echo "Running integration tests..."
 	@cd tests/protoc-gen-ts-grpc-gateway-cli/integration-protoc-gen-grpc-gateway-ts && pnpm install && pnpm run test
+	@cd tests/protoc-gen-ts-grpc-gateway-cli/integration-everything-simple && pnpm install && pnpm run test
 	@echo "Integration tests passed."
 
 .PHONY: check_version write_version
