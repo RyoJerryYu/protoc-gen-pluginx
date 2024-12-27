@@ -8,7 +8,7 @@ managed:
       module: buf.build/grpc-ecosystem/grpc-gateway
   override:
     - file_option: go_package_prefix
-      value: github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-ts-grpc-gateway-cli/integration/server
+      value: github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-ts-grpc-gateway-cli/integration-protoc-gen-grpc-gateway-ts/server
 plugins:
   # server
   - local: protoc-gen-go
@@ -34,7 +34,6 @@ plugins:
       - emit_unpopulated=false
       - use_proto_names=false
       - logtostderr=true
-      - v=3
   - remote: buf.build/community/stephenh-ts-proto
     out: ../defaultConfig
     opt:
@@ -56,7 +55,6 @@ plugins:
       - emit_unpopulated=true
       - use_proto_names=false
       - logtostderr=true
-      - v=3
   - remote: buf.build/community/stephenh-ts-proto
     out: ../emitUnpopulated
     opt:
@@ -78,7 +76,6 @@ plugins:
       - emit_unpopulated=false
       - use_proto_names=true
       - logtostderr=true
-      - v=3
   - remote: buf.build/community/stephenh-ts-proto
     out: ../useProtoNames
     opt:
