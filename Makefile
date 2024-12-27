@@ -25,18 +25,24 @@ generate: tools bins
 	@cd tests && go generate ./...
 	@echo "Code generated."
 
-.PHONY: test test-unit test-generation
-test: test-unit test-generation
+.PHONY: test test.unit test.generation
+test: test.unit test.generation
 
-test-unit:
+test.unit:
 	@echo "Running unit tests..."
 	@go test -v ./...
 	@echo "Unit tests passed."
 
-test-generation: generate
+test.generation: generate
 	@echo "Running tests..."
 	@cd tests && go test -v ./...
 	@echo "Tests passed."
+
+test.integration: generate
+	@echo "Running integration tests..."
+	@cd tests/protoc-gen-ts-grpc-gateway-cli/integration-protoc-gen-grpc-gateway-ts && pnpm install && pnpm run test
+	@cd tests/protoc-gen-ts-grpc-gateway-cli/integration-everything-simple && pnpm install && pnpm run test
+	@echo "Integration tests passed."
 
 .PHONY: check_version write_version
 check_version:

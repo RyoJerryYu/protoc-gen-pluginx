@@ -6,13 +6,14 @@ import (
 	"text/template"
 
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils"
+	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils/tsutils"
 	"github.com/golang/glog"
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 type Options struct {
-	pluginutils.TSOption
+	tsutils.TSOption
 
 	// UseStaticClasses will cause the generator to generate a static class in the form ServiceName.MethodName, which is
 	// the legacy behavior for this generator. If set to false, the generator will generate a client class with methods
@@ -25,14 +26,14 @@ type Options struct {
 }
 
 var (
-	niceGrpcCommon = pluginutils.TSModule{ModuleName: "NiceGrpcCommon", Path: "nice-grpc-common"}
-	jsBase64       = pluginutils.TSModule{ModuleName: "JsBase64", Path: "js-base64"}
+	niceGrpcCommon = tsutils.TSModule{ModuleName: "NiceGrpcCommon", Path: "nice-grpc-common"}
+	jsBase64       = tsutils.TSModule{ModuleName: "JsBase64", Path: "js-base64"}
 )
 
 type Generator struct {
 	Options
 	Generator pluginutils.GenerateOptions
-	*pluginutils.TSRegistry
+	*tsutils.TSRegistry
 }
 
 func (g *Generator) PTmplStr(tmpl string, data interface{}, funcs ...template.FuncMap) {
@@ -204,7 +205,7 @@ export type Transport = {
 }
 
 func (g *Generator) applyService(service *protogen.Service) {
-	serviceModule := pluginutils.TSModule_TSProto(service.Desc.ParentFile())
+	serviceModule := tsutils.TSModule_TSProto(service.Desc.ParentFile())
 	for _, leadingDetached := range service.Comments.LeadingDetached {
 		g.P(leadingDetached)
 	}
@@ -221,15 +222,15 @@ func (g *Generator) applyService(service *protogen.Service) {
 }
 
 func (g *Generator) applyMethod(method *protogen.Method) {
-	input := pluginutils.TSIdent_TSProto_Message(method.Input)
-	output := pluginutils.TSIdent_TSProto_Message(method.Output)
-	methodModule := pluginutils.TSModule_TSProto(method.Desc.ParentFile())
+	input := tsutils.TSIdent_TSProto_Message(method.Input)
+	output := tsutils.TSIdent_TSProto_Message(method.Output)
+	methodModule := tsutils.TSModule_TSProto(method.Desc.ParentFile())
 
 	g.P(method.Comments.Leading)
 	glog.V(3).Infof("method location: %s, %s", method.Location.SourceFile, method.Location.Path)
 
 	if method.Desc.IsStreamingServer() {
-		g.Pf("%s(", pluginutils.FunctionCase_TSProto(method.GoName))
+		g.Pf("%s(", tsutils.FunctionCase_TSProto(method.GoName))
 		g.Pf("  req: %s<%s>,", methodModule.Ident("DeepPartial"), input)
 		g.Pf("  options?: %s,", niceGrpcCommon.Ident("CallOptions"))
 		g.Pf("): AsyncIterable<%s> {", output)
@@ -237,7 +238,7 @@ func (g *Generator) applyMethod(method *protogen.Method) {
 		g.Pf("},")
 
 	} else {
-		g.Pf("async %s(", pluginutils.FunctionCase_TSProto(method.GoName))
+		g.Pf("async %s(", tsutils.FunctionCase_TSProto(method.GoName))
 		g.Pf("  req: %s<%s>,", methodModule.Ident("DeepPartial"), input)
 		g.Pf("  options?: %s,", niceGrpcCommon.Ident("CallOptions"))
 		g.Pf("): Promise<%s> {", output)
@@ -270,7 +271,7 @@ func (g *Generator) applyMethod(method *protogen.Method) {
 }
 
 // return the URL string and the pathParams
-func (g *Generator) renderPath(r *pluginutils.TSOption) func(method *protogen.Method) (string, []string) {
+func (g *Generator) renderPath(r *tsutils.TSOption) func(method *protogen.Method) (string, []string) {
 	return func(method *protogen.Method) (string, []string) {
 		httpOpts := g.httpOptions(method)
 		methodURL := httpOpts.URL
@@ -284,7 +285,7 @@ func (g *Generator) renderPath(r *pluginutils.TSOption) func(method *protogen.Me
 				// fieldValuePattern := m[2]
 				part := fmt.Sprintf(`${%s}`, g.must("fullReq", fieldNameRaw))
 				methodURL = strings.ReplaceAll(methodURL, expToReplace, part)
-				fieldName := pluginutils.FieldName(r)(fieldNameRaw)
+				fieldName := tsutils.FieldName(r)(fieldNameRaw)
 				fieldsInPath = append(fieldsInPath, fieldName)
 			}
 		}
@@ -293,7 +294,7 @@ func (g *Generator) renderPath(r *pluginutils.TSOption) func(method *protogen.Me
 	}
 }
 
-func (g *Generator) renderQueryString(r *pluginutils.TSOption) func(method *protogen.Method, urlPathParams []string) string {
+func (g *Generator) renderQueryString(r *tsutils.TSOption) func(method *protogen.Method, urlPathParams []string) string {
 	return func(method *protogen.Method, urlPathParams []string) string {
 		httpOpts := g.httpOptions(method)
 		methodMethod := httpOpts.Method
@@ -310,13 +311,13 @@ func (g *Generator) renderQueryString(r *pluginutils.TSOption) func(method *prot
 	}
 }
 
-func (g *Generator) renderBody(r *pluginutils.TSOption) func(method *protogen.Method) string {
+func (g *Generator) renderBody(r *tsutils.TSOption) func(method *protogen.Method) string {
 	return func(method *protogen.Method) string {
 		httpOpts := g.httpOptions(method)
 		httpBody := httpOpts.Body
 
 		TSProtoJsonify := func(in string, msg *protogen.Message) string {
-			ident := g.QualifiedTSIdent(pluginutils.TSIdent_TSProto_Message(msg))
+			ident := g.QualifiedTSIdent(tsutils.TSIdent_TSProto_Message(msg))
 			return `JSON.stringify(` + ident + `.toJSON(` + in + `))`
 		}
 		if httpBody == nil || *httpBody == "*" {
@@ -334,7 +335,7 @@ func (g *Generator) renderBody(r *pluginutils.TSOption) func(method *protogen.Me
 			return TSProtoJsonify(g.must("fullReq", *httpBody), bodyType)
 		case protoreflect.EnumKind:
 			bodyType := bodyField.Enum
-			enumModule := pluginutils.TSModule_TSProto(bodyType.Desc.ParentFile())
+			enumModule := tsutils.TSModule_TSProto(bodyType.Desc.ParentFile())
 			toJsonIdent := enumModule.Ident(g.TSProto_EnumToJSONFuncName(bodyType.Desc))
 			toJsonFunc := g.QualifiedTSIdent(toJsonIdent)
 			return toJsonFunc + `(` + g.must("fullReq", *httpBody) + `)`
