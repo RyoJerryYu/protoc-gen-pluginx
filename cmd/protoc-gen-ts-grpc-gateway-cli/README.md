@@ -12,3 +12,5 @@ This plugin depends on some flags of ts_proto:
 Some flags of ts_proto should be set depends on Server Config:
 
 - snakeToCamel: If `MarshalOptions.UseProtoNames` was `true` on serverside, ts_proto should not include `json` . (set to keys or false, which default to keys_json)
+
+ts_proto do not check oneof at client code, so the gateway cli do not check the oneof duplicated set.

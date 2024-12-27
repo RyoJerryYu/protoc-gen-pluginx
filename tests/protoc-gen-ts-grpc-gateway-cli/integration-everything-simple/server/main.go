@@ -52,7 +52,7 @@ func main() {
 	fmt.Printf("Starting server with use_proto_names=%v and emit_unpopulated=%v\n", *useProtoNames, *emitUnpopulated)
 
 	grpcServer := grpc.NewServer()
-	examplepb.RegisterABitOfEverythingServiceServer(grpcServer, nil)
+	examplepb.RegisterABitOfEverythingServiceServer(grpcServer, &ABitOfEverythingService{})
 
 	gateway := runtime.NewServeMux(runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.HTTPBodyMarshaler{
 		Marshaler: &runtime.JSONPb{
