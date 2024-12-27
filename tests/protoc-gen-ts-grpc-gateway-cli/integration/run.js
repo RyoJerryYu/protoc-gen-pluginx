@@ -10,6 +10,11 @@ let testCases = [
     useProtoNames: false,
     emitUnpopulated: false,
   },
+  {
+    testDir: "emitUnpopulated",
+    useProtoNames: false,
+    emitUnpopulated: true,
+  },
 ];
 
 import kill from "tree-kill";

@@ -31,17 +31,63 @@ plugins:
     out: ../defaultConfig
     opt:
       - paths=source_relative
+      - emit_unpopulated=false
+      - use_proto_names=false
       - logtostderr=true
       - v=3
   - remote: buf.build/community/stephenh-ts-proto
     out: ../defaultConfig
     opt:
       - env=browser
+      - esModuleInterop=true
       - useOptionals=messages
+      - stringEnums=true
       - outputServices=generic-definitions
       - outputServices=nice-grpc
       - outputEncodeMethods=false
       - outputJsonMethods=true
       - useExactTypes=false
+
+  # client, emitUnpopulated
+  - local: protoc-gen-ts-grpc-gateway-cli
+    out: ../emitUnpopulated
+    opt:
+      - paths=source_relative
+      - emit_unpopulated=true
+      - use_proto_names=false
+      - logtostderr=true
+      - v=3
+  - remote: buf.build/community/stephenh-ts-proto
+    out: ../emitUnpopulated
+    opt:
+      - env=browser
       - esModuleInterop=true
+      - useOptionals=messages
       - stringEnums=true
+      - outputServices=generic-definitions
+      - outputServices=nice-grpc
+      - outputEncodeMethods=false
+      - outputJsonMethods=true
+      - useExactTypes=false
+
+  # client, useProtoNames
+  - local: protoc-gen-ts-grpc-gateway-cli
+    out: ../useProtoNames
+    opt:
+      - paths=source_relative
+      - emit_unpopulated=false
+      - use_proto_names=true
+      - logtostderr=true
+      - v=3
+  - remote: buf.build/community/stephenh-ts-proto
+    out: ../useProtoNames
+    opt:
+      - env=browser
+      - esModuleInterop=true
+      - useOptionals=messages
+      - stringEnums=true
+      - outputServices=generic-definitions
+      - outputServices=nice-grpc
+      - outputEncodeMethods=false
+      - outputJsonMethods=true
+      - useExactTypes=false
