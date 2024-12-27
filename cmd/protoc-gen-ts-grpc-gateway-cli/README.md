@@ -4,4 +4,11 @@ This is a CLI tool for generating TypeScript gRPC Gateway client code from gRPC 
 
 ### Work with ts_proto
 
-- UseProtoNames: ts_proto snakeToCamel set to keys or false (which default to keys_json)
+This plugin depends on some flags of ts_proto:
+
+- outputJsonMethods: Should be set to true.
+- outputServices: ts_proto allow set this flag multiple times. Should include `nice-grpc` .
+
+Some flags of ts_proto should be set depends on Server Config:
+
+- snakeToCamel: If `MarshalOptions.UseProtoNames` was `true` on serverside, ts_proto should not include `json` . (set to keys or false, which default to keys_json)
