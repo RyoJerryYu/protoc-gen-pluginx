@@ -1,4 +1,4 @@
-package pluginutils
+package tsutils
 
 import (
 	"bytes"
@@ -9,6 +9,7 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils"
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/protobufx"
 	sprig "github.com/go-task/slim-sprig/v3"
 	"github.com/golang/glog"
@@ -19,11 +20,11 @@ import (
 
 type TSRegistry struct {
 	buf          bytes.Buffer
-	GenOpts      GenerateOptions
+	GenOpts      pluginutils.GenerateOptions
 	ImportIdents map[string][]TSIdent // map<module_path, TSIdent>
 }
 
-func NewTSRegistry(opts GenerateOptions) *TSRegistry {
+func NewTSRegistry(opts pluginutils.GenerateOptions) *TSRegistry {
 	return &TSRegistry{
 		GenOpts:      opts,
 		ImportIdents: make(map[string][]TSIdent),

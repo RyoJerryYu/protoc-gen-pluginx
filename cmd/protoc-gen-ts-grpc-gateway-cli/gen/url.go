@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils"
+	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils/tsutils"
 	"github.com/golang/glog"
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -43,7 +44,7 @@ var (
 	pathParamRegexp = regexp.MustCompile(`{([^=}/]+)(?:=([^}]+))?}`)
 )
 
-func (g *Generator) renderURL(r *pluginutils.TSOption) func(method *protogen.Method) string {
+func (g *Generator) renderURL(r *tsutils.TSOption) func(method *protogen.Method) string {
 	return func(method *protogen.Method) string {
 		// httpMethod, httpURL :=
 		httpOpts := g.httpOptions(method)
@@ -59,7 +60,7 @@ func (g *Generator) renderURL(r *pluginutils.TSOption) func(method *protogen.Met
 				// fieldValuePattern := m[2]
 				part := fmt.Sprintf(`${%s}`, g.must("fullReq", fieldNameRaw))
 				methodURL = strings.ReplaceAll(methodURL, expToReplace, part)
-				fieldName := pluginutils.FieldName(r)(fieldNameRaw)
+				fieldName := tsutils.FieldName(r)(fieldNameRaw)
 				fieldsInPath = append(fieldsInPath, fmt.Sprintf(`"%s"`, fieldName))
 			}
 		}
@@ -97,7 +98,7 @@ func (g *Generator) buildInitReq(method *protogen.Method) string {
 	}
 
 	TSProtoJsonify := func(in string, msg *protogen.Message) string {
-		ident := g.QualifiedTSIdent(pluginutils.TSIdent_TSProto_Message(msg))
+		ident := g.QualifiedTSIdent(tsutils.TSIdent_TSProto_Message(msg))
 		return `JSON.stringify(` + ident + `.toJSON(` + in + `))`
 	}
 	if httpBody == nil || *httpBody == "*" {
@@ -112,7 +113,7 @@ func (g *Generator) buildInitReq(method *protogen.Method) string {
 			initRes = append(initRes, [2]string{"body", jsonify})
 		case protoreflect.EnumKind:
 			bodyType := bodyField.Enum
-			enumModule := pluginutils.TSModule_TSProto(bodyType.Desc.ParentFile())
+			enumModule := tsutils.TSModule_TSProto(bodyType.Desc.ParentFile())
 			toJsonIdent := enumModule.Ident(g.TSProto_EnumToJSONFuncName(bodyType.Desc))
 			toJsonFunc := g.QualifiedTSIdent(toJsonIdent)
 			initRes = append(initRes, [2]string{"body", toJsonFunc + `(` + g.must("fullReq", *httpBody) + `)`})
@@ -130,7 +131,7 @@ func (g *Generator) buildInitReq(method *protogen.Method) string {
 }
 
 func (g *Generator) must(rootName string, path string) string {
-	fieldName := pluginutils.FieldName(&g.TSOption)(path)
+	fieldName := tsutils.FieldName(&g.TSOption)(path)
 	fields := strings.Split(fieldName, ".")
 	fieldName = strings.Join(fields, "?.")
 
@@ -138,5 +139,5 @@ func (g *Generator) must(rootName string, path string) string {
 }
 
 func (g *Generator) TSProto_EnumToJSONFuncName(enum protoreflect.EnumDescriptor) string {
-	return pluginutils.FunctionCase_TSProto(string(enum.Name())) + "ToJSON"
+	return tsutils.FunctionCase_TSProto(string(enum.Name())) + "ToJSON"
 }

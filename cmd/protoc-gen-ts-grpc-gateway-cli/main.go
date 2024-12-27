@@ -5,6 +5,7 @@ import (
 
 	"github.com/RyoJerryYu/protoc-gen-pluginx/cmd/protoc-gen-ts-grpc-gateway-cli/gen"
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils"
+	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils/tsutils"
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/version"
 	"github.com/golang/glog"
 	"google.golang.org/protobuf/compiler/protogen"
@@ -45,7 +46,7 @@ func main() {
 		g := gen.Generator{
 			Options:    options,
 			Generator:  genOpt,
-			TSRegistry: pluginutils.NewTSRegistry(genOpt),
+			TSRegistry: tsutils.NewTSRegistry(genOpt),
 		}
 		return g.ApplyTemplate()
 	})
