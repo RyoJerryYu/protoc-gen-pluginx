@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	_ "embed"
 	"flag"
 	"fmt"
 	"net"
@@ -9,7 +10,9 @@ import (
 	"strings"
 
 	"github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-ts-grpc-gateway-cli/integration-everything-simple/server/proto/examplepb"
+	"github.com/go-chi/chi/v5"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	httpSwagger "github.com/swaggo/http-swagger"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/protobuf/encoding/protojson"
@@ -81,8 +84,19 @@ func main() {
 		}
 	}()
 
-	if err = http.ListenAndServe("localhost:8081", allowCORS(gateway)); err != nil {
+	mux := chi.NewMux()
+	mux.Use(allowCORS)
+	mux.Get("/swagger.json", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(swaggerDef))
+	})
+	mux.Mount("/swagger", httpSwagger.Handler(httpSwagger.URL("/swagger.json")))
+	mux.Handle("/*", gateway)
+
+	if err = http.ListenAndServe("localhost:8081", mux); err != nil {
 		panic(err)
 	}
-
 }
+
+//go:embed proto/apidocs.swagger.json
+var swaggerDef string

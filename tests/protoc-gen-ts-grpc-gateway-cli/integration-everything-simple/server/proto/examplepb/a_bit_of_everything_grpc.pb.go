@@ -31,6 +31,7 @@ const (
 	ABitOfEverythingService_DoubleColon_FullMethodName                   = "/proto.examplepb.ABitOfEverythingService/DoubleColon"
 	ABitOfEverythingService_Update_FullMethodName                        = "/proto.examplepb.ABitOfEverythingService/Update"
 	ABitOfEverythingService_UpdateV2_FullMethodName                      = "/proto.examplepb.ABitOfEverythingService/UpdateV2"
+	ABitOfEverythingService_UpdatePatch_FullMethodName                   = "/proto.examplepb.ABitOfEverythingService/UpdatePatch"
 	ABitOfEverythingService_Delete_FullMethodName                        = "/proto.examplepb.ABitOfEverythingService/Delete"
 	ABitOfEverythingService_GetQuery_FullMethodName                      = "/proto.examplepb.ABitOfEverythingService/GetQuery"
 	ABitOfEverythingService_GetRepeatedQuery_FullMethodName              = "/proto.examplepb.ABitOfEverythingService/GetRepeatedQuery"
@@ -65,6 +66,7 @@ type ABitOfEverythingServiceClient interface {
 	DoubleColon(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error)
 	Update(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	UpdateV2(ctx context.Context, in *UpdateV2Request, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	UpdatePatch(ctx context.Context, in *UpdateV2Request, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Delete(ctx context.Context, in *sub2.IdMessage, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	GetQuery(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	GetRepeatedQuery(ctx context.Context, in *ABitOfEverythingRepeated, opts ...grpc.CallOption) (*ABitOfEverythingRepeated, error)
@@ -148,6 +150,16 @@ func (c *aBitOfEverythingServiceClient) UpdateV2(ctx context.Context, in *Update
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, ABitOfEverythingService_UpdateV2_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *aBitOfEverythingServiceClient) UpdatePatch(ctx context.Context, in *UpdateV2Request, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ABitOfEverythingService_UpdatePatch_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -357,6 +369,7 @@ type ABitOfEverythingServiceServer interface {
 	DoubleColon(context.Context, *ABitOfEverything) (*ABitOfEverything, error)
 	Update(context.Context, *ABitOfEverything) (*emptypb.Empty, error)
 	UpdateV2(context.Context, *UpdateV2Request) (*emptypb.Empty, error)
+	UpdatePatch(context.Context, *UpdateV2Request) (*emptypb.Empty, error)
 	Delete(context.Context, *sub2.IdMessage) (*emptypb.Empty, error)
 	GetQuery(context.Context, *ABitOfEverything) (*emptypb.Empty, error)
 	GetRepeatedQuery(context.Context, *ABitOfEverythingRepeated) (*ABitOfEverythingRepeated, error)
@@ -403,6 +416,9 @@ func (UnimplementedABitOfEverythingServiceServer) Update(context.Context, *ABitO
 }
 func (UnimplementedABitOfEverythingServiceServer) UpdateV2(context.Context, *UpdateV2Request) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateV2 not implemented")
+}
+func (UnimplementedABitOfEverythingServiceServer) UpdatePatch(context.Context, *UpdateV2Request) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdatePatch not implemented")
 }
 func (UnimplementedABitOfEverythingServiceServer) Delete(context.Context, *sub2.IdMessage) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
@@ -587,6 +603,24 @@ func _ABitOfEverythingService_UpdateV2_Handler(srv interface{}, ctx context.Cont
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ABitOfEverythingServiceServer).UpdateV2(ctx, req.(*UpdateV2Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ABitOfEverythingService_UpdatePatch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateV2Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ABitOfEverythingServiceServer).UpdatePatch(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ABitOfEverythingService_UpdatePatch_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ABitOfEverythingServiceServer).UpdatePatch(ctx, req.(*UpdateV2Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -963,6 +997,10 @@ var ABitOfEverythingService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateV2",
 			Handler:    _ABitOfEverythingService_UpdateV2_Handler,
+		},
+		{
+			MethodName: "UpdatePatch",
+			Handler:    _ABitOfEverythingService_UpdatePatch_Handler,
 		},
 		{
 			MethodName: "Delete",

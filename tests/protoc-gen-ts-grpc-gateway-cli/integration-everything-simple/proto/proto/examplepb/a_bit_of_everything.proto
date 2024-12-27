@@ -527,6 +527,13 @@ service ABitOfEverythingService {
     };
   }
 
+  rpc UpdatePatch(UpdateV2Request) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      patch: "/v1/example/a_bit_of_everything/{abe.uuid}"
+      body: "abe"
+    };
+  }
+
   rpc Delete(proto.sub2.IdMessage) returns (google.protobuf.Empty) {
     option (google.api.http) = {delete: "/v1/example/a_bit_of_everything/{uuid}"};
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
