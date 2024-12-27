@@ -114,7 +114,7 @@ export interface StreamingResponse {
 }
 
 export interface HttpGetRequest {
-  numToIncrease: number;
+  num_to_increase: number;
 }
 
 export interface HttpGetResponse {
@@ -132,7 +132,7 @@ export interface PostRequest {
 }
 
 export interface HttpPostResponse {
-  postResult: number;
+  post_result: number;
 }
 
 export interface HttpPatchRequest {
@@ -141,7 +141,7 @@ export interface HttpPatchRequest {
 }
 
 export interface HttpPatchResponse {
-  patchResult: number;
+  patch_result: number;
 }
 
 export interface HttpDeleteRequest {
@@ -165,7 +165,7 @@ export interface HTTPGetWithURLSearchParamsRequest {
 }
 
 export interface HTTPGetWithURLSearchParamsResponse {
-  urlSearchParamsResult: number;
+  url_search_params_result: number;
 }
 
 export interface ZeroValueMsg {
@@ -183,46 +183,46 @@ export interface HTTPGetWithZeroValueURLSearchParamsRequest {
 export interface HTTPGetWithZeroValueURLSearchParamsResponse {
   a: string;
   b: string;
-  zeroValueMsg?: ZeroValueMsg | undefined;
+  zero_value_msg?: ZeroValueMsg | undefined;
 }
 
 export interface OptionalFieldsRequest {}
 
 export interface OptionalFieldsResponse {
-  emptyStr: string;
-  emptyNumber: number;
-  emptyMsg?: OptionalFieldsSubMsg | undefined;
-  emptyOptStr?: string | undefined;
-  emptyOptNumber?: number | undefined;
-  emptyOptMsg?: OptionalFieldsSubMsg | undefined;
-  zeroStr: string;
-  zeroNumber: number;
-  zeroMsg?: OptionalFieldsSubMsg | undefined;
-  zeroOptStr?: string | undefined;
-  zeroOptNumber?: number | undefined;
-  zeroOptMsg?: OptionalFieldsSubMsg | undefined;
-  definedStr: string;
-  definedNumber: number;
-  definedMsg?: OptionalFieldsSubMsg | undefined;
-  definedOptStr?: string | undefined;
-  definedOptNumber?: number | undefined;
-  definedOptMsg?: OptionalFieldsSubMsg | undefined;
+  empty_str: string;
+  empty_number: number;
+  empty_msg?: OptionalFieldsSubMsg | undefined;
+  empty_opt_str?: string | undefined;
+  empty_opt_number?: number | undefined;
+  empty_opt_msg?: OptionalFieldsSubMsg | undefined;
+  zero_str: string;
+  zero_number: number;
+  zero_msg?: OptionalFieldsSubMsg | undefined;
+  zero_opt_str?: string | undefined;
+  zero_opt_number?: number | undefined;
+  zero_opt_msg?: OptionalFieldsSubMsg | undefined;
+  defined_str: string;
+  defined_number: number;
+  defined_msg?: OptionalFieldsSubMsg | undefined;
+  defined_opt_str?: string | undefined;
+  defined_opt_number?: number | undefined;
+  defined_opt_msg?: OptionalFieldsSubMsg | undefined;
 }
 
 export interface OptionalFieldsSubMsg {
   str: string;
-  optStr?: string | undefined;
+  opt_str?: string | undefined;
 }
 
 export interface Names {
-  fooBar: string;
+  foo_bar: string;
   bazbam: string;
   binbom3: string;
   tin3tam: string;
-  ting3Tang: string;
-  king3kong: string;
-  frim3Fram: string;
-  k8sField: string;
+  ting3_tang: string;
+  king_3kong: string;
+  frim_3_fram: string;
+  k8s_field: string;
 }
 
 /** @deprecated */
@@ -233,16 +233,16 @@ export interface DeprecatedMessage {
 export interface MessageWithDeprecatedFields {
   field: string;
   /** @deprecated */
-  deprecatedField: string;
+  deprecated_field: string;
 }
 
 export interface OneofMessageWithDeprecatedFields {
   field: string;
   /** @deprecated */
-  deprecatedField: string;
+  deprecated_field: string;
   oneof?: string | undefined;
   /** @deprecated */
-  deprecatedOneof?: string | undefined;
+  deprecated_oneof?: string | undefined;
 }
 
 export interface MessageWithMultipleOneOfFields {
@@ -432,22 +432,22 @@ export const StreamingResponse: MessageFns<StreamingResponse> = {
 };
 
 function createBaseHttpGetRequest(): HttpGetRequest {
-  return { numToIncrease: 0 };
+  return { num_to_increase: 0 };
 }
 
 export const HttpGetRequest: MessageFns<HttpGetRequest> = {
   fromJSON(object: any): HttpGetRequest {
     return {
-      numToIncrease: isSet(object.numToIncrease)
-        ? globalThis.Number(object.numToIncrease)
+      num_to_increase: isSet(object.num_to_increase)
+        ? globalThis.Number(object.num_to_increase)
         : 0,
     };
   },
 
   toJSON(message: HttpGetRequest): unknown {
     const obj: any = {};
-    if (message.numToIncrease !== 0) {
-      obj.numToIncrease = Math.round(message.numToIncrease);
+    if (message.num_to_increase !== 0) {
+      obj.num_to_increase = Math.round(message.num_to_increase);
     }
     return obj;
   },
@@ -457,7 +457,7 @@ export const HttpGetRequest: MessageFns<HttpGetRequest> = {
   },
   fromPartial(object: DeepPartial<HttpGetRequest>): HttpGetRequest {
     const message = createBaseHttpGetRequest();
-    message.numToIncrease = object.numToIncrease ?? 0;
+    message.num_to_increase = object.num_to_increase ?? 0;
     return message;
   },
 };
@@ -561,22 +561,22 @@ export const PostRequest: MessageFns<PostRequest> = {
 };
 
 function createBaseHttpPostResponse(): HttpPostResponse {
-  return { postResult: 0 };
+  return { post_result: 0 };
 }
 
 export const HttpPostResponse: MessageFns<HttpPostResponse> = {
   fromJSON(object: any): HttpPostResponse {
     return {
-      postResult: isSet(object.postResult)
-        ? globalThis.Number(object.postResult)
+      post_result: isSet(object.post_result)
+        ? globalThis.Number(object.post_result)
         : 0,
     };
   },
 
   toJSON(message: HttpPostResponse): unknown {
     const obj: any = {};
-    if (message.postResult !== 0) {
-      obj.postResult = Math.round(message.postResult);
+    if (message.post_result !== 0) {
+      obj.post_result = Math.round(message.post_result);
     }
     return obj;
   },
@@ -586,7 +586,7 @@ export const HttpPostResponse: MessageFns<HttpPostResponse> = {
   },
   fromPartial(object: DeepPartial<HttpPostResponse>): HttpPostResponse {
     const message = createBaseHttpPostResponse();
-    message.postResult = object.postResult ?? 0;
+    message.post_result = object.post_result ?? 0;
     return message;
   },
 };
@@ -626,22 +626,22 @@ export const HttpPatchRequest: MessageFns<HttpPatchRequest> = {
 };
 
 function createBaseHttpPatchResponse(): HttpPatchResponse {
-  return { patchResult: 0 };
+  return { patch_result: 0 };
 }
 
 export const HttpPatchResponse: MessageFns<HttpPatchResponse> = {
   fromJSON(object: any): HttpPatchResponse {
     return {
-      patchResult: isSet(object.patchResult)
-        ? globalThis.Number(object.patchResult)
+      patch_result: isSet(object.patch_result)
+        ? globalThis.Number(object.patch_result)
         : 0,
     };
   },
 
   toJSON(message: HttpPatchResponse): unknown {
     const obj: any = {};
-    if (message.patchResult !== 0) {
-      obj.patchResult = Math.round(message.patchResult);
+    if (message.patch_result !== 0) {
+      obj.patch_result = Math.round(message.patch_result);
     }
     return obj;
   },
@@ -651,7 +651,7 @@ export const HttpPatchResponse: MessageFns<HttpPatchResponse> = {
   },
   fromPartial(object: DeepPartial<HttpPatchResponse>): HttpPatchResponse {
     const message = createBaseHttpPatchResponse();
-    message.patchResult = object.patchResult ?? 0;
+    message.patch_result = object.patch_result ?? 0;
     return message;
   },
 };
@@ -814,23 +814,25 @@ export const HTTPGetWithURLSearchParamsRequest: MessageFns<HTTPGetWithURLSearchP
   };
 
 function createBaseHTTPGetWithURLSearchParamsResponse(): HTTPGetWithURLSearchParamsResponse {
-  return { urlSearchParamsResult: 0 };
+  return { url_search_params_result: 0 };
 }
 
 export const HTTPGetWithURLSearchParamsResponse: MessageFns<HTTPGetWithURLSearchParamsResponse> =
   {
     fromJSON(object: any): HTTPGetWithURLSearchParamsResponse {
       return {
-        urlSearchParamsResult: isSet(object.urlSearchParamsResult)
-          ? globalThis.Number(object.urlSearchParamsResult)
+        url_search_params_result: isSet(object.url_search_params_result)
+          ? globalThis.Number(object.url_search_params_result)
           : 0,
       };
     },
 
     toJSON(message: HTTPGetWithURLSearchParamsResponse): unknown {
       const obj: any = {};
-      if (message.urlSearchParamsResult !== 0) {
-        obj.urlSearchParamsResult = Math.round(message.urlSearchParamsResult);
+      if (message.url_search_params_result !== 0) {
+        obj.url_search_params_result = Math.round(
+          message.url_search_params_result,
+        );
       }
       return obj;
     },
@@ -844,7 +846,7 @@ export const HTTPGetWithURLSearchParamsResponse: MessageFns<HTTPGetWithURLSearch
       object: DeepPartial<HTTPGetWithURLSearchParamsResponse>,
     ): HTTPGetWithURLSearchParamsResponse {
       const message = createBaseHTTPGetWithURLSearchParamsResponse();
-      message.urlSearchParamsResult = object.urlSearchParamsResult ?? 0;
+      message.url_search_params_result = object.url_search_params_result ?? 0;
       return message;
     },
   };
@@ -938,7 +940,7 @@ export const HTTPGetWithZeroValueURLSearchParamsRequest: MessageFns<HTTPGetWithZ
   };
 
 function createBaseHTTPGetWithZeroValueURLSearchParamsResponse(): HTTPGetWithZeroValueURLSearchParamsResponse {
-  return { a: "", b: "", zeroValueMsg: undefined };
+  return { a: "", b: "", zero_value_msg: undefined };
 }
 
 export const HTTPGetWithZeroValueURLSearchParamsResponse: MessageFns<HTTPGetWithZeroValueURLSearchParamsResponse> =
@@ -947,8 +949,8 @@ export const HTTPGetWithZeroValueURLSearchParamsResponse: MessageFns<HTTPGetWith
       return {
         a: isSet(object.a) ? globalThis.String(object.a) : "",
         b: isSet(object.b) ? globalThis.String(object.b) : "",
-        zeroValueMsg: isSet(object.zeroValueMsg)
-          ? ZeroValueMsg.fromJSON(object.zeroValueMsg)
+        zero_value_msg: isSet(object.zero_value_msg)
+          ? ZeroValueMsg.fromJSON(object.zero_value_msg)
           : undefined,
       };
     },
@@ -961,8 +963,8 @@ export const HTTPGetWithZeroValueURLSearchParamsResponse: MessageFns<HTTPGetWith
       if (message.b !== "") {
         obj.b = message.b;
       }
-      if (message.zeroValueMsg !== undefined) {
-        obj.zeroValueMsg = ZeroValueMsg.toJSON(message.zeroValueMsg);
+      if (message.zero_value_msg !== undefined) {
+        obj.zero_value_msg = ZeroValueMsg.toJSON(message.zero_value_msg);
       }
       return obj;
     },
@@ -980,9 +982,9 @@ export const HTTPGetWithZeroValueURLSearchParamsResponse: MessageFns<HTTPGetWith
       const message = createBaseHTTPGetWithZeroValueURLSearchParamsResponse();
       message.a = object.a ?? "";
       message.b = object.b ?? "";
-      message.zeroValueMsg =
-        object.zeroValueMsg !== undefined && object.zeroValueMsg !== null
-          ? ZeroValueMsg.fromPartial(object.zeroValueMsg)
+      message.zero_value_msg =
+        object.zero_value_msg !== undefined && object.zero_value_msg !== null
+          ? ZeroValueMsg.fromPartial(object.zero_value_msg)
           : undefined;
       return message;
     },
@@ -1013,140 +1015,144 @@ export const OptionalFieldsRequest: MessageFns<OptionalFieldsRequest> = {
 
 function createBaseOptionalFieldsResponse(): OptionalFieldsResponse {
   return {
-    emptyStr: "",
-    emptyNumber: 0,
-    emptyMsg: undefined,
-    emptyOptStr: undefined,
-    emptyOptNumber: undefined,
-    emptyOptMsg: undefined,
-    zeroStr: "",
-    zeroNumber: 0,
-    zeroMsg: undefined,
-    zeroOptStr: undefined,
-    zeroOptNumber: undefined,
-    zeroOptMsg: undefined,
-    definedStr: "",
-    definedNumber: 0,
-    definedMsg: undefined,
-    definedOptStr: undefined,
-    definedOptNumber: undefined,
-    definedOptMsg: undefined,
+    empty_str: "",
+    empty_number: 0,
+    empty_msg: undefined,
+    empty_opt_str: undefined,
+    empty_opt_number: undefined,
+    empty_opt_msg: undefined,
+    zero_str: "",
+    zero_number: 0,
+    zero_msg: undefined,
+    zero_opt_str: undefined,
+    zero_opt_number: undefined,
+    zero_opt_msg: undefined,
+    defined_str: "",
+    defined_number: 0,
+    defined_msg: undefined,
+    defined_opt_str: undefined,
+    defined_opt_number: undefined,
+    defined_opt_msg: undefined,
   };
 }
 
 export const OptionalFieldsResponse: MessageFns<OptionalFieldsResponse> = {
   fromJSON(object: any): OptionalFieldsResponse {
     return {
-      emptyStr: isSet(object.emptyStr)
-        ? globalThis.String(object.emptyStr)
+      empty_str: isSet(object.empty_str)
+        ? globalThis.String(object.empty_str)
         : "",
-      emptyNumber: isSet(object.emptyNumber)
-        ? globalThis.Number(object.emptyNumber)
+      empty_number: isSet(object.empty_number)
+        ? globalThis.Number(object.empty_number)
         : 0,
-      emptyMsg: isSet(object.emptyMsg)
-        ? OptionalFieldsSubMsg.fromJSON(object.emptyMsg)
+      empty_msg: isSet(object.empty_msg)
+        ? OptionalFieldsSubMsg.fromJSON(object.empty_msg)
         : undefined,
-      emptyOptStr: isSet(object.emptyOptStr)
-        ? globalThis.String(object.emptyOptStr)
+      empty_opt_str: isSet(object.empty_opt_str)
+        ? globalThis.String(object.empty_opt_str)
         : undefined,
-      emptyOptNumber: isSet(object.emptyOptNumber)
-        ? globalThis.Number(object.emptyOptNumber)
+      empty_opt_number: isSet(object.empty_opt_number)
+        ? globalThis.Number(object.empty_opt_number)
         : undefined,
-      emptyOptMsg: isSet(object.emptyOptMsg)
-        ? OptionalFieldsSubMsg.fromJSON(object.emptyOptMsg)
+      empty_opt_msg: isSet(object.empty_opt_msg)
+        ? OptionalFieldsSubMsg.fromJSON(object.empty_opt_msg)
         : undefined,
-      zeroStr: isSet(object.zeroStr) ? globalThis.String(object.zeroStr) : "",
-      zeroNumber: isSet(object.zeroNumber)
-        ? globalThis.Number(object.zeroNumber)
-        : 0,
-      zeroMsg: isSet(object.zeroMsg)
-        ? OptionalFieldsSubMsg.fromJSON(object.zeroMsg)
-        : undefined,
-      zeroOptStr: isSet(object.zeroOptStr)
-        ? globalThis.String(object.zeroOptStr)
-        : undefined,
-      zeroOptNumber: isSet(object.zeroOptNumber)
-        ? globalThis.Number(object.zeroOptNumber)
-        : undefined,
-      zeroOptMsg: isSet(object.zeroOptMsg)
-        ? OptionalFieldsSubMsg.fromJSON(object.zeroOptMsg)
-        : undefined,
-      definedStr: isSet(object.definedStr)
-        ? globalThis.String(object.definedStr)
+      zero_str: isSet(object.zero_str)
+        ? globalThis.String(object.zero_str)
         : "",
-      definedNumber: isSet(object.definedNumber)
-        ? globalThis.Number(object.definedNumber)
+      zero_number: isSet(object.zero_number)
+        ? globalThis.Number(object.zero_number)
         : 0,
-      definedMsg: isSet(object.definedMsg)
-        ? OptionalFieldsSubMsg.fromJSON(object.definedMsg)
+      zero_msg: isSet(object.zero_msg)
+        ? OptionalFieldsSubMsg.fromJSON(object.zero_msg)
         : undefined,
-      definedOptStr: isSet(object.definedOptStr)
-        ? globalThis.String(object.definedOptStr)
+      zero_opt_str: isSet(object.zero_opt_str)
+        ? globalThis.String(object.zero_opt_str)
         : undefined,
-      definedOptNumber: isSet(object.definedOptNumber)
-        ? globalThis.Number(object.definedOptNumber)
+      zero_opt_number: isSet(object.zero_opt_number)
+        ? globalThis.Number(object.zero_opt_number)
         : undefined,
-      definedOptMsg: isSet(object.definedOptMsg)
-        ? OptionalFieldsSubMsg.fromJSON(object.definedOptMsg)
+      zero_opt_msg: isSet(object.zero_opt_msg)
+        ? OptionalFieldsSubMsg.fromJSON(object.zero_opt_msg)
+        : undefined,
+      defined_str: isSet(object.defined_str)
+        ? globalThis.String(object.defined_str)
+        : "",
+      defined_number: isSet(object.defined_number)
+        ? globalThis.Number(object.defined_number)
+        : 0,
+      defined_msg: isSet(object.defined_msg)
+        ? OptionalFieldsSubMsg.fromJSON(object.defined_msg)
+        : undefined,
+      defined_opt_str: isSet(object.defined_opt_str)
+        ? globalThis.String(object.defined_opt_str)
+        : undefined,
+      defined_opt_number: isSet(object.defined_opt_number)
+        ? globalThis.Number(object.defined_opt_number)
+        : undefined,
+      defined_opt_msg: isSet(object.defined_opt_msg)
+        ? OptionalFieldsSubMsg.fromJSON(object.defined_opt_msg)
         : undefined,
     };
   },
 
   toJSON(message: OptionalFieldsResponse): unknown {
     const obj: any = {};
-    if (message.emptyStr !== "") {
-      obj.emptyStr = message.emptyStr;
+    if (message.empty_str !== "") {
+      obj.empty_str = message.empty_str;
     }
-    if (message.emptyNumber !== 0) {
-      obj.emptyNumber = Math.round(message.emptyNumber);
+    if (message.empty_number !== 0) {
+      obj.empty_number = Math.round(message.empty_number);
     }
-    if (message.emptyMsg !== undefined) {
-      obj.emptyMsg = OptionalFieldsSubMsg.toJSON(message.emptyMsg);
+    if (message.empty_msg !== undefined) {
+      obj.empty_msg = OptionalFieldsSubMsg.toJSON(message.empty_msg);
     }
-    if (message.emptyOptStr !== undefined) {
-      obj.emptyOptStr = message.emptyOptStr;
+    if (message.empty_opt_str !== undefined) {
+      obj.empty_opt_str = message.empty_opt_str;
     }
-    if (message.emptyOptNumber !== undefined) {
-      obj.emptyOptNumber = Math.round(message.emptyOptNumber);
+    if (message.empty_opt_number !== undefined) {
+      obj.empty_opt_number = Math.round(message.empty_opt_number);
     }
-    if (message.emptyOptMsg !== undefined) {
-      obj.emptyOptMsg = OptionalFieldsSubMsg.toJSON(message.emptyOptMsg);
+    if (message.empty_opt_msg !== undefined) {
+      obj.empty_opt_msg = OptionalFieldsSubMsg.toJSON(message.empty_opt_msg);
     }
-    if (message.zeroStr !== "") {
-      obj.zeroStr = message.zeroStr;
+    if (message.zero_str !== "") {
+      obj.zero_str = message.zero_str;
     }
-    if (message.zeroNumber !== 0) {
-      obj.zeroNumber = Math.round(message.zeroNumber);
+    if (message.zero_number !== 0) {
+      obj.zero_number = Math.round(message.zero_number);
     }
-    if (message.zeroMsg !== undefined) {
-      obj.zeroMsg = OptionalFieldsSubMsg.toJSON(message.zeroMsg);
+    if (message.zero_msg !== undefined) {
+      obj.zero_msg = OptionalFieldsSubMsg.toJSON(message.zero_msg);
     }
-    if (message.zeroOptStr !== undefined) {
-      obj.zeroOptStr = message.zeroOptStr;
+    if (message.zero_opt_str !== undefined) {
+      obj.zero_opt_str = message.zero_opt_str;
     }
-    if (message.zeroOptNumber !== undefined) {
-      obj.zeroOptNumber = Math.round(message.zeroOptNumber);
+    if (message.zero_opt_number !== undefined) {
+      obj.zero_opt_number = Math.round(message.zero_opt_number);
     }
-    if (message.zeroOptMsg !== undefined) {
-      obj.zeroOptMsg = OptionalFieldsSubMsg.toJSON(message.zeroOptMsg);
+    if (message.zero_opt_msg !== undefined) {
+      obj.zero_opt_msg = OptionalFieldsSubMsg.toJSON(message.zero_opt_msg);
     }
-    if (message.definedStr !== "") {
-      obj.definedStr = message.definedStr;
+    if (message.defined_str !== "") {
+      obj.defined_str = message.defined_str;
     }
-    if (message.definedNumber !== 0) {
-      obj.definedNumber = Math.round(message.definedNumber);
+    if (message.defined_number !== 0) {
+      obj.defined_number = Math.round(message.defined_number);
     }
-    if (message.definedMsg !== undefined) {
-      obj.definedMsg = OptionalFieldsSubMsg.toJSON(message.definedMsg);
+    if (message.defined_msg !== undefined) {
+      obj.defined_msg = OptionalFieldsSubMsg.toJSON(message.defined_msg);
     }
-    if (message.definedOptStr !== undefined) {
-      obj.definedOptStr = message.definedOptStr;
+    if (message.defined_opt_str !== undefined) {
+      obj.defined_opt_str = message.defined_opt_str;
     }
-    if (message.definedOptNumber !== undefined) {
-      obj.definedOptNumber = Math.round(message.definedOptNumber);
+    if (message.defined_opt_number !== undefined) {
+      obj.defined_opt_number = Math.round(message.defined_opt_number);
     }
-    if (message.definedOptMsg !== undefined) {
-      obj.definedOptMsg = OptionalFieldsSubMsg.toJSON(message.definedOptMsg);
+    if (message.defined_opt_msg !== undefined) {
+      obj.defined_opt_msg = OptionalFieldsSubMsg.toJSON(
+        message.defined_opt_msg,
+      );
     }
     return obj;
   },
@@ -1158,56 +1164,56 @@ export const OptionalFieldsResponse: MessageFns<OptionalFieldsResponse> = {
     object: DeepPartial<OptionalFieldsResponse>,
   ): OptionalFieldsResponse {
     const message = createBaseOptionalFieldsResponse();
-    message.emptyStr = object.emptyStr ?? "";
-    message.emptyNumber = object.emptyNumber ?? 0;
-    message.emptyMsg =
-      object.emptyMsg !== undefined && object.emptyMsg !== null
-        ? OptionalFieldsSubMsg.fromPartial(object.emptyMsg)
+    message.empty_str = object.empty_str ?? "";
+    message.empty_number = object.empty_number ?? 0;
+    message.empty_msg =
+      object.empty_msg !== undefined && object.empty_msg !== null
+        ? OptionalFieldsSubMsg.fromPartial(object.empty_msg)
         : undefined;
-    message.emptyOptStr = object.emptyOptStr ?? undefined;
-    message.emptyOptNumber = object.emptyOptNumber ?? undefined;
-    message.emptyOptMsg =
-      object.emptyOptMsg !== undefined && object.emptyOptMsg !== null
-        ? OptionalFieldsSubMsg.fromPartial(object.emptyOptMsg)
+    message.empty_opt_str = object.empty_opt_str ?? undefined;
+    message.empty_opt_number = object.empty_opt_number ?? undefined;
+    message.empty_opt_msg =
+      object.empty_opt_msg !== undefined && object.empty_opt_msg !== null
+        ? OptionalFieldsSubMsg.fromPartial(object.empty_opt_msg)
         : undefined;
-    message.zeroStr = object.zeroStr ?? "";
-    message.zeroNumber = object.zeroNumber ?? 0;
-    message.zeroMsg =
-      object.zeroMsg !== undefined && object.zeroMsg !== null
-        ? OptionalFieldsSubMsg.fromPartial(object.zeroMsg)
+    message.zero_str = object.zero_str ?? "";
+    message.zero_number = object.zero_number ?? 0;
+    message.zero_msg =
+      object.zero_msg !== undefined && object.zero_msg !== null
+        ? OptionalFieldsSubMsg.fromPartial(object.zero_msg)
         : undefined;
-    message.zeroOptStr = object.zeroOptStr ?? undefined;
-    message.zeroOptNumber = object.zeroOptNumber ?? undefined;
-    message.zeroOptMsg =
-      object.zeroOptMsg !== undefined && object.zeroOptMsg !== null
-        ? OptionalFieldsSubMsg.fromPartial(object.zeroOptMsg)
+    message.zero_opt_str = object.zero_opt_str ?? undefined;
+    message.zero_opt_number = object.zero_opt_number ?? undefined;
+    message.zero_opt_msg =
+      object.zero_opt_msg !== undefined && object.zero_opt_msg !== null
+        ? OptionalFieldsSubMsg.fromPartial(object.zero_opt_msg)
         : undefined;
-    message.definedStr = object.definedStr ?? "";
-    message.definedNumber = object.definedNumber ?? 0;
-    message.definedMsg =
-      object.definedMsg !== undefined && object.definedMsg !== null
-        ? OptionalFieldsSubMsg.fromPartial(object.definedMsg)
+    message.defined_str = object.defined_str ?? "";
+    message.defined_number = object.defined_number ?? 0;
+    message.defined_msg =
+      object.defined_msg !== undefined && object.defined_msg !== null
+        ? OptionalFieldsSubMsg.fromPartial(object.defined_msg)
         : undefined;
-    message.definedOptStr = object.definedOptStr ?? undefined;
-    message.definedOptNumber = object.definedOptNumber ?? undefined;
-    message.definedOptMsg =
-      object.definedOptMsg !== undefined && object.definedOptMsg !== null
-        ? OptionalFieldsSubMsg.fromPartial(object.definedOptMsg)
+    message.defined_opt_str = object.defined_opt_str ?? undefined;
+    message.defined_opt_number = object.defined_opt_number ?? undefined;
+    message.defined_opt_msg =
+      object.defined_opt_msg !== undefined && object.defined_opt_msg !== null
+        ? OptionalFieldsSubMsg.fromPartial(object.defined_opt_msg)
         : undefined;
     return message;
   },
 };
 
 function createBaseOptionalFieldsSubMsg(): OptionalFieldsSubMsg {
-  return { str: "", optStr: undefined };
+  return { str: "", opt_str: undefined };
 }
 
 export const OptionalFieldsSubMsg: MessageFns<OptionalFieldsSubMsg> = {
   fromJSON(object: any): OptionalFieldsSubMsg {
     return {
       str: isSet(object.str) ? globalThis.String(object.str) : "",
-      optStr: isSet(object.optStr)
-        ? globalThis.String(object.optStr)
+      opt_str: isSet(object.opt_str)
+        ? globalThis.String(object.opt_str)
         : undefined,
     };
   },
@@ -1217,8 +1223,8 @@ export const OptionalFieldsSubMsg: MessageFns<OptionalFieldsSubMsg> = {
     if (message.str !== "") {
       obj.str = message.str;
     }
-    if (message.optStr !== undefined) {
-      obj.optStr = message.optStr;
+    if (message.opt_str !== undefined) {
+      obj.opt_str = message.opt_str;
     }
     return obj;
   },
@@ -1229,50 +1235,50 @@ export const OptionalFieldsSubMsg: MessageFns<OptionalFieldsSubMsg> = {
   fromPartial(object: DeepPartial<OptionalFieldsSubMsg>): OptionalFieldsSubMsg {
     const message = createBaseOptionalFieldsSubMsg();
     message.str = object.str ?? "";
-    message.optStr = object.optStr ?? undefined;
+    message.opt_str = object.opt_str ?? undefined;
     return message;
   },
 };
 
 function createBaseNames(): Names {
   return {
-    fooBar: "",
+    foo_bar: "",
     bazbam: "",
     binbom3: "",
     tin3tam: "",
-    ting3Tang: "",
-    king3kong: "",
-    frim3Fram: "",
-    k8sField: "",
+    ting3_tang: "",
+    king_3kong: "",
+    frim_3_fram: "",
+    k8s_field: "",
   };
 }
 
 export const Names: MessageFns<Names> = {
   fromJSON(object: any): Names {
     return {
-      fooBar: isSet(object.fooBar) ? globalThis.String(object.fooBar) : "",
+      foo_bar: isSet(object.foo_bar) ? globalThis.String(object.foo_bar) : "",
       bazbam: isSet(object.bazbam) ? globalThis.String(object.bazbam) : "",
       binbom3: isSet(object.binbom3) ? globalThis.String(object.binbom3) : "",
       tin3tam: isSet(object.tin3tam) ? globalThis.String(object.tin3tam) : "",
-      ting3Tang: isSet(object.ting3Tang)
-        ? globalThis.String(object.ting3Tang)
+      ting3_tang: isSet(object.ting3_tang)
+        ? globalThis.String(object.ting3_tang)
         : "",
-      king3kong: isSet(object.king3kong)
-        ? globalThis.String(object.king3kong)
+      king_3kong: isSet(object.king_3kong)
+        ? globalThis.String(object.king_3kong)
         : "",
-      frim3Fram: isSet(object.frim3Fram)
-        ? globalThis.String(object.frim3Fram)
+      frim_3_fram: isSet(object.frim_3_fram)
+        ? globalThis.String(object.frim_3_fram)
         : "",
-      k8sField: isSet(object.k8sField)
-        ? globalThis.String(object.k8sField)
+      k8s_field: isSet(object.k8s_field)
+        ? globalThis.String(object.k8s_field)
         : "",
     };
   },
 
   toJSON(message: Names): unknown {
     const obj: any = {};
-    if (message.fooBar !== "") {
-      obj.fooBar = message.fooBar;
+    if (message.foo_bar !== "") {
+      obj.foo_bar = message.foo_bar;
     }
     if (message.bazbam !== "") {
       obj.bazbam = message.bazbam;
@@ -1283,17 +1289,17 @@ export const Names: MessageFns<Names> = {
     if (message.tin3tam !== "") {
       obj.tin3tam = message.tin3tam;
     }
-    if (message.ting3Tang !== "") {
-      obj.ting3Tang = message.ting3Tang;
+    if (message.ting3_tang !== "") {
+      obj.ting3_tang = message.ting3_tang;
     }
-    if (message.king3kong !== "") {
-      obj.king3kong = message.king3kong;
+    if (message.king_3kong !== "") {
+      obj.king_3kong = message.king_3kong;
     }
-    if (message.frim3Fram !== "") {
-      obj.frim3Fram = message.frim3Fram;
+    if (message.frim_3_fram !== "") {
+      obj.frim_3_fram = message.frim_3_fram;
     }
-    if (message.k8sField !== "") {
-      obj.k8sField = message.k8sField;
+    if (message.k8s_field !== "") {
+      obj.k8s_field = message.k8s_field;
     }
     return obj;
   },
@@ -1303,14 +1309,14 @@ export const Names: MessageFns<Names> = {
   },
   fromPartial(object: DeepPartial<Names>): Names {
     const message = createBaseNames();
-    message.fooBar = object.fooBar ?? "";
+    message.foo_bar = object.foo_bar ?? "";
     message.bazbam = object.bazbam ?? "";
     message.binbom3 = object.binbom3 ?? "";
     message.tin3tam = object.tin3tam ?? "";
-    message.ting3Tang = object.ting3Tang ?? "";
-    message.king3kong = object.king3kong ?? "";
-    message.frim3Fram = object.frim3Fram ?? "";
-    message.k8sField = object.k8sField ?? "";
+    message.ting3_tang = object.ting3_tang ?? "";
+    message.king_3kong = object.king_3kong ?? "";
+    message.frim_3_fram = object.frim_3_fram ?? "";
+    message.k8s_field = object.k8s_field ?? "";
     return message;
   },
 };
@@ -1345,7 +1351,7 @@ export const DeprecatedMessage: MessageFns<DeprecatedMessage> = {
 };
 
 function createBaseMessageWithDeprecatedFields(): MessageWithDeprecatedFields {
-  return { field: "", deprecatedField: "" };
+  return { field: "", deprecated_field: "" };
 }
 
 export const MessageWithDeprecatedFields: MessageFns<MessageWithDeprecatedFields> =
@@ -1353,8 +1359,8 @@ export const MessageWithDeprecatedFields: MessageFns<MessageWithDeprecatedFields
     fromJSON(object: any): MessageWithDeprecatedFields {
       return {
         field: isSet(object.field) ? globalThis.String(object.field) : "",
-        deprecatedField: isSet(object.deprecatedField)
-          ? globalThis.String(object.deprecatedField)
+        deprecated_field: isSet(object.deprecated_field)
+          ? globalThis.String(object.deprecated_field)
           : "",
       };
     },
@@ -1364,8 +1370,8 @@ export const MessageWithDeprecatedFields: MessageFns<MessageWithDeprecatedFields
       if (message.field !== "") {
         obj.field = message.field;
       }
-      if (message.deprecatedField !== "") {
-        obj.deprecatedField = message.deprecatedField;
+      if (message.deprecated_field !== "") {
+        obj.deprecated_field = message.deprecated_field;
       }
       return obj;
     },
@@ -1380,7 +1386,7 @@ export const MessageWithDeprecatedFields: MessageFns<MessageWithDeprecatedFields
     ): MessageWithDeprecatedFields {
       const message = createBaseMessageWithDeprecatedFields();
       message.field = object.field ?? "";
-      message.deprecatedField = object.deprecatedField ?? "";
+      message.deprecated_field = object.deprecated_field ?? "";
       return message;
     },
   };
@@ -1388,9 +1394,9 @@ export const MessageWithDeprecatedFields: MessageFns<MessageWithDeprecatedFields
 function createBaseOneofMessageWithDeprecatedFields(): OneofMessageWithDeprecatedFields {
   return {
     field: "",
-    deprecatedField: "",
+    deprecated_field: "",
     oneof: undefined,
-    deprecatedOneof: undefined,
+    deprecated_oneof: undefined,
   };
 }
 
@@ -1399,14 +1405,14 @@ export const OneofMessageWithDeprecatedFields: MessageFns<OneofMessageWithDeprec
     fromJSON(object: any): OneofMessageWithDeprecatedFields {
       return {
         field: isSet(object.field) ? globalThis.String(object.field) : "",
-        deprecatedField: isSet(object.deprecatedField)
-          ? globalThis.String(object.deprecatedField)
+        deprecated_field: isSet(object.deprecated_field)
+          ? globalThis.String(object.deprecated_field)
           : "",
         oneof: isSet(object.oneof)
           ? globalThis.String(object.oneof)
           : undefined,
-        deprecatedOneof: isSet(object.deprecatedOneof)
-          ? globalThis.String(object.deprecatedOneof)
+        deprecated_oneof: isSet(object.deprecated_oneof)
+          ? globalThis.String(object.deprecated_oneof)
           : undefined,
       };
     },
@@ -1416,14 +1422,14 @@ export const OneofMessageWithDeprecatedFields: MessageFns<OneofMessageWithDeprec
       if (message.field !== "") {
         obj.field = message.field;
       }
-      if (message.deprecatedField !== "") {
-        obj.deprecatedField = message.deprecatedField;
+      if (message.deprecated_field !== "") {
+        obj.deprecated_field = message.deprecated_field;
       }
       if (message.oneof !== undefined) {
         obj.oneof = message.oneof;
       }
-      if (message.deprecatedOneof !== undefined) {
-        obj.deprecatedOneof = message.deprecatedOneof;
+      if (message.deprecated_oneof !== undefined) {
+        obj.deprecated_oneof = message.deprecated_oneof;
       }
       return obj;
     },
@@ -1438,9 +1444,9 @@ export const OneofMessageWithDeprecatedFields: MessageFns<OneofMessageWithDeprec
     ): OneofMessageWithDeprecatedFields {
       const message = createBaseOneofMessageWithDeprecatedFields();
       message.field = object.field ?? "";
-      message.deprecatedField = object.deprecatedField ?? "";
+      message.deprecated_field = object.deprecated_field ?? "";
       message.oneof = object.oneof ?? undefined;
-      message.deprecatedOneof = object.deprecatedOneof ?? undefined;
+      message.deprecated_oneof = object.deprecated_oneof ?? undefined;
       return message;
     },
   };

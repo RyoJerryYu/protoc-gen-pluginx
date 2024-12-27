@@ -91,3 +91,4 @@ plugins:
       - outputEncodeMethods=false
       - outputJsonMethods=true
       - useExactTypes=false
+      - snakeToCamel=false
