@@ -6,6 +6,7 @@ import (
 	"github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-ts-grpc-gateway-cli/integration-everything-simple/server/proto/examplepb"
 	"github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-ts-grpc-gateway-cli/integration-everything-simple/server/proto/oneofenum"
 	"github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-ts-grpc-gateway-cli/integration-everything-simple/server/proto/pathenum"
+	"github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-ts-grpc-gateway-cli/integration-everything-simple/server/proto/sub"
 	"github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-ts-grpc-gateway-cli/integration-everything-simple/server/proto/sub2"
 	apistatus "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/grpc/codes"
@@ -26,9 +27,53 @@ func assertErrf(format string, args ...interface{}) error {
 	return status.Errorf(codes.InvalidArgument, format, args...)
 }
 
+// Create implements examplepb.ABitOfEverythingServiceServer.
+func (a *ABitOfEverythingService) Create(ctx context.Context, req *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error) {
+	if string(req.BytesValue) != "1,2,3" {
+		return nil, assertErrf("expected req.BytesValue is [1,2,3], got %v", req.BytesValue)
+	}
+	return req, nil
+}
+
 // CreateBody implements examplepb.ABitOfEverythingServiceServer.
 func (a *ABitOfEverythingService) CreateBody(ctx context.Context, req *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error) {
 	return req, nil
+}
+
+// CreateBook implements examplepb.ABitOfEverythingServiceServer.
+func (a *ABitOfEverythingService) CreateBook(ctx context.Context, req *examplepb.CreateBookRequest) (*examplepb.Book, error) {
+	if req.Parent != "publishers/123" {
+		return nil, assertErrf("expected req.Parent is publishers/123, got %q", req.Parent)
+	}
+	if req.BookId != "book_id" {
+		return nil, assertErrf("expected req.BookId is book_id, got %q", req.BookId)
+	}
+	req.Book.Id = req.BookId
+	return req.Book, nil
+}
+
+// UpdateBook implements examplepb.ABitOfEverythingServiceServer.
+func (a *ABitOfEverythingService) UpdateBook(ctx context.Context, req *examplepb.UpdateBookRequest) (*examplepb.Book, error) {
+	if req.AllowMissing {
+		return nil, assertErrf("expected req.AllowMissing is false, got %v", req.AllowMissing)
+	}
+	if req.Book.Name != "publishers/123/books/book_name" {
+		return nil, assertErrf("expected req.Book.Name is publishers/123/books/book_name, got %q", req.Book.Name)
+	}
+	if req.Book.Id != "book_id" {
+		return nil, assertErrf("expected req.Book.Id is book_id, got %q", req.Book.Id)
+	}
+
+	paths := req.UpdateMask.GetPaths()
+	if len(paths) != 1 || paths[0] != "id" {
+		return nil, assertErrf("expected req.UpdateMask.Paths is [\"id\"], got %v", paths)
+	}
+
+	req.Book.CreateTime = &timestamppb.Timestamp{
+		Seconds: 1609459200, // 2021-01-01T00:00:00Z
+	}
+
+	return req.Book, nil
 }
 
 // Lookup implements examplepb.ABitOfEverythingServiceServer.
@@ -95,6 +140,11 @@ func (a *ABitOfEverythingService) Delete(ctx context.Context, req *sub2.IdMessag
 
 // GetRepeatedQuery implements examplepb.ABitOfEverythingServiceServer.
 func (a *ABitOfEverythingService) GetRepeatedQuery(ctx context.Context, req *examplepb.ABitOfEverythingRepeated) (*examplepb.ABitOfEverythingRepeated, error) {
+	return req, nil
+}
+
+// Echo implements examplepb.ABitOfEverythingServiceServer.
+func (a *ABitOfEverythingService) Echo(ctx context.Context, req *sub.StringMessage) (*sub.StringMessage, error) {
 	return req, nil
 }
 

@@ -327,23 +327,6 @@ export function newABitOfEverythingService(
       return Empty.fromJSON(res);
     },
 
-    async updatePatch(
-      req: DeepPartial<UpdateV2Request>,
-      options?: CallOptions,
-    ): Promise<Empty> {
-      const headers = options?.metadata
-        ? metadataToHeaders(options.metadata)
-        : undefined;
-      const fullReq = UpdateV2Request.fromPartial(req);
-      const res = await transport.call({
-        path: `/v1/example/a_bit_of_everything/${must(fullReq.abe?.uuid)}`,
-        method: "PATCH",
-        headers: headers,
-        body: JSON.stringify(ABitOfEverything.toJSON(must(fullReq.abe))),
-      });
-      return Empty.fromJSON(res);
-    },
-
     async delete(
       req: DeepPartial<IdMessage>,
       options?: CallOptions,

@@ -2084,25 +2084,6 @@ export const ABitOfEverythingServiceDefinition = {
         },
       },
     },
-    updatePatch: {
-      name: "UpdatePatch",
-      requestType: UpdateV2Request,
-      requestStream: false,
-      responseType: Empty,
-      responseStream: false,
-      options: {
-        _unknownFields: {
-          578365826: [
-            new Uint8Array([
-              49, 58, 3, 97, 98, 101, 50, 42, 47, 118, 49, 47, 101, 120, 97,
-              109, 112, 108, 101, 47, 97, 95, 98, 105, 116, 95, 111, 102, 95,
-              101, 118, 101, 114, 121, 116, 104, 105, 110, 103, 47, 123, 97, 98,
-              101, 46, 117, 117, 105, 100, 125,
-            ]),
-          ],
-        },
-      },
-    },
     delete: {
       name: "Delete",
       requestType: IdMessage,
@@ -2612,10 +2593,6 @@ export interface ABitOfEverythingServiceImplementation<CallContextExt = {}> {
     request: UpdateV2Request,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<Empty>>;
-  updatePatch(
-    request: UpdateV2Request,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<Empty>>;
   delete(
     request: IdMessage,
     context: CallContext & CallContextExt,
@@ -2747,10 +2724,6 @@ export interface ABitOfEverythingServiceClient<CallOptionsExt = {}> {
     options?: CallOptions & CallOptionsExt,
   ): Promise<Empty>;
   updateV2(
-    request: DeepPartial<UpdateV2Request>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<Empty>;
-  updatePatch(
     request: DeepPartial<UpdateV2Request>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<Empty>;

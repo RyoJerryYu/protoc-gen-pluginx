@@ -6,6 +6,8 @@ This plugin focuses on generating client code for gRPC Gateway, do not care abou
 
 This plugin do not fully responsible for the protobuf message marshal/unmarshal, instead, it depends on the `ts_proto` plugin to generate the marshal/unmarshal code.
 
+This plugin designed to implement the Service Client stubs for gRPC gateway, so it do not support multiple HTTP methods for one RPC (That means it do not care about `google.api.http.additional_bindings` option).
+
 ### Work with ts_proto
 
 This plugin depends on some flags of ts_proto:
@@ -21,16 +23,19 @@ ts_proto do not check oneof at client code, so the gateway cli do not check the 
 
 ### TODO: 
 
+- [ ] Create: body did not send in request
+- [ ] CreateBook: do not support query params for post method
+- [ ] CheckPostQueryParams: query params did not pass to server in post method
 - [ ] body field do not work well with repeated field
-- [ ] UpdatePatch: field mask did not remove path params
+- [ ] PostOneofEnum: post body only contain one enum field do not work well: need stringify
+- [ ] NoBindings: jsonify do not work well with well-known-types
+- [ ] UpdateBook: field mask did not remove path params
+- [ ] ErrorWithDetails: throw error with details
+- [ ] CheckGetQueryParams, CheckNestedEnumGetQueryParams: repeated nested query params did not pass to server
+- [ ] 
 - [ ] GetRepeatedQuery: path param do not work well with repeated
 - [ ] GetRepeatedQuery: path param do not work well with bytes, required base64
-- [ ] NoBindings: jsonify do not work well with well-known-types
-- [ ] ErrorWithDetails: throw error with details
-- [ ] CheckGetQueryParams, CheckNestedEnumGetQueryParams: nested query params did not pass to server
-- [ ] CheckPostQueryParams: query params did not pass to server in post method
 - [ ] Exists,CustomOptionsRequest,TraceRequest: do not work well with custom method
-- [ ] PostOneofEnum: post body only contain one enum field do not work well: need stringify
 - [ ] camelCaseServiceName: camelCase service names are valid
 
 ### Features that do not support
