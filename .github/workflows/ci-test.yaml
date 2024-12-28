@@ -39,4 +39,38 @@ jobs:
 
 
       - name: Test
-        run: make test
+        run: make test.unit
+  
+  integration_test:
+    name: Integration Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.22.7
+          cache-dependency-path: |
+            go.sum
+            tests/go.sum
+      
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.14.4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: |
+            tests/pnpm-lock.yaml
+            tests/protoc-gen-ts-grpc-gateway-cli/integration-protoc-gen-grpc-gateway-ts/pnpm-lock.yaml
+            tests/protoc-gen-ts-grpc-gateway-cli/integration-everything-simple/pnpm-lock.yaml
+
+      - name: Integration Test
+        run: make test.integration
+ 
+ 
