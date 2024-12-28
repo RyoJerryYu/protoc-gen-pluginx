@@ -4,6 +4,8 @@ This is a CLI tool for generating TypeScript gRPC Gateway client code from gRPC 
 
 This plugin focuses on generating client code for gRPC Gateway, do not care about the openapi specifiction, or the field_behavior option.
 
+This plugin do not fully responsible for the protobuf message marshal/unmarshal, instead, it depends on the `ts_proto` plugin to generate the marshal/unmarshal code.
+
 ### Work with ts_proto
 
 This plugin depends on some flags of ts_proto:
@@ -27,7 +29,9 @@ ts_proto do not check oneof at client code, so the gateway cli do not check the 
 - [ ] ErrorWithDetails: throw error with details
 - [ ] CheckGetQueryParams, CheckNestedEnumGetQueryParams: nested query params did not pass to server
 - [ ] CheckPostQueryParams: query params did not pass to server in post method
+- [ ] Exists,CustomOptionsRequest,TraceRequest: do not work well with custom method
 - [ ] PostOneofEnum: post body only contain one enum field do not work well: need stringify
+- [ ] camelCaseServiceName: camelCase service names are valid
 
 ### Features that do not support
 

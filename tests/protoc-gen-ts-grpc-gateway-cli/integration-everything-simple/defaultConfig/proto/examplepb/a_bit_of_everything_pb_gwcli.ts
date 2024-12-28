@@ -10,10 +10,16 @@ import {
   ABitOfEverything_Nested,
   AnotherServiceWithNoBindingsClient,
   Body,
+  Book,
   CheckStatusResponse,
+  CreateBookRequest,
   DeepPartial,
   MessageWithBody,
   RequiredMessageTypeRequest,
+  SnakeEnumRequest,
+  SnakeEnumResponse,
+  SnakeEnumServiceClient,
+  UpdateBookRequest,
   UpdateV2Request,
 } from "./a_bit_of_everything";
 import { OneofEnumMessage, exampleEnumToJSON } from "../oneofenum/oneof_enum";
@@ -21,6 +27,7 @@ import {
   MessageWithNestedPathEnum,
   MessageWithPathEnum,
 } from "../pathenum/path_enum";
+import { StringMessage } from "../sub/message";
 import { IdMessage } from "../sub2/message";
 
 type Primitive = string | boolean | number;
@@ -166,6 +173,25 @@ export function newABitOfEverythingService(
   transport: Transport,
 ): ABitOfEverythingServiceClient {
   return {
+    // Create a new ABitOfEverything
+    //
+    // This API creates a new ABitOfEverything
+    async create(
+      req: DeepPartial<ABitOfEverything>,
+      options?: CallOptions,
+    ): Promise<ABitOfEverything> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
+      const fullReq = ABitOfEverything.fromPartial(req);
+      const res = await transport.call({
+        path: `/v1/example/a_bit_of_everything/${must(fullReq.floatValue)}/${must(fullReq.doubleValue)}/${must(fullReq.int64Value)}/separator/${must(fullReq.uint64Value)}/${must(fullReq.int32Value)}/${must(fullReq.fixed64Value)}/${must(fullReq.fixed32Value)}/${must(fullReq.boolValue)}/${must(fullReq.stringValue)}/${must(fullReq.uint32Value)}/${must(fullReq.sfixed32Value)}/${must(fullReq.sfixed64Value)}/${must(fullReq.sint32Value)}/${must(fullReq.sint64Value)}/${must(fullReq.nonConventionalNameValue)}/${must(fullReq.enumValue)}/${must(fullReq.pathEnumValue)}/${must(fullReq.nestedPathEnumValue)}/${must(fullReq.enumValueAnnotation)}`,
+        method: "POST",
+        headers: headers,
+      });
+      return ABitOfEverything.fromJSON(res);
+    },
+
     async createBody(
       req: DeepPartial<ABitOfEverything>,
       options?: CallOptions,
@@ -181,6 +207,41 @@ export function newABitOfEverythingService(
         body: JSON.stringify(ABitOfEverything.toJSON(fullReq)),
       });
       return ABitOfEverything.fromJSON(res);
+    },
+
+    // Create a book.
+    async createBook(
+      req: DeepPartial<CreateBookRequest>,
+      options?: CallOptions,
+    ): Promise<Book> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
+      const fullReq = CreateBookRequest.fromPartial(req);
+      const res = await transport.call({
+        path: `/v1/${must(fullReq.parent)}/books`,
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(Book.toJSON(must(fullReq.book))),
+      });
+      return Book.fromJSON(res);
+    },
+
+    async updateBook(
+      req: DeepPartial<UpdateBookRequest>,
+      options?: CallOptions,
+    ): Promise<Book> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
+      const fullReq = UpdateBookRequest.fromPartial(req);
+      const res = await transport.call({
+        path: `/v1/${must(fullReq.book?.name)}`,
+        method: "PATCH",
+        headers: headers,
+        body: JSON.stringify(Book.toJSON(must(fullReq.book))),
+      });
+      return Book.fromJSON(res);
     },
 
     async lookup(
@@ -349,6 +410,30 @@ export function newABitOfEverythingService(
         ]),
       });
       return ABitOfEverythingRepeated.fromJSON(res);
+    },
+
+    // Echo allows posting a StringMessage value.
+    //
+    // It also exposes multiple bindings.
+    //
+    // This makes it useful when validating that the OpenAPI v2 API
+    // description exposes documentation correctly on all paths
+    // defined as additional_bindings in the proto.
+    async echo(
+      req: DeepPartial<StringMessage>,
+      options?: CallOptions,
+    ): Promise<StringMessage> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
+      const fullReq = StringMessage.fromPartial(req);
+      const res = await transport.call({
+        path: `/v1/example/a_bit_of_everything/echo/${must(fullReq.value)}`,
+        method: "GET",
+        headers: headers,
+        queryParams: renderURLSearchParams(req, ["value"]),
+      });
+      return StringMessage.fromJSON(res);
     },
 
     async deepPathEcho(
@@ -627,6 +712,12 @@ export function newABitOfEverythingService(
   };
 }
 
+// // camelCase and lowercase service names are valid but not recommended (use TitleCase instead)
+// service camelCaseServiceName {
+//   rpc Empty(google.protobuf.Empty) returns (google.protobuf.Empty) {
+//     option (google.api.http) = {get: "/v2/example/empty"};
+//   }
+// }
 export function newAnotherServiceWithNoBindings(
   transport: Transport,
 ): AnotherServiceWithNoBindingsClient {
@@ -646,6 +737,29 @@ export function newAnotherServiceWithNoBindings(
         body: JSON.stringify(Empty.toJSON(fullReq)),
       });
       return Empty.fromJSON(res);
+    },
+  };
+}
+
+export function newSnakeEnumService(
+  transport: Transport,
+): SnakeEnumServiceClient {
+  return {
+    async snakeEnum(
+      req: DeepPartial<SnakeEnumRequest>,
+      options?: CallOptions,
+    ): Promise<SnakeEnumResponse> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
+      const fullReq = SnakeEnumRequest.fromPartial(req);
+      const res = await transport.call({
+        path: `/v1/example/snake/${must(fullReq.who)}/${must(fullReq.what)}/${must(fullReq.where)}`,
+        method: "GET",
+        headers: headers,
+        queryParams: renderURLSearchParams(req, ["who", "what", "where"]),
+      });
+      return SnakeEnumResponse.fromJSON(res);
     },
   };
 }

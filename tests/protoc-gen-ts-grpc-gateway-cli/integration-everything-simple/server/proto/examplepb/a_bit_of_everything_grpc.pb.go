@@ -10,6 +10,7 @@ import (
 	context "context"
 	oneofenum "github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-ts-grpc-gateway-cli/integration-everything-simple/server/proto/oneofenum"
 	pathenum "github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-ts-grpc-gateway-cli/integration-everything-simple/server/proto/pathenum"
+	sub "github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-ts-grpc-gateway-cli/integration-everything-simple/server/proto/sub"
 	sub2 "github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-ts-grpc-gateway-cli/integration-everything-simple/server/proto/sub2"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
@@ -25,7 +26,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
+	ABitOfEverythingService_Create_FullMethodName                        = "/proto.examplepb.ABitOfEverythingService/Create"
 	ABitOfEverythingService_CreateBody_FullMethodName                    = "/proto.examplepb.ABitOfEverythingService/CreateBody"
+	ABitOfEverythingService_CreateBook_FullMethodName                    = "/proto.examplepb.ABitOfEverythingService/CreateBook"
+	ABitOfEverythingService_UpdateBook_FullMethodName                    = "/proto.examplepb.ABitOfEverythingService/UpdateBook"
 	ABitOfEverythingService_Lookup_FullMethodName                        = "/proto.examplepb.ABitOfEverythingService/Lookup"
 	ABitOfEverythingService_Custom_FullMethodName                        = "/proto.examplepb.ABitOfEverythingService/Custom"
 	ABitOfEverythingService_DoubleColon_FullMethodName                   = "/proto.examplepb.ABitOfEverythingService/DoubleColon"
@@ -35,6 +39,7 @@ const (
 	ABitOfEverythingService_Delete_FullMethodName                        = "/proto.examplepb.ABitOfEverythingService/Delete"
 	ABitOfEverythingService_GetQuery_FullMethodName                      = "/proto.examplepb.ABitOfEverythingService/GetQuery"
 	ABitOfEverythingService_GetRepeatedQuery_FullMethodName              = "/proto.examplepb.ABitOfEverythingService/GetRepeatedQuery"
+	ABitOfEverythingService_Echo_FullMethodName                          = "/proto.examplepb.ABitOfEverythingService/Echo"
 	ABitOfEverythingService_DeepPathEcho_FullMethodName                  = "/proto.examplepb.ABitOfEverythingService/DeepPathEcho"
 	ABitOfEverythingService_NoBindings_FullMethodName                    = "/proto.examplepb.ABitOfEverythingService/NoBindings"
 	ABitOfEverythingService_Timeout_FullMethodName                       = "/proto.examplepb.ABitOfEverythingService/Timeout"
@@ -60,7 +65,14 @@ const (
 // ABitOfEverything service is used to validate that APIs with complicated
 // proto messages and URL templates are still processed correctly.
 type ABitOfEverythingServiceClient interface {
+	// Create a new ABitOfEverything
+	//
+	// This API creates a new ABitOfEverything
+	Create(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error)
 	CreateBody(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error)
+	// Create a book.
+	CreateBook(ctx context.Context, in *CreateBookRequest, opts ...grpc.CallOption) (*Book, error)
+	UpdateBook(ctx context.Context, in *UpdateBookRequest, opts ...grpc.CallOption) (*Book, error)
 	Lookup(ctx context.Context, in *sub2.IdMessage, opts ...grpc.CallOption) (*ABitOfEverything, error)
 	Custom(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error)
 	DoubleColon(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error)
@@ -70,6 +82,14 @@ type ABitOfEverythingServiceClient interface {
 	Delete(ctx context.Context, in *sub2.IdMessage, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	GetQuery(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	GetRepeatedQuery(ctx context.Context, in *ABitOfEverythingRepeated, opts ...grpc.CallOption) (*ABitOfEverythingRepeated, error)
+	// Echo allows posting a StringMessage value.
+	//
+	// It also exposes multiple bindings.
+	//
+	// This makes it useful when validating that the OpenAPI v2 API
+	// description exposes documentation correctly on all paths
+	// defined as additional_bindings in the proto.
+	Echo(ctx context.Context, in *sub.StringMessage, opts ...grpc.CallOption) (*sub.StringMessage, error)
 	DeepPathEcho(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error)
 	NoBindings(ctx context.Context, in *durationpb.Duration, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Timeout(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -96,10 +116,40 @@ func NewABitOfEverythingServiceClient(cc grpc.ClientConnInterface) ABitOfEveryth
 	return &aBitOfEverythingServiceClient{cc}
 }
 
+func (c *aBitOfEverythingServiceClient) Create(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ABitOfEverything)
+	err := c.cc.Invoke(ctx, ABitOfEverythingService_Create_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *aBitOfEverythingServiceClient) CreateBody(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ABitOfEverything)
 	err := c.cc.Invoke(ctx, ABitOfEverythingService_CreateBody_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *aBitOfEverythingServiceClient) CreateBook(ctx context.Context, in *CreateBookRequest, opts ...grpc.CallOption) (*Book, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Book)
+	err := c.cc.Invoke(ctx, ABitOfEverythingService_CreateBook_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *aBitOfEverythingServiceClient) UpdateBook(ctx context.Context, in *UpdateBookRequest, opts ...grpc.CallOption) (*Book, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Book)
+	err := c.cc.Invoke(ctx, ABitOfEverythingService_UpdateBook_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -190,6 +240,16 @@ func (c *aBitOfEverythingServiceClient) GetRepeatedQuery(ctx context.Context, in
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ABitOfEverythingRepeated)
 	err := c.cc.Invoke(ctx, ABitOfEverythingService_GetRepeatedQuery_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *aBitOfEverythingServiceClient) Echo(ctx context.Context, in *sub.StringMessage, opts ...grpc.CallOption) (*sub.StringMessage, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(sub.StringMessage)
+	err := c.cc.Invoke(ctx, ABitOfEverythingService_Echo_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -363,7 +423,14 @@ func (c *aBitOfEverythingServiceClient) PostRequiredMessageType(ctx context.Cont
 // ABitOfEverything service is used to validate that APIs with complicated
 // proto messages and URL templates are still processed correctly.
 type ABitOfEverythingServiceServer interface {
+	// Create a new ABitOfEverything
+	//
+	// This API creates a new ABitOfEverything
+	Create(context.Context, *ABitOfEverything) (*ABitOfEverything, error)
 	CreateBody(context.Context, *ABitOfEverything) (*ABitOfEverything, error)
+	// Create a book.
+	CreateBook(context.Context, *CreateBookRequest) (*Book, error)
+	UpdateBook(context.Context, *UpdateBookRequest) (*Book, error)
 	Lookup(context.Context, *sub2.IdMessage) (*ABitOfEverything, error)
 	Custom(context.Context, *ABitOfEverything) (*ABitOfEverything, error)
 	DoubleColon(context.Context, *ABitOfEverything) (*ABitOfEverything, error)
@@ -373,6 +440,14 @@ type ABitOfEverythingServiceServer interface {
 	Delete(context.Context, *sub2.IdMessage) (*emptypb.Empty, error)
 	GetQuery(context.Context, *ABitOfEverything) (*emptypb.Empty, error)
 	GetRepeatedQuery(context.Context, *ABitOfEverythingRepeated) (*ABitOfEverythingRepeated, error)
+	// Echo allows posting a StringMessage value.
+	//
+	// It also exposes multiple bindings.
+	//
+	// This makes it useful when validating that the OpenAPI v2 API
+	// description exposes documentation correctly on all paths
+	// defined as additional_bindings in the proto.
+	Echo(context.Context, *sub.StringMessage) (*sub.StringMessage, error)
 	DeepPathEcho(context.Context, *ABitOfEverything) (*ABitOfEverything, error)
 	NoBindings(context.Context, *durationpb.Duration) (*emptypb.Empty, error)
 	Timeout(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
@@ -399,8 +474,17 @@ type ABitOfEverythingServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedABitOfEverythingServiceServer struct{}
 
+func (UnimplementedABitOfEverythingServiceServer) Create(context.Context, *ABitOfEverything) (*ABitOfEverything, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
+}
 func (UnimplementedABitOfEverythingServiceServer) CreateBody(context.Context, *ABitOfEverything) (*ABitOfEverything, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateBody not implemented")
+}
+func (UnimplementedABitOfEverythingServiceServer) CreateBook(context.Context, *CreateBookRequest) (*Book, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateBook not implemented")
+}
+func (UnimplementedABitOfEverythingServiceServer) UpdateBook(context.Context, *UpdateBookRequest) (*Book, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateBook not implemented")
 }
 func (UnimplementedABitOfEverythingServiceServer) Lookup(context.Context, *sub2.IdMessage) (*ABitOfEverything, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Lookup not implemented")
@@ -428,6 +512,9 @@ func (UnimplementedABitOfEverythingServiceServer) GetQuery(context.Context, *ABi
 }
 func (UnimplementedABitOfEverythingServiceServer) GetRepeatedQuery(context.Context, *ABitOfEverythingRepeated) (*ABitOfEverythingRepeated, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetRepeatedQuery not implemented")
+}
+func (UnimplementedABitOfEverythingServiceServer) Echo(context.Context, *sub.StringMessage) (*sub.StringMessage, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Echo not implemented")
 }
 func (UnimplementedABitOfEverythingServiceServer) DeepPathEcho(context.Context, *ABitOfEverything) (*ABitOfEverything, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeepPathEcho not implemented")
@@ -499,6 +586,24 @@ func RegisterABitOfEverythingServiceServer(s grpc.ServiceRegistrar, srv ABitOfEv
 	s.RegisterService(&ABitOfEverythingService_ServiceDesc, srv)
 }
 
+func _ABitOfEverythingService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ABitOfEverything)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ABitOfEverythingServiceServer).Create(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ABitOfEverythingService_Create_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ABitOfEverythingServiceServer).Create(ctx, req.(*ABitOfEverything))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ABitOfEverythingService_CreateBody_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ABitOfEverything)
 	if err := dec(in); err != nil {
@@ -513,6 +618,42 @@ func _ABitOfEverythingService_CreateBody_Handler(srv interface{}, ctx context.Co
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ABitOfEverythingServiceServer).CreateBody(ctx, req.(*ABitOfEverything))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ABitOfEverythingService_CreateBook_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateBookRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ABitOfEverythingServiceServer).CreateBook(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ABitOfEverythingService_CreateBook_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ABitOfEverythingServiceServer).CreateBook(ctx, req.(*CreateBookRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ABitOfEverythingService_UpdateBook_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateBookRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ABitOfEverythingServiceServer).UpdateBook(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ABitOfEverythingService_UpdateBook_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ABitOfEverythingServiceServer).UpdateBook(ctx, req.(*UpdateBookRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -675,6 +816,24 @@ func _ABitOfEverythingService_GetRepeatedQuery_Handler(srv interface{}, ctx cont
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ABitOfEverythingServiceServer).GetRepeatedQuery(ctx, req.(*ABitOfEverythingRepeated))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ABitOfEverythingService_Echo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(sub.StringMessage)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ABitOfEverythingServiceServer).Echo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ABitOfEverythingService_Echo_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ABitOfEverythingServiceServer).Echo(ctx, req.(*sub.StringMessage))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -975,8 +1134,20 @@ var ABitOfEverythingService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ABitOfEverythingServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "Create",
+			Handler:    _ABitOfEverythingService_Create_Handler,
+		},
+		{
 			MethodName: "CreateBody",
 			Handler:    _ABitOfEverythingService_CreateBody_Handler,
+		},
+		{
+			MethodName: "CreateBook",
+			Handler:    _ABitOfEverythingService_CreateBook_Handler,
+		},
+		{
+			MethodName: "UpdateBook",
+			Handler:    _ABitOfEverythingService_UpdateBook_Handler,
 		},
 		{
 			MethodName: "Lookup",
@@ -1013,6 +1184,10 @@ var ABitOfEverythingService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetRepeatedQuery",
 			Handler:    _ABitOfEverythingService_GetRepeatedQuery_Handler,
+		},
+		{
+			MethodName: "Echo",
+			Handler:    _ABitOfEverythingService_Echo_Handler,
 		},
 		{
 			MethodName: "DeepPathEcho",
@@ -1090,6 +1265,14 @@ const (
 // AnotherServiceWithNoBindingsClient is the client API for AnotherServiceWithNoBindings service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+//
+// // camelCase and lowercase service names are valid but not recommended (use TitleCase instead)
+//
+//	service camelCaseServiceName {
+//	  rpc Empty(google.protobuf.Empty) returns (google.protobuf.Empty) {
+//	    option (google.api.http) = {get: "/v2/example/empty"};
+//	  }
+//	}
 type AnotherServiceWithNoBindingsClient interface {
 	NoBindings(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
@@ -1115,6 +1298,14 @@ func (c *anotherServiceWithNoBindingsClient) NoBindings(ctx context.Context, in 
 // AnotherServiceWithNoBindingsServer is the server API for AnotherServiceWithNoBindings service.
 // All implementations must embed UnimplementedAnotherServiceWithNoBindingsServer
 // for forward compatibility.
+//
+// // camelCase and lowercase service names are valid but not recommended (use TitleCase instead)
+//
+//	service camelCaseServiceName {
+//	  rpc Empty(google.protobuf.Empty) returns (google.protobuf.Empty) {
+//	    option (google.api.http) = {get: "/v2/example/empty"};
+//	  }
+//	}
 type AnotherServiceWithNoBindingsServer interface {
 	NoBindings(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
 	mustEmbedUnimplementedAnotherServiceWithNoBindingsServer()
@@ -1180,6 +1371,108 @@ var AnotherServiceWithNoBindings_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "NoBindings",
 			Handler:    _AnotherServiceWithNoBindings_NoBindings_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/examplepb/a_bit_of_everything.proto",
+}
+
+const (
+	SnakeEnumService_SnakeEnum_FullMethodName = "/proto.examplepb.SnakeEnumService/SnakeEnum"
+)
+
+// SnakeEnumServiceClient is the client API for SnakeEnumService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type SnakeEnumServiceClient interface {
+	SnakeEnum(ctx context.Context, in *SnakeEnumRequest, opts ...grpc.CallOption) (*SnakeEnumResponse, error)
+}
+
+type snakeEnumServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewSnakeEnumServiceClient(cc grpc.ClientConnInterface) SnakeEnumServiceClient {
+	return &snakeEnumServiceClient{cc}
+}
+
+func (c *snakeEnumServiceClient) SnakeEnum(ctx context.Context, in *SnakeEnumRequest, opts ...grpc.CallOption) (*SnakeEnumResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SnakeEnumResponse)
+	err := c.cc.Invoke(ctx, SnakeEnumService_SnakeEnum_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// SnakeEnumServiceServer is the server API for SnakeEnumService service.
+// All implementations must embed UnimplementedSnakeEnumServiceServer
+// for forward compatibility.
+type SnakeEnumServiceServer interface {
+	SnakeEnum(context.Context, *SnakeEnumRequest) (*SnakeEnumResponse, error)
+	mustEmbedUnimplementedSnakeEnumServiceServer()
+}
+
+// UnimplementedSnakeEnumServiceServer must be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedSnakeEnumServiceServer struct{}
+
+func (UnimplementedSnakeEnumServiceServer) SnakeEnum(context.Context, *SnakeEnumRequest) (*SnakeEnumResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SnakeEnum not implemented")
+}
+func (UnimplementedSnakeEnumServiceServer) mustEmbedUnimplementedSnakeEnumServiceServer() {}
+func (UnimplementedSnakeEnumServiceServer) testEmbeddedByValue()                          {}
+
+// UnsafeSnakeEnumServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to SnakeEnumServiceServer will
+// result in compilation errors.
+type UnsafeSnakeEnumServiceServer interface {
+	mustEmbedUnimplementedSnakeEnumServiceServer()
+}
+
+func RegisterSnakeEnumServiceServer(s grpc.ServiceRegistrar, srv SnakeEnumServiceServer) {
+	// If the following call pancis, it indicates UnimplementedSnakeEnumServiceServer was
+	// embedded by pointer and is nil.  This will cause panics if an
+	// unimplemented method is ever invoked, so we test this at initialization
+	// time to prevent it from happening at runtime later due to I/O.
+	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
+		t.testEmbeddedByValue()
+	}
+	s.RegisterService(&SnakeEnumService_ServiceDesc, srv)
+}
+
+func _SnakeEnumService_SnakeEnum_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SnakeEnumRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SnakeEnumServiceServer).SnakeEnum(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SnakeEnumService_SnakeEnum_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SnakeEnumServiceServer).SnakeEnum(ctx, req.(*SnakeEnumRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// SnakeEnumService_ServiceDesc is the grpc.ServiceDesc for SnakeEnumService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var SnakeEnumService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "proto.examplepb.SnakeEnumService",
+	HandlerType: (*SnakeEnumServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "SnakeEnum",
+			Handler:    _SnakeEnumService_SnakeEnum_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

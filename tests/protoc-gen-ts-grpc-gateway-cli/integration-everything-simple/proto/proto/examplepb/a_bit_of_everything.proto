@@ -12,6 +12,7 @@ import "google/protobuf/wrappers.proto";
 import "google/rpc/status.proto";
 import "proto/oneofenum/oneof_enum.proto";
 import "proto/pathenum/path_enum.proto";
+import "proto/sub/message.proto";
 import "proto/sub2/message.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
@@ -189,6 +190,17 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   }
 };
 
+message ErrorResponse {
+  string correlationId = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    pattern: "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+    title: "x-correlation-id"
+    description: "Unique event identifier for server requests"
+    format: "uuid"
+    example: "\"2438ac3c-37eb-4902-adef-ed16b4431030\""
+  }];
+  ErrorObject error = 2;
+}
+
 message ErrorObject {
   int32 code = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
     pattern: "^[0-9]$"
@@ -288,6 +300,8 @@ message ABitOfEverything {
   map<string, NumericEnum> map_value = 22;
   map<string, string> mapped_string_value = 23;
   map<string, Nested> mapped_nested_value = 24;
+
+  string nonConventionalNameValue = 26;
 
   google.protobuf.Timestamp timestamp_value = 27;
 
@@ -489,10 +503,29 @@ service ABitOfEverythingService {
     }
   };
 
+  // Create a new ABitOfEverything
+  //
+  // This API creates a new ABitOfEverything
+  rpc Create(ABitOfEverything) returns (ABitOfEverything) {
+    option (google.api.http) = {post: "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value=strprefix/*}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{nonConventionalNameValue}/{enum_value}/{path_enum_value}/{nested_path_enum_value}/{enum_value_annotation}"};
+  }
   rpc CreateBody(ABitOfEverything) returns (ABitOfEverything) {
     option (google.api.http) = {
       post: "/v1/example/a_bit_of_everything"
       body: "*"
+    };
+  }
+  // Create a book.
+  rpc CreateBook(CreateBookRequest) returns (Book) {
+    option (google.api.http) = {
+      post: "/v1/{parent=publishers/*}/books"
+      body: "book"
+    };
+  }
+  rpc UpdateBook(UpdateBookRequest) returns (Book) {
+    option (google.api.http) = {
+      patch: "/v1/{book.name=publishers/*/books/*}"
+      body: "book"
     };
   }
   rpc Lookup(proto.sub2.IdMessage) returns (ABitOfEverything) {
@@ -570,6 +603,61 @@ service ABitOfEverythingService {
   rpc GetRepeatedQuery(ABitOfEverythingRepeated) returns (ABitOfEverythingRepeated) {
     option (google.api.http) = {get: "/v1/example/a_bit_of_everything_repeated/{path_repeated_float_value}/{path_repeated_double_value}/{path_repeated_int64_value}/{path_repeated_uint64_value}/{path_repeated_int32_value}/{path_repeated_fixed64_value}/{path_repeated_fixed32_value}/{path_repeated_bool_value}/{path_repeated_string_value}/{path_repeated_bytes_value}/{path_repeated_uint32_value}/{path_repeated_enum_value}/{path_repeated_sfixed32_value}/{path_repeated_sfixed64_value}/{path_repeated_sint32_value}/{path_repeated_sint64_value}"};
   }
+  // Echo allows posting a StringMessage value.
+  //
+  // It also exposes multiple bindings.
+  //
+  // This makes it useful when validating that the OpenAPI v2 API
+  // description exposes documentation correctly on all paths
+  // defined as additional_bindings in the proto.
+  rpc Echo(proto.sub.StringMessage) returns (proto.sub.StringMessage) {
+    option (google.api.http) = {
+      get: "/v1/example/a_bit_of_everything/echo/{value}"
+      additional_bindings: {
+        post: "/v2/example/echo"
+        body: "value"
+      }
+      additional_bindings: {get: "/v2/example/echo"}
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      description: "Description Echo"
+      summary: "Summary: Echo rpc"
+      tags: "echo rpc"
+      external_docs: {
+        url: "https://github.com/grpc-ecosystem/grpc-gateway"
+        description: "Find out more Echo"
+      }
+      responses: {
+        key: "200"
+        value: {
+          examples: {
+            key: "application/json"
+            value: "{\"value\": \"the input value\"}"
+          }
+        }
+      }
+      responses: {
+        key: "503"
+        value: {
+          description: "Returned when the resource is temporarily unavailable."
+          extensions: {
+            key: "x-number"
+            value: {number_value: 100}
+          }
+        }
+      }
+      responses: {
+        // Overwrites global definition.
+        key: "404"
+        value: {
+          description: "Returned when the resource does not exist."
+          schema: {
+            json_schema: {type: INTEGER}
+          }
+        }
+      }
+    };
+  }
   rpc DeepPathEcho(ABitOfEverything) returns (ABitOfEverything) {
     option (google.api.http) = {
       post: "/v1/example/deep_path/{single_nested.name}"
@@ -629,6 +717,33 @@ service ABitOfEverythingService {
     option (google.api.http) = {get: "/v1/example/checkStatus"};
   }
 
+  // rpc Exists(ABitOfEverything) returns (google.protobuf.Empty) {
+  //   option (google.api.http) = {
+  //     custom: {
+  //       kind: "HEAD"
+  //       path: "/v1/example/a_bit_of_everything/{uuid}"
+  //     }
+  //   };
+  // }
+
+  // rpc CustomOptionsRequest(ABitOfEverything) returns (google.protobuf.Empty) {
+  //   option (google.api.http) = {
+  //     custom: {
+  //       kind: "OPTIONS"
+  //       path: "/v1/example/a_bit_of_everything/{uuid}"
+  //     }
+  //   };
+  // }
+
+  // rpc TraceRequest(ABitOfEverything) returns (ABitOfEverything) {
+  //   option (google.api.http) = {
+  //     custom: {
+  //       kind: "TRACE"
+  //       path: "/v1/example/a_bit_of_everything/{uuid}"
+  //     }
+  //   };
+  // }
+
   rpc PostOneofEnum(proto.oneofenum.OneofEnumMessage) returns (google.protobuf.Empty) {
     option (google.api.http) = {
       post: "/v1/example/oneofenum"
@@ -644,9 +759,49 @@ service ABitOfEverythingService {
   }
 }
 
+// // camelCase and lowercase service names are valid but not recommended (use TitleCase instead)
+// service camelCaseServiceName {
+//   rpc Empty(google.protobuf.Empty) returns (google.protobuf.Empty) {
+//     option (google.api.http) = {get: "/v2/example/empty"};
+//   }
+// }
 service AnotherServiceWithNoBindings {
   rpc NoBindings(google.protobuf.Empty) returns (google.protobuf.Empty) {}
 }
+
+service SnakeEnumService {
+  rpc SnakeEnum(SnakeEnumRequest) returns (SnakeEnumResponse) {
+    option (google.api.http) = {get: "/v1/example/snake/{who}/{what}/{where}"};
+  }
+}
+
+// Ignoring lint warnings as this enum type exist to validate proper functionality
+// for projects that don't follow these lint rules.
+// buf:lint:ignore ENUM_PASCAL_CASE
+enum snake_case_enum {
+  // buf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE
+  value_c = 0;
+  // buf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE
+  value_d = 1;
+}
+
+// Ignoring lint warnings as this enum type exist to validate proper functionality
+// for projects that don't follow these lint rules.
+// buf:lint:ignore ENUM_PASCAL_CASE
+enum snake_case_0_enum {
+  // buf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE
+  value_e = 0;
+  // buf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE
+  value_f = 1;
+}
+
+message SnakeEnumRequest {
+  snake_case_enum what = 1;
+  snake_case_0_enum who = 2;
+  pathenum.snake_case_for_import where = 3;
+}
+
+message SnakeEnumResponse {}
 
 // Required message type -> OpenAPI
 // https://github.com/grpc-ecosystem/grpc-gateway/issues/2837

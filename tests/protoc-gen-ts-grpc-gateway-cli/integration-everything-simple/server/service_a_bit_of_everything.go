@@ -289,6 +289,7 @@ func (a *ABitOfEverythingService) Timeout(ctx context.Context, req *emptypb.Empt
 	        ok: ABitOfEverything_Nested_DeepEnum.FALSE,
 	      },
 	    },
+	    nonConventionalNameValue: "string",
 	    timestampValue: new Date("2021-01-01T00:00:00Z"),
 	    repeatedEnumValue: [NumericEnum.ONE],
 	    repeatedEnumAnnotation: [NumericEnum.ONE],
@@ -381,6 +382,7 @@ func aBitOfEverythingNonZero() *examplepb.ABitOfEverything {
 				Ok:     examplepb.ABitOfEverything_Nested_FALSE,
 			},
 		},
+		NonConventionalNameValue: "string",
 		TimestampValue: &timestamppb.Timestamp{
 			Seconds: 1609459200, // 2021-01-01T00:00:00Z
 		},
