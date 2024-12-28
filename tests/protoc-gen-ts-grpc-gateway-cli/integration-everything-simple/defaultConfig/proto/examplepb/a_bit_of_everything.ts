@@ -22,7 +22,11 @@ import {
   PathEnum,
   pathEnumFromJSON,
   pathEnumToJSON,
+  snakeCaseForImport,
+  snakeCaseForImportFromJSON,
+  snakeCaseForImportToJSON,
 } from "../pathenum/path_enum";
+import { StringMessage } from "../sub/message";
 import { IdMessage } from "../sub2/message";
 
 export const protobufPackage = "proto.examplepb";
@@ -63,6 +67,91 @@ export function numericEnumToJSON(object: NumericEnum): string {
   }
 }
 
+/**
+ * Ignoring lint warnings as this enum type exist to validate proper functionality
+ * for projects that don't follow these lint rules.
+ * buf:lint:ignore ENUM_PASCAL_CASE
+ */
+export enum snakeCaseEnum {
+  /** value_c - buf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE */
+  value_c = "value_c",
+  /** value_d - buf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE */
+  value_d = "value_d",
+  UNRECOGNIZED = "UNRECOGNIZED",
+}
+
+export function snakeCaseEnumFromJSON(object: any): snakeCaseEnum {
+  switch (object) {
+    case 0:
+    case "value_c":
+      return snakeCaseEnum.value_c;
+    case 1:
+    case "value_d":
+      return snakeCaseEnum.value_d;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return snakeCaseEnum.UNRECOGNIZED;
+  }
+}
+
+export function snakeCaseEnumToJSON(object: snakeCaseEnum): string {
+  switch (object) {
+    case snakeCaseEnum.value_c:
+      return "value_c";
+    case snakeCaseEnum.value_d:
+      return "value_d";
+    case snakeCaseEnum.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+/**
+ * Ignoring lint warnings as this enum type exist to validate proper functionality
+ * for projects that don't follow these lint rules.
+ * buf:lint:ignore ENUM_PASCAL_CASE
+ */
+export enum snakeCase0Enum {
+  /** value_e - buf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE */
+  value_e = "value_e",
+  /** value_f - buf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE */
+  value_f = "value_f",
+  UNRECOGNIZED = "UNRECOGNIZED",
+}
+
+export function snakeCase0EnumFromJSON(object: any): snakeCase0Enum {
+  switch (object) {
+    case 0:
+    case "value_e":
+      return snakeCase0Enum.value_e;
+    case 1:
+    case "value_f":
+      return snakeCase0Enum.value_f;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return snakeCase0Enum.UNRECOGNIZED;
+  }
+}
+
+export function snakeCase0EnumToJSON(object: snakeCase0Enum): string {
+  switch (object) {
+    case snakeCase0Enum.value_e:
+      return "value_e";
+    case snakeCase0Enum.value_f:
+      return "value_f";
+    case snakeCase0Enum.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export interface ErrorResponse {
+  correlationId: string;
+  error?: ErrorObject | undefined;
+}
+
 export interface ErrorObject {
   code: number;
   message: string;
@@ -97,6 +186,7 @@ export interface ABitOfEverything {
   mapValue: { [key: string]: NumericEnum };
   mappedStringValue: { [key: string]: string };
   mappedNestedValue: { [key: string]: ABitOfEverything_Nested };
+  nonConventionalNameValue: string;
   timestampValue?: Date | undefined;
   /** repeated enum value. it is comma-separated in query */
   repeatedEnumValue: NumericEnum[];
@@ -315,6 +405,14 @@ export interface UpdateBookRequest {
   allowMissing: boolean;
 }
 
+export interface SnakeEnumRequest {
+  what: snakeCaseEnum;
+  who: snakeCase0Enum;
+  where: snakeCaseForImport;
+}
+
+export interface SnakeEnumResponse {}
+
 /**
  * Required message type -> OpenAPI
  * https://github.com/grpc-ecosystem/grpc-gateway/issues/2837
@@ -331,6 +429,47 @@ export interface Foo {
 export interface Bar {
   id: string;
 }
+
+function createBaseErrorResponse(): ErrorResponse {
+  return { correlationId: "", error: undefined };
+}
+
+export const ErrorResponse: MessageFns<ErrorResponse> = {
+  fromJSON(object: any): ErrorResponse {
+    return {
+      correlationId: isSet(object.correlationId)
+        ? globalThis.String(object.correlationId)
+        : "",
+      error: isSet(object.error)
+        ? ErrorObject.fromJSON(object.error)
+        : undefined,
+    };
+  },
+
+  toJSON(message: ErrorResponse): unknown {
+    const obj: any = {};
+    if (message.correlationId !== "") {
+      obj.correlationId = message.correlationId;
+    }
+    if (message.error !== undefined) {
+      obj.error = ErrorObject.toJSON(message.error);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<ErrorResponse>): ErrorResponse {
+    return ErrorResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<ErrorResponse>): ErrorResponse {
+    const message = createBaseErrorResponse();
+    message.correlationId = object.correlationId ?? "";
+    message.error =
+      object.error !== undefined && object.error !== null
+        ? ErrorObject.fromPartial(object.error)
+        : undefined;
+    return message;
+  },
+};
 
 function createBaseErrorObject(): ErrorObject {
   return { code: 0, message: "" };
@@ -395,6 +534,7 @@ function createBaseABitOfEverything(): ABitOfEverything {
     mapValue: {},
     mappedStringValue: {},
     mappedNestedValue: {},
+    nonConventionalNameValue: "",
     timestampValue: undefined,
     repeatedEnumValue: [],
     repeatedEnumAnnotation: [],
@@ -517,6 +657,9 @@ export const ABitOfEverything: MessageFns<ABitOfEverything> = {
             return acc;
           }, {})
         : {},
+      nonConventionalNameValue: isSet(object.nonConventionalNameValue)
+        ? globalThis.String(object.nonConventionalNameValue)
+        : "",
       timestampValue: isSet(object.timestampValue)
         ? fromJsonTimestamp(object.timestampValue)
         : undefined,
@@ -705,6 +848,9 @@ export const ABitOfEverything: MessageFns<ABitOfEverything> = {
         });
       }
     }
+    if (message.nonConventionalNameValue !== "") {
+      obj.nonConventionalNameValue = message.nonConventionalNameValue;
+    }
     if (message.timestampValue !== undefined) {
       obj.timestampValue = message.timestampValue.toISOString();
     }
@@ -851,6 +997,7 @@ export const ABitOfEverything: MessageFns<ABitOfEverything> = {
       },
       {},
     );
+    message.nonConventionalNameValue = object.nonConventionalNameValue ?? "";
     message.timestampValue = object.timestampValue ?? undefined;
     message.repeatedEnumValue = object.repeatedEnumValue?.map((e) => e) || [];
     message.repeatedEnumAnnotation =
@@ -1552,6 +1699,78 @@ export const UpdateBookRequest: MessageFns<UpdateBookRequest> = {
   },
 };
 
+function createBaseSnakeEnumRequest(): SnakeEnumRequest {
+  return {
+    what: snakeCaseEnum.value_c,
+    who: snakeCase0Enum.value_e,
+    where: snakeCaseForImport.value_x,
+  };
+}
+
+export const SnakeEnumRequest: MessageFns<SnakeEnumRequest> = {
+  fromJSON(object: any): SnakeEnumRequest {
+    return {
+      what: isSet(object.what)
+        ? snakeCaseEnumFromJSON(object.what)
+        : snakeCaseEnum.value_c,
+      who: isSet(object.who)
+        ? snakeCase0EnumFromJSON(object.who)
+        : snakeCase0Enum.value_e,
+      where: isSet(object.where)
+        ? snakeCaseForImportFromJSON(object.where)
+        : snakeCaseForImport.value_x,
+    };
+  },
+
+  toJSON(message: SnakeEnumRequest): unknown {
+    const obj: any = {};
+    if (message.what !== snakeCaseEnum.value_c) {
+      obj.what = snakeCaseEnumToJSON(message.what);
+    }
+    if (message.who !== snakeCase0Enum.value_e) {
+      obj.who = snakeCase0EnumToJSON(message.who);
+    }
+    if (message.where !== snakeCaseForImport.value_x) {
+      obj.where = snakeCaseForImportToJSON(message.where);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<SnakeEnumRequest>): SnakeEnumRequest {
+    return SnakeEnumRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<SnakeEnumRequest>): SnakeEnumRequest {
+    const message = createBaseSnakeEnumRequest();
+    message.what = object.what ?? snakeCaseEnum.value_c;
+    message.who = object.who ?? snakeCase0Enum.value_e;
+    message.where = object.where ?? snakeCaseForImport.value_x;
+    return message;
+  },
+};
+
+function createBaseSnakeEnumResponse(): SnakeEnumResponse {
+  return {};
+}
+
+export const SnakeEnumResponse: MessageFns<SnakeEnumResponse> = {
+  fromJSON(_: any): SnakeEnumResponse {
+    return {};
+  },
+
+  toJSON(_: SnakeEnumResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<SnakeEnumResponse>): SnakeEnumResponse {
+    return SnakeEnumResponse.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<SnakeEnumResponse>): SnakeEnumResponse {
+    const message = createBaseSnakeEnumResponse();
+    return message;
+  },
+};
+
 function createBaseRequiredMessageTypeRequest(): RequiredMessageTypeRequest {
   return { id: "", foo: undefined };
 }
@@ -1661,6 +1880,53 @@ export const ABitOfEverythingServiceDefinition = {
   name: "ABitOfEverythingService",
   fullName: "proto.examplepb.ABitOfEverythingService",
   methods: {
+    /**
+     * Create a new ABitOfEverything
+     *
+     * This API creates a new ABitOfEverything
+     */
+    create: {
+      name: "Create",
+      requestType: ABitOfEverything,
+      requestStream: false,
+      responseType: ABitOfEverything,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              246, 2, 34, 243, 2, 47, 118, 49, 47, 101, 120, 97, 109, 112, 108,
+              101, 47, 97, 95, 98, 105, 116, 95, 111, 102, 95, 101, 118, 101,
+              114, 121, 116, 104, 105, 110, 103, 47, 123, 102, 108, 111, 97,
+              116, 95, 118, 97, 108, 117, 101, 125, 47, 123, 100, 111, 117, 98,
+              108, 101, 95, 118, 97, 108, 117, 101, 125, 47, 123, 105, 110, 116,
+              54, 52, 95, 118, 97, 108, 117, 101, 125, 47, 115, 101, 112, 97,
+              114, 97, 116, 111, 114, 47, 123, 117, 105, 110, 116, 54, 52, 95,
+              118, 97, 108, 117, 101, 125, 47, 123, 105, 110, 116, 51, 50, 95,
+              118, 97, 108, 117, 101, 125, 47, 123, 102, 105, 120, 101, 100, 54,
+              52, 95, 118, 97, 108, 117, 101, 125, 47, 123, 102, 105, 120, 101,
+              100, 51, 50, 95, 118, 97, 108, 117, 101, 125, 47, 123, 98, 111,
+              111, 108, 95, 118, 97, 108, 117, 101, 125, 47, 123, 115, 116, 114,
+              105, 110, 103, 95, 118, 97, 108, 117, 101, 61, 115, 116, 114, 112,
+              114, 101, 102, 105, 120, 47, 42, 125, 47, 123, 117, 105, 110, 116,
+              51, 50, 95, 118, 97, 108, 117, 101, 125, 47, 123, 115, 102, 105,
+              120, 101, 100, 51, 50, 95, 118, 97, 108, 117, 101, 125, 47, 123,
+              115, 102, 105, 120, 101, 100, 54, 52, 95, 118, 97, 108, 117, 101,
+              125, 47, 123, 115, 105, 110, 116, 51, 50, 95, 118, 97, 108, 117,
+              101, 125, 47, 123, 115, 105, 110, 116, 54, 52, 95, 118, 97, 108,
+              117, 101, 125, 47, 123, 110, 111, 110, 67, 111, 110, 118, 101,
+              110, 116, 105, 111, 110, 97, 108, 78, 97, 109, 101, 86, 97, 108,
+              117, 101, 125, 47, 123, 101, 110, 117, 109, 95, 118, 97, 108, 117,
+              101, 125, 47, 123, 112, 97, 116, 104, 95, 101, 110, 117, 109, 95,
+              118, 97, 108, 117, 101, 125, 47, 123, 110, 101, 115, 116, 101,
+              100, 95, 112, 97, 116, 104, 95, 101, 110, 117, 109, 95, 118, 97,
+              108, 117, 101, 125, 47, 123, 101, 110, 117, 109, 95, 118, 97, 108,
+              117, 101, 95, 97, 110, 110, 111, 116, 97, 116, 105, 111, 110, 125,
+            ]),
+          ],
+        },
+      },
+    },
     createBody: {
       name: "CreateBody",
       requestType: ABitOfEverything,
@@ -1674,6 +1940,44 @@ export const ABitOfEverythingServiceDefinition = {
               36, 58, 1, 42, 34, 31, 47, 118, 49, 47, 101, 120, 97, 109, 112,
               108, 101, 47, 97, 95, 98, 105, 116, 95, 111, 102, 95, 101, 118,
               101, 114, 121, 116, 104, 105, 110, 103,
+            ]),
+          ],
+        },
+      },
+    },
+    /** Create a book. */
+    createBook: {
+      name: "CreateBook",
+      requestType: CreateBookRequest,
+      requestStream: false,
+      responseType: Book,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              39, 58, 4, 98, 111, 111, 107, 34, 31, 47, 118, 49, 47, 123, 112,
+              97, 114, 101, 110, 116, 61, 112, 117, 98, 108, 105, 115, 104, 101,
+              114, 115, 47, 42, 125, 47, 98, 111, 111, 107, 115,
+            ]),
+          ],
+        },
+      },
+    },
+    updateBook: {
+      name: "UpdateBook",
+      requestType: UpdateBookRequest,
+      requestStream: false,
+      responseType: Book,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              44, 58, 4, 98, 111, 111, 107, 50, 36, 47, 118, 49, 47, 123, 98,
+              111, 111, 107, 46, 110, 97, 109, 101, 61, 112, 117, 98, 108, 105,
+              115, 104, 101, 114, 115, 47, 42, 47, 98, 111, 111, 107, 115, 47,
+              42, 125,
             ]),
           ],
         },
@@ -1775,25 +2079,6 @@ export const ABitOfEverythingServiceDefinition = {
               97, 109, 112, 108, 101, 47, 97, 95, 98, 105, 116, 95, 111, 102,
               95, 101, 118, 101, 114, 121, 116, 104, 105, 110, 103, 47, 123, 97,
               98, 101, 46, 117, 117, 105, 100, 125,
-            ]),
-          ],
-        },
-      },
-    },
-    updatePatch: {
-      name: "UpdatePatch",
-      requestType: UpdateV2Request,
-      requestStream: false,
-      responseType: Empty,
-      responseStream: false,
-      options: {
-        _unknownFields: {
-          578365826: [
-            new Uint8Array([
-              49, 58, 3, 97, 98, 101, 50, 42, 47, 118, 49, 47, 101, 120, 97,
-              109, 112, 108, 101, 47, 97, 95, 98, 105, 116, 95, 111, 102, 95,
-              101, 118, 101, 114, 121, 116, 104, 105, 110, 103, 47, 123, 97, 98,
-              101, 46, 117, 117, 105, 100, 125,
             ]),
           ],
         },
@@ -1902,6 +2187,64 @@ export const ABitOfEverythingServiceDefinition = {
               117, 101, 125, 47, 123, 112, 97, 116, 104, 95, 114, 101, 112, 101,
               97, 116, 101, 100, 95, 115, 105, 110, 116, 54, 52, 95, 118, 97,
               108, 117, 101, 125,
+            ]),
+          ],
+        },
+      },
+    },
+    /**
+     * Echo allows posting a StringMessage value.
+     *
+     * It also exposes multiple bindings.
+     *
+     * This makes it useful when validating that the OpenAPI v2 API
+     * description exposes documentation correctly on all paths
+     * defined as additional_bindings in the proto.
+     */
+    echo: {
+      name: "Echo",
+      requestType: StringMessage,
+      requestStream: false,
+      responseType: StringMessage,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          8338: [
+            new Uint8Array([
+              197, 2, 10, 8, 101, 99, 104, 111, 32, 114, 112, 99, 18, 17, 83,
+              117, 109, 109, 97, 114, 121, 58, 32, 69, 99, 104, 111, 32, 114,
+              112, 99, 26, 16, 68, 101, 115, 99, 114, 105, 112, 116, 105, 111,
+              110, 32, 69, 99, 104, 111, 34, 68, 10, 18, 70, 105, 110, 100, 32,
+              111, 117, 116, 32, 109, 111, 114, 101, 32, 69, 99, 104, 111, 18,
+              46, 104, 116, 116, 112, 115, 58, 47, 47, 103, 105, 116, 104, 117,
+              98, 46, 99, 111, 109, 47, 103, 114, 112, 99, 45, 101, 99, 111,
+              115, 121, 115, 116, 101, 109, 47, 103, 114, 112, 99, 45, 103, 97,
+              116, 101, 119, 97, 121, 74, 57, 10, 3, 50, 48, 48, 18, 50, 34, 48,
+              10, 16, 97, 112, 112, 108, 105, 99, 97, 116, 105, 111, 110, 47,
+              106, 115, 111, 110, 18, 28, 123, 34, 118, 97, 108, 117, 101, 34,
+              58, 32, 34, 116, 104, 101, 32, 105, 110, 112, 117, 116, 32, 118,
+              97, 108, 117, 101, 34, 125, 74, 59, 10, 3, 52, 48, 52, 18, 52, 10,
+              42, 82, 101, 116, 117, 114, 110, 101, 100, 32, 119, 104, 101, 110,
+              32, 116, 104, 101, 32, 114, 101, 115, 111, 117, 114, 99, 101, 32,
+              100, 111, 101, 115, 32, 110, 111, 116, 32, 101, 120, 105, 115,
+              116, 46, 18, 6, 10, 4, 154, 2, 1, 3, 74, 86, 10, 3, 53, 48, 51,
+              18, 79, 10, 54, 82, 101, 116, 117, 114, 110, 101, 100, 32, 119,
+              104, 101, 110, 32, 116, 104, 101, 32, 114, 101, 115, 111, 117,
+              114, 99, 101, 32, 105, 115, 32, 116, 101, 109, 112, 111, 114, 97,
+              114, 105, 108, 121, 32, 117, 110, 97, 118, 97, 105, 108, 97, 98,
+              108, 101, 46, 42, 21, 10, 8, 120, 45, 110, 117, 109, 98, 101, 114,
+              18, 9, 17, 0, 0, 0, 0, 0, 0, 89, 64,
+            ]),
+          ],
+          578365826: [
+            new Uint8Array([
+              93, 90, 25, 58, 5, 118, 97, 108, 117, 101, 34, 16, 47, 118, 50,
+              47, 101, 120, 97, 109, 112, 108, 101, 47, 101, 99, 104, 111, 90,
+              18, 18, 16, 47, 118, 50, 47, 101, 120, 97, 109, 112, 108, 101, 47,
+              101, 99, 104, 111, 18, 44, 47, 118, 49, 47, 101, 120, 97, 109,
+              112, 108, 101, 47, 97, 95, 98, 105, 116, 95, 111, 102, 95, 101,
+              118, 101, 114, 121, 116, 104, 105, 110, 103, 47, 101, 99, 104,
+              111, 47, 123, 118, 97, 108, 117, 101, 125,
             ]),
           ],
         },
@@ -2208,10 +2551,28 @@ export const ABitOfEverythingServiceDefinition = {
 } as const;
 
 export interface ABitOfEverythingServiceImplementation<CallContextExt = {}> {
+  /**
+   * Create a new ABitOfEverything
+   *
+   * This API creates a new ABitOfEverything
+   */
+  create(
+    request: ABitOfEverything,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<ABitOfEverything>>;
   createBody(
     request: ABitOfEverything,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<ABitOfEverything>>;
+  /** Create a book. */
+  createBook(
+    request: CreateBookRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<Book>>;
+  updateBook(
+    request: UpdateBookRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<Book>>;
   lookup(
     request: IdMessage,
     context: CallContext & CallContextExt,
@@ -2232,10 +2593,6 @@ export interface ABitOfEverythingServiceImplementation<CallContextExt = {}> {
     request: UpdateV2Request,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<Empty>>;
-  updatePatch(
-    request: UpdateV2Request,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<Empty>>;
   delete(
     request: IdMessage,
     context: CallContext & CallContextExt,
@@ -2248,6 +2605,19 @@ export interface ABitOfEverythingServiceImplementation<CallContextExt = {}> {
     request: ABitOfEverythingRepeated,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<ABitOfEverythingRepeated>>;
+  /**
+   * Echo allows posting a StringMessage value.
+   *
+   * It also exposes multiple bindings.
+   *
+   * This makes it useful when validating that the OpenAPI v2 API
+   * description exposes documentation correctly on all paths
+   * defined as additional_bindings in the proto.
+   */
+  echo(
+    request: StringMessage,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<StringMessage>>;
   deepPathEcho(
     request: ABitOfEverything,
     context: CallContext & CallContextExt,
@@ -2315,10 +2685,28 @@ export interface ABitOfEverythingServiceImplementation<CallContextExt = {}> {
 }
 
 export interface ABitOfEverythingServiceClient<CallOptionsExt = {}> {
+  /**
+   * Create a new ABitOfEverything
+   *
+   * This API creates a new ABitOfEverything
+   */
+  create(
+    request: DeepPartial<ABitOfEverything>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<ABitOfEverything>;
   createBody(
     request: DeepPartial<ABitOfEverything>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<ABitOfEverything>;
+  /** Create a book. */
+  createBook(
+    request: DeepPartial<CreateBookRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<Book>;
+  updateBook(
+    request: DeepPartial<UpdateBookRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<Book>;
   lookup(
     request: DeepPartial<IdMessage>,
     options?: CallOptions & CallOptionsExt,
@@ -2339,10 +2727,6 @@ export interface ABitOfEverythingServiceClient<CallOptionsExt = {}> {
     request: DeepPartial<UpdateV2Request>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<Empty>;
-  updatePatch(
-    request: DeepPartial<UpdateV2Request>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<Empty>;
   delete(
     request: DeepPartial<IdMessage>,
     options?: CallOptions & CallOptionsExt,
@@ -2355,6 +2739,19 @@ export interface ABitOfEverythingServiceClient<CallOptionsExt = {}> {
     request: DeepPartial<ABitOfEverythingRepeated>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<ABitOfEverythingRepeated>;
+  /**
+   * Echo allows posting a StringMessage value.
+   *
+   * It also exposes multiple bindings.
+   *
+   * This makes it useful when validating that the OpenAPI v2 API
+   * description exposes documentation correctly on all paths
+   * defined as additional_bindings in the proto.
+   */
+  echo(
+    request: DeepPartial<StringMessage>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<StringMessage>;
   deepPathEcho(
     request: DeepPartial<ABitOfEverything>,
     options?: CallOptions & CallOptionsExt,
@@ -2421,6 +2818,14 @@ export interface ABitOfEverythingServiceClient<CallOptionsExt = {}> {
   ): Promise<Empty>;
 }
 
+/**
+ * // camelCase and lowercase service names are valid but not recommended (use TitleCase instead)
+ * service camelCaseServiceName {
+ *   rpc Empty(google.protobuf.Empty) returns (google.protobuf.Empty) {
+ *     option (google.api.http) = {get: "/v2/example/empty"};
+ *   }
+ * }
+ */
 export type AnotherServiceWithNoBindingsDefinition =
   typeof AnotherServiceWithNoBindingsDefinition;
 export const AnotherServiceWithNoBindingsDefinition = {
@@ -2452,6 +2857,46 @@ export interface AnotherServiceWithNoBindingsClient<CallOptionsExt = {}> {
     request: DeepPartial<Empty>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<Empty>;
+}
+
+export type SnakeEnumServiceDefinition = typeof SnakeEnumServiceDefinition;
+export const SnakeEnumServiceDefinition = {
+  name: "SnakeEnumService",
+  fullName: "proto.examplepb.SnakeEnumService",
+  methods: {
+    snakeEnum: {
+      name: "SnakeEnum",
+      requestType: SnakeEnumRequest,
+      requestStream: false,
+      responseType: SnakeEnumResponse,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              40, 18, 38, 47, 118, 49, 47, 101, 120, 97, 109, 112, 108, 101, 47,
+              115, 110, 97, 107, 101, 47, 123, 119, 104, 111, 125, 47, 123, 119,
+              104, 97, 116, 125, 47, 123, 119, 104, 101, 114, 101, 125,
+            ]),
+          ],
+        },
+      },
+    },
+  },
+} as const;
+
+export interface SnakeEnumServiceImplementation<CallContextExt = {}> {
+  snakeEnum(
+    request: SnakeEnumRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<SnakeEnumResponse>>;
+}
+
+export interface SnakeEnumServiceClient<CallOptionsExt = {}> {
+  snakeEnum(
+    request: DeepPartial<SnakeEnumRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<SnakeEnumResponse>;
 }
 
 function bytesFromBase64(b64: string): Uint8Array {

@@ -6,7 +6,9 @@ import (
 	"github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-ts-grpc-gateway-cli/integration-everything-simple/server/proto/examplepb"
 	"github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-ts-grpc-gateway-cli/integration-everything-simple/server/proto/oneofenum"
 	"github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-ts-grpc-gateway-cli/integration-everything-simple/server/proto/pathenum"
+	"github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-ts-grpc-gateway-cli/integration-everything-simple/server/proto/sub"
 	"github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-ts-grpc-gateway-cli/integration-everything-simple/server/proto/sub2"
+	apistatus "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/durationpb"
@@ -25,9 +27,53 @@ func assertErrf(format string, args ...interface{}) error {
 	return status.Errorf(codes.InvalidArgument, format, args...)
 }
 
+// Create implements examplepb.ABitOfEverythingServiceServer.
+func (a *ABitOfEverythingService) Create(ctx context.Context, req *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error) {
+	if string(req.BytesValue) != "1,2,3" {
+		return nil, assertErrf("expected req.BytesValue is [1,2,3], got %v", req.BytesValue)
+	}
+	return req, nil
+}
+
 // CreateBody implements examplepb.ABitOfEverythingServiceServer.
 func (a *ABitOfEverythingService) CreateBody(ctx context.Context, req *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error) {
 	return req, nil
+}
+
+// CreateBook implements examplepb.ABitOfEverythingServiceServer.
+func (a *ABitOfEverythingService) CreateBook(ctx context.Context, req *examplepb.CreateBookRequest) (*examplepb.Book, error) {
+	if req.Parent != "publishers/123" {
+		return nil, assertErrf("expected req.Parent is publishers/123, got %q", req.Parent)
+	}
+	if req.BookId != "book_id" {
+		return nil, assertErrf("expected req.BookId is book_id, got %q", req.BookId)
+	}
+	req.Book.Id = req.BookId
+	return req.Book, nil
+}
+
+// UpdateBook implements examplepb.ABitOfEverythingServiceServer.
+func (a *ABitOfEverythingService) UpdateBook(ctx context.Context, req *examplepb.UpdateBookRequest) (*examplepb.Book, error) {
+	if req.AllowMissing {
+		return nil, assertErrf("expected req.AllowMissing is false, got %v", req.AllowMissing)
+	}
+	if req.Book.Name != "publishers/123/books/book_name" {
+		return nil, assertErrf("expected req.Book.Name is publishers/123/books/book_name, got %q", req.Book.Name)
+	}
+	if req.Book.Id != "book_id" {
+		return nil, assertErrf("expected req.Book.Id is book_id, got %q", req.Book.Id)
+	}
+
+	paths := req.UpdateMask.GetPaths()
+	if len(paths) != 1 || paths[0] != "id" {
+		return nil, assertErrf("expected req.UpdateMask.Paths is [\"id\"], got %v", paths)
+	}
+
+	req.Book.CreateTime = &timestamppb.Timestamp{
+		Seconds: 1609459200, // 2021-01-01T00:00:00Z
+	}
+
+	return req.Book, nil
 }
 
 // Lookup implements examplepb.ABitOfEverythingServiceServer.
@@ -97,6 +143,11 @@ func (a *ABitOfEverythingService) GetRepeatedQuery(ctx context.Context, req *exa
 	return req, nil
 }
 
+// Echo implements examplepb.ABitOfEverythingServiceServer.
+func (a *ABitOfEverythingService) Echo(ctx context.Context, req *sub.StringMessage) (*sub.StringMessage, error) {
+	return req, nil
+}
+
 // DeepPathEcho implements examplepb.ABitOfEverythingServiceServer.
 func (a *ABitOfEverythingService) DeepPathEcho(ctx context.Context, req *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error) {
 	return req, nil
@@ -123,34 +174,90 @@ func (a *ABitOfEverythingService) PostWithEmptyBody(ctx context.Context, req *ex
 	return &emptypb.Empty{}, nil
 }
 
-// CheckExternalNestedPathEnum implements examplepb.ABitOfEverythingServiceServer.
-func (a *ABitOfEverythingService) CheckExternalNestedPathEnum(ctx context.Context, req *pathenum.MessageWithNestedPathEnum) (*emptypb.Empty, error) {
-	panic("unimplemented")
-}
-
-// CheckExternalPathEnum implements examplepb.ABitOfEverythingServiceServer.
-func (a *ABitOfEverythingService) CheckExternalPathEnum(ctx context.Context, req *pathenum.MessageWithPathEnum) (*emptypb.Empty, error) {
-	panic("unimplemented")
-}
-
 // CheckGetQueryParams implements examplepb.ABitOfEverythingServiceServer.
 func (a *ABitOfEverythingService) CheckGetQueryParams(ctx context.Context, req *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error) {
-	panic("unimplemented")
+	return req, nil
 }
 
 // CheckNestedEnumGetQueryParams implements examplepb.ABitOfEverythingServiceServer.
 func (a *ABitOfEverythingService) CheckNestedEnumGetQueryParams(ctx context.Context, req *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error) {
-	panic("unimplemented")
+	return req, nil
 }
 
 // CheckPostQueryParams implements examplepb.ABitOfEverythingServiceServer.
 func (a *ABitOfEverythingService) CheckPostQueryParams(ctx context.Context, req *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error) {
-	panic("unimplemented")
+	return req, nil
+}
+
+// OverwriteRequestContentType implements examplepb.ABitOfEverythingServiceServer.
+func (a *ABitOfEverythingService) OverwriteRequestContentType(ctx context.Context, req *examplepb.Body) (*emptypb.Empty, error) {
+	if req.Name != "name_with_body" {
+		return nil, assertErrf("expected req.Name is name_with_body, got %q", req.Name)
+	}
+
+	return &emptypb.Empty{}, nil
+}
+
+// OverwriteResponseContentType implements examplepb.ABitOfEverythingServiceServer.
+func (a *ABitOfEverythingService) OverwriteResponseContentType(ctx context.Context, req *emptypb.Empty) (*wrapperspb.StringValue, error) {
+	return &wrapperspb.StringValue{Value: "response_string_value"}, nil
+}
+
+// CheckExternalPathEnum implements examplepb.ABitOfEverythingServiceServer.
+func (a *ABitOfEverythingService) CheckExternalPathEnum(ctx context.Context, req *pathenum.MessageWithPathEnum) (*emptypb.Empty, error) {
+	if req.Value != pathenum.PathEnum_DEF {
+		return nil, assertErrf("expected req.Value is PathEnum_DEF, got %q", req.Value)
+	}
+
+	return &emptypb.Empty{}, nil
+}
+
+// CheckExternalNestedPathEnum implements examplepb.ABitOfEverythingServiceServer.
+func (a *ABitOfEverythingService) CheckExternalNestedPathEnum(ctx context.Context, req *pathenum.MessageWithNestedPathEnum) (*emptypb.Empty, error) {
+	if req.Value != pathenum.MessagePathEnum_JKL {
+		return nil, assertErrf("expected req.Value is MessagePathEnum_JKL, got %q", req.Value)
+	}
+
+	return &emptypb.Empty{}, nil
 }
 
 // CheckStatus implements examplepb.ABitOfEverythingServiceServer.
 func (a *ABitOfEverythingService) CheckStatus(ctx context.Context, req *emptypb.Empty) (*examplepb.CheckStatusResponse, error) {
-	panic("unimplemented")
+	return &examplepb.CheckStatusResponse{
+		Status: &apistatus.Status{
+			Code:    int32(codes.PermissionDenied),
+			Message: "OK",
+		},
+	}, nil
+}
+
+// PostOneofEnum implements examplepb.ABitOfEverythingServiceServer.
+func (a *ABitOfEverythingService) PostOneofEnum(ctx context.Context, req *oneofenum.OneofEnumMessage) (*emptypb.Empty, error) {
+	switch v := req.One.(type) {
+	case *oneofenum.OneofEnumMessage_ExampleEnum:
+	default:
+		return nil, assertErrf("expected req.One is OneofEnumMessage_ExampleEnum, got %T", v)
+	}
+
+	v := req.GetExampleEnum()
+	if v != oneofenum.ExampleEnum_EXAMPLE_ENUM_FIRST {
+		return nil, assertErrf("expected req.ExampleEnum is EXAMPLE_ENUM_FIRST, got %q", v)
+	}
+
+	return &emptypb.Empty{}, nil
+}
+
+// PostRequiredMessageType implements examplepb.ABitOfEverythingServiceServer.
+func (a *ABitOfEverythingService) PostRequiredMessageType(ctx context.Context, req *examplepb.RequiredMessageTypeRequest) (*emptypb.Empty, error) {
+	if req.Id != "id_required_message_type" {
+		return nil, assertErrf("expected req.Id is id, got %q", req.Id)
+	}
+
+	if req.Foo.Bar.Id != "id_foo_bar" {
+		return nil, assertErrf("expected req.Foo.Bar.Id is id_foo_bar, got %q", req.Foo.Bar.Id)
+	}
+
+	return &emptypb.Empty{}, nil
 }
 
 // ErrorWithDetails implements examplepb.ABitOfEverythingServiceServer.
@@ -165,26 +272,6 @@ func (a *ABitOfEverythingService) GetQuery(ctx context.Context, req *examplepb.A
 
 // NoBindings implements examplepb.ABitOfEverythingServiceServer.
 func (a *ABitOfEverythingService) NoBindings(ctx context.Context, req *durationpb.Duration) (*emptypb.Empty, error) {
-	panic("unimplemented")
-}
-
-// OverwriteRequestContentType implements examplepb.ABitOfEverythingServiceServer.
-func (a *ABitOfEverythingService) OverwriteRequestContentType(ctx context.Context, req *examplepb.Body) (*emptypb.Empty, error) {
-	panic("unimplemented")
-}
-
-// OverwriteResponseContentType implements examplepb.ABitOfEverythingServiceServer.
-func (a *ABitOfEverythingService) OverwriteResponseContentType(ctx context.Context, req *emptypb.Empty) (*wrapperspb.StringValue, error) {
-	panic("unimplemented")
-}
-
-// PostOneofEnum implements examplepb.ABitOfEverythingServiceServer.
-func (a *ABitOfEverythingService) PostOneofEnum(ctx context.Context, req *oneofenum.OneofEnumMessage) (*emptypb.Empty, error) {
-	panic("unimplemented")
-}
-
-// PostRequiredMessageType implements examplepb.ABitOfEverythingServiceServer.
-func (a *ABitOfEverythingService) PostRequiredMessageType(ctx context.Context, req *examplepb.RequiredMessageTypeRequest) (*emptypb.Empty, error) {
 	panic("unimplemented")
 }
 
@@ -252,6 +339,7 @@ func (a *ABitOfEverythingService) Timeout(ctx context.Context, req *emptypb.Empt
 	        ok: ABitOfEverything_Nested_DeepEnum.FALSE,
 	      },
 	    },
+	    nonConventionalNameValue: "string",
 	    timestampValue: new Date("2021-01-01T00:00:00Z"),
 	    repeatedEnumValue: [NumericEnum.ONE],
 	    repeatedEnumAnnotation: [NumericEnum.ONE],
@@ -344,6 +432,7 @@ func aBitOfEverythingNonZero() *examplepb.ABitOfEverything {
 				Ok:     examplepb.ABitOfEverything_Nested_FALSE,
 			},
 		},
+		NonConventionalNameValue: "string",
 		TimestampValue: &timestamppb.Timestamp{
 			Seconds: 1609459200, // 2021-01-01T00:00:00Z
 		},
