@@ -39,7 +39,7 @@ jobs:
 
 
       - name: Test
-        run: make test.unit
+        run: make test
   
   integration_test:
     name: Integration Test
