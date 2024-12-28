@@ -25,7 +25,7 @@ generate: tools bins
 	@cd tests && go generate ./...
 	@echo "Code generated."
 
-.PHONY: test test.unit test.generation
+.PHONY: test test.unit test.generation test.integration
 test: test.unit test.generation
 
 test.unit:

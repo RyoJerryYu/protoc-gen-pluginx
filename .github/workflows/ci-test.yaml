@@ -67,8 +67,14 @@ jobs:
           cache: pnpm
           cache-dependency-path: |
             tests/pnpm-lock.yaml
-            tests/protoc-gen-ts-grpc-gateway-cli/integration-protoc-gen-grpc-gateway-ts/pnpm-lock.yaml
-            tests/protoc-gen-ts-grpc-gateway-cli/integration-everything-simple/pnpm-lock.yaml
+
+      - name: Setup Cache For Browser
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/puppeteer
+          key: Browsers-${{ runner.os }}-${{ hashFiles('tests/pnpm-lock.yaml') }}
+      - name: Install browsers
+        run: cd tests && npx puppeteer browsers install chrome
 
       - name: Integration Test
         run: make test.integration
