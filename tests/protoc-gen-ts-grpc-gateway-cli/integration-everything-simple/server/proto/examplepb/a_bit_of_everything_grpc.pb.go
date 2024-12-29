@@ -55,6 +55,7 @@ const (
 	ABitOfEverythingService_CheckStatus_FullMethodName                   = "/proto.examplepb.ABitOfEverythingService/CheckStatus"
 	ABitOfEverythingService_PostOneofEnum_FullMethodName                 = "/proto.examplepb.ABitOfEverythingService/PostOneofEnum"
 	ABitOfEverythingService_PostRequiredMessageType_FullMethodName       = "/proto.examplepb.ABitOfEverythingService/PostRequiredMessageType"
+	ABitOfEverythingService_PostRepeatedMessageBody_FullMethodName       = "/proto.examplepb.ABitOfEverythingService/PostRepeatedMessageBody"
 )
 
 // ABitOfEverythingServiceClient is the client API for ABitOfEverythingService service.
@@ -104,6 +105,7 @@ type ABitOfEverythingServiceClient interface {
 	CheckStatus(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*CheckStatusResponse, error)
 	PostOneofEnum(ctx context.Context, in *oneofenum.OneofEnumMessage, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	PostRequiredMessageType(ctx context.Context, in *RequiredMessageTypeRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	PostRepeatedMessageBody(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error)
 }
 
 type aBitOfEverythingServiceClient struct {
@@ -404,6 +406,16 @@ func (c *aBitOfEverythingServiceClient) PostRequiredMessageType(ctx context.Cont
 	return out, nil
 }
 
+func (c *aBitOfEverythingServiceClient) PostRepeatedMessageBody(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ABitOfEverything)
+	err := c.cc.Invoke(ctx, ABitOfEverythingService_PostRepeatedMessageBody_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ABitOfEverythingServiceServer is the server API for ABitOfEverythingService service.
 // All implementations must embed UnimplementedABitOfEverythingServiceServer
 // for forward compatibility.
@@ -451,6 +463,7 @@ type ABitOfEverythingServiceServer interface {
 	CheckStatus(context.Context, *emptypb.Empty) (*CheckStatusResponse, error)
 	PostOneofEnum(context.Context, *oneofenum.OneofEnumMessage) (*emptypb.Empty, error)
 	PostRequiredMessageType(context.Context, *RequiredMessageTypeRequest) (*emptypb.Empty, error)
+	PostRepeatedMessageBody(context.Context, *ABitOfEverything) (*ABitOfEverything, error)
 	mustEmbedUnimplementedABitOfEverythingServiceServer()
 }
 
@@ -547,6 +560,9 @@ func (UnimplementedABitOfEverythingServiceServer) PostOneofEnum(context.Context,
 }
 func (UnimplementedABitOfEverythingServiceServer) PostRequiredMessageType(context.Context, *RequiredMessageTypeRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PostRequiredMessageType not implemented")
+}
+func (UnimplementedABitOfEverythingServiceServer) PostRepeatedMessageBody(context.Context, *ABitOfEverything) (*ABitOfEverything, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PostRepeatedMessageBody not implemented")
 }
 func (UnimplementedABitOfEverythingServiceServer) mustEmbedUnimplementedABitOfEverythingServiceServer() {
 }
@@ -1092,6 +1108,24 @@ func _ABitOfEverythingService_PostRequiredMessageType_Handler(srv interface{}, c
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ABitOfEverythingService_PostRepeatedMessageBody_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ABitOfEverything)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ABitOfEverythingServiceServer).PostRepeatedMessageBody(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ABitOfEverythingService_PostRepeatedMessageBody_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ABitOfEverythingServiceServer).PostRepeatedMessageBody(ctx, req.(*ABitOfEverything))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ABitOfEverythingService_ServiceDesc is the grpc.ServiceDesc for ABitOfEverythingService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1214,6 +1248,10 @@ var ABitOfEverythingService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PostRequiredMessageType",
 			Handler:    _ABitOfEverythingService_PostRequiredMessageType_Handler,
+		},
+		{
+			MethodName: "PostRepeatedMessageBody",
+			Handler:    _ABitOfEverythingService_PostRepeatedMessageBody_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

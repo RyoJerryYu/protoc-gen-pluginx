@@ -21,3 +21,22 @@ func TSModule_TSProto(file protoreflect.FileDescriptor) TSModule {
 func TSIdent_TSProto_Message(msg *protogen.Message) TSIdent {
 	return TSModule_TSProto(msg.Desc.ParentFile()).Ident(msg.GoIdent.GoName)
 }
+
+func TSProtoMessageToJson(msgTyp *protogen.Message) func(g *TSRegistry, in string) string {
+	return func(g *TSRegistry, in string) string {
+		ident := g.QualifiedTSIdent(TSIdent_TSProto_Message(msgTyp))
+		return ident + `.toJSON(` + in + `)`
+	}
+}
+func TSProtoEnumToJson(enumTyp *protogen.Enum) func(g *TSRegistry, in string) string {
+	return func(g *TSRegistry, in string) string {
+		enumModule := TSModule_TSProto(enumTyp.Desc.ParentFile())
+		toJsonIdent := enumModule.Ident(TSProto_EnumToJSONFuncName(g, enumTyp.Desc))
+		toJsonFunc := g.QualifiedTSIdent(toJsonIdent)
+		return toJsonFunc + `(` + in + `)`
+	}
+}
+
+func TSProto_EnumToJSONFuncName(g *TSRegistry, enum protoreflect.EnumDescriptor) string {
+	return FunctionCase_TSProto(string(enum.Name())) + "ToJSON"
+}

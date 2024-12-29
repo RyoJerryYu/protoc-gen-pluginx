@@ -438,6 +438,20 @@ describe("ABitOfEverythingService", () => {
     const res = await aBitOfEverythingService.postRequiredMessageType(req);
     expect(res).to.deep.equal(Empty.create());
   });
+
+  it("PostRepeatedMessageBody", async () => {
+    const req: Partial<ABitOfEverything> = {
+      nested: [
+        {
+          name: "nested",
+          amount: 1,
+          ok: ABitOfEverything_Nested_DeepEnum.TRUE,
+        },
+      ],
+    };
+    const res = await aBitOfEverythingService.postRepeatedMessageBody(req);
+    expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+  });
 });
 
 describe("AnotherServiceWithNoBindings", () => {

@@ -749,6 +749,20 @@ service ABitOfEverythingService {
       body: "*"
     };
   }
+
+  rpc PostRepeatedMessageBody(ABitOfEverything) returns (ABitOfEverything) {
+    option (google.api.http) = {
+      post: "/v1/example/repeatedmessagebody"
+      body: "nested"
+    };
+  }
+
+  // rpc PostRepeatedStringBody(ABitOfEverything) returns (ABitOfEverything) {
+  //   option (google.api.http) = {
+  //     post: "/v1/example/repeatedstringbody"
+  //     body: "repeated_string_value"
+  //   };
+  // }
 }
 
 // // camelCase and lowercase service names are valid but not recommended (use TitleCase instead)

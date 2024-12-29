@@ -724,6 +724,26 @@ export function newABitOfEverythingService(
       });
       return Empty.fromJSON(res);
     },
+
+    async postRepeatedMessageBody(
+      req: DeepPartial<ABitOfEverything>,
+      options?: CallOptions,
+    ): Promise<ABitOfEverything> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
+      const fullReq = ABitOfEverything.fromPartial(req);
+      const res = await transport.call({
+        path: `/v1/example/repeatedmessagebody`,
+        method: "POST",
+        headers: headers,
+        queryParams: renderURLSearchParams(req, ["nested"]),
+        body: JSON.stringify(
+          must(fullReq.nested).map((e) => ABitOfEverything_Nested.toJSON(e)),
+        ),
+      });
+      return ABitOfEverything.fromJSON(res);
+    },
   };
 }
 

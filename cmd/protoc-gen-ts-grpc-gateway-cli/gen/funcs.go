@@ -58,10 +58,6 @@ func (g *Generator) jsonify(in string) string {
 	return fmt.Sprintf(`JSON.stringify(%s)`, in)
 }
 
-func (g *Generator) TSProto_EnumToJSONFuncName(enum protoreflect.EnumDescriptor) string {
-	return tsutils.FunctionCase_TSProto(string(enum.Name())) + "ToJSON"
-}
-
 // return (URL string, pathParams)
 func (g *Generator) renderPath(r *tsutils.TSOption) func(method *protogen.Method) (string, []string) {
 	return func(method *protogen.Method) (string, []string) {
@@ -111,39 +107,47 @@ func (g *Generator) renderQueryString(r *tsutils.TSOption) func(method *protogen
 	}
 }
 
+func (g *Generator) listify(in string, do func(string) string) string {
+	return fmt.Sprintf(`(%s).map((e)=>%s)`, in, do("e"))
+}
+
 // return (body jsonify string, bodyParam)
 func (g *Generator) renderBody(r *tsutils.TSOption) func(method *protogen.Method) (string, string) {
 	return func(method *protogen.Method) (string, string) {
 		httpOpts := g.httpOptions(method)
 		httpBody := httpOpts.Body
 
-		TSProtoMessageToJson := func(in string, msg *protogen.Message) string {
-			ident := g.QualifiedTSIdent(tsutils.TSIdent_TSProto_Message(msg))
-			return ident + `.toJSON(` + in + `)`
-		}
-
 		if httpBody == nil || *httpBody == "*" { // Unpopulated rpc, or body == "*", jsonify the whole message
 			bodyMsg := method.Input
-			return TSProtoMessageToJson("fullReq", bodyMsg), "*"
+			// method.Input should always be a message
+			return tsutils.TSProtoMessageToJson(bodyMsg)(g.TSRegistry, "fullReq"), "*"
 		} else if *httpBody == "" {
 			return "", ""
 		}
 
 		// body in a field
 		bodyField := pluginutils.FindFieldByTextName(method.Input, *httpBody)
+		isList := bodyField.Desc.IsList()
+
+		var toJsonFunc func(g *tsutils.TSRegistry, in string) string
 		switch bodyField.Desc.Kind() {
 		case protoreflect.MessageKind:
 			bodyType := bodyField.Message
-			return TSProtoMessageToJson(g.must("fullReq", *httpBody), bodyType), *httpBody
+			toJsonFunc = tsutils.TSProtoMessageToJson(bodyType)
 		case protoreflect.EnumKind:
 			bodyType := bodyField.Enum
-			enumModule := tsutils.TSModule_TSProto(bodyType.Desc.ParentFile())
-			toJsonIdent := enumModule.Ident(g.TSProto_EnumToJSONFuncName(bodyType.Desc))
-			toJsonFunc := g.QualifiedTSIdent(toJsonIdent)
-			return toJsonFunc + `(` + g.must("fullReq", *httpBody) + `)`, *httpBody
+			toJsonFunc = tsutils.TSProtoEnumToJson(bodyType)
 		default:
 			glog.Fatalf("unsupported body field type: %s", bodyField.Desc.Kind())
 			return "", ""
 		}
+
+		if isList {
+			return g.listify(g.must("fullReq", *httpBody), func(e string) string {
+				return toJsonFunc(g.TSRegistry, e)
+			}), *httpBody
+		}
+
+		return toJsonFunc(g.TSRegistry, g.must("fullReq", *httpBody)), *httpBody
 	}
 }

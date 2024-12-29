@@ -257,6 +257,11 @@ func (a *ABitOfEverythingService) PostRequiredMessageType(ctx context.Context, r
 	return &emptypb.Empty{}, nil
 }
 
+// PostRepeatedMessageBody implements examplepb.ABitOfEverythingServiceServer.
+func (a *ABitOfEverythingService) PostRepeatedMessageBody(ctx context.Context, req *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error) {
+	return req, nil
+}
+
 // ErrorWithDetails implements examplepb.ABitOfEverythingServiceServer.
 func (a *ABitOfEverythingService) ErrorWithDetails(ctx context.Context, req *emptypb.Empty) (*emptypb.Empty, error) {
 	panic("unimplemented")
