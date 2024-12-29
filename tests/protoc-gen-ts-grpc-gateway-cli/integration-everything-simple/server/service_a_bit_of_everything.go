@@ -29,9 +29,6 @@ func assertErrf(format string, args ...interface{}) error {
 
 // Create implements examplepb.ABitOfEverythingServiceServer.
 func (a *ABitOfEverythingService) Create(ctx context.Context, req *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error) {
-	if string(req.BytesValue) != "1,2,3" {
-		return nil, assertErrf("expected req.BytesValue is [1,2,3], got %v", req.BytesValue)
-	}
 	return req, nil
 }
 

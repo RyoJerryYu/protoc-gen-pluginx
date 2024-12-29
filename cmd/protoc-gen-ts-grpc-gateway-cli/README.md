@@ -23,7 +23,7 @@ ts_proto do not check oneof at client code, so the gateway cli do not check the 
 
 ### TODO: 
 
-- [ ] Create: body did not send in request
+- [ ] Create: body did not send in request: body did not annotated in rpc option
 - [ ] CreateBook: do not support query params for post method
 - [ ] CheckPostQueryParams: query params did not pass to server in post method
 - [ ] body field do not work well with repeated field
@@ -35,6 +35,9 @@ ts_proto do not check oneof at client code, so the gateway cli do not check the 
 - [ ] 
 - [ ] GetRepeatedQuery: path param do not work well with repeated
 - [ ] GetRepeatedQuery: path param do not work well with bytes, required base64
+- [ ] Create: query params for map field do not work well
+- [ ] Create: query params for repeated field do not work well
+- [ ] Create: query params for bytes field do not work well
 - [ ] Exists,CustomOptionsRequest,TraceRequest: do not work well with custom method
 - [ ] camelCaseServiceName: camelCase service names are valid
 

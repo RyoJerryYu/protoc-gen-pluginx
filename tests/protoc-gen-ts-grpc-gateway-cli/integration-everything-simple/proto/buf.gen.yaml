@@ -42,6 +42,7 @@ plugins:
       - emit_unpopulated=false
       - use_proto_names=false
       - logtostderr=true
+      - v=3
   - remote: buf.build/community/stephenh-ts-proto
     out: ../defaultConfig
     opt:
