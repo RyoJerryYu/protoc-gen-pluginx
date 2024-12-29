@@ -27,11 +27,11 @@ ts_proto do not check oneof at client code, so the gateway cli do not check the 
 - [x] CreateBook: do not support query params for post method
 - [x] CheckPostQueryParams: query params did not pass to server in post method
 - [ ] body field do not work well with repeated field
-- [ ] PostOneofEnum: post body only contain one enum field do not work well: need stringify
 - [ ] NoBindings: jsonify do not work well with well-known-types
 - [ ] UpdateBook: field mask did not remove path params
 - [ ] ErrorWithDetails: throw error with details
 - [ ] CheckGetQueryParams, CheckNestedEnumGetQueryParams: repeated nested query params did not pass to server
+- [ ] PostOneofEnum: post body only contain one enum field do not work well: need stringify
 - [ ] 
 - [ ] GetRepeatedQuery: path param do not work well with repeated
 - [ ] GetRepeatedQuery: path param do not work well with bytes, required base64

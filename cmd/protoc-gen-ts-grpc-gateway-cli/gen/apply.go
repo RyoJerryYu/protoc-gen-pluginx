@@ -247,7 +247,7 @@ func (g *Generator) applyMethod(method *protogen.Method) {
 			g.Pf("    queryParams: %s,", queryParams)
 		}
 		if renderedBody != "" {
-			g.Pf("    body: %s,", renderedBody)
+			g.Pf("    body: %s,", g.jsonify(renderedBody))
 		}
 		g.Pf("  });")
 		g.Pf("  return %s.fromJSON(res);", output)

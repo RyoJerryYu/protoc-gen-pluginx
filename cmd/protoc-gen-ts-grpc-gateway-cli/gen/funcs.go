@@ -18,6 +18,9 @@ type httpOptions struct {
 	Body   *string // nil if no HTTP Option, empty string if no body specified
 }
 
+// get the http options for a method
+// it will return a valid httpOptions object, even if the method does not have an HTTP annotation
+// if the method does not have an HTTP annotation, it will return the default values valid for the unpoulated rpc
 func (g *Generator) httpOptions(method *protogen.Method) *httpOptions {
 	httpMethod := "POST"
 	url := fmt.Sprintf(`/%s/%s`, method.Parent.Desc.FullName(), method.Desc.Name())
@@ -49,6 +52,10 @@ func (g *Generator) must(rootName string, path string) string {
 	fieldName = strings.Join(fields, "?.")
 
 	return fmt.Sprintf(`must(%s.%s)`, rootName, fieldName)
+}
+
+func (g *Generator) jsonify(in string) string {
+	return fmt.Sprintf(`JSON.stringify(%s)`, in)
 }
 
 func (g *Generator) TSProto_EnumToJSONFuncName(enum protoreflect.EnumDescriptor) string {
@@ -110,13 +117,14 @@ func (g *Generator) renderBody(r *tsutils.TSOption) func(method *protogen.Method
 		httpOpts := g.httpOptions(method)
 		httpBody := httpOpts.Body
 
-		TSProtoJsonify := func(in string, msg *protogen.Message) string {
+		TSProtoMessageToJson := func(in string, msg *protogen.Message) string {
 			ident := g.QualifiedTSIdent(tsutils.TSIdent_TSProto_Message(msg))
-			return `JSON.stringify(` + ident + `.toJSON(` + in + `))`
+			return ident + `.toJSON(` + in + `)`
 		}
-		if httpBody == nil || *httpBody == "*" {
+
+		if httpBody == nil || *httpBody == "*" { // Unpopulated rpc, or body == "*", jsonify the whole message
 			bodyMsg := method.Input
-			return TSProtoJsonify("fullReq", bodyMsg), "*"
+			return TSProtoMessageToJson("fullReq", bodyMsg), "*"
 		} else if *httpBody == "" {
 			return "", ""
 		}
@@ -126,7 +134,7 @@ func (g *Generator) renderBody(r *tsutils.TSOption) func(method *protogen.Method
 		switch bodyField.Desc.Kind() {
 		case protoreflect.MessageKind:
 			bodyType := bodyField.Message
-			return TSProtoJsonify(g.must("fullReq", *httpBody), bodyType), *httpBody
+			return TSProtoMessageToJson(g.must("fullReq", *httpBody), bodyType), *httpBody
 		case protoreflect.EnumKind:
 			bodyType := bodyField.Enum
 			enumModule := tsutils.TSModule_TSProto(bodyType.Desc.ParentFile())

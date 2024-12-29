@@ -703,7 +703,7 @@ export function newABitOfEverythingService(
         method: "POST",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["example_enum"]),
-        body: exampleEnumToJSON(must(fullReq.exampleEnum)),
+        body: JSON.stringify(exampleEnumToJSON(must(fullReq.exampleEnum))),
       });
       return Empty.fromJSON(res);
     },
