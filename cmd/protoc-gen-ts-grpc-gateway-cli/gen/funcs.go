@@ -2,8 +2,8 @@ package gen
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
-	"text/template"
 
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils"
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils/tsutils"
@@ -12,265 +12,53 @@ import (
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
-type Options struct {
-	tsutils.TSOption
+type httpOptions struct {
+	Method string
+	URL    string
+	Body   *string // nil if no HTTP Option, empty string if no body specified
+}
 
-	// UseStaticClasses will cause the generator to generate a static class in the form ServiceName.MethodName, which is
-	// the legacy behavior for this generator. If set to false, the generator will generate a client class with methods
-	// as well as static methods exported for each service method.
-	UseStaticClasses bool
-	// FetchModuleDirectory is the parameter for directory where fetch module will live
-	FetchModuleDirectory string
-	// FetchModuleFilename is the file name for the individual fetch module
-	FetchModuleFilename string
+// get the http options for a method
+// it will return a valid httpOptions object, even if the method does not have an HTTP annotation
+// if the method does not have an HTTP annotation, it will return the default values valid for the unpoulated rpc
+func (g *Generator) httpOptions(method *protogen.Method) *httpOptions {
+	httpMethod := "POST"
+	url := fmt.Sprintf(`/%s/%s`, method.Parent.Desc.FullName(), method.Desc.Name())
+
+	if hasHTTPAnnotation(method.Desc) {
+		hm, u := getHTTPMethodPath(method.Desc)
+		if hm != "" && u != "" {
+			httpMethod = hm
+			url = u
+		}
+	}
+	body := getHTTPBody(method.Desc)
+
+	return &httpOptions{
+		Method: httpMethod,
+		URL:    url,
+		Body:   body,
+	}
 }
 
 var (
-	niceGrpcCommon = tsutils.TSModule{ModuleName: "NiceGrpcCommon", Path: "nice-grpc-common"}
-	jsBase64       = tsutils.TSModule{ModuleName: "JsBase64", Path: "js-base64"}
+	// match {field} or {field=pattern}, return param and pattern
+	pathParamRegexp = regexp.MustCompile(`{([^=}/]+)(?:=([^}]+))?}`)
 )
 
-type Generator struct {
-	Options
-	Generator pluginutils.GenerateOptions
-	*tsutils.TSRegistry
+func (g *Generator) must(rootName string, path string) string {
+	fieldName := tsutils.FieldName(&g.TSOption)(path)
+	fields := strings.Split(fieldName, ".")
+	fieldName = strings.Join(fields, "?.")
+
+	return fmt.Sprintf(`must(%s.%s)`, rootName, fieldName)
 }
 
-func (g *Generator) PTmplStr(tmpl string, data interface{}, funcs ...template.FuncMap) {
-	funcs = append(funcs, g.ServiceFmap())
-	funcs = append(funcs, template.FuncMap{
-		"renderURL":    g.renderURL(&g.TSOption),
-		"buildInitReq": g.buildInitReq,
-	})
-	g.TSRegistry.PTmplStr(tmpl, data, funcs...)
+func (g *Generator) jsonify(in string) string {
+	return fmt.Sprintf(`JSON.stringify(%s)`, in)
 }
 
-func (g *Generator) ApplyTemplate() error {
-	g.applyHelperFunc()
-
-	// services do not nest, so we can apply them directly
-	for _, s := range g.Generator.F.Services {
-		g.applyService(s)
-	}
-	g.Apply(g.Generator.W)
-	return nil
-}
-
-func (g *Generator) applyHelperFunc() {
-	s := `
-type Primitive = string | boolean | number;
-type RequestPayload = Record<string, unknown>;
-type FlattenedRequestPayload = Record<string, Primitive | Primitive[]>;
-
-/**
- * Checks if given value is a plain object
- * Logic copied and adapted from below source:
- * https://github.com/char0n/ramda-adjunct/blob/master/src/isPlainObj.js
- */
-function isPlainObject(value: unknown): boolean {
-  const isObject =
-    Object.prototype.toString.call(value).slice(8, -1) === "Object";
-  const isObjLike = value !== null && isObject;
-
-  if (!isObjLike || !isObject) {
-    return false;
-  }
-
-  const proto: unknown = Object.getPrototypeOf(value);
-
-  const hasObjectConstructor = !!(
-    proto &&
-    typeof proto === "object" &&
-    proto.constructor === Object.prototype.constructor
-  );
-
-  return hasObjectConstructor;
-}
-
-/**
- * Checks if given value is of a primitive type
- */
-function isPrimitive(value: unknown): boolean {
-  return ["string", "number", "boolean"].some((t) => typeof value === t);
-}
-
-/**
- * Flattens a deeply nested request payload and returns an object
- * with only primitive values and non-empty array of primitive values
- * as per https://github.com/googleapis/googleapis/blob/master/google/api/http.proto
- */
-function flattenRequestPayload<T extends RequestPayload>(
-  requestPayload: T,
-  path = ""
-): FlattenedRequestPayload {
-  return Object.keys(requestPayload).reduce((acc: T, key: string): T => {
-    const value = requestPayload[key];
-    const newPath = path ? [path, key].join(".") : key;
-
-    const isNonEmptyPrimitiveArray =
-      Array.isArray(value) &&
-      value.every((v) => isPrimitive(v)) &&
-      value.length > 0;
-
-    let objectToMerge = {};
-
-    if (isPlainObject(value)) {
-      objectToMerge = flattenRequestPayload(value as RequestPayload, newPath);
-    } else if (isPrimitive(value) || isNonEmptyPrimitiveArray) {
-      objectToMerge = { [newPath]: value };
-    }
-
-    return { ...acc, ...objectToMerge };
-  }, {} as T) as FlattenedRequestPayload;
-}
-
-/**
- * Renders a deeply nested request payload into a string of URL search
- * parameters by first flattening the request payload and then removing keys
- * which are already present in the URL path.
- */
-function renderURLSearchParams<T extends RequestPayload>(
-  requestPayload: T,
-  urlPathParams: string[] = []
-): string[][] {
-  const flattenedRequestPayload = flattenRequestPayload(requestPayload);
-
-  const urlSearchParams = Object.keys(flattenedRequestPayload).reduce(
-    (acc: string[][], key: string): string[][] => {
-      // key should not be present in the url path as a parameter
-      const value = flattenedRequestPayload[key];
-      if (urlPathParams.find((f) => f === key)) {
-        return acc;
-      }
-      return Array.isArray(value)
-        ? [...acc, ...value.map((m) => [key, m.toString()])]
-        : (acc = [...acc, [key, value.toString()]]);
-    },
-    [] as string[][]
-  );
-
-  return urlSearchParams;
-}
-
-/**
- * must is a utility function that throws an error if the given value is null or undefined
- */
-function must<T>(value: T | null | undefined): T {
-  if (value === null || value === undefined) {
-    throw new Error("Value is null or undefined");
-  }
-  return value;
-}
-
-/**
- * CallParams is a type that represents the parameters that are passed to the transport's call method
- */
-export type CallParams = {
-    path: string,
-    method: string,
-	headers?: Headers | null,
-    queryParams?: string[][],
-    body?: BodyInit | null,
-}
-
-/**
- * Transport is a type that represents the interface of a transport object
- */
-export type Transport = {
-  call(
-    params: CallParams,
-  ): Promise<any>;
-}
-`
-	g.P(s)
-	g.Pf(`function metadataToHeaders(metadata: %s): Headers {
-  const headers = new Headers();
-
-  for (const [key, values] of metadata) {
-    for (const value of values) {
-      headers.append(
-        key,
-        typeof value === 'string' ? value : %s.fromUint8Array(value),
-      );
-    }
-  }
-
-  return headers;
-}
-`,
-		niceGrpcCommon.Ident("Metadata"),
-		jsBase64.Ident("Base64"),
-	)
-	g.P("")
-}
-
-func (g *Generator) applyService(service *protogen.Service) {
-	serviceModule := tsutils.TSModule_TSProto(service.Desc.ParentFile())
-	for _, leadingDetached := range service.Comments.LeadingDetached {
-		g.P(leadingDetached)
-	}
-	g.P(service.Comments.Leading)
-	g.P("export function new", service.GoName, "(transport: Transport): ", serviceModule.Ident(service.GoName+"Client"), " {")
-	g.P("return {")
-
-	for _, method := range service.Methods {
-		g.applyMethod(method)
-	}
-	g.P("};")
-	g.P("}")
-	g.P(service.Comments.Trailing)
-}
-
-func (g *Generator) applyMethod(method *protogen.Method) {
-	input := tsutils.TSIdent_TSProto_Message(method.Input)
-	output := tsutils.TSIdent_TSProto_Message(method.Output)
-	methodModule := tsutils.TSModule_TSProto(method.Desc.ParentFile())
-
-	g.P(method.Comments.Leading)
-	glog.V(3).Infof("method location: %s, %s", method.Location.SourceFile, method.Location.Path)
-
-	if method.Desc.IsStreamingServer() {
-		g.Pf("%s(", tsutils.FunctionCase_TSProto(method.GoName))
-		g.Pf("  req: %s<%s>,", methodModule.Ident("DeepPartial"), input)
-		g.Pf("  options?: %s,", niceGrpcCommon.Ident("CallOptions"))
-		g.Pf("): AsyncIterable<%s> {", output)
-		g.Pf("  throw new Error('not implemented');")
-		g.Pf("},")
-
-	} else {
-		g.Pf("async %s(", tsutils.FunctionCase_TSProto(method.GoName))
-		g.Pf("  req: %s<%s>,", methodModule.Ident("DeepPartial"), input)
-		g.Pf("  options?: %s,", niceGrpcCommon.Ident("CallOptions"))
-		g.Pf("): Promise<%s> {", output)
-		g.Pf("  const headers = options?.metadata ? metadataToHeaders(options.metadata) : undefined;")
-		g.Pf("  const fullReq = %s.fromPartial(req);", input)
-		// METHOD
-		methodMethod := g.httpOptions(method).Method
-		// path, return pathParams
-		renderedPath, pathParams := g.renderPath(&g.TSOption)(method)
-		// queryParams
-		queryParams := g.renderQueryString(&g.TSOption)(method, pathParams)
-		// body
-		renderedBody := g.renderBody(&g.TSOption)(method)
-
-		g.Pf("  const res = await transport.call({")
-		g.Pf("    path: `%s`,", renderedPath)
-		g.Pf(`    method: "%s",`, methodMethod)
-		g.Pf("    headers: headers,")
-		if queryParams != "" {
-			g.Pf("    queryParams: %s,", queryParams)
-		}
-		if renderedBody != "" {
-			g.Pf("    body: %s,", renderedBody)
-		}
-		g.Pf("  });")
-		g.Pf("  return %s.fromJSON(res);", output)
-		g.Pf("},")
-	}
-	g.P(method.Comments.Trailing)
-}
-
-// return the URL string and the pathParams
+// return (URL string, pathParams)
 func (g *Generator) renderPath(r *tsutils.TSOption) func(method *protogen.Method) (string, []string) {
 	return func(method *protogen.Method) (string, []string) {
 		httpOpts := g.httpOptions(method)
@@ -294,54 +82,87 @@ func (g *Generator) renderPath(r *tsutils.TSOption) func(method *protogen.Method
 	}
 }
 
-func (g *Generator) renderQueryString(r *tsutils.TSOption) func(method *protogen.Method, urlPathParams []string) string {
-	return func(method *protogen.Method, urlPathParams []string) string {
-		httpOpts := g.httpOptions(method)
-		methodMethod := httpOpts.Method
-		if method.Desc.IsStreamingClient() || (methodMethod != "GET" && methodMethod != "DELETE") {
+func (g *Generator) renderQueryString(r *tsutils.TSOption) func(method *protogen.Method, urlPathParams []string, bodyParam string) string {
+	return func(method *protogen.Method, urlPathParams []string, bodyParam string) string {
+		// allow query params for all methods, not just GET and DELETE
+		// httpOpts := g.httpOptions(method)
+		// methodMethod := httpOpts.Method
+
+		if method.Desc.IsStreamingClient() {
 			return ""
 		}
-		urlPathParamStrs := make([]string, 0, len(urlPathParams))
-		for _, pathParam := range urlPathParams {
-			urlPathParamStrs = append(urlPathParamStrs, fmt.Sprintf(`"%s"`, pathParam))
+		if bodyParam == "*" {
+			return "" // all fields are in the body, there will be no query params
 		}
-		urlPathParamStr := fmt.Sprintf("[%s]", strings.Join(urlPathParamStrs, ", "))
+		usedParamStrs := make([]string, 0, len(urlPathParams))
+		for _, pathParam := range urlPathParams {
+			usedParamStrs = append(usedParamStrs, fmt.Sprintf(`"%s"`, pathParam))
+		}
+		if bodyParam != "" {
+			usedParamStrs = append(usedParamStrs, fmt.Sprintf(`"%s"`, bodyParam))
+		}
+		urlPathParamStr := fmt.Sprintf("[%s]", strings.Join(usedParamStrs, ", "))
 		renderURLSearchParams := fmt.Sprintf("renderURLSearchParams(req, %s)", urlPathParamStr)
 		return renderURLSearchParams
 	}
 }
 
-func (g *Generator) renderBody(r *tsutils.TSOption) func(method *protogen.Method) string {
-	return func(method *protogen.Method) string {
+func (g *Generator) listify(in string, do func(string) string) string {
+	return fmt.Sprintf(`(%s).map((e)=>%s)`, in, do("e"))
+}
+
+// return (body jsonify string, bodyParam)
+func (g *Generator) renderBody(r *tsutils.TSOption) func(method *protogen.Method) (string, string) {
+	return func(method *protogen.Method) (string, string) {
 		httpOpts := g.httpOptions(method)
 		httpBody := httpOpts.Body
 
-		TSProtoJsonify := func(in string, msg *protogen.Message) string {
-			ident := g.QualifiedTSIdent(tsutils.TSIdent_TSProto_Message(msg))
-			return `JSON.stringify(` + ident + `.toJSON(` + in + `))`
-		}
-		if httpBody == nil || *httpBody == "*" {
+		if httpBody == nil || *httpBody == "*" { // Unpopulated rpc, or body == "*", jsonify the whole message
 			bodyMsg := method.Input
-			return TSProtoJsonify("fullReq", bodyMsg)
+			// method.Input should always be a message
+			return tsutils.TSProtoMessageToJson(bodyMsg)(g.TSRegistry, "fullReq"), "*"
 		} else if *httpBody == "" {
-			return ""
+			return "", ""
 		}
 
 		// body in a field
 		bodyField := pluginutils.FindFieldByTextName(method.Input, *httpBody)
+		isList := bodyField.Desc.IsList()
+
+		var toJsonFunc func(g *tsutils.TSRegistry, in string) string
 		switch bodyField.Desc.Kind() {
 		case protoreflect.MessageKind:
 			bodyType := bodyField.Message
-			return TSProtoJsonify(g.must("fullReq", *httpBody), bodyType)
+			toJsonFunc = tsutils.TSProtoMessageToJson(bodyType)
 		case protoreflect.EnumKind:
+			// enum types
 			bodyType := bodyField.Enum
-			enumModule := tsutils.TSModule_TSProto(bodyType.Desc.ParentFile())
-			toJsonIdent := enumModule.Ident(g.TSProto_EnumToJSONFuncName(bodyType.Desc))
-			toJsonFunc := g.QualifiedTSIdent(toJsonIdent)
-			return toJsonFunc + `(` + g.must("fullReq", *httpBody) + `)`
+			toJsonFunc = tsutils.TSProtoEnumToJson(bodyType)
+		case protoreflect.BoolKind,
+			protoreflect.StringKind,
+			protoreflect.Int32Kind,
+			protoreflect.Int64Kind,
+			protoreflect.Uint32Kind,
+			protoreflect.Uint64Kind,
+			protoreflect.FloatKind,
+			protoreflect.DoubleKind,
+			protoreflect.Sfixed32Kind,
+			protoreflect.Sfixed64Kind,
+			protoreflect.Fixed32Kind,
+			protoreflect.Fixed64Kind:
+			// scalar types
+			toJsonFunc = tsutils.TSProtoScalarToJson()
 		default:
 			glog.Fatalf("unsupported body field type: %s", bodyField.Desc.Kind())
-			return ""
+			return "", ""
 		}
+
+		if isList {
+			return g.listify(g.must("fullReq", *httpBody), func(e string) string {
+				return toJsonFunc(g.TSRegistry, e)
+			}), *httpBody
+		}
+
+		return toJsonFunc(g.TSRegistry, g.must("fullReq", *httpBody)), *httpBody
 	}
 }

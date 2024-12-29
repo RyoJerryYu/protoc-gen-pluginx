@@ -29,9 +29,6 @@ func assertErrf(format string, args ...interface{}) error {
 
 // Create implements examplepb.ABitOfEverythingServiceServer.
 func (a *ABitOfEverythingService) Create(ctx context.Context, req *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error) {
-	if string(req.BytesValue) != "1,2,3" {
-		return nil, assertErrf("expected req.BytesValue is [1,2,3], got %v", req.BytesValue)
-	}
 	return req, nil
 }
 
@@ -153,6 +150,11 @@ func (a *ABitOfEverythingService) DeepPathEcho(ctx context.Context, req *example
 	return req, nil
 }
 
+// ErrorWithDetails implements examplepb.ABitOfEverythingServiceServer.
+func (a *ABitOfEverythingService) ErrorWithDetails(ctx context.Context, req *emptypb.Empty) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.NotFound, "Not Found")
+}
+
 // GetMessageWithBody implements examplepb.ABitOfEverythingServiceServer.
 func (a *ABitOfEverythingService) GetMessageWithBody(ctx context.Context, req *examplepb.MessageWithBody) (*emptypb.Empty, error) {
 	if req.Id != "id_with_body" {
@@ -258,11 +260,6 @@ func (a *ABitOfEverythingService) PostRequiredMessageType(ctx context.Context, r
 	}
 
 	return &emptypb.Empty{}, nil
-}
-
-// ErrorWithDetails implements examplepb.ABitOfEverythingServiceServer.
-func (a *ABitOfEverythingService) ErrorWithDetails(ctx context.Context, req *emptypb.Empty) (*emptypb.Empty, error) {
-	panic("unimplemented")
 }
 
 // GetQuery implements examplepb.ABitOfEverythingServiceServer.

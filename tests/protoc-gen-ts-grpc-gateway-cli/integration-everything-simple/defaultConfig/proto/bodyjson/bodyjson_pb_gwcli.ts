@@ -1,33 +1,16 @@
-import { Empty } from "../google/protobuf/empty";
+import { FieldMask } from "../../google/protobuf/field_mask";
 import { Base64 } from "js-base64";
 import { CallOptions, Metadata } from "nice-grpc-common";
-import { ExternalRequest, ExternalResponse } from "./msg";
 import {
-  BinaryRequest,
-  BinaryResponse,
-  CounterServiceClient,
+  BodyJSONServiceClient,
   DeepPartial,
-  HTTPGetWithURLSearchParamsRequest,
-  HTTPGetWithURLSearchParamsResponse,
-  HTTPGetWithZeroValueURLSearchParamsRequest,
-  HTTPGetWithZeroValueURLSearchParamsResponse,
-  HttpDeleteRequest,
-  HttpDeleteWithParamsRequest,
-  HttpDeleteWithParamsResponse,
-  HttpGetRequest,
-  HttpGetResponse,
-  HttpPatchRequest,
-  HttpPatchResponse,
-  HttpPostRequest,
-  HttpPostResponse,
-  OptionalFieldsRequest,
-  OptionalFieldsResponse,
-  PostRequest,
-  StreamingRequest,
-  StreamingResponse,
-  UnaryRequest,
-  UnaryResponse,
-} from "./service";
+  WellKnownTypesHolder,
+} from "./bodyjson";
+import {
+  ABitOfEverything,
+  ABitOfEverything_Nested,
+  numericEnumToJSON,
+} from "../examplepb/a_bit_of_everything";
 
 type Primitive = string | boolean | number;
 type RequestPayload = Record<string, unknown>;
@@ -166,236 +149,193 @@ function metadataToHeaders(metadata: Metadata): Headers {
   return headers;
 }
 
-export function newCounterService(transport: Transport): CounterServiceClient {
+export function newBodyJSONService(
+  transport: Transport,
+): BodyJSONServiceClient {
   return {
-    async increment(
-      req: DeepPartial<UnaryRequest>,
+    async postEnumBody(
+      req: DeepPartial<ABitOfEverything>,
       options?: CallOptions,
-    ): Promise<UnaryResponse> {
+    ): Promise<ABitOfEverything> {
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = UnaryRequest.fromPartial(req);
+      const fullReq = ABitOfEverything.fromPartial(req);
       const res = await transport.call({
-        path: `/main.CounterService/Increment`,
+        path: `/v1/bodyjson/enumbody`,
         method: "POST",
         headers: headers,
-        body: JSON.stringify(UnaryRequest.toJSON(fullReq)),
+        queryParams: renderURLSearchParams(req, ["enum_value"]),
+        body: JSON.stringify(numericEnumToJSON(must(fullReq.enumValue))),
       });
-      return UnaryResponse.fromJSON(res);
+      return ABitOfEverything.fromJSON(res);
     },
 
-    streamingIncrements(
-      req: DeepPartial<StreamingRequest>,
+    async postStringBody(
+      req: DeepPartial<ABitOfEverything>,
       options?: CallOptions,
-    ): AsyncIterable<StreamingResponse> {
-      throw new Error("not implemented");
-    },
-
-    async failingIncrement(
-      req: DeepPartial<UnaryRequest>,
-      options?: CallOptions,
-    ): Promise<UnaryResponse> {
+    ): Promise<ABitOfEverything> {
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = UnaryRequest.fromPartial(req);
+      const fullReq = ABitOfEverything.fromPartial(req);
       const res = await transport.call({
-        path: `/main.CounterService/FailingIncrement`,
+        path: `/v1/bodyjson/stringbody`,
         method: "POST",
         headers: headers,
-        body: JSON.stringify(UnaryRequest.toJSON(fullReq)),
+        queryParams: renderURLSearchParams(req, ["string_value"]),
+        body: JSON.stringify(must(fullReq.stringValue)),
       });
-      return UnaryResponse.fromJSON(res);
+      return ABitOfEverything.fromJSON(res);
     },
 
-    async echoBinary(
-      req: DeepPartial<BinaryRequest>,
+    async postRepeatedMessageBody(
+      req: DeepPartial<ABitOfEverything>,
       options?: CallOptions,
-    ): Promise<BinaryResponse> {
+    ): Promise<ABitOfEverything> {
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = BinaryRequest.fromPartial(req);
+      const fullReq = ABitOfEverything.fromPartial(req);
       const res = await transport.call({
-        path: `/main.CounterService/EchoBinary`,
+        path: `/v1/bodyjson/repeatedmessagebody`,
         method: "POST",
         headers: headers,
-        body: JSON.stringify(BinaryRequest.toJSON(fullReq)),
+        queryParams: renderURLSearchParams(req, ["nested"]),
+        body: JSON.stringify(
+          must(fullReq.nested).map((e) => ABitOfEverything_Nested.toJSON(e)),
+        ),
       });
-      return BinaryResponse.fromJSON(res);
+      return ABitOfEverything.fromJSON(res);
     },
 
-    async hTTPGet(
-      req: DeepPartial<HttpGetRequest>,
+    async postRepeatedStringBody(
+      req: DeepPartial<ABitOfEverything>,
       options?: CallOptions,
-    ): Promise<HttpGetResponse> {
+    ): Promise<ABitOfEverything> {
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = HttpGetRequest.fromPartial(req);
+      const fullReq = ABitOfEverything.fromPartial(req);
       const res = await transport.call({
-        path: `/api/${must(fullReq.num_to_increase)}`,
-        method: "GET",
-        headers: headers,
-        queryParams: renderURLSearchParams(req, ["num_to_increase"]),
-      });
-      return HttpGetResponse.fromJSON(res);
-    },
-
-    async hTTPPostWithNestedBodyPath(
-      req: DeepPartial<HttpPostRequest>,
-      options?: CallOptions,
-    ): Promise<HttpPostResponse> {
-      const headers = options?.metadata
-        ? metadataToHeaders(options.metadata)
-        : undefined;
-      const fullReq = HttpPostRequest.fromPartial(req);
-      const res = await transport.call({
-        path: `/post/${must(fullReq.a)}`,
+        path: `/v1/bodyjson/repeatedstringbody`,
         method: "POST",
         headers: headers,
-        queryParams: renderURLSearchParams(req, ["a", "req"]),
-        body: JSON.stringify(PostRequest.toJSON(must(fullReq.req))),
+        queryParams: renderURLSearchParams(req, ["repeated_string_value"]),
+        body: JSON.stringify(must(fullReq.repeatedStringValue).map((e) => e)),
       });
-      return HttpPostResponse.fromJSON(res);
+      return ABitOfEverything.fromJSON(res);
     },
 
-    async hTTPPostWithStarBodyPath(
-      req: DeepPartial<HttpPostRequest>,
+    async postTimestampBody(
+      req: DeepPartial<WellKnownTypesHolder>,
       options?: CallOptions,
-    ): Promise<HttpPostResponse> {
+    ): Promise<WellKnownTypesHolder> {
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = HttpPostRequest.fromPartial(req);
+      const fullReq = WellKnownTypesHolder.fromPartial(req);
       const res = await transport.call({
-        path: `/post/${must(fullReq.a)}/${must(fullReq.c)}`,
+        path: `/v1/bodyjson/timestampbody`,
         method: "POST",
         headers: headers,
-        body: JSON.stringify(HttpPostRequest.toJSON(fullReq)),
+        queryParams: renderURLSearchParams(req, ["timestamp"]),
+        body: JSON.stringify(must(fullReq.timestamp).toISOString()),
       });
-      return HttpPostResponse.fromJSON(res);
+      return WellKnownTypesHolder.fromJSON(res);
     },
 
-    async hTTPPatch(
-      req: DeepPartial<HttpPatchRequest>,
+    async postFieldMaskBody(
+      req: DeepPartial<WellKnownTypesHolder>,
       options?: CallOptions,
-    ): Promise<HttpPatchResponse> {
+    ): Promise<WellKnownTypesHolder> {
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = HttpPatchRequest.fromPartial(req);
+      const fullReq = WellKnownTypesHolder.fromPartial(req);
       const res = await transport.call({
-        path: `/patch`,
-        method: "PATCH",
-        headers: headers,
-        body: JSON.stringify(HttpPatchRequest.toJSON(fullReq)),
-      });
-      return HttpPatchResponse.fromJSON(res);
-    },
-
-    async hTTPDelete(
-      req: DeepPartial<HttpDeleteRequest>,
-      options?: CallOptions,
-    ): Promise<Empty> {
-      const headers = options?.metadata
-        ? metadataToHeaders(options.metadata)
-        : undefined;
-      const fullReq = HttpDeleteRequest.fromPartial(req);
-      const res = await transport.call({
-        path: `/delete/${must(fullReq.a)}`,
-        method: "DELETE",
-        headers: headers,
-        queryParams: renderURLSearchParams(req, ["a"]),
-      });
-      return Empty.fromJSON(res);
-    },
-
-    async hTTPDeleteWithParams(
-      req: DeepPartial<HttpDeleteWithParamsRequest>,
-      options?: CallOptions,
-    ): Promise<HttpDeleteWithParamsResponse> {
-      const headers = options?.metadata
-        ? metadataToHeaders(options.metadata)
-        : undefined;
-      const fullReq = HttpDeleteWithParamsRequest.fromPartial(req);
-      const res = await transport.call({
-        path: `/delete/${must(fullReq.id)}`,
-        method: "DELETE",
-        headers: headers,
-        queryParams: renderURLSearchParams(req, ["id"]),
-      });
-      return HttpDeleteWithParamsResponse.fromJSON(res);
-    },
-
-    async externalMessage(
-      req: DeepPartial<ExternalRequest>,
-      options?: CallOptions,
-    ): Promise<ExternalResponse> {
-      const headers = options?.metadata
-        ? metadataToHeaders(options.metadata)
-        : undefined;
-      const fullReq = ExternalRequest.fromPartial(req);
-      const res = await transport.call({
-        path: `/main.CounterService/ExternalMessage`,
+        path: `/v1/bodyjson/fieldmaskbody`,
         method: "POST",
         headers: headers,
-        body: JSON.stringify(ExternalRequest.toJSON(fullReq)),
+        queryParams: renderURLSearchParams(req, ["field_mask"]),
+        body: JSON.stringify(
+          FieldMask.toJSON(FieldMask.wrap(must(fullReq.fieldMask))),
+        ),
       });
-      return ExternalResponse.fromJSON(res);
+      return WellKnownTypesHolder.fromJSON(res);
     },
 
-    async hTTPGetWithURLSearchParams(
-      req: DeepPartial<HTTPGetWithURLSearchParamsRequest>,
+    async postStructBody(
+      req: DeepPartial<WellKnownTypesHolder>,
       options?: CallOptions,
-    ): Promise<HTTPGetWithURLSearchParamsResponse> {
+    ): Promise<WellKnownTypesHolder> {
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = HTTPGetWithURLSearchParamsRequest.fromPartial(req);
+      const fullReq = WellKnownTypesHolder.fromPartial(req);
       const res = await transport.call({
-        path: `/api/query/${must(fullReq.a)}`,
-        method: "GET",
+        path: `/v1/bodyjson/structbody`,
+        method: "POST",
         headers: headers,
-        queryParams: renderURLSearchParams(req, ["a"]),
+        queryParams: renderURLSearchParams(req, ["struct"]),
+        body: JSON.stringify(must(fullReq.struct)),
       });
-      return HTTPGetWithURLSearchParamsResponse.fromJSON(res);
+      return WellKnownTypesHolder.fromJSON(res);
     },
 
-    async hTTPGetWithZeroValueURLSearchParams(
-      req: DeepPartial<HTTPGetWithZeroValueURLSearchParamsRequest>,
+    async postValueBody(
+      req: DeepPartial<WellKnownTypesHolder>,
       options?: CallOptions,
-    ): Promise<HTTPGetWithZeroValueURLSearchParamsResponse> {
+    ): Promise<WellKnownTypesHolder> {
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq =
-        HTTPGetWithZeroValueURLSearchParamsRequest.fromPartial(req);
+      const fullReq = WellKnownTypesHolder.fromPartial(req);
       const res = await transport.call({
-        path: `/path/query`,
-        method: "GET",
+        path: `/v1/bodyjson/valuebody`,
+        method: "POST",
         headers: headers,
-        queryParams: renderURLSearchParams(req, []),
+        queryParams: renderURLSearchParams(req, ["value"]),
+        body: JSON.stringify(must(fullReq.value)),
       });
-      return HTTPGetWithZeroValueURLSearchParamsResponse.fromJSON(res);
+      return WellKnownTypesHolder.fromJSON(res);
     },
 
-    async hTTPGetWithOptionalFields(
-      req: DeepPartial<OptionalFieldsRequest>,
+    async postListValueBody(
+      req: DeepPartial<WellKnownTypesHolder>,
       options?: CallOptions,
-    ): Promise<OptionalFieldsResponse> {
+    ): Promise<WellKnownTypesHolder> {
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = OptionalFieldsRequest.fromPartial(req);
+      const fullReq = WellKnownTypesHolder.fromPartial(req);
       const res = await transport.call({
-        path: `/optional`,
-        method: "GET",
+        path: `/v1/bodyjson/listvaluebody`,
+        method: "POST",
         headers: headers,
-        queryParams: renderURLSearchParams(req, []),
+        queryParams: renderURLSearchParams(req, ["list_value"]),
+        body: JSON.stringify(must(fullReq.listValue)),
       });
-      return OptionalFieldsResponse.fromJSON(res);
+      return WellKnownTypesHolder.fromJSON(res);
+    },
+
+    async postWrapperBody(
+      req: DeepPartial<WellKnownTypesHolder>,
+      options?: CallOptions,
+    ): Promise<WellKnownTypesHolder> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
+      const fullReq = WellKnownTypesHolder.fromPartial(req);
+      const res = await transport.call({
+        path: `/v1/bodyjson/wrapperbody`,
+        method: "POST",
+        headers: headers,
+        queryParams: renderURLSearchParams(req, ["int64_value"]),
+        body: JSON.stringify(must(fullReq.int64Value)),
+      });
+      return WellKnownTypesHolder.fromJSON(res);
     },
   };
 }
+// normal fields
