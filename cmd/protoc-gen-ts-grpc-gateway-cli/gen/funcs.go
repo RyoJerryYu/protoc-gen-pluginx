@@ -7,7 +7,6 @@ import (
 
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils"
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils/tsutils"
-	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/protobufx"
 	"github.com/golang/glog"
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -134,50 +133,7 @@ func (g *Generator) renderBody(r *tsutils.TSOption) func(method *protogen.Method
 		switch bodyField.Desc.Kind() {
 		case protoreflect.MessageKind:
 			bodyType := bodyField.Message
-			if protobufx.IsWellKnownType(bodyType.Desc) {
-				switch bodyType.Desc.Name() {
-				case protobufx.Any_message_name,
-					protobufx.Empty_message_name:
-					// Any and Empty, jsonify as a normal message
-					toJsonFunc = tsutils.TSProtoMessageToJson(bodyType)
-				case protobufx.Struct_message_name,
-					protobufx.Value_message_name,
-					protobufx.ListValue_message_name:
-					// Struct, Value, ListValue, jsonify as what they are
-					// It presents as a JSON object, so we don't need to convert it
-					toJsonFunc = tsutils.TSProtoScalarToJson()
-				case protobufx.Timestamp_message_name:
-					// Timestamp represents as Date in ts-proto
-					// and need to convert to a ISO string
-					toJsonFunc = tsutils.TSProtoTimestampToJson()
-				case protobufx.Duration_message_name:
-					// don't know why ts-proto treats Duration as a normal message
-					// in the docs, it should be a string like "1.234s"
-					toJsonFunc = tsutils.TSProtoMessageToJson(bodyType)
-				case protobufx.FieldMask_message_name:
-					// FieldMask represents as []string in ts-proto
-					// and need to convert to strings joined by ","
-					toJsonFunc = tsutils.TSProtoFieldMaskToJson(bodyType)
-				case protobufx.BoolValue_message_name,
-					protobufx.StringValue_message_name,
-					protobufx.DoubleValue_message_name,
-					protobufx.FloatValue_message_name,
-					protobufx.Int32Value_message_name,
-					protobufx.Int64Value_message_name,
-					protobufx.UInt32Value_message_name,
-					protobufx.UInt64Value_message_name:
-					// well-known scalar types,
-					// represent as a scalar in ts-proto
-					// and should be as it is in JSON
-					toJsonFunc = tsutils.TSProtoScalarToJson()
-				default:
-					// other types for reflection or syntax types
-					// should be treated as a normal message
-					toJsonFunc = tsutils.TSProtoMessageToJson(bodyType)
-				}
-			} else {
-				toJsonFunc = tsutils.TSProtoMessageToJson(bodyType)
-			}
+			toJsonFunc = tsutils.TSProtoMessageToJson(bodyType)
 		case protoreflect.EnumKind:
 			// enum types
 			bodyType := bodyField.Enum
