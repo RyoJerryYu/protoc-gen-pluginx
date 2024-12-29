@@ -188,6 +188,27 @@ export function newABitOfEverythingService(
         path: `/v1/example/a_bit_of_everything/${must(fullReq.floatValue)}/${must(fullReq.doubleValue)}/${must(fullReq.int64Value)}/separator/${must(fullReq.uint64Value)}/${must(fullReq.int32Value)}/${must(fullReq.fixed64Value)}/${must(fullReq.fixed32Value)}/${must(fullReq.boolValue)}/${must(fullReq.stringValue)}/${must(fullReq.uint32Value)}/${must(fullReq.sfixed32Value)}/${must(fullReq.sfixed64Value)}/${must(fullReq.sint32Value)}/${must(fullReq.sint64Value)}/${must(fullReq.nonConventionalNameValue)}/${must(fullReq.enumValue)}/${must(fullReq.pathEnumValue)}/${must(fullReq.nestedPathEnumValue)}/${must(fullReq.enumValueAnnotation)}`,
         method: "POST",
         headers: headers,
+        queryParams: renderURLSearchParams(req, [
+          "floatValue",
+          "doubleValue",
+          "int64Value",
+          "uint64Value",
+          "int32Value",
+          "fixed64Value",
+          "fixed32Value",
+          "boolValue",
+          "stringValue",
+          "uint32Value",
+          "sfixed32Value",
+          "sfixed64Value",
+          "sint32Value",
+          "sint64Value",
+          "nonConventionalNameValue",
+          "enumValue",
+          "pathEnumValue",
+          "nestedPathEnumValue",
+          "enumValueAnnotation",
+        ]),
       });
       return ABitOfEverything.fromJSON(res);
     },
@@ -222,6 +243,7 @@ export function newABitOfEverythingService(
         path: `/v1/${must(fullReq.parent)}/books`,
         method: "POST",
         headers: headers,
+        queryParams: renderURLSearchParams(req, ["parent", "book"]),
         body: JSON.stringify(Book.toJSON(must(fullReq.book))),
       });
       return Book.fromJSON(res);
@@ -239,6 +261,7 @@ export function newABitOfEverythingService(
         path: `/v1/${must(fullReq.book?.name)}`,
         method: "PATCH",
         headers: headers,
+        queryParams: renderURLSearchParams(req, ["book.name", "book"]),
         body: JSON.stringify(Book.toJSON(must(fullReq.book))),
       });
       return Book.fromJSON(res);
@@ -273,6 +296,7 @@ export function newABitOfEverythingService(
         path: `/v1/example/a_bit_of_everything/${must(fullReq.uuid)}:custom`,
         method: "POST",
         headers: headers,
+        queryParams: renderURLSearchParams(req, ["uuid"]),
       });
       return ABitOfEverything.fromJSON(res);
     },
@@ -289,6 +313,7 @@ export function newABitOfEverythingService(
         path: `/v1/example/a_bit_of_everything/${must(fullReq.uuid)}:custom:custom`,
         method: "POST",
         headers: headers,
+        queryParams: renderURLSearchParams(req, ["uuid"]),
       });
       return ABitOfEverything.fromJSON(res);
     },
@@ -322,6 +347,7 @@ export function newABitOfEverythingService(
         path: `/v2/example/a_bit_of_everything/${must(fullReq.abe?.uuid)}`,
         method: "PUT",
         headers: headers,
+        queryParams: renderURLSearchParams(req, ["abe.uuid", "abe"]),
         body: JSON.stringify(ABitOfEverything.toJSON(must(fullReq.abe))),
       });
       return Empty.fromJSON(res);
@@ -499,6 +525,7 @@ export function newABitOfEverythingService(
         path: `/v2/example/withbody/${must(fullReq.id)}`,
         method: "POST",
         headers: headers,
+        queryParams: renderURLSearchParams(req, ["id", "data"]),
         body: JSON.stringify(Body.toJSON(must(fullReq.data))),
       });
       return Empty.fromJSON(res);
@@ -567,6 +594,10 @@ export function newABitOfEverythingService(
         path: `/v1/example/a_bit_of_everything/params/post/${must(fullReq.stringValue)}`,
         method: "POST",
         headers: headers,
+        queryParams: renderURLSearchParams(req, [
+          "stringValue",
+          "single_nested",
+        ]),
         body: JSON.stringify(
           ABitOfEverything_Nested.toJSON(must(fullReq.singleNested)),
         ),
@@ -671,6 +702,7 @@ export function newABitOfEverythingService(
         path: `/v1/example/oneofenum`,
         method: "POST",
         headers: headers,
+        queryParams: renderURLSearchParams(req, ["example_enum"]),
         body: exampleEnumToJSON(must(fullReq.exampleEnum)),
       });
       return Empty.fromJSON(res);

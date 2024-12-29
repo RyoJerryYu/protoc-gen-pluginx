@@ -174,23 +174,23 @@ describe("ABitOfEverythingService", () => {
     expect(res).to.deep.equal(newABitOfEverythingNonZero());
   });
 
-  // it("CreateBook", async () => {
-  //   const req: Book = Book.create({
-  //     name: "book_name",
-  //     createTime: new Date("2021-01-01T00:00:00Z"),
-  //     id: "original_id",
-  //   });
+  it("CreateBook", async () => {
+    const req: Book = Book.create({
+      name: "book_name",
+      createTime: new Date("2021-01-01T00:00:00Z"),
+      id: "original_id",
+    });
 
-  //   const res = await aBitOfEverythingService.createBook({
-  //     book: req,
-  //     bookId: "book_id",
-  //     parent: "publishers/123",
-  //   });
+    const res = await aBitOfEverythingService.createBook({
+      book: req,
+      bookId: "book_id",
+      parent: "publishers/123",
+    });
 
-  //   req.id = "book_id";
+    req.id = "book_id";
 
-  //   expect(res).to.deep.equal(req);
-  // });
+    expect(res).to.deep.equal(req);
+  });
 
   // it("UpdateBook", async () => {
   //   const req: Book = Book.create({
@@ -368,13 +368,13 @@ describe("ABitOfEverythingService", () => {
         amount: 1,
         ok: ABitOfEverything_Nested_DeepEnum.TRUE,
       },
-      // uuid: "uuid_check_post_query_params",
-      // boolValue: true,
+      uuid: "uuid_check_post_query_params",
+      boolValue: true,
       stringValue: "string",
-      // uint32Value: 1,
-      // enumValue: NumericEnum.ONE,
-      // pathEnumValue: PathEnum.DEF,
-      // nestedPathEnumValue: MessagePathEnum_NestedPathEnum.JKL,
+      uint32Value: 1,
+      enumValue: NumericEnum.ONE,
+      pathEnumValue: PathEnum.DEF,
+      nestedPathEnumValue: MessagePathEnum_NestedPathEnum.JKL,
     };
     const res = await aBitOfEverythingService.checkPostQueryParams(req);
     expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));

@@ -23,9 +23,9 @@ ts_proto do not check oneof at client code, so the gateway cli do not check the 
 
 ### TODO: 
 
-- [ ] Create: body did not send in request: body did not annotated in rpc option
-- [ ] CreateBook: do not support query params for post method
-- [ ] CheckPostQueryParams: query params did not pass to server in post method
+- [ ] Create: body did not send in request: body did not annotated in rpc option, should send as query params
+- [x] CreateBook: do not support query params for post method
+- [x] CheckPostQueryParams: query params did not pass to server in post method
 - [ ] body field do not work well with repeated field
 - [ ] PostOneofEnum: post body only contain one enum field do not work well: need stringify
 - [ ] NoBindings: jsonify do not work well with well-known-types

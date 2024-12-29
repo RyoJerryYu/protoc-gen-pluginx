@@ -255,6 +255,7 @@ export function newCounterService(transport: Transport): CounterServiceClient {
         path: `/post/${must(fullReq.a)}`,
         method: "POST",
         headers: headers,
+        queryParams: renderURLSearchParams(req, ["a", "req"]),
         body: JSON.stringify(PostRequest.toJSON(must(fullReq.req))),
       });
       return HttpPostResponse.fromJSON(res);
