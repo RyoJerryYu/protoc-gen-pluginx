@@ -303,7 +303,19 @@ describe("ABitOfEverythingService", () => {
   //   expect(res).to.deep.equal(Empty.create());
   // });
   // it("Timeout")
-  // it("ErrorWithDetails")
+  it("ErrorWithDetails", async () => {
+    let errorThrown = false;
+    try {
+      await aBitOfEverythingService.errorWithDetails({});
+    } catch (e) {
+      errorThrown = true;
+      expect(e).to.deep.equal({
+        code: 5,
+        message: "Not Found",
+      });
+    }
+    expect(errorThrown).to.be.true;
+  });
 
   it("GetMessageWithBody", async () => {
     const req = MessageWithBody.create({
