@@ -2547,6 +2547,42 @@ export const ABitOfEverythingServiceDefinition = {
         },
       },
     },
+    postEnumBody: {
+      name: "PostEnumBody",
+      requestType: ABitOfEverything,
+      requestStream: false,
+      responseType: ABitOfEverything,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              34, 58, 10, 101, 110, 117, 109, 95, 118, 97, 108, 117, 101, 34,
+              20, 47, 118, 49, 47, 101, 120, 97, 109, 112, 108, 101, 47, 101,
+              110, 117, 109, 98, 111, 100, 121,
+            ]),
+          ],
+        },
+      },
+    },
+    postStringBody: {
+      name: "PostStringBody",
+      requestType: ABitOfEverything,
+      requestStream: false,
+      responseType: ABitOfEverything,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              38, 58, 12, 115, 116, 114, 105, 110, 103, 95, 118, 97, 108, 117,
+              101, 34, 22, 47, 118, 49, 47, 101, 120, 97, 109, 112, 108, 101,
+              47, 115, 116, 114, 105, 110, 103, 98, 111, 100, 121,
+            ]),
+          ],
+        },
+      },
+    },
     postRepeatedMessageBody: {
       name: "PostRepeatedMessageBody",
       requestType: ABitOfEverything,
@@ -2700,6 +2736,14 @@ export interface ABitOfEverythingServiceImplementation<CallContextExt = {}> {
     request: RequiredMessageTypeRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<Empty>>;
+  postEnumBody(
+    request: ABitOfEverything,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<ABitOfEverything>>;
+  postStringBody(
+    request: ABitOfEverything,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<ABitOfEverything>>;
   postRepeatedMessageBody(
     request: ABitOfEverything,
     context: CallContext & CallContextExt,
@@ -2838,6 +2882,14 @@ export interface ABitOfEverythingServiceClient<CallOptionsExt = {}> {
     request: DeepPartial<RequiredMessageTypeRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<Empty>;
+  postEnumBody(
+    request: DeepPartial<ABitOfEverything>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<ABitOfEverything>;
+  postStringBody(
+    request: DeepPartial<ABitOfEverything>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<ABitOfEverything>;
   postRepeatedMessageBody(
     request: DeepPartial<ABitOfEverything>,
     options?: CallOptions & CallOptionsExt,

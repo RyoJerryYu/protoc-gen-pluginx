@@ -257,6 +257,16 @@ func (a *ABitOfEverythingService) PostRequiredMessageType(ctx context.Context, r
 	return &emptypb.Empty{}, nil
 }
 
+// PostEnumBody implements examplepb.ABitOfEverythingServiceServer.
+func (a *ABitOfEverythingService) PostEnumBody(ctx context.Context, req *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error) {
+	return req, nil
+}
+
+// PostStringBody implements examplepb.ABitOfEverythingServiceServer.
+func (a *ABitOfEverythingService) PostStringBody(ctx context.Context, req *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error) {
+	return req, nil
+}
+
 // PostRepeatedMessageBody implements examplepb.ABitOfEverythingServiceServer.
 func (a *ABitOfEverythingService) PostRepeatedMessageBody(ctx context.Context, req *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error) {
 	return req, nil

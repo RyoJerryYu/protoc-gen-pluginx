@@ -439,8 +439,27 @@ describe("ABitOfEverythingService", () => {
     expect(res).to.deep.equal(Empty.create());
   });
 
+  // it("PostEnumBody", async () => {
+  //   const req: Partial<ABitOfEverything> = {
+  //     int32Value: 1,
+  //     enumValue: NumericEnum.ONE,
+  //   };
+  //   const res = await aBitOfEverythingService.postEnumBody(req);
+  //   expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+  // });
+
+  it("PostStringBody", async () => {
+    const req: Partial<ABitOfEverything> = {
+      int32Value: 1,
+      stringValue: "string",
+    };
+    const res = await aBitOfEverythingService.postStringBody(req);
+    expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+  });
+
   it("PostRepeatedMessageBody", async () => {
     const req: Partial<ABitOfEverything> = {
+      int32Value: 1,
       nested: [
         {
           name: "nested",

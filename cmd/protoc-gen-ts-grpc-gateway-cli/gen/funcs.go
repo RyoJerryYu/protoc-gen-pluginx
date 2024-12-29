@@ -137,6 +137,19 @@ func (g *Generator) renderBody(r *tsutils.TSOption) func(method *protogen.Method
 		case protoreflect.EnumKind:
 			bodyType := bodyField.Enum
 			toJsonFunc = tsutils.TSProtoEnumToJson(bodyType)
+		case protoreflect.BoolKind,
+			protoreflect.StringKind,
+			protoreflect.Int32Kind,
+			protoreflect.Int64Kind,
+			protoreflect.Uint32Kind,
+			protoreflect.Uint64Kind,
+			protoreflect.FloatKind,
+			protoreflect.DoubleKind,
+			protoreflect.Sfixed32Kind,
+			protoreflect.Sfixed64Kind,
+			protoreflect.Fixed32Kind,
+			protoreflect.Fixed64Kind:
+			toJsonFunc = tsutils.TSProtoScalarToJson()
 		default:
 			glog.Fatalf("unsupported body field type: %s", bodyField.Desc.Kind())
 			return "", ""

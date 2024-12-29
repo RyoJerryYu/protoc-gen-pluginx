@@ -28,7 +28,7 @@ ts_proto do not check oneof at client code, so the gateway cli do not check the 
 - [x] CheckPostQueryParams: query params did not pass to server in post method
 - [x] body field do not work well with repeated field
 - [ ] body field do not work well with map field
-- [ ] body field do not work well with scalar field
+- [x] body field do not work well with scalar field
 - [ ] NoBindings: jsonify do not work well with well-known-types
 - [ ] UpdateBook: field mask did not remove path params
 - [ ] ErrorWithDetails: throw error with details

@@ -22,6 +22,10 @@ func TSIdent_TSProto_Message(msg *protogen.Message) TSIdent {
 	return TSModule_TSProto(msg.Desc.ParentFile()).Ident(msg.GoIdent.GoName)
 }
 
+func TSProto_EnumToJSONFuncName(g *TSRegistry, enum protoreflect.EnumDescriptor) string {
+	return FunctionCase_TSProto(string(enum.Name())) + "ToJSON"
+}
+
 func TSProtoMessageToJson(msgTyp *protogen.Message) func(g *TSRegistry, in string) string {
 	return func(g *TSRegistry, in string) string {
 		ident := g.QualifiedTSIdent(TSIdent_TSProto_Message(msgTyp))
@@ -37,6 +41,8 @@ func TSProtoEnumToJson(enumTyp *protogen.Enum) func(g *TSRegistry, in string) st
 	}
 }
 
-func TSProto_EnumToJSONFuncName(g *TSRegistry, enum protoreflect.EnumDescriptor) string {
-	return FunctionCase_TSProto(string(enum.Name())) + "ToJSON"
+func TSProtoScalarToJson() func(g *TSRegistry, in string) string {
+	return func(g *TSRegistry, in string) string {
+		return in
+	}
 }

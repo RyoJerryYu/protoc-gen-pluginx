@@ -750,6 +750,20 @@ service ABitOfEverythingService {
     };
   }
 
+  rpc PostEnumBody(ABitOfEverything) returns (ABitOfEverything) {
+    option (google.api.http) = {
+      post: "/v1/example/enumbody"
+      body: "enum_value"
+    };
+  }
+
+  rpc PostStringBody(ABitOfEverything) returns (ABitOfEverything) {
+    option (google.api.http) = {
+      post: "/v1/example/stringbody"
+      body: "string_value"
+    };
+  }
+
   rpc PostRepeatedMessageBody(ABitOfEverything) returns (ABitOfEverything) {
     option (google.api.http) = {
       post: "/v1/example/repeatedmessagebody"
