@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-ts-grpc-gateway-cli/integration-everything-simple/server/proto/bodyjson"
 	"github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-ts-grpc-gateway-cli/integration-everything-simple/server/proto/examplepb"
 	"github.com/go-chi/chi/v5"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -56,6 +57,7 @@ func main() {
 
 	grpcServer := grpc.NewServer()
 	examplepb.RegisterABitOfEverythingServiceServer(grpcServer, &ABitOfEverythingService{})
+	bodyjson.RegisterBodyJSONServiceServer(grpcServer, &BodyJSONService{})
 
 	gateway := runtime.NewServeMux(runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.HTTPBodyMarshaler{
 		Marshaler: &runtime.JSONPb{
@@ -67,6 +69,12 @@ func main() {
 	}))
 
 	err = examplepb.RegisterABitOfEverythingServiceHandlerFromEndpoint(ctx, gateway, endpoint, []grpc.DialOption{
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	})
+	if err != nil {
+		panic(err)
+	}
+	err = bodyjson.RegisterBodyJSONServiceHandlerFromEndpoint(ctx, gateway, endpoint, []grpc.DialOption{
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	})
 	if err != nil {

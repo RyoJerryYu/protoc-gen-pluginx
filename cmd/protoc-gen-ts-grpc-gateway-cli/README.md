@@ -29,7 +29,8 @@ ts_proto do not check oneof at client code, so the gateway cli do not check the 
 - [x] body field do not work well with repeated field
 - [ ] body field do not work well with map field
 - [x] body field do not work well with scalar field
-- [ ] NoBindings: jsonify do not work well with well-known-types
+- [x] body field do not work well with well-known-types
+- [ ] NoBindings: jsonify do not work well with duration
 - [ ] UpdateBook: field mask did not remove path params
 - [ ] ErrorWithDetails: throw error with details
 - [ ] CheckGetQueryParams, CheckNestedEnumGetQueryParams: repeated nested query params did not pass to server

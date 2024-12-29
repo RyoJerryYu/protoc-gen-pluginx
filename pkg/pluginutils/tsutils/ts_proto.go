@@ -1,6 +1,7 @@
 package tsutils
 
 import (
+	"fmt"
 	"strings"
 
 	"google.golang.org/protobuf/compiler/protogen"
@@ -44,5 +45,20 @@ func TSProtoEnumToJson(enumTyp *protogen.Enum) func(g *TSRegistry, in string) st
 func TSProtoScalarToJson() func(g *TSRegistry, in string) string {
 	return func(g *TSRegistry, in string) string {
 		return in
+	}
+}
+
+func TSProtoTimestampToJson() func(g *TSRegistry, in string) string {
+	return func(g *TSRegistry, in string) string {
+		// in is type of Date
+		return in + `.toISOString()`
+	}
+}
+
+func TSProtoFieldMaskToJson(msgTyp *protogen.Message) func(g *TSRegistry, in string) string {
+	return func(g *TSRegistry, in string) string {
+		// in is type of FieldMask
+		ident := g.QualifiedTSIdent(TSIdent_TSProto_Message(msgTyp))
+		return fmt.Sprintf(`%s.toJSON(%s.wrap(%s))`, ident, ident, in)
 	}
 }

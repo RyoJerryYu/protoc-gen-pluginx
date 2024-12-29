@@ -749,34 +749,6 @@ service ABitOfEverythingService {
       body: "*"
     };
   }
-
-  rpc PostEnumBody(ABitOfEverything) returns (ABitOfEverything) {
-    option (google.api.http) = {
-      post: "/v1/example/enumbody"
-      body: "enum_value"
-    };
-  }
-
-  rpc PostStringBody(ABitOfEverything) returns (ABitOfEverything) {
-    option (google.api.http) = {
-      post: "/v1/example/stringbody"
-      body: "string_value"
-    };
-  }
-
-  rpc PostRepeatedMessageBody(ABitOfEverything) returns (ABitOfEverything) {
-    option (google.api.http) = {
-      post: "/v1/example/repeatedmessagebody"
-      body: "nested"
-    };
-  }
-
-  // rpc PostRepeatedStringBody(ABitOfEverything) returns (ABitOfEverything) {
-  //   option (google.api.http) = {
-  //     post: "/v1/example/repeatedstringbody"
-  //     body: "repeated_string_value"
-  //   };
-  // }
 }
 
 // // camelCase and lowercase service names are valid but not recommended (use TitleCase instead)

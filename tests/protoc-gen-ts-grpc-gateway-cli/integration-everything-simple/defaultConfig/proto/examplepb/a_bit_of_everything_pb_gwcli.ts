@@ -21,7 +21,6 @@ import {
   SnakeEnumServiceClient,
   UpdateBookRequest,
   UpdateV2Request,
-  numericEnumToJSON,
 } from "./a_bit_of_everything";
 import { OneofEnumMessage, exampleEnumToJSON } from "../oneofenum/oneof_enum";
 import {
@@ -724,62 +723,6 @@ export function newABitOfEverythingService(
         body: JSON.stringify(RequiredMessageTypeRequest.toJSON(fullReq)),
       });
       return Empty.fromJSON(res);
-    },
-
-    async postEnumBody(
-      req: DeepPartial<ABitOfEverything>,
-      options?: CallOptions,
-    ): Promise<ABitOfEverything> {
-      const headers = options?.metadata
-        ? metadataToHeaders(options.metadata)
-        : undefined;
-      const fullReq = ABitOfEverything.fromPartial(req);
-      const res = await transport.call({
-        path: `/v1/example/enumbody`,
-        method: "POST",
-        headers: headers,
-        queryParams: renderURLSearchParams(req, ["enum_value"]),
-        body: JSON.stringify(numericEnumToJSON(must(fullReq.enumValue))),
-      });
-      return ABitOfEverything.fromJSON(res);
-    },
-
-    async postStringBody(
-      req: DeepPartial<ABitOfEverything>,
-      options?: CallOptions,
-    ): Promise<ABitOfEverything> {
-      const headers = options?.metadata
-        ? metadataToHeaders(options.metadata)
-        : undefined;
-      const fullReq = ABitOfEverything.fromPartial(req);
-      const res = await transport.call({
-        path: `/v1/example/stringbody`,
-        method: "POST",
-        headers: headers,
-        queryParams: renderURLSearchParams(req, ["string_value"]),
-        body: JSON.stringify(must(fullReq.stringValue)),
-      });
-      return ABitOfEverything.fromJSON(res);
-    },
-
-    async postRepeatedMessageBody(
-      req: DeepPartial<ABitOfEverything>,
-      options?: CallOptions,
-    ): Promise<ABitOfEverything> {
-      const headers = options?.metadata
-        ? metadataToHeaders(options.metadata)
-        : undefined;
-      const fullReq = ABitOfEverything.fromPartial(req);
-      const res = await transport.call({
-        path: `/v1/example/repeatedmessagebody`,
-        method: "POST",
-        headers: headers,
-        queryParams: renderURLSearchParams(req, ["nested"]),
-        body: JSON.stringify(
-          must(fullReq.nested).map((e) => ABitOfEverything_Nested.toJSON(e)),
-        ),
-      });
-      return ABitOfEverything.fromJSON(res);
     },
   };
 }

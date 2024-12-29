@@ -27,6 +27,8 @@ import { Empty } from "./google/protobuf/empty";
 import { Status } from "./google/rpc/status";
 import { ExampleEnum, OneofEnumMessage } from "./proto/oneofenum/oneof_enum";
 import { StringMessage } from "./proto/sub/message";
+import { newBodyJSONService } from "./proto/bodyjson/bodyjson_pb_gwcli";
+import { WellKnownTypesHolder } from "./proto/bodyjson/bodyjson";
 
 function fetchTransport(
   baseUrl: string,
@@ -438,39 +440,6 @@ describe("ABitOfEverythingService", () => {
     const res = await aBitOfEverythingService.postRequiredMessageType(req);
     expect(res).to.deep.equal(Empty.create());
   });
-
-  // it("PostEnumBody", async () => {
-  //   const req: Partial<ABitOfEverything> = {
-  //     int32Value: 1,
-  //     enumValue: NumericEnum.ONE,
-  //   };
-  //   const res = await aBitOfEverythingService.postEnumBody(req);
-  //   expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
-  // });
-
-  it("PostStringBody", async () => {
-    const req: Partial<ABitOfEverything> = {
-      int32Value: 1,
-      stringValue: "string",
-    };
-    const res = await aBitOfEverythingService.postStringBody(req);
-    expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
-  });
-
-  it("PostRepeatedMessageBody", async () => {
-    const req: Partial<ABitOfEverything> = {
-      int32Value: 1,
-      nested: [
-        {
-          name: "nested",
-          amount: 1,
-          ok: ABitOfEverything_Nested_DeepEnum.TRUE,
-        },
-      ],
-    };
-    const res = await aBitOfEverythingService.postRepeatedMessageBody(req);
-    expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
-  });
 });
 
 describe("AnotherServiceWithNoBindings", () => {
@@ -492,5 +461,119 @@ describe("AnotherServiceWithNoBindings", () => {
       });
     }
     expect(errorThrown).to.be.true;
+  });
+});
+
+describe("BodyJsonService", () => {
+  const bodyJsonService = newBodyJSONService(
+    fetchTransport("http://localhost:8081/api"),
+  );
+
+  // body field
+
+  // it("PostEnumBody", async () => {
+  //   const req: Partial<ABitOfEverything> = {
+  //     int32Value: 1,
+  //     enumValue: NumericEnum.ONE,
+  //   };
+  //   const res = await bodyJsonService.postEnumBody(req);
+  //   expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+  // });
+
+  it("PostStringBody", async () => {
+    const req: Partial<ABitOfEverything> = {
+      int32Value: 1,
+      stringValue: "string",
+    };
+    const res = await bodyJsonService.postStringBody(req);
+    expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+  });
+
+  // repeated
+
+  it("PostRepeatedMessageBody", async () => {
+    const req: Partial<ABitOfEverything> = {
+      int32Value: 1,
+      nested: [
+        {
+          name: "nested",
+          amount: 1,
+          ok: ABitOfEverything_Nested_DeepEnum.TRUE,
+        },
+      ],
+    };
+    const res = await bodyJsonService.postRepeatedMessageBody(req);
+    expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+  });
+
+  it("PostRepeatedStringBody", async () => {
+    const req: Partial<ABitOfEverything> = {
+      int32Value: 1,
+      repeatedStringValue: ["string"],
+    };
+    const res = await bodyJsonService.postRepeatedStringBody(req);
+    expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+  });
+
+  // Well-known types
+
+  it("PostTimestampBody", async () => {
+    const req: Partial<WellKnownTypesHolder> = {
+      payloadCheck: "payload_check",
+      timestamp: new Date("2021-01-01T00:00:00Z"),
+    };
+    const res = await bodyJsonService.postTimestampBody(req);
+    expect(res).to.deep.equal(WellKnownTypesHolder.fromPartial(req));
+  });
+
+  it("PostFieldMaskBody", async () => {
+    const req: Partial<WellKnownTypesHolder> = {
+      payloadCheck: "payload_check",
+      fieldMask: ["f.bar", "f.baz"],
+    };
+    const res = await bodyJsonService.postFieldMaskBody(req);
+    expect(res).to.deep.equal(WellKnownTypesHolder.fromPartial(req));
+  });
+
+  it("PostStructBody", async () => {
+    const req: Partial<WellKnownTypesHolder> = {
+      payloadCheck: "payload_check",
+      struct: {
+        fields: {
+          key: {
+            stringValue: "string",
+          },
+          anyList: ["any_list", "any_list2"],
+        },
+      },
+    };
+    const res = await bodyJsonService.postStructBody(req);
+    expect(res).to.deep.equal(WellKnownTypesHolder.fromPartial(req));
+  });
+  it("PostValueBody", async () => {
+    const req: Partial<WellKnownTypesHolder> = {
+      payloadCheck: "payload_check",
+      value: "value",
+    };
+    const res = await bodyJsonService.postValueBody(req);
+    expect(res).to.deep.equal(WellKnownTypesHolder.fromPartial(req));
+  });
+
+  it("PostListValueBody", async () => {
+    const req: Partial<WellKnownTypesHolder> = {
+      payloadCheck: "payload_check",
+      listValue: ["list_value", "list_value2"],
+    };
+    const res = await bodyJsonService.postListValueBody(req);
+    expect(res).to.deep.equal(WellKnownTypesHolder.fromPartial(req));
+  });
+
+  it("PostWrapperBody", async () => {
+    const req: Partial<WellKnownTypesHolder> = {
+      payloadCheck: "payload_check",
+      int64Value: 1,
+    };
+    const res = await bodyJsonService.postWrapperBody(req);
+    expect(res).to.deep.equal(WellKnownTypesHolder.fromPartial(req));
   });
 });
