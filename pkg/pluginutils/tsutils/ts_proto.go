@@ -31,7 +31,21 @@ func TSProto_EnumToJSONFuncName(g *TSRegistry, enum protoreflect.EnumDescriptor)
 
 func TSProtoFieldToJson(field *protogen.Field) func(g *TSRegistry, in string) string {
 	if field.Desc.IsMap() {
-		// return TSProtoMapFieldToJson(field)
+		keyField := field.Message.Fields[0]
+		valueField := field.Message.Fields[1]
+		keyFieldToJson := TSProtoFieldToJson(keyField)
+		valueFieldToJson := TSProtoFieldToJson(valueField)
+
+		return func(g *TSRegistry, in string) string {
+			return fmt.Sprintf(`((s) => {
+				const entries = Object.entries(s);
+				const obj: any = {};
+				for (const [k, v] of entries) {
+					obj[%s] = %s;
+				}
+				return obj;
+			})(%s)`, keyFieldToJson(g, "k"), valueFieldToJson(g, "v"), in)
+		}
 	}
 	isList := field.Desc.IsList()
 	listify := func(in string, do func(string) string) string {
