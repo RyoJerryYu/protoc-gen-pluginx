@@ -27,15 +27,13 @@ ts_proto do not check oneof at client code, so the gateway cli do not check the 
 - [x] CreateBook: do not support query params for post method
 - [x] CheckPostQueryParams: query params did not pass to server in post method
 - [x] body field do not work well with repeated field
-- [ ] body field do not work well with map field
 - [x] body field do not work well with scalar field
 - [x] body field do not work well with well-known-types
 - [ ] UpdateBook: field mask did not remove path params
 - [ ] ErrorWithDetails: throw error with details
 - [ ] CheckGetQueryParams, CheckNestedEnumGetQueryParams: repeated nested query params did not pass to server
-- [ ] PostOneofEnum: post body only contain one enum field do not work well: need stringify
-- [ ] 
-- [ ] NoBindings: jsonify do not work well with duration
+
+### low priority TODO:
 - [ ] GetRepeatedQuery: path param do not work well with repeated
 - [ ] GetRepeatedQuery: path param do not work well with bytes, required base64
 - [ ] Create: query params for map field do not work well
@@ -43,6 +41,11 @@ ts_proto do not check oneof at client code, so the gateway cli do not check the 
 - [ ] Create: query params for bytes field do not work well
 - [ ] Exists,CustomOptionsRequest,TraceRequest: do not work well with custom method
 - [ ] camelCaseServiceName: camelCase service names are valid
+
+### no plan:
+- [ ] NoBindings: jsonify do not work well with duration: ts_proto do not support
+- [ ] PostOneofEnum: post body only contain one enum field do not work well: protoc-gen-grpc-gateway do not support
+- [ ] body field do not work well with map field: protoc-gen-grpc-gateway do not support
 
 ### Features that do not support
 

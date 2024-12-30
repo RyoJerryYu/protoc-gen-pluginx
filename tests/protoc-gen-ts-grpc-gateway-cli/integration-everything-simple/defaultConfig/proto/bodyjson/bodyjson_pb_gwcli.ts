@@ -9,7 +9,6 @@ import {
 import {
   ABitOfEverything,
   ABitOfEverything_Nested,
-  numericEnumToJSON,
 } from "../examplepb/a_bit_of_everything";
 
 type Primitive = string | boolean | number;
@@ -153,24 +152,6 @@ export function newBodyJSONService(
   transport: Transport,
 ): BodyJSONServiceClient {
   return {
-    async postEnumBody(
-      req: DeepPartial<ABitOfEverything>,
-      options?: CallOptions,
-    ): Promise<ABitOfEverything> {
-      const headers = options?.metadata
-        ? metadataToHeaders(options.metadata)
-        : undefined;
-      const fullReq = ABitOfEverything.fromPartial(req);
-      const res = await transport.call({
-        path: `/v1/bodyjson/enumbody`,
-        method: "POST",
-        headers: headers,
-        queryParams: renderURLSearchParams(req, ["enum_value"]),
-        body: JSON.stringify(numericEnumToJSON(must(fullReq.enumValue))),
-      });
-      return ABitOfEverything.fromJSON(res);
-    },
-
     async postStringBody(
       req: DeepPartial<ABitOfEverything>,
       options?: CallOptions,

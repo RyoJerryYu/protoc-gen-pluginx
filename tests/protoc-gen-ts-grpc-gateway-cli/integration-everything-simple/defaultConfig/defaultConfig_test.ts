@@ -518,6 +518,15 @@ describe("BodyJsonService", () => {
     expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
   });
 
+  // it("PostRepeatedEnumBody", async () => {
+  //   const req: Partial<ABitOfEverything> = {
+  //     int32Value: 1,
+  //     repeatedEnumValue: [NumericEnum.ONE],
+  //   };
+  //   const res = await bodyJsonService.postRepeatedEnumBody(req);
+  //   expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+  // });
+
   it("PostRepeatedStringBody", async () => {
     const req: Partial<ABitOfEverything> = {
       int32Value: 1,
@@ -526,6 +535,40 @@ describe("BodyJsonService", () => {
     const res = await bodyJsonService.postRepeatedStringBody(req);
     expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
   });
+
+  // map field
+
+  // it("PostMapMessageBody", async () => {
+  //   const req: Partial<ABitOfEverything> = {
+  //     int32Value: 1,
+  //     mappedNestedValue: {
+  //       some_one: {
+  //         name: "one",
+  //         amount: 1,
+  //         ok: ABitOfEverything_Nested_DeepEnum.TRUE,
+  //       },
+  //       some_zero: {
+  //         name: "zero",
+  //         amount: 0,
+  //         ok: ABitOfEverything_Nested_DeepEnum.FALSE,
+  //       },
+  //     },
+  //   };
+  //   const res = await bodyJsonService.postMapMessageBody(req);
+  //   expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+  // });
+
+  // it("PostMapStringBody", async () => {
+  //   const req: Partial<ABitOfEverything> = {
+  //     int32Value: 1,
+  //     mappedStringValue: {
+  //       some_one: "one",
+  //       some_zero: "zero",
+  //     },
+  //   };
+  //   const res = await bodyJsonService.postMapStringBody(req);
+  //   expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+  // });
 
   // Well-known types
 
