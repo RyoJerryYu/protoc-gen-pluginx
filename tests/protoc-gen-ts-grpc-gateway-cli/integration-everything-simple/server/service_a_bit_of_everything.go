@@ -152,7 +152,12 @@ func (a *ABitOfEverythingService) DeepPathEcho(ctx context.Context, req *example
 
 // ErrorWithDetails implements examplepb.ABitOfEverythingServiceServer.
 func (a *ABitOfEverythingService) ErrorWithDetails(ctx context.Context, req *emptypb.Empty) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.NotFound, "Not Found")
+	sts := status.New(codes.PermissionDenied, "permission denied")
+	sts, err := sts.WithDetails(&examplepb.Book{Name: "book_name", Id: "book_id", CreateTime: &timestamppb.Timestamp{Seconds: 1609459200}})
+	if err != nil {
+		return nil, err
+	}
+	return nil, sts.Err()
 }
 
 // GetMessageWithBody implements examplepb.ABitOfEverythingServiceServer.

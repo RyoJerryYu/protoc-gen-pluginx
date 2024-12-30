@@ -29,6 +29,7 @@ const (
 	BodyJSONService_PostValueBody_FullMethodName           = "/proto.bodyjson.BodyJSONService/PostValueBody"
 	BodyJSONService_PostListValueBody_FullMethodName       = "/proto.bodyjson.BodyJSONService/PostListValueBody"
 	BodyJSONService_PostWrapperBody_FullMethodName         = "/proto.bodyjson.BodyJSONService/PostWrapperBody"
+	BodyJSONService_PatchBodyWithPathParam_FullMethodName  = "/proto.bodyjson.BodyJSONService/PatchBodyWithPathParam"
 )
 
 // BodyJSONServiceClient is the client API for BodyJSONService service.
@@ -44,6 +45,8 @@ type BodyJSONServiceClient interface {
 	PostValueBody(ctx context.Context, in *WellKnownTypesHolder, opts ...grpc.CallOption) (*WellKnownTypesHolder, error)
 	PostListValueBody(ctx context.Context, in *WellKnownTypesHolder, opts ...grpc.CallOption) (*WellKnownTypesHolder, error)
 	PostWrapperBody(ctx context.Context, in *WellKnownTypesHolder, opts ...grpc.CallOption) (*WellKnownTypesHolder, error)
+	// patch
+	PatchBodyWithPathParam(ctx context.Context, in *examplepb.ABitOfEverything, opts ...grpc.CallOption) (*examplepb.ABitOfEverything, error)
 }
 
 type bodyJSONServiceClient struct {
@@ -144,6 +147,16 @@ func (c *bodyJSONServiceClient) PostWrapperBody(ctx context.Context, in *WellKno
 	return out, nil
 }
 
+func (c *bodyJSONServiceClient) PatchBodyWithPathParam(ctx context.Context, in *examplepb.ABitOfEverything, opts ...grpc.CallOption) (*examplepb.ABitOfEverything, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(examplepb.ABitOfEverything)
+	err := c.cc.Invoke(ctx, BodyJSONService_PatchBodyWithPathParam_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BodyJSONServiceServer is the server API for BodyJSONService service.
 // All implementations must embed UnimplementedBodyJSONServiceServer
 // for forward compatibility.
@@ -157,6 +170,8 @@ type BodyJSONServiceServer interface {
 	PostValueBody(context.Context, *WellKnownTypesHolder) (*WellKnownTypesHolder, error)
 	PostListValueBody(context.Context, *WellKnownTypesHolder) (*WellKnownTypesHolder, error)
 	PostWrapperBody(context.Context, *WellKnownTypesHolder) (*WellKnownTypesHolder, error)
+	// patch
+	PatchBodyWithPathParam(context.Context, *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error)
 	mustEmbedUnimplementedBodyJSONServiceServer()
 }
 
@@ -193,6 +208,9 @@ func (UnimplementedBodyJSONServiceServer) PostListValueBody(context.Context, *We
 }
 func (UnimplementedBodyJSONServiceServer) PostWrapperBody(context.Context, *WellKnownTypesHolder) (*WellKnownTypesHolder, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PostWrapperBody not implemented")
+}
+func (UnimplementedBodyJSONServiceServer) PatchBodyWithPathParam(context.Context, *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PatchBodyWithPathParam not implemented")
 }
 func (UnimplementedBodyJSONServiceServer) mustEmbedUnimplementedBodyJSONServiceServer() {}
 func (UnimplementedBodyJSONServiceServer) testEmbeddedByValue()                         {}
@@ -377,6 +395,24 @@ func _BodyJSONService_PostWrapperBody_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BodyJSONService_PatchBodyWithPathParam_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(examplepb.ABitOfEverything)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BodyJSONServiceServer).PatchBodyWithPathParam(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BodyJSONService_PatchBodyWithPathParam_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BodyJSONServiceServer).PatchBodyWithPathParam(ctx, req.(*examplepb.ABitOfEverything))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // BodyJSONService_ServiceDesc is the grpc.ServiceDesc for BodyJSONService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -419,6 +455,10 @@ var BodyJSONService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PostWrapperBody",
 			Handler:    _BodyJSONService_PostWrapperBody_Handler,
+		},
+		{
+			MethodName: "PatchBodyWithPathParam",
+			Handler:    _BodyJSONService_PatchBodyWithPathParam_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
