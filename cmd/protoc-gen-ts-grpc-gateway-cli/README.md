@@ -30,8 +30,7 @@ ts_proto do not check oneof at client code, so the gateway cli do not check the 
 - [x] body field do not work well with scalar field
 - [x] body field do not work well with well-known-types
 - [x] UpdateBook: field mask did not remove path params
-- [ ] ErrorWithDetails: throw error with details
-- [ ] CheckGetQueryParams, CheckNestedEnumGetQueryParams: repeated nested query params did not pass to server
+- [x] ErrorWithDetails: throw error with details
 
 ### low priority TODO:
 - [ ] GetRepeatedQuery: path param do not work well with repeated
@@ -41,6 +40,7 @@ ts_proto do not check oneof at client code, so the gateway cli do not check the 
 - [ ] Create: query params for bytes field do not work well
 - [ ] Create: query params for empty message field do not work well
 - [ ] Create: query params for `json_name` do not work well
+- [ ] CheckGetQueryParams, CheckNestedEnumGetQueryParams: repeated nested query params did not pass to server
 - [ ] Exists,CustomOptionsRequest,TraceRequest: do not work well with custom method
 - [ ] camelCaseServiceName: camelCase service names are valid
 

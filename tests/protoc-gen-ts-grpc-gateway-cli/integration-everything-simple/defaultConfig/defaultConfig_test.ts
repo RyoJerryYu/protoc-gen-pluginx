@@ -29,6 +29,7 @@ import { ExampleEnum, OneofEnumMessage } from "./proto/oneofenum/oneof_enum";
 import { StringMessage } from "./proto/sub/message";
 import { newBodyJSONService } from "./proto/bodyjson/bodyjson_pb_gwcli";
 import { WellKnownTypesHolder } from "./proto/bodyjson/bodyjson";
+import { Any } from "./google/protobuf/any";
 
 function fetchTransport(
   baseUrl: string,
@@ -398,8 +399,29 @@ describe("ABitOfEverythingService", () => {
     } catch (e) {
       errorThrown = true;
       expect(e).to.deep.equal({
-        code: 5,
-        message: "Not Found",
+        code: 7,
+        message: "permission denied",
+        details: [
+          {
+            "@type": "type.googleapis.com/proto.examplepb.Book",
+            createTime: "2021-01-01T00:00:00Z",
+            id: "book_id",
+            name: "book_name",
+          }
+        ]
+      });
+      const status = Status.fromJSON(e);
+      expect(status.code).to.equal(7);
+      expect(status.message).to.equal("permission denied");
+      expect(status.details).to.have.length(1);
+      // ts_proto do not support Any pack
+      // const book = Book.fromJSON(status.details[0]);
+      // but we have the original JSON, so we can parse it
+      const book = Book.fromJSON(e.details[0]);
+      expect(book).to.deep.equal({
+        createTime: new Date("2021-01-01T00:00:00Z"),
+        id: "book_id",
+        name: "book_name",
       });
     }
     expect(errorThrown).to.be.true;
