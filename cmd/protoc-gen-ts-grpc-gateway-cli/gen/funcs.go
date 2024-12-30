@@ -9,7 +9,6 @@ import (
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils/tsutils"
 	"github.com/golang/glog"
 	"google.golang.org/protobuf/compiler/protogen"
-	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 type httpOptions struct {
@@ -127,42 +126,6 @@ func (g *Generator) renderBody(r *tsutils.TSOption) func(method *protogen.Method
 
 		// body in a field
 		bodyField := pluginutils.FindFieldByTextName(method.Input, *httpBody)
-		isList := bodyField.Desc.IsList()
-
-		var toJsonFunc func(g *tsutils.TSRegistry, in string) string
-		switch bodyField.Desc.Kind() {
-		case protoreflect.MessageKind:
-			bodyType := bodyField.Message
-			toJsonFunc = tsutils.TSProtoMessageToJson(bodyType)
-		case protoreflect.EnumKind:
-			// enum types
-			bodyType := bodyField.Enum
-			toJsonFunc = tsutils.TSProtoEnumToJson(bodyType)
-		case protoreflect.BoolKind,
-			protoreflect.StringKind,
-			protoreflect.Int32Kind,
-			protoreflect.Int64Kind,
-			protoreflect.Uint32Kind,
-			protoreflect.Uint64Kind,
-			protoreflect.FloatKind,
-			protoreflect.DoubleKind,
-			protoreflect.Sfixed32Kind,
-			protoreflect.Sfixed64Kind,
-			protoreflect.Fixed32Kind,
-			protoreflect.Fixed64Kind:
-			// scalar types
-			toJsonFunc = tsutils.TSProtoScalarToJson()
-		default:
-			glog.Fatalf("unsupported body field type: %s", bodyField.Desc.Kind())
-			return "", ""
-		}
-
-		if isList {
-			return g.listify(g.must("fullReq", *httpBody), func(e string) string {
-				return toJsonFunc(g.TSRegistry, e)
-			}), *httpBody
-		}
-
-		return toJsonFunc(g.TSRegistry, g.must("fullReq", *httpBody)), *httpBody
+		return tsutils.TSProtoFieldToJson(bodyField)(g.TSRegistry, g.must("fullReq", *httpBody)), *httpBody
 	}
 }
