@@ -407,8 +407,8 @@ describe("ABitOfEverythingService", () => {
             createTime: "2021-01-01T00:00:00Z",
             id: "book_id",
             name: "book_name",
-          }
-        ]
+          },
+        ],
       });
       const status = Status.fromJSON(e);
       expect(status.code).to.equal(7);
