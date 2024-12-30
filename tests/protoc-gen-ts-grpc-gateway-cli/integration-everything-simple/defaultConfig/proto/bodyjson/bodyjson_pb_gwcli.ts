@@ -317,6 +317,30 @@ export function newBodyJSONService(
       });
       return WellKnownTypesHolder.fromJSON(res);
     },
+
+    // patch
+    async patchBodyWithPathParam(
+      req: DeepPartial<ABitOfEverything>,
+      options?: CallOptions,
+    ): Promise<ABitOfEverything> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
+      const fullReq = ABitOfEverything.fromPartial(req);
+      const res = await transport.call({
+        path: `/v1/bodyjson/patchbodywithpathparam/${must(fullReq.singleNested?.name)}`,
+        method: "PATCH",
+        headers: headers,
+        queryParams: renderURLSearchParams(req, [
+          "singleNested.name",
+          "single_nested",
+        ]),
+        body: JSON.stringify(
+          ABitOfEverything_Nested.toJSON(must(fullReq.singleNested)),
+        ),
+      });
+      return ABitOfEverything.fromJSON(res);
+    },
   };
 }
 // normal fields

@@ -377,6 +377,28 @@ export const BodyJSONServiceDefinition = {
         },
       },
     },
+    /** patch */
+    patchBodyWithPathParam: {
+      name: "PatchBodyWithPathParam",
+      requestType: ABitOfEverything,
+      requestStream: false,
+      responseType: ABitOfEverything,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              73, 58, 13, 115, 105, 110, 103, 108, 101, 95, 110, 101, 115, 116,
+              101, 100, 50, 56, 47, 118, 49, 47, 98, 111, 100, 121, 106, 115,
+              111, 110, 47, 112, 97, 116, 99, 104, 98, 111, 100, 121, 119, 105,
+              116, 104, 112, 97, 116, 104, 112, 97, 114, 97, 109, 47, 123, 115,
+              105, 110, 103, 108, 101, 95, 110, 101, 115, 116, 101, 100, 46,
+              110, 97, 109, 101, 125,
+            ]),
+          ],
+        },
+      },
+    },
   },
 } as const;
 
@@ -417,6 +439,11 @@ export interface BodyJSONServiceImplementation<CallContextExt = {}> {
     request: WellKnownTypesHolder,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<WellKnownTypesHolder>>;
+  /** patch */
+  patchBodyWithPathParam(
+    request: ABitOfEverything,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<ABitOfEverything>>;
 }
 
 export interface BodyJSONServiceClient<CallOptionsExt = {}> {
@@ -456,6 +483,11 @@ export interface BodyJSONServiceClient<CallOptionsExt = {}> {
     request: DeepPartial<WellKnownTypesHolder>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<WellKnownTypesHolder>;
+  /** patch */
+  patchBodyWithPathParam(
+    request: DeepPartial<ABitOfEverything>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<ABitOfEverything>;
 }
 
 type Builtin =
