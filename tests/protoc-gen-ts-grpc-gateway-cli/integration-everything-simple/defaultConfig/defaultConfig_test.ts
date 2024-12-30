@@ -159,14 +159,102 @@ describe("ABitOfEverythingService", () => {
     fetchTransport("http://localhost:8081/api"),
   );
 
-  // it("Create", async () => {
-  //   const req = newABitOfEverythingNonZero();
-  //   req.stringValue = "strprefix/string";
+  it("Create", async () => {
+    // TODO: some query params do no support
+    const req: Partial<ABitOfEverything> = {
+      singleNested: {
+        name: "nested",
+        amount: 1,
+        ok: ABitOfEverything_Nested_DeepEnum.TRUE,
+      },
+      uuid: "uuid",
+      // nested: [
+      //   {
+      //     name: "nested",
+      //     amount: 1,
+      //     ok: ABitOfEverything_Nested_DeepEnum.TRUE,
+      //   },
+      // ],
+      floatValue: 1.1,
+      doubleValue: 1.1,
+      int64Value: 1,
+      uint64Value: 1,
+      int32Value: 1,
+      fixed64Value: 1,
+      fixed32Value: 1,
+      boolValue: true,
+      stringValue: "strprefix/string",
+      // bytesValue: new Uint8Array([1, 2, 3]),
+      uint32Value: 1,
+      enumValue: NumericEnum.ONE,
+      pathEnumValue: PathEnum.DEF,
+      nestedPathEnumValue: MessagePathEnum_NestedPathEnum.JKL,
+      sfixed32Value: 1,
+      sfixed64Value: 1,
+      sint32Value: 1,
+      sint64Value: 1,
+      repeatedStringValue: ["string"],
+      // oneofEmpty: {},
+      oneofString: undefined, // oneofEmpty was set, so this should be ignored
+      // mapValue: {
+      //   some_one: NumericEnum.ONE,
+      //   some_zero: NumericEnum.ZERO,
+      // },
+      // mappedStringValue: {
+      //   some_one: "one",
+      //   some_zero: "zero",
+      // },
+      // mappedNestedValue: {
+      //   some_one: {
+      //     name: "one",
+      //     amount: 1,
+      //     ok: ABitOfEverything_Nested_DeepEnum.TRUE,
+      //   },
+      //   some_zero: {
+      //     name: "zero",
+      //     amount: 0,
+      //     ok: ABitOfEverything_Nested_DeepEnum.FALSE,
+      //   },
+      // },
+      nonConventionalNameValue: "string",
+      // timestampValue: new Date("2021-01-01T00:00:00Z"),
+      repeatedEnumValue: [NumericEnum.ONE, NumericEnum.ZERO],
+      repeatedEnumAnnotation: [NumericEnum.ONE, NumericEnum.ZERO],
+      enumValueAnnotation: NumericEnum.ONE,
+      repeatedStringAnnotation: ["string", "string2"],
+      // repeatedNestedAnnotation: [
+      //   {
+      //     name: "nested",
+      //     amount: 1,
+      //     ok: ABitOfEverything_Nested_DeepEnum.TRUE,
+      //   },
+      // ],
+      nestedAnnotation: {
+        name: "nested",
+        amount: 1,
+        ok: ABitOfEverything_Nested_DeepEnum.TRUE,
+      },
+      int64OverrideType: 1,
+      requiredStringViaFieldBehaviorAnnotation: "string",
+      outputOnlyStringViaFieldBehaviorAnnotation: "string",
+      optionalStringValue: "string",
+      productId: ["string", "string2"],
+      optionalStringField: "string",
+      requiredStringField1: "string",
+      requiredStringField2: "string",
+      // requiredFieldBehaviorJsonName: "string",
+      // requiredFieldSchemaJsonName: "string",
+      trailingOnly: "string",
+      trailingOnlyDot: "string",
+      trailingBoth: "string",
+      trailingMultiline: "string",
+      uuids: ["uuid", "uuid2"],
+    };
 
-  //   const res = await aBitOfEverythingService.create(req);
+    const res = await aBitOfEverythingService.create(req);
 
-  //   expect(res).to.deep.equal(req);
-  // });
+    expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+  });
 
   it("CreateBody", async () => {
     const req = newABitOfEverythingNonZero();
