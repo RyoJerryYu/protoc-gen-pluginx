@@ -221,11 +221,12 @@ export function newABitOfEverythingService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = ABitOfEverything.fromPartial(req);
+      const body: any = ABitOfEverything.toJSON(fullReq);
       const res = await transport.call({
         path: `/v1/example/a_bit_of_everything`,
         method: "POST",
         headers: headers,
-        body: JSON.stringify(ABitOfEverything.toJSON(fullReq)),
+        body: JSON.stringify(body),
       });
       return ABitOfEverything.fromJSON(res);
     },
@@ -239,12 +240,14 @@ export function newABitOfEverythingService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = CreateBookRequest.fromPartial(req);
+      const body: any = Book.toJSON(must(fullReq.book));
+      delete body.parent;
       const res = await transport.call({
         path: `/v1/${must(fullReq.parent)}/books`,
         method: "POST",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["parent", "book"]),
-        body: JSON.stringify(Book.toJSON(must(fullReq.book))),
+        body: JSON.stringify(body),
       });
       return Book.fromJSON(res);
     },
@@ -257,12 +260,14 @@ export function newABitOfEverythingService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = UpdateBookRequest.fromPartial(req);
+      const body: any = Book.toJSON(must(fullReq.book));
+      delete body.name;
       const res = await transport.call({
         path: `/v1/${must(fullReq.book?.name)}`,
         method: "PATCH",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["book.name", "book"]),
-        body: JSON.stringify(Book.toJSON(must(fullReq.book))),
+        body: JSON.stringify(body),
       });
       return Book.fromJSON(res);
     },
@@ -326,11 +331,13 @@ export function newABitOfEverythingService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = ABitOfEverything.fromPartial(req);
+      const body: any = ABitOfEverything.toJSON(fullReq);
+      delete body.uuid;
       const res = await transport.call({
         path: `/v1/example/a_bit_of_everything/${must(fullReq.uuid)}`,
         method: "PUT",
         headers: headers,
-        body: JSON.stringify(ABitOfEverything.toJSON(fullReq)),
+        body: JSON.stringify(body),
       });
       return Empty.fromJSON(res);
     },
@@ -343,12 +350,14 @@ export function newABitOfEverythingService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = UpdateV2Request.fromPartial(req);
+      const body: any = ABitOfEverything.toJSON(must(fullReq.abe));
+      delete body.uuid;
       const res = await transport.call({
         path: `/v2/example/a_bit_of_everything/${must(fullReq.abe?.uuid)}`,
         method: "PUT",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["abe.uuid", "abe"]),
-        body: JSON.stringify(ABitOfEverything.toJSON(must(fullReq.abe))),
+        body: JSON.stringify(body),
       });
       return Empty.fromJSON(res);
     },
@@ -453,11 +462,13 @@ export function newABitOfEverythingService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = ABitOfEverything.fromPartial(req);
+      const body: any = ABitOfEverything.toJSON(fullReq);
+      delete body.singleNested.name;
       const res = await transport.call({
         path: `/v1/example/deep_path/${must(fullReq.singleNested?.name)}`,
         method: "POST",
         headers: headers,
-        body: JSON.stringify(ABitOfEverything.toJSON(fullReq)),
+        body: JSON.stringify(body),
       });
       return ABitOfEverything.fromJSON(res);
     },
@@ -470,11 +481,12 @@ export function newABitOfEverythingService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = Duration.fromPartial(req);
+      const body: any = Duration.toJSON(fullReq);
       const res = await transport.call({
         path: `/proto.examplepb.ABitOfEverythingService/NoBindings`,
         method: "POST",
         headers: headers,
-        body: JSON.stringify(Duration.toJSON(fullReq)),
+        body: JSON.stringify(body),
       });
       return Empty.fromJSON(res);
     },
@@ -521,12 +533,14 @@ export function newABitOfEverythingService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = MessageWithBody.fromPartial(req);
+      const body: any = Body.toJSON(must(fullReq.data));
+      delete body.id;
       const res = await transport.call({
         path: `/v2/example/withbody/${must(fullReq.id)}`,
         method: "POST",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["id", "data"]),
-        body: JSON.stringify(Body.toJSON(must(fullReq.data))),
+        body: JSON.stringify(body),
       });
       return Empty.fromJSON(res);
     },
@@ -539,11 +553,13 @@ export function newABitOfEverythingService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = Body.fromPartial(req);
+      const body: any = Body.toJSON(fullReq);
+      delete body.name;
       const res = await transport.call({
         path: `/v2/example/postwithemptybody/${must(fullReq.name)}`,
         method: "POST",
         headers: headers,
-        body: JSON.stringify(Body.toJSON(fullReq)),
+        body: JSON.stringify(body),
       });
       return Empty.fromJSON(res);
     },
@@ -590,17 +606,19 @@ export function newABitOfEverythingService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = ABitOfEverything.fromPartial(req);
+      const body: any = ABitOfEverything_Nested.toJSON(
+        must(fullReq.singleNested),
+      );
+      delete body.stringValue;
       const res = await transport.call({
         path: `/v1/example/a_bit_of_everything/params/post/${must(fullReq.stringValue)}`,
         method: "POST",
         headers: headers,
         queryParams: renderURLSearchParams(req, [
           "stringValue",
-          "single_nested",
+          "singleNested",
         ]),
-        body: JSON.stringify(
-          ABitOfEverything_Nested.toJSON(must(fullReq.singleNested)),
-        ),
+        body: JSON.stringify(body),
       });
       return ABitOfEverything.fromJSON(res);
     },
@@ -613,11 +631,12 @@ export function newABitOfEverythingService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = Body.fromPartial(req);
+      const body: any = Body.toJSON(fullReq);
       const res = await transport.call({
         path: `/v2/example/overwriterequestcontenttype`,
         method: "POST",
         headers: headers,
-        body: JSON.stringify(Body.toJSON(fullReq)),
+        body: JSON.stringify(body),
       });
       return Empty.fromJSON(res);
     },
@@ -698,12 +717,13 @@ export function newABitOfEverythingService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = OneofEnumMessage.fromPartial(req);
+      const body: any = exampleEnumToJSON(must(fullReq.exampleEnum));
       const res = await transport.call({
         path: `/v1/example/oneofenum`,
         method: "POST",
         headers: headers,
-        queryParams: renderURLSearchParams(req, ["example_enum"]),
-        body: JSON.stringify(exampleEnumToJSON(must(fullReq.exampleEnum))),
+        queryParams: renderURLSearchParams(req, ["exampleEnum"]),
+        body: JSON.stringify(body),
       });
       return Empty.fromJSON(res);
     },
@@ -716,11 +736,12 @@ export function newABitOfEverythingService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = RequiredMessageTypeRequest.fromPartial(req);
+      const body: any = RequiredMessageTypeRequest.toJSON(fullReq);
       const res = await transport.call({
         path: `/v1/example/requiredmessagetype`,
         method: "POST",
         headers: headers,
-        body: JSON.stringify(RequiredMessageTypeRequest.toJSON(fullReq)),
+        body: JSON.stringify(body),
       });
       return Empty.fromJSON(res);
     },
@@ -745,11 +766,12 @@ export function newAnotherServiceWithNoBindings(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = Empty.fromPartial(req);
+      const body: any = Empty.toJSON(fullReq);
       const res = await transport.call({
         path: `/proto.examplepb.AnotherServiceWithNoBindings/NoBindings`,
         method: "POST",
         headers: headers,
-        body: JSON.stringify(Empty.toJSON(fullReq)),
+        body: JSON.stringify(body),
       });
       return Empty.fromJSON(res);
     },

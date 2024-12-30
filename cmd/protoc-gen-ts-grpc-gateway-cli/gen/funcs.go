@@ -72,37 +72,11 @@ func (g *Generator) renderPath(r *tsutils.TSOption) func(method *protogen.Method
 				// fieldValuePattern := m[2]
 				part := fmt.Sprintf(`${%s}`, g.must("fullReq", fieldNameRaw))
 				methodURL = strings.ReplaceAll(methodURL, expToReplace, part)
-				fieldName := tsutils.FieldName(r)(fieldNameRaw)
-				fieldsInPath = append(fieldsInPath, fieldName)
+				fieldsInPath = append(fieldsInPath, fieldNameRaw)
 			}
 		}
 
 		return methodURL, fieldsInPath
-	}
-}
-
-func (g *Generator) renderQueryString(r *tsutils.TSOption) func(method *protogen.Method, urlPathParams []string, bodyParam string) string {
-	return func(method *protogen.Method, urlPathParams []string, bodyParam string) string {
-		// allow query params for all methods, not just GET and DELETE
-		// httpOpts := g.httpOptions(method)
-		// methodMethod := httpOpts.Method
-
-		if method.Desc.IsStreamingClient() {
-			return ""
-		}
-		if bodyParam == "*" {
-			return "" // all fields are in the body, there will be no query params
-		}
-		usedParamStrs := make([]string, 0, len(urlPathParams))
-		for _, pathParam := range urlPathParams {
-			usedParamStrs = append(usedParamStrs, fmt.Sprintf(`"%s"`, pathParam))
-		}
-		if bodyParam != "" {
-			usedParamStrs = append(usedParamStrs, fmt.Sprintf(`"%s"`, bodyParam))
-		}
-		urlPathParamStr := fmt.Sprintf("[%s]", strings.Join(usedParamStrs, ", "))
-		renderURLSearchParams := fmt.Sprintf("renderURLSearchParams(req, %s)", urlPathParamStr)
-		return renderURLSearchParams
 	}
 }
 
@@ -123,5 +97,33 @@ func (g *Generator) renderBody(r *tsutils.TSOption) func(method *protogen.Method
 		// body in a field
 		bodyField := pluginutils.FindFieldByTextName(method.Input, *httpBody)
 		return tsutils.TSProtoFieldToJson(bodyField)(g.TSRegistry, g.must("fullReq", *httpBody)), *httpBody
+	}
+}
+
+func (g *Generator) renderQueryString(r *tsutils.TSOption) func(method *protogen.Method, pathParams []string, bodyParam string) string {
+	return func(method *protogen.Method, urlPathParams []string, bodyParam string) string {
+		// allow query params for all methods, not just GET and DELETE
+		// httpOpts := g.httpOptions(method)
+		// methodMethod := httpOpts.Method
+
+		if method.Desc.IsStreamingClient() {
+			return ""
+		}
+		if bodyParam == "*" {
+			return "" // all fields are in the body, there will be no query params
+		}
+
+		usedParams := urlPathParams[:]
+		if bodyParam != "" {
+			usedParams = append(usedParams, bodyParam)
+		}
+		usedParamStrs := make([]string, 0, len(usedParams))
+		for _, param := range usedParams {
+			param = tsutils.FieldName(&g.TSOption)(param)
+			usedParamStrs = append(usedParamStrs, fmt.Sprintf(`"%s"`, param))
+		}
+		urlPathParamStr := fmt.Sprintf("[%s]", strings.Join(usedParamStrs, ", "))
+		renderURLSearchParams := fmt.Sprintf("renderURLSearchParams(req, %s)", urlPathParamStr)
+		return renderURLSearchParams
 	}
 }

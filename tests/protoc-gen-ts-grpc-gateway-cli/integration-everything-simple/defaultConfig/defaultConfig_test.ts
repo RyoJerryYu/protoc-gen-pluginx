@@ -194,22 +194,22 @@ describe("ABitOfEverythingService", () => {
     expect(res).to.deep.equal(req);
   });
 
-  // it("UpdateBook", async () => {
-  //   const req: Book = Book.create({
-  //     name: "publishers/123/books/book_name",
-  //     id: "book_id",
-  //   });
+  it("UpdateBook", async () => {
+    const req: Book = Book.create({
+      name: "publishers/123/books/book_name",
+      id: "book_id",
+    });
 
-  //   const res = await aBitOfEverythingService.updateBook({
-  //     book: req,
-  //   });
+    const res = await aBitOfEverythingService.updateBook({
+      book: req,
+    });
 
-  //   expect(res).to.deep.equal({
-  //     name: "publishers/123/books/book_name",
-  //     id: "book_id",
-  //     createTime: new Date("2021-01-01T00:00:00Z"),
-  //   });
-  // });
+    expect(res).to.deep.equal({
+      name: "publishers/123/books/book_name",
+      id: "book_id",
+      createTime: new Date("2021-01-01T00:00:00Z"),
+    });
+  });
 
   it("Lookup", async () => {
     const req = { uuid: "uuid_in_req" };

@@ -160,12 +160,13 @@ export function newBodyJSONService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = ABitOfEverything.fromPartial(req);
+      const body: any = must(fullReq.stringValue);
       const res = await transport.call({
         path: `/v1/bodyjson/stringbody`,
         method: "POST",
         headers: headers,
-        queryParams: renderURLSearchParams(req, ["string_value"]),
-        body: JSON.stringify(must(fullReq.stringValue)),
+        queryParams: renderURLSearchParams(req, ["stringValue"]),
+        body: JSON.stringify(body),
       });
       return ABitOfEverything.fromJSON(res);
     },
@@ -178,14 +179,15 @@ export function newBodyJSONService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = ABitOfEverything.fromPartial(req);
+      const body: any = must(fullReq.nested).map((e) =>
+        ABitOfEverything_Nested.toJSON(e),
+      );
       const res = await transport.call({
         path: `/v1/bodyjson/repeatedmessagebody`,
         method: "POST",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["nested"]),
-        body: JSON.stringify(
-          must(fullReq.nested).map((e) => ABitOfEverything_Nested.toJSON(e)),
-        ),
+        body: JSON.stringify(body),
       });
       return ABitOfEverything.fromJSON(res);
     },
@@ -198,12 +200,13 @@ export function newBodyJSONService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = ABitOfEverything.fromPartial(req);
+      const body: any = must(fullReq.repeatedStringValue).map((e) => e);
       const res = await transport.call({
         path: `/v1/bodyjson/repeatedstringbody`,
         method: "POST",
         headers: headers,
-        queryParams: renderURLSearchParams(req, ["repeated_string_value"]),
-        body: JSON.stringify(must(fullReq.repeatedStringValue).map((e) => e)),
+        queryParams: renderURLSearchParams(req, ["repeatedStringValue"]),
+        body: JSON.stringify(body),
       });
       return ABitOfEverything.fromJSON(res);
     },
@@ -216,12 +219,13 @@ export function newBodyJSONService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = WellKnownTypesHolder.fromPartial(req);
+      const body: any = must(fullReq.timestamp).toISOString();
       const res = await transport.call({
         path: `/v1/bodyjson/timestampbody`,
         method: "POST",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["timestamp"]),
-        body: JSON.stringify(must(fullReq.timestamp).toISOString()),
+        body: JSON.stringify(body),
       });
       return WellKnownTypesHolder.fromJSON(res);
     },
@@ -234,14 +238,15 @@ export function newBodyJSONService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = WellKnownTypesHolder.fromPartial(req);
+      const body: any = FieldMask.toJSON(
+        FieldMask.wrap(must(fullReq.fieldMask)),
+      );
       const res = await transport.call({
         path: `/v1/bodyjson/fieldmaskbody`,
         method: "POST",
         headers: headers,
-        queryParams: renderURLSearchParams(req, ["field_mask"]),
-        body: JSON.stringify(
-          FieldMask.toJSON(FieldMask.wrap(must(fullReq.fieldMask))),
-        ),
+        queryParams: renderURLSearchParams(req, ["fieldMask"]),
+        body: JSON.stringify(body),
       });
       return WellKnownTypesHolder.fromJSON(res);
     },
@@ -254,12 +259,13 @@ export function newBodyJSONService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = WellKnownTypesHolder.fromPartial(req);
+      const body: any = must(fullReq.struct);
       const res = await transport.call({
         path: `/v1/bodyjson/structbody`,
         method: "POST",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["struct"]),
-        body: JSON.stringify(must(fullReq.struct)),
+        body: JSON.stringify(body),
       });
       return WellKnownTypesHolder.fromJSON(res);
     },
@@ -272,12 +278,13 @@ export function newBodyJSONService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = WellKnownTypesHolder.fromPartial(req);
+      const body: any = must(fullReq.value);
       const res = await transport.call({
         path: `/v1/bodyjson/valuebody`,
         method: "POST",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["value"]),
-        body: JSON.stringify(must(fullReq.value)),
+        body: JSON.stringify(body),
       });
       return WellKnownTypesHolder.fromJSON(res);
     },
@@ -290,12 +297,13 @@ export function newBodyJSONService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = WellKnownTypesHolder.fromPartial(req);
+      const body: any = must(fullReq.listValue);
       const res = await transport.call({
         path: `/v1/bodyjson/listvaluebody`,
         method: "POST",
         headers: headers,
-        queryParams: renderURLSearchParams(req, ["list_value"]),
-        body: JSON.stringify(must(fullReq.listValue)),
+        queryParams: renderURLSearchParams(req, ["listValue"]),
+        body: JSON.stringify(body),
       });
       return WellKnownTypesHolder.fromJSON(res);
     },
@@ -308,12 +316,13 @@ export function newBodyJSONService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = WellKnownTypesHolder.fromPartial(req);
+      const body: any = must(fullReq.int64Value);
       const res = await transport.call({
         path: `/v1/bodyjson/wrapperbody`,
         method: "POST",
         headers: headers,
-        queryParams: renderURLSearchParams(req, ["int64_value"]),
-        body: JSON.stringify(must(fullReq.int64Value)),
+        queryParams: renderURLSearchParams(req, ["int64Value"]),
+        body: JSON.stringify(body),
       });
       return WellKnownTypesHolder.fromJSON(res);
     },
@@ -327,17 +336,19 @@ export function newBodyJSONService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = ABitOfEverything.fromPartial(req);
+      const body: any = ABitOfEverything_Nested.toJSON(
+        must(fullReq.singleNested),
+      );
+      delete body.name;
       const res = await transport.call({
         path: `/v1/bodyjson/patchbodywithpathparam/${must(fullReq.singleNested?.name)}`,
         method: "PATCH",
         headers: headers,
         queryParams: renderURLSearchParams(req, [
           "singleNested.name",
-          "single_nested",
+          "singleNested",
         ]),
-        body: JSON.stringify(
-          ABitOfEverything_Nested.toJSON(must(fullReq.singleNested)),
-        ),
+        body: JSON.stringify(body),
       });
       return ABitOfEverything.fromJSON(res);
     },

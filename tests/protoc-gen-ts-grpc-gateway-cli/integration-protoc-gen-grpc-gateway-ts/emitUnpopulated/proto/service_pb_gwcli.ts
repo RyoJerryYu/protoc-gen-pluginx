@@ -176,11 +176,12 @@ export function newCounterService(transport: Transport): CounterServiceClient {
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = UnaryRequest.fromPartial(req);
+      const body: any = UnaryRequest.toJSON(fullReq);
       const res = await transport.call({
         path: `/main.CounterService/Increment`,
         method: "POST",
         headers: headers,
-        body: JSON.stringify(UnaryRequest.toJSON(fullReq)),
+        body: JSON.stringify(body),
       });
       return UnaryResponse.fromJSON(res);
     },
@@ -200,11 +201,12 @@ export function newCounterService(transport: Transport): CounterServiceClient {
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = UnaryRequest.fromPartial(req);
+      const body: any = UnaryRequest.toJSON(fullReq);
       const res = await transport.call({
         path: `/main.CounterService/FailingIncrement`,
         method: "POST",
         headers: headers,
-        body: JSON.stringify(UnaryRequest.toJSON(fullReq)),
+        body: JSON.stringify(body),
       });
       return UnaryResponse.fromJSON(res);
     },
@@ -217,11 +219,12 @@ export function newCounterService(transport: Transport): CounterServiceClient {
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = BinaryRequest.fromPartial(req);
+      const body: any = BinaryRequest.toJSON(fullReq);
       const res = await transport.call({
         path: `/main.CounterService/EchoBinary`,
         method: "POST",
         headers: headers,
-        body: JSON.stringify(BinaryRequest.toJSON(fullReq)),
+        body: JSON.stringify(body),
       });
       return BinaryResponse.fromJSON(res);
     },
@@ -251,12 +254,14 @@ export function newCounterService(transport: Transport): CounterServiceClient {
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = HttpPostRequest.fromPartial(req);
+      const body: any = PostRequest.toJSON(must(fullReq.req));
+      delete body.a;
       const res = await transport.call({
         path: `/post/${must(fullReq.a)}`,
         method: "POST",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["a", "req"]),
-        body: JSON.stringify(PostRequest.toJSON(must(fullReq.req))),
+        body: JSON.stringify(body),
       });
       return HttpPostResponse.fromJSON(res);
     },
@@ -269,11 +274,14 @@ export function newCounterService(transport: Transport): CounterServiceClient {
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = HttpPostRequest.fromPartial(req);
+      const body: any = HttpPostRequest.toJSON(fullReq);
+      delete body.a;
+      delete body.c;
       const res = await transport.call({
         path: `/post/${must(fullReq.a)}/${must(fullReq.c)}`,
         method: "POST",
         headers: headers,
-        body: JSON.stringify(HttpPostRequest.toJSON(fullReq)),
+        body: JSON.stringify(body),
       });
       return HttpPostResponse.fromJSON(res);
     },
@@ -286,11 +294,12 @@ export function newCounterService(transport: Transport): CounterServiceClient {
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = HttpPatchRequest.fromPartial(req);
+      const body: any = HttpPatchRequest.toJSON(fullReq);
       const res = await transport.call({
         path: `/patch`,
         method: "PATCH",
         headers: headers,
-        body: JSON.stringify(HttpPatchRequest.toJSON(fullReq)),
+        body: JSON.stringify(body),
       });
       return HttpPatchResponse.fromJSON(res);
     },
@@ -337,11 +346,12 @@ export function newCounterService(transport: Transport): CounterServiceClient {
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = ExternalRequest.fromPartial(req);
+      const body: any = ExternalRequest.toJSON(fullReq);
       const res = await transport.call({
         path: `/main.CounterService/ExternalMessage`,
         method: "POST",
         headers: headers,
-        body: JSON.stringify(ExternalRequest.toJSON(fullReq)),
+        body: JSON.stringify(body),
       });
       return ExternalResponse.fromJSON(res);
     },
