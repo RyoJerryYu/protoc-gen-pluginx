@@ -106,10 +106,6 @@ func (g *Generator) renderQueryString(r *tsutils.TSOption) func(method *protogen
 	}
 }
 
-func (g *Generator) listify(in string, do func(string) string) string {
-	return fmt.Sprintf(`(%s).map((e)=>%s)`, in, do("e"))
-}
-
 // return (body jsonify string, bodyParam)
 func (g *Generator) renderBody(r *tsutils.TSOption) func(method *protogen.Method) (string, string) {
 	return func(method *protogen.Method) (string, string) {
