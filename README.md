@@ -1,7 +1,8 @@
 # protoc-gen-pluginx
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/RyoJerryYu/protoc-gen-pluginx)
-![GitHub](https://img.shields.io/github/license/RyoJerryYu/protoc-gen-pluginx)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/tag/RyoJerryYu/protoc-gen-pluginx)](https://github.com/RyoJerryYu/protoc-gen-pluginx/tags)
+[![GitHub](https://img.shields.io/github/license/RyoJerryYu/protoc-gen-pluginx)](https://github.com/RyoJerryYu/protoc-gen-pluginx/blob/master/LICENSE)
+[![Go Reference](https://pkg.go.dev/badge/github.com/RyoJerryYu/protoc-gen-pluginx.svg)](https://pkg.go.dev/github.com/RyoJerryYu/protoc-gen-pluginx)
 
 Useful plugins for protobuf, useful helper classes for protoc plugins, and modules for generating code imports.
 
