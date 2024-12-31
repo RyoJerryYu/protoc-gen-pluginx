@@ -134,10 +134,10 @@ func GetModuleName(file protoreflect.FileDescriptor) string {
 }
 
 type TSOption struct {
-	// TSImportRootParamsKey contains the key for common_import_root in parameters
-	TSImportRoots string
-	// TSImportRootAliasParamsKey contains the key for common_import_root_alias in parameters
-	TSImportRootAliases string
+	// // TSImportRootParamsKey contains the key for common_import_root in parameters
+	// TSImportRoots string
+	// // TSImportRootAliasParamsKey contains the key for common_import_root_alias in parameters
+	// TSImportRootAliases string
 
 	// if TSProto `snakeToCamel` flags contains `key`
 	TSProto_KeySnakeToCamel bool
