@@ -46,6 +46,7 @@ ts_proto do not check oneof at client code, so the gateway cli do not check the 
 
 ### no plan:
 - [ ] NoBindings: jsonify do not work well with duration: ts_proto do not support
+- [ ] ErrorWithDetails: throw nice-grpc-error-details: ts_proto do not support json format for Any
 - [ ] PostOneofEnum: post body only contain one enum field do not work well: protoc-gen-grpc-gateway do not support
 - [ ] body field do not work well with map field: protoc-gen-grpc-gateway do not support
 

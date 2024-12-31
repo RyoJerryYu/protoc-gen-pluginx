@@ -577,10 +577,10 @@ describe("AnotherServiceWithNoBindings", () => {
       });
     } catch (e) {
       errorThrown = true;
-      expect(e).to.deep.equal({
+      expect(Status.fromJSON(e)).to.deep.equal(Status.fromJSON({
         code: 5,
         message: "Not Found",
-      });
+      }));
     }
     expect(errorThrown).to.be.true;
   });

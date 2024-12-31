@@ -6,20 +6,45 @@
 
 let testCases = [
   {
+    name: "defaultConfig",
     testDir: "defaultConfig",
-    useProtoNames: false,
-    emitUnpopulated: false,
+    serverFlags: [],
+  },
+  {
+    name: "allowPartial",
+    testDir: "defaultConfig",
+    serverFlags: ["--marshal_allow_partial=true"],
   },
   // {
-  //   testDir: "emitUnpopulated",
-  //   useProtoNames: false,
-  //   emitUnpopulated: true,
-  // },
-  // {
-  //   testDir: "useProtoNames",
+  //   testDir: "defaultConfig",
   //   useProtoNames: true,
   //   emitUnpopulated: false,
   // },
+  {
+    name: "useEnumNumbers",
+    testDir: "defaultConfig",
+    serverFlags: ["--marshal_use_enum_numbers=true"],
+  },
+  {
+    name: "emitUnpopulated",
+    testDir: "defaultConfig",
+    serverFlags: ["--marshal_emit_unpopulated=true"],
+  },
+  {
+    name: "emitDefaultValues",
+    testDir: "defaultConfig",
+    serverFlags: ["--marshal_emit_default_values=true"],
+  },
+  {
+    name: "unmarshalAllowPartial",
+    testDir: "defaultConfig",
+    serverFlags: ["--unmarshal_allow_partial=true"],
+  },
+  {
+    name: "unmarshalDiscardUnknown",
+    testDir: "defaultConfig",
+    serverFlags: ["--unmarshal_discard_unknown=true"],
+  }
 ];
 
 import kill from "tree-kill";
@@ -46,7 +71,7 @@ function waitForServer(port = 8081, host = "localhost") {
 }
 
 function runTest(testCase) {
-  console.log("Running test case:", testCase.testDir);
+  console.log("Running test case:", testCase.name);
   return new Promise(async (resolve, reject) => {
     // Set up the backend server.
     let server = spawn(
@@ -54,8 +79,7 @@ function runTest(testCase) {
       [
         "run",
         "./server",
-        "--use_proto_names=" + testCase.useProtoNames,
-        "--emit_unpopulated=" + testCase.emitUnpopulated,
+        ...testCase.serverFlags,
       ],
       { stdio: "inherit" }
     );

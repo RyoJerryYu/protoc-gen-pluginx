@@ -37,23 +37,38 @@ func allowCORS(h http.Handler) http.Handler {
 	})
 }
 
-const endpoint = "localhost:9000"
+const grpcEndpoint = "localhost:9000"
+
+var marshalOptions protojson.MarshalOptions
+var unmarshalOptions protojson.UnmarshalOptions
+
+func init() {
+	flag.BoolVar(&marshalOptions.AllowPartial, "marshal_allow_partial", false, "tell server to allow partial json")
+	flag.BoolVar(&marshalOptions.UseProtoNames, "marshal_use_proto_names", false, "tell server to use the original proto name in jsonpb")
+	flag.BoolVar(&marshalOptions.UseEnumNumbers, "marshal_use_enum_numbers", false, "tell server to use enum numbers in jsonpb")
+	flag.BoolVar(&marshalOptions.EmitUnpopulated, "marshal_emit_unpopulated", false, "tell server to emit zero values")
+	flag.BoolVar(&marshalOptions.EmitDefaultValues, "marshal_emit_default_values", false, "tell server to emit default values")
+
+	flag.BoolVar(&unmarshalOptions.AllowPartial, "unmarshal_allow_partial", false, "tell server to allow partial json")
+	flag.BoolVar(&unmarshalOptions.DiscardUnknown, "unmarshal_discard_unknown", false, "tell server to discard unknown fields")
+}
 
 func main() {
-	useProtoNames := flag.Bool("use_proto_names", false, "tell server to use the original proto name in jsonpb")
-	emitUnpopulated := flag.Bool("emit_unpopulated", false, "tell server to emit zero values")
-
 	flag.Parse()
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	grpcListener, err := net.Listen("tcp4", endpoint)
+	grpcListener, err := net.Listen("tcp4", grpcEndpoint)
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Printf("Starting server with use_proto_names=%v and emit_unpopulated=%v\n", *useProtoNames, *emitUnpopulated)
+	flags := []string{}
+	flag.Visit(func(f *flag.Flag) {
+		flags = append(flags, fmt.Sprintf("%s=%s", f.Name, f.Value))
+	})
+	fmt.Printf("Starting server with flags: %s\n", strings.Join(flags, ", "))
 
 	grpcServer := grpc.NewServer()
 	examplepb.RegisterABitOfEverythingServiceServer(grpcServer, &ABitOfEverythingService{})
@@ -61,20 +76,18 @@ func main() {
 
 	gateway := runtime.NewServeMux(runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.HTTPBodyMarshaler{
 		Marshaler: &runtime.JSONPb{
-			MarshalOptions: protojson.MarshalOptions{
-				UseProtoNames:   *useProtoNames,
-				EmitUnpopulated: *emitUnpopulated,
-			},
+			MarshalOptions:   marshalOptions,
+			UnmarshalOptions: unmarshalOptions,
 		},
 	}))
 
-	err = examplepb.RegisterABitOfEverythingServiceHandlerFromEndpoint(ctx, gateway, endpoint, []grpc.DialOption{
+	err = examplepb.RegisterABitOfEverythingServiceHandlerFromEndpoint(ctx, gateway, grpcEndpoint, []grpc.DialOption{
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	})
 	if err != nil {
 		panic(err)
 	}
-	err = bodyjson.RegisterBodyJSONServiceHandlerFromEndpoint(ctx, gateway, endpoint, []grpc.DialOption{
+	err = bodyjson.RegisterBodyJSONServiceHandlerFromEndpoint(ctx, gateway, grpcEndpoint, []grpc.DialOption{
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	})
 	if err != nil {
