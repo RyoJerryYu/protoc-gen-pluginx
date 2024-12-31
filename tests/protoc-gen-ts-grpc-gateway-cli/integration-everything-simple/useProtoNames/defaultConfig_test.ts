@@ -146,8 +146,11 @@ function newABitOfEverythingNonZero(): ABitOfEverything {
     optionalStringField: "string",
     requiredStringField1: "string",
     requiredStringField2: "string",
-    requiredFieldBehaviorJsonName: "string",
-    requiredFieldSchemaJsonName: "string",
+    // useProtoNames do not support json_name
+    // requiredFieldBehaviorJsonName: "string",
+    // requiredFieldSchemaJsonName: "string",
+    requiredFieldBehaviorJsonName: "",
+    requiredFieldSchemaJsonName: "",
     trailingOnly: "string",
     trailingOnlyDot: "string",
     trailingBoth: "string",
@@ -399,18 +402,19 @@ describe("ABitOfEverythingService", () => {
       await aBitOfEverythingService.errorWithDetails({});
     } catch (e) {
       errorThrown = true;
-      expect(e).to.deep.equal({
-        code: 7,
-        message: "permission denied",
-        details: [
-          {
-            "@type": "type.googleapis.com/proto.examplepb.Book",
-            createTime: "2021-01-01T00:00:00Z",
-            id: "book_id",
-            name: "book_name",
-          },
-        ],
-      });
+      // useProtoNames should in snake_case
+      // expect(e).to.deep.equal({
+      //   code: 7,
+      //   message: "permission denied",
+      //   details: [
+      //     {
+      //       "@type": "type.googleapis.com/proto.examplepb.Book",
+      //       createTime: "2021-01-01T00:00:00Z",
+      //       id: "book_id",
+      //       name: "book_name",
+      //     },
+      //   ],
+      // });
       const status = Status.fromJSON(e);
       expect(status.code).to.equal(7);
       expect(status.message).to.equal("permission denied");

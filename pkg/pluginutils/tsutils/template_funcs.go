@@ -122,7 +122,20 @@ func functionCase(s string) string {
 
 func FieldName(opt *TSOption) func(name string) string {
 	return func(name string) string {
-		if opt.UseProtoNames {
+		if !opt.TSProto_KeySnakeToCamel {
+			return name
+		}
+		fields := strings.Split(name, ".")
+		for i, field := range fields {
+			fields[i] = JSONCamelCase(field)
+		}
+		return strings.Join(fields, ".")
+	}
+}
+
+func JsonFieldName(opt *TSOption) func(name string) string {
+	return func(name string) string {
+		if opt.MarshalUseProtoNames {
 			return name
 		}
 

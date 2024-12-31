@@ -39,10 +39,7 @@ plugins:
     out: ../defaultConfig
     opt:
       - paths=source_relative
-      - emit_unpopulated=false
-      - use_proto_names=false
       - logtostderr=true
-      - v=3
   - remote: buf.build/community/stephenh-ts-proto
     out: ../defaultConfig
     opt:
@@ -55,3 +52,24 @@ plugins:
       - outputJsonMethods=true
       - stringEnums=false
       - useExactTypes=false
+
+  # client, useProtoNames
+  - local: protoc-gen-ts-grpc-gateway-cli
+    out: ../useProtoNames
+    opt:
+      - paths=source_relative
+      - marshal_use_proto_names=true
+      - logtostderr=true
+  - remote: buf.build/community/stephenh-ts-proto
+    out: ../useProtoNames
+    opt:
+      - env=browser
+      - esModuleInterop=true
+      - useOptionals=messages
+      - outputServices=generic-definitions
+      - outputServices=nice-grpc
+      - outputEncodeMethods=false
+      - outputJsonMethods=true
+      - stringEnums=false
+      - useExactTypes=false
+      - snakeToCamel=keys # this is different from the defaultConfig

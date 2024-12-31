@@ -12,13 +12,13 @@ This plugin designed to implement the Service Client stubs for gRPC gateway, so 
 
 This plugin depends on some flags of ts_proto:
 
-- outputJsonMethods: Should be set to true. This plugin depends on that json methods.
-- outputServices: ts_proto allow set this flag multiple times. Should include `nice-grpc` . This plugin depends on nice-grpc service interface.
-- stringEnums: protoc_grpc_gateway only allow unmarshal number value when the whole body is just a enum value or repeated enum value. stringEnums should set to `false` for this case.
+- `outputJsonMethods`: Should be set to true. This plugin depends on that json methods.
+- `outputServices`: ts_proto allow set this flag multiple times. Should include `nice-grpc` . This plugin depends on nice-grpc service interface.
 
 Some flags of ts_proto should be set depends on Server Config:
 
-- snakeToCamel: If `MarshalOptions.UseProtoNames` was `true` on serverside, ts_proto should not include `json` . (set to keys or false, which default to keys_json)
+- `snakeToCamel`: If `MarshalOptions.UseProtoNames` was `true` on serverside, ts_proto should not include `json` on it's `snakeToCamel` flag. (You should set this flag to `keys` or `false` manualy, because it's default to `keys_json`)
+- `stringEnums`: protoc_grpc_gateway only allow unmarshal number value when the whole body is just a enum value or repeated enum value. stringEnums should set to `false` for this case.
 
 ts_proto do not check oneof at client code, so the gateway cli do not check the oneof duplicated set.
 
@@ -33,6 +33,7 @@ ts_proto do not check oneof at client code, so the gateway cli do not check the 
 - [x] UpdateBook: field mask did not remove path params
 - [x] ErrorWithDetails: throw error with details
 - [x] PostOneofEnum: post body only contain one enum field do not work well: protoc-gen-grpc-gateway do not support: force to use enum number.
+- [x] body remove field do not support useProtoNames
 
 ### low priority TODO:
 - [ ] GetRepeatedQuery: path param do not work well with repeated
@@ -57,3 +58,4 @@ ts_proto do not check oneof at client code, so the gateway cli do not check the 
 - OverwriteRequestContentType:     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {consumes: "application/x-bar-mime"};
 - OverwriteResponseContentType:    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {produces: "application/text"};
 - RequiredMessageTypeRequest:      (google.api.field_behavior) = REQUIRED;
+- json_name do not support when useProtoNames: protojson do not use json_name when `UseProtoNames=true` , but ts_proto do use it.

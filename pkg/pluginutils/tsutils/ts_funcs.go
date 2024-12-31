@@ -138,6 +138,9 @@ type TSOption struct {
 	TSImportRoots string
 	// TSImportRootAliasParamsKey contains the key for common_import_root_alias in parameters
 	TSImportRootAliases string
-	// UseProtoNames will generate field names the same as defined in the proto
-	UseProtoNames bool
+
+	// if TSProto `snakeToCamel` flags contains `key`
+	TSProto_KeySnakeToCamel bool
+	// if server marshal options has MarshalUseProtoNames set to true
+	MarshalUseProtoNames bool
 }

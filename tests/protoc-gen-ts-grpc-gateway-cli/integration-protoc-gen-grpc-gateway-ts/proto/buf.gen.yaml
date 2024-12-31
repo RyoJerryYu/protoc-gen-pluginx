@@ -31,8 +31,7 @@ plugins:
     out: ../defaultConfig
     opt:
       - paths=source_relative
-      - emit_unpopulated=false
-      - use_proto_names=false
+      - marshal_use_proto_names=false
       - logtostderr=true
   - remote: buf.build/community/stephenh-ts-proto
     out: ../defaultConfig
@@ -52,8 +51,7 @@ plugins:
     out: ../emitUnpopulated
     opt:
       - paths=source_relative
-      - emit_unpopulated=true
-      - use_proto_names=false
+      - marshal_use_proto_names=false
       - logtostderr=true
   - remote: buf.build/community/stephenh-ts-proto
     out: ../emitUnpopulated
@@ -73,8 +71,8 @@ plugins:
     out: ../useProtoNames
     opt:
       - paths=source_relative
-      - emit_unpopulated=false
-      - use_proto_names=true
+      - marshal_use_proto_names=true
+      - ts_proto_key_snake_to_camel=false
       - logtostderr=true
   - remote: buf.build/community/stephenh-ts-proto
     out: ../useProtoNames

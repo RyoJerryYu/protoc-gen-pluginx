@@ -15,11 +15,11 @@ let testCases = [
     testDir: "defaultConfig",
     serverFlags: ["--marshal_allow_partial=true"],
   },
-  // {
-  //   testDir: "defaultConfig",
-  //   useProtoNames: true,
-  //   emitUnpopulated: false,
-  // },
+  {
+    name: "useProtoNames",
+    testDir: "useProtoNames", // This test case has a different test file.
+    serverFlags: ["--marshal_use_proto_names=true"],
+  },
   {
     name: "useEnumNumbers",
     testDir: "defaultConfig",

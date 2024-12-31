@@ -15,9 +15,10 @@ import (
 var options gen.Options
 
 func init() {
-	flag.BoolVar(&options.UseProtoNames, "use_proto_names", false, "field names will match the proto file")
 	flag.StringVar(&options.TSImportRoots, "ts_import_roots", "", "defaults to $(pwd)")
 	flag.StringVar(&options.TSImportRootAliases, "ts_import_root_aliases", "", "use import aliases instead of relative paths")
+	flag.BoolVar(&options.TSProto_KeySnakeToCamel, "ts_proto_key_snake_to_camel", true, "if ts-proto uses snakeToCamel for map keys")
+	flag.BoolVar(&options.MarshalUseProtoNames, "marshal_use_proto_names", false, "if server has UseProtoNames set to true")
 }
 
 func main() {
