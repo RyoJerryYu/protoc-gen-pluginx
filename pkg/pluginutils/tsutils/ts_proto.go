@@ -57,9 +57,10 @@ func TSProtoFieldToJson(field *protogen.Field) func(g *TSRegistry, in string) st
 		bodyType := field.Message
 		toJsonFunc = TSProtoMessageToJson(bodyType)
 	case protoreflect.EnumKind:
-		// enum types
-		bodyType := field.Enum
-		toJsonFunc = TSProtoEnumToJson(bodyType)
+		// bodyType := field.Enum
+		// if root is enum, it can only be parsed as a number
+		// so it should not use TSProtoEnumToJson
+		toJsonFunc = TSProtoScalarToJson()
 	case protoreflect.BoolKind,
 		protoreflect.StringKind,
 		protoreflect.Int32Kind,
@@ -138,6 +139,7 @@ func TSProtoMessageToJson(msgTyp *protogen.Message) func(g *TSRegistry, in strin
 	}
 	return messageToJson
 }
+
 func TSProtoEnumToJson(enumTyp *protogen.Enum) func(g *TSRegistry, in string) string {
 	return func(g *TSRegistry, in string) string {
 		enumModule := TSModule_TSProto(enumTyp.Desc.ParentFile())

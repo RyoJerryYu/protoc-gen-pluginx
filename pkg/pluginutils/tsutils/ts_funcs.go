@@ -134,15 +134,13 @@ func GetModuleName(file protoreflect.FileDescriptor) string {
 }
 
 type TSOption struct {
-	// TSImportRootParamsKey contains the key for common_import_root in parameters
-	TSImportRoots string
-	// TSImportRootAliasParamsKey contains the key for common_import_root_alias in parameters
-	TSImportRootAliases string
-	// UseProtoNames will generate field names the same as defined in the proto
-	UseProtoNames bool
-	// EmitUnpopulated mirrors the grpc gateway protojson configuration of the same name and allows
-	// clients to differentiate between zero values and optional values that aren't set.
-	EmitUnpopulated bool
-	// EnableStylingCheck enables both eslint and tsc check for the generated code
-	EnableStylingCheck bool
+	// // TSImportRootParamsKey contains the key for common_import_root in parameters
+	// TSImportRoots string
+	// // TSImportRootAliasParamsKey contains the key for common_import_root_alias in parameters
+	// TSImportRootAliases string
+
+	// if TSProto `snakeToCamel` flags contains `key`
+	TSProto_KeySnakeToCamel bool
+	// if server marshal options has MarshalUseProtoNames set to true
+	MarshalUseProtoNames bool
 }

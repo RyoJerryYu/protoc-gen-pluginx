@@ -11,15 +11,6 @@ import (
 
 type Options struct {
 	tsutils.TSOption
-
-	// UseStaticClasses will cause the generator to generate a static class in the form ServiceName.MethodName, which is
-	// the legacy behavior for this generator. If set to false, the generator will generate a client class with methods
-	// as well as static methods exported for each service method.
-	UseStaticClasses bool
-	// FetchModuleDirectory is the parameter for directory where fetch module will live
-	FetchModuleDirectory string
-	// FetchModuleFilename is the file name for the individual fetch module
-	FetchModuleFilename string
 }
 
 var (
@@ -251,7 +242,7 @@ func (g *Generator) applyMethod(method *protogen.Method) {
 					fieldOnBody = strings.TrimPrefix(pathParam, bodyParam+".")
 				}
 				// it must exist because it's a path param
-				g.Pf("  delete body.%s;", tsutils.FieldName(&g.TSOption)(fieldOnBody))
+				g.Pf("  delete body.%s;", tsutils.JsonFieldName(&g.TSOption)(fieldOnBody))
 			}
 		}
 

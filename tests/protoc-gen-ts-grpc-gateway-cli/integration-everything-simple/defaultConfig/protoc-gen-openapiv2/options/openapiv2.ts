@@ -13,12 +13,12 @@ export const protobufPackage = "grpc.gateway.protoc_gen_openapiv2.options";
  * and Operation objects.
  */
 export enum Scheme {
-  UNKNOWN = "UNKNOWN",
-  HTTP = "HTTP",
-  HTTPS = "HTTPS",
-  WS = "WS",
-  WSS = "WSS",
-  UNRECOGNIZED = "UNRECOGNIZED",
+  UNKNOWN = 0,
+  HTTP = 1,
+  HTTPS = 2,
+  WS = 3,
+  WSS = 4,
+  UNRECOGNIZED = -1,
 }
 
 export function schemeFromJSON(object: any): Scheme {
@@ -330,12 +330,12 @@ export interface HeaderParameter {
  * See https://swagger.io/specification/v2/#parameterType.
  */
 export enum HeaderParameter_Type {
-  UNKNOWN = "UNKNOWN",
-  STRING = "STRING",
-  NUMBER = "NUMBER",
-  INTEGER = "INTEGER",
-  BOOLEAN = "BOOLEAN",
-  UNRECOGNIZED = "UNRECOGNIZED",
+  UNKNOWN = 0,
+  STRING = 1,
+  NUMBER = 2,
+  INTEGER = 3,
+  BOOLEAN = 4,
+  UNRECOGNIZED = -1,
 }
 
 export function headerParameter_TypeFromJSON(
@@ -727,15 +727,15 @@ export interface JSONSchema {
 }
 
 export enum JSONSchema_JSONSchemaSimpleTypes {
-  UNKNOWN = "UNKNOWN",
-  ARRAY = "ARRAY",
-  BOOLEAN = "BOOLEAN",
-  INTEGER = "INTEGER",
-  NULL = "NULL",
-  NUMBER = "NUMBER",
-  OBJECT = "OBJECT",
-  STRING = "STRING",
-  UNRECOGNIZED = "UNRECOGNIZED",
+  UNKNOWN = 0,
+  ARRAY = 1,
+  BOOLEAN = 2,
+  INTEGER = 3,
+  NULL = 4,
+  NUMBER = 5,
+  OBJECT = 6,
+  STRING = 7,
+  UNRECOGNIZED = -1,
 }
 
 export function jSONSchema_JSONSchemaSimpleTypesFromJSON(
@@ -939,11 +939,11 @@ export interface SecurityScheme {
  * "apiKey" or "oauth2".
  */
 export enum SecurityScheme_Type {
-  TYPE_INVALID = "TYPE_INVALID",
-  TYPE_BASIC = "TYPE_BASIC",
-  TYPE_API_KEY = "TYPE_API_KEY",
-  TYPE_OAUTH2 = "TYPE_OAUTH2",
-  UNRECOGNIZED = "UNRECOGNIZED",
+  TYPE_INVALID = 0,
+  TYPE_BASIC = 1,
+  TYPE_API_KEY = 2,
+  TYPE_OAUTH2 = 3,
+  UNRECOGNIZED = -1,
 }
 
 export function securityScheme_TypeFromJSON(object: any): SecurityScheme_Type {
@@ -985,10 +985,10 @@ export function securityScheme_TypeToJSON(object: SecurityScheme_Type): string {
 
 /** The location of the API key. Valid values are "query" or "header". */
 export enum SecurityScheme_In {
-  IN_INVALID = "IN_INVALID",
-  IN_QUERY = "IN_QUERY",
-  IN_HEADER = "IN_HEADER",
-  UNRECOGNIZED = "UNRECOGNIZED",
+  IN_INVALID = 0,
+  IN_QUERY = 1,
+  IN_HEADER = 2,
+  UNRECOGNIZED = -1,
 }
 
 export function securityScheme_InFromJSON(object: any): SecurityScheme_In {
@@ -1028,12 +1028,12 @@ export function securityScheme_InToJSON(object: SecurityScheme_In): string {
  * "implicit", "password", "application" or "accessCode".
  */
 export enum SecurityScheme_Flow {
-  FLOW_INVALID = "FLOW_INVALID",
-  FLOW_IMPLICIT = "FLOW_IMPLICIT",
-  FLOW_PASSWORD = "FLOW_PASSWORD",
-  FLOW_APPLICATION = "FLOW_APPLICATION",
-  FLOW_ACCESS_CODE = "FLOW_ACCESS_CODE",
-  UNRECOGNIZED = "UNRECOGNIZED",
+  FLOW_INVALID = 0,
+  FLOW_IMPLICIT = 1,
+  FLOW_PASSWORD = 2,
+  FLOW_APPLICATION = 3,
+  FLOW_ACCESS_CODE = 4,
+  UNRECOGNIZED = -1,
 }
 
 export function securityScheme_FlowFromJSON(object: any): SecurityScheme_Flow {
@@ -1674,13 +1674,7 @@ export const Parameters: MessageFns<Parameters> = {
 };
 
 function createBaseHeaderParameter(): HeaderParameter {
-  return {
-    name: "",
-    description: "",
-    type: HeaderParameter_Type.UNKNOWN,
-    format: "",
-    required: false,
-  };
+  return { name: "", description: "", type: 0, format: "", required: false };
 }
 
 export const HeaderParameter: MessageFns<HeaderParameter> = {
@@ -1690,9 +1684,7 @@ export const HeaderParameter: MessageFns<HeaderParameter> = {
       description: isSet(object.description)
         ? globalThis.String(object.description)
         : "",
-      type: isSet(object.type)
-        ? headerParameter_TypeFromJSON(object.type)
-        : HeaderParameter_Type.UNKNOWN,
+      type: isSet(object.type) ? headerParameter_TypeFromJSON(object.type) : 0,
       format: isSet(object.format) ? globalThis.String(object.format) : "",
       required: isSet(object.required)
         ? globalThis.Boolean(object.required)
@@ -1708,7 +1700,7 @@ export const HeaderParameter: MessageFns<HeaderParameter> = {
     if (message.description !== "") {
       obj.description = message.description;
     }
-    if (message.type !== HeaderParameter_Type.UNKNOWN) {
+    if (message.type !== 0) {
       obj.type = headerParameter_TypeToJSON(message.type);
     }
     if (message.format !== "") {
@@ -1727,7 +1719,7 @@ export const HeaderParameter: MessageFns<HeaderParameter> = {
     const message = createBaseHeaderParameter();
     message.name = object.name ?? "";
     message.description = object.description ?? "";
-    message.type = object.type ?? HeaderParameter_Type.UNKNOWN;
+    message.type = object.type ?? 0;
     message.format = object.format ?? "";
     message.required = object.required ?? false;
     return message;
@@ -2851,11 +2843,11 @@ export const SecurityDefinitions_SecurityEntry: MessageFns<SecurityDefinitions_S
 
 function createBaseSecurityScheme(): SecurityScheme {
   return {
-    type: SecurityScheme_Type.TYPE_INVALID,
+    type: 0,
     description: "",
     name: "",
-    in: SecurityScheme_In.IN_INVALID,
-    flow: SecurityScheme_Flow.FLOW_INVALID,
+    in: 0,
+    flow: 0,
     authorizationUrl: "",
     tokenUrl: "",
     scopes: undefined,
@@ -2866,19 +2858,13 @@ function createBaseSecurityScheme(): SecurityScheme {
 export const SecurityScheme: MessageFns<SecurityScheme> = {
   fromJSON(object: any): SecurityScheme {
     return {
-      type: isSet(object.type)
-        ? securityScheme_TypeFromJSON(object.type)
-        : SecurityScheme_Type.TYPE_INVALID,
+      type: isSet(object.type) ? securityScheme_TypeFromJSON(object.type) : 0,
       description: isSet(object.description)
         ? globalThis.String(object.description)
         : "",
       name: isSet(object.name) ? globalThis.String(object.name) : "",
-      in: isSet(object.in)
-        ? securityScheme_InFromJSON(object.in)
-        : SecurityScheme_In.IN_INVALID,
-      flow: isSet(object.flow)
-        ? securityScheme_FlowFromJSON(object.flow)
-        : SecurityScheme_Flow.FLOW_INVALID,
+      in: isSet(object.in) ? securityScheme_InFromJSON(object.in) : 0,
+      flow: isSet(object.flow) ? securityScheme_FlowFromJSON(object.flow) : 0,
       authorizationUrl: isSet(object.authorizationUrl)
         ? globalThis.String(object.authorizationUrl)
         : "",
@@ -2899,7 +2885,7 @@ export const SecurityScheme: MessageFns<SecurityScheme> = {
 
   toJSON(message: SecurityScheme): unknown {
     const obj: any = {};
-    if (message.type !== SecurityScheme_Type.TYPE_INVALID) {
+    if (message.type !== 0) {
       obj.type = securityScheme_TypeToJSON(message.type);
     }
     if (message.description !== "") {
@@ -2908,10 +2894,10 @@ export const SecurityScheme: MessageFns<SecurityScheme> = {
     if (message.name !== "") {
       obj.name = message.name;
     }
-    if (message.in !== SecurityScheme_In.IN_INVALID) {
+    if (message.in !== 0) {
       obj.in = securityScheme_InToJSON(message.in);
     }
-    if (message.flow !== SecurityScheme_Flow.FLOW_INVALID) {
+    if (message.flow !== 0) {
       obj.flow = securityScheme_FlowToJSON(message.flow);
     }
     if (message.authorizationUrl !== "") {
@@ -2940,11 +2926,11 @@ export const SecurityScheme: MessageFns<SecurityScheme> = {
   },
   fromPartial(object: DeepPartial<SecurityScheme>): SecurityScheme {
     const message = createBaseSecurityScheme();
-    message.type = object.type ?? SecurityScheme_Type.TYPE_INVALID;
+    message.type = object.type ?? 0;
     message.description = object.description ?? "";
     message.name = object.name ?? "";
-    message.in = object.in ?? SecurityScheme_In.IN_INVALID;
-    message.flow = object.flow ?? SecurityScheme_Flow.FLOW_INVALID;
+    message.in = object.in ?? 0;
+    message.flow = object.flow ?? 0;
     message.authorizationUrl = object.authorizationUrl ?? "";
     message.tokenUrl = object.tokenUrl ?? "";
     message.scopes =

@@ -55,7 +55,8 @@ function fetchTransport(
       if (headers) {
         callReq.headers = headers;
       }
-      const res = await fetch(new URL(rpcPath, baseUrl).href, callReq);
+      const url = new URL("." + rpcPath, baseUrl).href;
+      const res = await fetch(url, callReq);
       const resBody = await res.json();
       if (!res.ok) throw resBody;
       return resBody;
@@ -157,7 +158,7 @@ function newABitOfEverythingNonZero(): ABitOfEverything {
 
 describe("ABitOfEverythingService", () => {
   const aBitOfEverythingService = newABitOfEverythingService(
-    fetchTransport("http://localhost:8081/api"),
+    fetchTransport("http://localhost:8081/api/"),
   );
 
   it("Create", async () => {
@@ -542,13 +543,13 @@ describe("ABitOfEverythingService", () => {
     );
   });
 
-  // it("PostOneofEnum", async () => {
-  //   const req: OneofEnumMessage = {
-  //     exampleEnum: ExampleEnum.EXAMPLE_ENUM_FIRST,
-  //   };
-  //   const res = await aBitOfEverythingService.postOneofEnum(req);
-  //   expect(res).to.deep.equal(Empty.create());
-  // });
+  it("PostOneofEnum", async () => {
+    const req: OneofEnumMessage = {
+      exampleEnum: ExampleEnum.EXAMPLE_ENUM_FIRST,
+    };
+    const res = await aBitOfEverythingService.postOneofEnum(req);
+    expect(res).to.deep.equal(Empty.create());
+  });
 
   it("PostRequiredMessageType", async () => {
     const req: RequiredMessageTypeRequest = {
@@ -566,7 +567,7 @@ describe("ABitOfEverythingService", () => {
 
 describe("AnotherServiceWithNoBindings", () => {
   const anotherServiceWithNoBindings = newAnotherServiceWithNoBindings(
-    fetchTransport("http://localhost:8081/api"),
+    fetchTransport("http://localhost:8081/api/"),
   );
 
   it("NoBindings", async () => {
@@ -577,10 +578,12 @@ describe("AnotherServiceWithNoBindings", () => {
       });
     } catch (e) {
       errorThrown = true;
-      expect(e).to.deep.equal({
-        code: 5,
-        message: "Not Found",
-      });
+      expect(Status.fromJSON(e)).to.deep.equal(
+        Status.fromJSON({
+          code: 5,
+          message: "Not Found",
+        }),
+      );
     }
     expect(errorThrown).to.be.true;
   });
@@ -588,19 +591,19 @@ describe("AnotherServiceWithNoBindings", () => {
 
 describe("BodyJsonService", () => {
   const bodyJsonService = newBodyJSONService(
-    fetchTransport("http://localhost:8081/api"),
+    fetchTransport("http://localhost:8081/api/"),
   );
 
   // body field
 
-  // it("PostEnumBody", async () => {
-  //   const req: Partial<ABitOfEverything> = {
-  //     int32Value: 1,
-  //     enumValue: NumericEnum.ONE,
-  //   };
-  //   const res = await bodyJsonService.postEnumBody(req);
-  //   expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
-  // });
+  it("PostEnumBody", async () => {
+    const req: Partial<ABitOfEverything> = {
+      int32Value: 1,
+      enumValue: NumericEnum.ONE,
+    };
+    const res = await bodyJsonService.postEnumBody(req);
+    expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+  });
 
   it("PostStringBody", async () => {
     const req: Partial<ABitOfEverything> = {
@@ -628,14 +631,14 @@ describe("BodyJsonService", () => {
     expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
   });
 
-  // it("PostRepeatedEnumBody", async () => {
-  //   const req: Partial<ABitOfEverything> = {
-  //     int32Value: 1,
-  //     repeatedEnumValue: [NumericEnum.ONE],
-  //   };
-  //   const res = await bodyJsonService.postRepeatedEnumBody(req);
-  //   expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
-  // });
+  it("PostRepeatedEnumBody", async () => {
+    const req: Partial<ABitOfEverything> = {
+      int32Value: 1,
+      repeatedEnumValue: [NumericEnum.ONE],
+    };
+    const res = await bodyJsonService.postRepeatedEnumBody(req);
+    expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+  });
 
   it("PostRepeatedStringBody", async () => {
     const req: Partial<ABitOfEverything> = {

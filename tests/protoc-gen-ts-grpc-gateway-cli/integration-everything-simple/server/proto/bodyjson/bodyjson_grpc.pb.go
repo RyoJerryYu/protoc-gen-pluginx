@@ -20,8 +20,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
+	BodyJSONService_PostEnumBody_FullMethodName            = "/proto.bodyjson.BodyJSONService/PostEnumBody"
 	BodyJSONService_PostStringBody_FullMethodName          = "/proto.bodyjson.BodyJSONService/PostStringBody"
 	BodyJSONService_PostRepeatedMessageBody_FullMethodName = "/proto.bodyjson.BodyJSONService/PostRepeatedMessageBody"
+	BodyJSONService_PostRepeatedEnumBody_FullMethodName    = "/proto.bodyjson.BodyJSONService/PostRepeatedEnumBody"
 	BodyJSONService_PostRepeatedStringBody_FullMethodName  = "/proto.bodyjson.BodyJSONService/PostRepeatedStringBody"
 	BodyJSONService_PostTimestampBody_FullMethodName       = "/proto.bodyjson.BodyJSONService/PostTimestampBody"
 	BodyJSONService_PostFieldMaskBody_FullMethodName       = "/proto.bodyjson.BodyJSONService/PostFieldMaskBody"
@@ -36,8 +38,10 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type BodyJSONServiceClient interface {
+	PostEnumBody(ctx context.Context, in *examplepb.ABitOfEverything, opts ...grpc.CallOption) (*examplepb.ABitOfEverything, error)
 	PostStringBody(ctx context.Context, in *examplepb.ABitOfEverything, opts ...grpc.CallOption) (*examplepb.ABitOfEverything, error)
 	PostRepeatedMessageBody(ctx context.Context, in *examplepb.ABitOfEverything, opts ...grpc.CallOption) (*examplepb.ABitOfEverything, error)
+	PostRepeatedEnumBody(ctx context.Context, in *examplepb.ABitOfEverything, opts ...grpc.CallOption) (*examplepb.ABitOfEverything, error)
 	PostRepeatedStringBody(ctx context.Context, in *examplepb.ABitOfEverything, opts ...grpc.CallOption) (*examplepb.ABitOfEverything, error)
 	PostTimestampBody(ctx context.Context, in *WellKnownTypesHolder, opts ...grpc.CallOption) (*WellKnownTypesHolder, error)
 	PostFieldMaskBody(ctx context.Context, in *WellKnownTypesHolder, opts ...grpc.CallOption) (*WellKnownTypesHolder, error)
@@ -57,6 +61,16 @@ func NewBodyJSONServiceClient(cc grpc.ClientConnInterface) BodyJSONServiceClient
 	return &bodyJSONServiceClient{cc}
 }
 
+func (c *bodyJSONServiceClient) PostEnumBody(ctx context.Context, in *examplepb.ABitOfEverything, opts ...grpc.CallOption) (*examplepb.ABitOfEverything, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(examplepb.ABitOfEverything)
+	err := c.cc.Invoke(ctx, BodyJSONService_PostEnumBody_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *bodyJSONServiceClient) PostStringBody(ctx context.Context, in *examplepb.ABitOfEverything, opts ...grpc.CallOption) (*examplepb.ABitOfEverything, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(examplepb.ABitOfEverything)
@@ -71,6 +85,16 @@ func (c *bodyJSONServiceClient) PostRepeatedMessageBody(ctx context.Context, in 
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(examplepb.ABitOfEverything)
 	err := c.cc.Invoke(ctx, BodyJSONService_PostRepeatedMessageBody_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *bodyJSONServiceClient) PostRepeatedEnumBody(ctx context.Context, in *examplepb.ABitOfEverything, opts ...grpc.CallOption) (*examplepb.ABitOfEverything, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(examplepb.ABitOfEverything)
+	err := c.cc.Invoke(ctx, BodyJSONService_PostRepeatedEnumBody_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -161,8 +185,10 @@ func (c *bodyJSONServiceClient) PatchBodyWithPathParam(ctx context.Context, in *
 // All implementations must embed UnimplementedBodyJSONServiceServer
 // for forward compatibility.
 type BodyJSONServiceServer interface {
+	PostEnumBody(context.Context, *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error)
 	PostStringBody(context.Context, *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error)
 	PostRepeatedMessageBody(context.Context, *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error)
+	PostRepeatedEnumBody(context.Context, *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error)
 	PostRepeatedStringBody(context.Context, *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error)
 	PostTimestampBody(context.Context, *WellKnownTypesHolder) (*WellKnownTypesHolder, error)
 	PostFieldMaskBody(context.Context, *WellKnownTypesHolder) (*WellKnownTypesHolder, error)
@@ -182,11 +208,17 @@ type BodyJSONServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedBodyJSONServiceServer struct{}
 
+func (UnimplementedBodyJSONServiceServer) PostEnumBody(context.Context, *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PostEnumBody not implemented")
+}
 func (UnimplementedBodyJSONServiceServer) PostStringBody(context.Context, *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PostStringBody not implemented")
 }
 func (UnimplementedBodyJSONServiceServer) PostRepeatedMessageBody(context.Context, *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PostRepeatedMessageBody not implemented")
+}
+func (UnimplementedBodyJSONServiceServer) PostRepeatedEnumBody(context.Context, *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PostRepeatedEnumBody not implemented")
 }
 func (UnimplementedBodyJSONServiceServer) PostRepeatedStringBody(context.Context, *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PostRepeatedStringBody not implemented")
@@ -233,6 +265,24 @@ func RegisterBodyJSONServiceServer(s grpc.ServiceRegistrar, srv BodyJSONServiceS
 	s.RegisterService(&BodyJSONService_ServiceDesc, srv)
 }
 
+func _BodyJSONService_PostEnumBody_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(examplepb.ABitOfEverything)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BodyJSONServiceServer).PostEnumBody(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BodyJSONService_PostEnumBody_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BodyJSONServiceServer).PostEnumBody(ctx, req.(*examplepb.ABitOfEverything))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _BodyJSONService_PostStringBody_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(examplepb.ABitOfEverything)
 	if err := dec(in); err != nil {
@@ -265,6 +315,24 @@ func _BodyJSONService_PostRepeatedMessageBody_Handler(srv interface{}, ctx conte
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(BodyJSONServiceServer).PostRepeatedMessageBody(ctx, req.(*examplepb.ABitOfEverything))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _BodyJSONService_PostRepeatedEnumBody_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(examplepb.ABitOfEverything)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BodyJSONServiceServer).PostRepeatedEnumBody(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BodyJSONService_PostRepeatedEnumBody_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BodyJSONServiceServer).PostRepeatedEnumBody(ctx, req.(*examplepb.ABitOfEverything))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -421,12 +489,20 @@ var BodyJSONService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*BodyJSONServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "PostEnumBody",
+			Handler:    _BodyJSONService_PostEnumBody_Handler,
+		},
+		{
 			MethodName: "PostStringBody",
 			Handler:    _BodyJSONService_PostStringBody_Handler,
 		},
 		{
 			MethodName: "PostRepeatedMessageBody",
 			Handler:    _BodyJSONService_PostRepeatedMessageBody_Handler,
+		},
+		{
+			MethodName: "PostRepeatedEnumBody",
+			Handler:    _BodyJSONService_PostRepeatedEnumBody_Handler,
 		},
 		{
 			MethodName: "PostRepeatedStringBody",

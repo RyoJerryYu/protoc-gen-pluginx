@@ -23,6 +23,11 @@ func (b *BodyJSONService) PostRepeatedMessageBody(ctx context.Context, req *exam
 	return req, nil
 }
 
+// PostRepeatedEnumBody implements bodyjson.BodyJSONServiceServer.
+func (b *BodyJSONService) PostRepeatedEnumBody(ctx context.Context, req *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error) {
+	return req, nil
+}
+
 // PostRepeatedStringBody implements bodyjson.BodyJSONServiceServer.
 func (b *BodyJSONService) PostRepeatedStringBody(ctx context.Context, req *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error) {
 	return req, nil
@@ -60,5 +65,10 @@ func (b *BodyJSONService) PostValueBody(ctx context.Context, req *bodyjson.WellK
 
 // PostWrapperBody implements bodyjson.BodyJSONServiceServer.
 func (b *BodyJSONService) PostWrapperBody(ctx context.Context, req *bodyjson.WellKnownTypesHolder) (*bodyjson.WellKnownTypesHolder, error) {
+	return req, nil
+}
+
+// PatchBodyWithPathParam implements bodyjson.BodyJSONServiceServer.
+func (b *BodyJSONService) PatchBodyWithPathParam(ctx context.Context, req *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error) {
 	return req, nil
 }
