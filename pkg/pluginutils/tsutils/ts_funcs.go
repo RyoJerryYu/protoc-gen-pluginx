@@ -140,9 +140,4 @@ type TSOption struct {
 	TSImportRootAliases string
 	// UseProtoNames will generate field names the same as defined in the proto
 	UseProtoNames bool
-	// EmitUnpopulated mirrors the grpc gateway protojson configuration of the same name and allows
-	// clients to differentiate between zero values and optional values that aren't set.
-	EmitUnpopulated bool
-	// EnableStylingCheck enables both eslint and tsc check for the generated code
-	EnableStylingCheck bool
 }
