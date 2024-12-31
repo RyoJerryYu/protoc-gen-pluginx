@@ -55,7 +55,8 @@ function fetchTransport(
       if (headers) {
         callReq.headers = headers;
       }
-      const res = await fetch(new URL(rpcPath, baseUrl).href, callReq);
+      const url = new URL('.'+rpcPath, baseUrl).href;
+      const res = await fetch(url, callReq);
       const resBody = await res.json();
       if (!res.ok) throw resBody;
       return resBody;
@@ -157,7 +158,7 @@ function newABitOfEverythingNonZero(): ABitOfEverything {
 
 describe("ABitOfEverythingService", () => {
   const aBitOfEverythingService = newABitOfEverythingService(
-    fetchTransport("http://localhost:8081/api"),
+    fetchTransport("http://localhost:8081/api/"),
   );
 
   it("Create", async () => {
@@ -566,7 +567,7 @@ describe("ABitOfEverythingService", () => {
 
 describe("AnotherServiceWithNoBindings", () => {
   const anotherServiceWithNoBindings = newAnotherServiceWithNoBindings(
-    fetchTransport("http://localhost:8081/api"),
+    fetchTransport("http://localhost:8081/api/"),
   );
 
   it("NoBindings", async () => {
@@ -590,7 +591,7 @@ describe("AnotherServiceWithNoBindings", () => {
 
 describe("BodyJsonService", () => {
   const bodyJsonService = newBodyJSONService(
-    fetchTransport("http://localhost:8081/api"),
+    fetchTransport("http://localhost:8081/api/"),
   );
 
   // body field

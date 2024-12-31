@@ -112,8 +112,9 @@ func main() {
 		w.Write([]byte(swaggerDef))
 	})
 	mux.Mount("/swagger", httpSwagger.Handler(httpSwagger.URL("/swagger.json")))
-	mux.Handle("/*", gateway)
+	mux.Handle("/api/*", http.StripPrefix("/api", gateway))
 
+	fmt.Printf("Starting HTTP server on localhost:8081\n")
 	if err = http.ListenAndServe("localhost:8081", mux); err != nil {
 		panic(err)
 	}
