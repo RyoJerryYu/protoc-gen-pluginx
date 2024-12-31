@@ -152,6 +152,25 @@ export function newBodyJSONService(
   transport: Transport,
 ): BodyJSONServiceClient {
   return {
+    async postEnumBody(
+      req: DeepPartial<ABitOfEverything>,
+      options?: CallOptions,
+    ): Promise<ABitOfEverything> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
+      const fullReq = ABitOfEverything.fromPartial(req);
+      const body: any = must(fullReq.enumValue);
+      const res = await transport.call({
+        path: `/v1/bodyjson/enumbody`,
+        method: "POST",
+        headers: headers,
+        queryParams: renderURLSearchParams(req, ["enumValue"]),
+        body: JSON.stringify(body),
+      });
+      return ABitOfEverything.fromJSON(res);
+    },
+
     async postStringBody(
       req: DeepPartial<ABitOfEverything>,
       options?: CallOptions,
@@ -187,6 +206,25 @@ export function newBodyJSONService(
         method: "POST",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["nested"]),
+        body: JSON.stringify(body),
+      });
+      return ABitOfEverything.fromJSON(res);
+    },
+
+    async postRepeatedEnumBody(
+      req: DeepPartial<ABitOfEverything>,
+      options?: CallOptions,
+    ): Promise<ABitOfEverything> {
+      const headers = options?.metadata
+        ? metadataToHeaders(options.metadata)
+        : undefined;
+      const fullReq = ABitOfEverything.fromPartial(req);
+      const body: any = must(fullReq.repeatedEnumValue).map((e) => e);
+      const res = await transport.call({
+        path: `/v1/bodyjson/repeatedenumbody`,
+        method: "POST",
+        headers: headers,
+        queryParams: renderURLSearchParams(req, ["repeatedEnumValue"]),
         body: JSON.stringify(body),
       });
       return ABitOfEverything.fromJSON(res);

@@ -38,12 +38,12 @@ message WellKnownTypesHolder {
 service BodyJSONService {
   // normal fields
 
-  // rpc PostEnumBody(examplepb.ABitOfEverything) returns (examplepb.ABitOfEverything) {
-  //   option (google.api.http) = {
-  //     post: "/v1/bodyjson/enumbody"
-  //     body: "enum_value"
-  //   };
-  // }
+  rpc PostEnumBody(examplepb.ABitOfEverything) returns (examplepb.ABitOfEverything) {
+    option (google.api.http) = {
+      post: "/v1/bodyjson/enumbody"
+      body: "enum_value"
+    };
+  }
 
   rpc PostStringBody(examplepb.ABitOfEverything) returns (examplepb.ABitOfEverything) {
     option (google.api.http) = {
@@ -61,12 +61,12 @@ service BodyJSONService {
     };
   }
 
-  // rpc PostRepeatedEnumBody(examplepb.ABitOfEverything) returns (examplepb.ABitOfEverything) {
-  //   option (google.api.http) = {
-  //     post: "/v1/bodyjson/repeatedenumbody"
-  //     body: "repeated_enum_value"
-  //   };
-  // }
+  rpc PostRepeatedEnumBody(examplepb.ABitOfEverything) returns (examplepb.ABitOfEverything) {
+    option (google.api.http) = {
+      post: "/v1/bodyjson/repeatedenumbody"
+      body: "repeated_enum_value"
+    };
+  }
 
   rpc PostRepeatedStringBody(examplepb.ABitOfEverything) returns (examplepb.ABitOfEverything) {
     option (google.api.http) = {

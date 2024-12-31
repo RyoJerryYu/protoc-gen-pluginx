@@ -9,9 +9,9 @@
 export const protobufPackage = "proto.oneofenum";
 
 export enum ExampleEnum {
-  EXAMPLE_ENUM_UNSPECIFIED = "EXAMPLE_ENUM_UNSPECIFIED",
-  EXAMPLE_ENUM_FIRST = "EXAMPLE_ENUM_FIRST",
-  UNRECOGNIZED = "UNRECOGNIZED",
+  EXAMPLE_ENUM_UNSPECIFIED = 0,
+  EXAMPLE_ENUM_FIRST = 1,
+  UNRECOGNIZED = -1,
 }
 
 export function exampleEnumFromJSON(object: any): ExampleEnum {

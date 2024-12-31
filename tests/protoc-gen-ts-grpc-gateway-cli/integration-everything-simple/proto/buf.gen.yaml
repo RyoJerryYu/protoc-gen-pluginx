@@ -49,9 +49,9 @@ plugins:
       - env=browser
       - esModuleInterop=true
       - useOptionals=messages
-      - stringEnums=true
       - outputServices=generic-definitions
       - outputServices=nice-grpc
       - outputEncodeMethods=false
       - outputJsonMethods=true
+      - stringEnums=false
       - useExactTypes=false

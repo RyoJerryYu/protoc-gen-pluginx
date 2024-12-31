@@ -16,7 +16,7 @@ import {
   RequiredMessageTypeRequest,
   UpdateV2Request,
 } from "./a_bit_of_everything";
-import { OneofEnumMessage, exampleEnumToJSON } from "../oneofenum/oneof_enum";
+import { OneofEnumMessage } from "../oneofenum/oneof_enum";
 import {
   MessageWithNestedPathEnum,
   MessageWithPathEnum,
@@ -605,7 +605,7 @@ export function newABitOfEverythingService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = OneofEnumMessage.fromPartial(req);
-      const body: any = exampleEnumToJSON(must(fullReq.exampleEnum));
+      const body: any = must(fullReq.exampleEnum);
       const res = await transport.call({
         path: `/v1/example/oneofenum`,
         method: "POST",

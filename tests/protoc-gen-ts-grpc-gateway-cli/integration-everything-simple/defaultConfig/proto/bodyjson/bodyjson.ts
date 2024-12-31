@@ -212,6 +212,24 @@ export const BodyJSONServiceDefinition = {
   name: "BodyJSONService",
   fullName: "proto.bodyjson.BodyJSONService",
   methods: {
+    postEnumBody: {
+      name: "PostEnumBody",
+      requestType: ABitOfEverything,
+      requestStream: false,
+      responseType: ABitOfEverything,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              35, 58, 10, 101, 110, 117, 109, 95, 118, 97, 108, 117, 101, 34,
+              21, 47, 118, 49, 47, 98, 111, 100, 121, 106, 115, 111, 110, 47,
+              101, 110, 117, 109, 98, 111, 100, 121,
+            ]),
+          ],
+        },
+      },
+    },
     postStringBody: {
       name: "PostStringBody",
       requestType: ABitOfEverything,
@@ -244,6 +262,25 @@ export const BodyJSONServiceDefinition = {
               98, 111, 100, 121, 106, 115, 111, 110, 47, 114, 101, 112, 101, 97,
               116, 101, 100, 109, 101, 115, 115, 97, 103, 101, 98, 111, 100,
               121,
+            ]),
+          ],
+        },
+      },
+    },
+    postRepeatedEnumBody: {
+      name: "PostRepeatedEnumBody",
+      requestType: ABitOfEverything,
+      requestStream: false,
+      responseType: ABitOfEverything,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              52, 58, 19, 114, 101, 112, 101, 97, 116, 101, 100, 95, 101, 110,
+              117, 109, 95, 118, 97, 108, 117, 101, 34, 29, 47, 118, 49, 47, 98,
+              111, 100, 121, 106, 115, 111, 110, 47, 114, 101, 112, 101, 97,
+              116, 101, 100, 101, 110, 117, 109, 98, 111, 100, 121,
             ]),
           ],
         },
@@ -403,11 +440,19 @@ export const BodyJSONServiceDefinition = {
 } as const;
 
 export interface BodyJSONServiceImplementation<CallContextExt = {}> {
+  postEnumBody(
+    request: ABitOfEverything,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<ABitOfEverything>>;
   postStringBody(
     request: ABitOfEverything,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<ABitOfEverything>>;
   postRepeatedMessageBody(
+    request: ABitOfEverything,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<ABitOfEverything>>;
+  postRepeatedEnumBody(
     request: ABitOfEverything,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<ABitOfEverything>>;
@@ -447,11 +492,19 @@ export interface BodyJSONServiceImplementation<CallContextExt = {}> {
 }
 
 export interface BodyJSONServiceClient<CallOptionsExt = {}> {
+  postEnumBody(
+    request: DeepPartial<ABitOfEverything>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<ABitOfEverything>;
   postStringBody(
     request: DeepPartial<ABitOfEverything>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<ABitOfEverything>;
   postRepeatedMessageBody(
+    request: DeepPartial<ABitOfEverything>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<ABitOfEverything>;
+  postRepeatedEnumBody(
     request: DeepPartial<ABitOfEverything>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<ABitOfEverything>;

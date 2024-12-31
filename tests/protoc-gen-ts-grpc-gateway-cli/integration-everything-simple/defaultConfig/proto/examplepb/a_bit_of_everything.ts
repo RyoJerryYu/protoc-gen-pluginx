@@ -34,10 +34,10 @@ export const protobufPackage = "proto.examplepb";
 /** NumericEnum is one or zero. */
 export enum NumericEnum {
   /** ZERO - ZERO means 0 */
-  ZERO = "ZERO",
+  ZERO = 0,
   /** ONE - ONE means 1 */
-  ONE = "ONE",
-  UNRECOGNIZED = "UNRECOGNIZED",
+  ONE = 1,
+  UNRECOGNIZED = -1,
 }
 
 export function numericEnumFromJSON(object: any): NumericEnum {
@@ -74,10 +74,10 @@ export function numericEnumToJSON(object: NumericEnum): string {
  */
 export enum snakeCaseEnum {
   /** value_c - buf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE */
-  value_c = "value_c",
+  value_c = 0,
   /** value_d - buf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE */
-  value_d = "value_d",
-  UNRECOGNIZED = "UNRECOGNIZED",
+  value_d = 1,
+  UNRECOGNIZED = -1,
 }
 
 export function snakeCaseEnumFromJSON(object: any): snakeCaseEnum {
@@ -114,10 +114,10 @@ export function snakeCaseEnumToJSON(object: snakeCaseEnum): string {
  */
 export enum snakeCase0Enum {
   /** value_e - buf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE */
-  value_e = "value_e",
+  value_e = 0,
   /** value_f - buf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE */
-  value_f = "value_f",
-  UNRECOGNIZED = "UNRECOGNIZED",
+  value_f = 1,
+  UNRECOGNIZED = -1,
 }
 
 export function snakeCase0EnumFromJSON(object: any): snakeCase0Enum {
@@ -243,10 +243,10 @@ export interface ABitOfEverything_Nested {
 /** DeepEnum is one or zero. */
 export enum ABitOfEverything_Nested_DeepEnum {
   /** FALSE - FALSE is false. */
-  FALSE = "FALSE",
+  FALSE = 0,
   /** TRUE - TRUE is true. */
-  TRUE = "TRUE",
-  UNRECOGNIZED = "UNRECOGNIZED",
+  TRUE = 1,
+  UNRECOGNIZED = -1,
 }
 
 export function aBitOfEverything_Nested_DeepEnumFromJSON(
@@ -521,9 +521,9 @@ function createBaseABitOfEverything(): ABitOfEverything {
     stringValue: "",
     bytesValue: new Uint8Array(0),
     uint32Value: 0,
-    enumValue: NumericEnum.ZERO,
-    pathEnumValue: PathEnum.ABC,
-    nestedPathEnumValue: MessagePathEnum_NestedPathEnum.GHI,
+    enumValue: 0,
+    pathEnumValue: 0,
+    nestedPathEnumValue: 0,
     sfixed32Value: 0,
     sfixed64Value: 0,
     sint32Value: 0,
@@ -538,7 +538,7 @@ function createBaseABitOfEverything(): ABitOfEverything {
     timestampValue: undefined,
     repeatedEnumValue: [],
     repeatedEnumAnnotation: [],
-    enumValueAnnotation: NumericEnum.ZERO,
+    enumValueAnnotation: 0,
     repeatedStringAnnotation: [],
     repeatedNestedAnnotation: [],
     nestedAnnotation: undefined,
@@ -605,13 +605,13 @@ export const ABitOfEverything: MessageFns<ABitOfEverything> = {
         : 0,
       enumValue: isSet(object.enumValue)
         ? numericEnumFromJSON(object.enumValue)
-        : NumericEnum.ZERO,
+        : 0,
       pathEnumValue: isSet(object.pathEnumValue)
         ? pathEnumFromJSON(object.pathEnumValue)
-        : PathEnum.ABC,
+        : 0,
       nestedPathEnumValue: isSet(object.nestedPathEnumValue)
         ? messagePathEnum_NestedPathEnumFromJSON(object.nestedPathEnumValue)
-        : MessagePathEnum_NestedPathEnum.GHI,
+        : 0,
       sfixed32Value: isSet(object.sfixed32Value)
         ? globalThis.Number(object.sfixed32Value)
         : 0,
@@ -673,7 +673,7 @@ export const ABitOfEverything: MessageFns<ABitOfEverything> = {
         : [],
       enumValueAnnotation: isSet(object.enumValueAnnotation)
         ? numericEnumFromJSON(object.enumValueAnnotation)
-        : NumericEnum.ZERO,
+        : 0,
       repeatedStringAnnotation: globalThis.Array.isArray(
         object?.repeatedStringAnnotation,
       )
@@ -789,13 +789,13 @@ export const ABitOfEverything: MessageFns<ABitOfEverything> = {
     if (message.uint32Value !== 0) {
       obj.uint32Value = Math.round(message.uint32Value);
     }
-    if (message.enumValue !== NumericEnum.ZERO) {
+    if (message.enumValue !== 0) {
       obj.enumValue = numericEnumToJSON(message.enumValue);
     }
-    if (message.pathEnumValue !== PathEnum.ABC) {
+    if (message.pathEnumValue !== 0) {
       obj.pathEnumValue = pathEnumToJSON(message.pathEnumValue);
     }
-    if (message.nestedPathEnumValue !== MessagePathEnum_NestedPathEnum.GHI) {
+    if (message.nestedPathEnumValue !== 0) {
       obj.nestedPathEnumValue = messagePathEnum_NestedPathEnumToJSON(
         message.nestedPathEnumValue,
       );
@@ -864,7 +864,7 @@ export const ABitOfEverything: MessageFns<ABitOfEverything> = {
         numericEnumToJSON(e),
       );
     }
-    if (message.enumValueAnnotation !== NumericEnum.ZERO) {
+    if (message.enumValueAnnotation !== 0) {
       obj.enumValueAnnotation = numericEnumToJSON(message.enumValueAnnotation);
     }
     if (message.repeatedStringAnnotation?.length) {
@@ -955,10 +955,9 @@ export const ABitOfEverything: MessageFns<ABitOfEverything> = {
     message.stringValue = object.stringValue ?? "";
     message.bytesValue = object.bytesValue ?? new Uint8Array(0);
     message.uint32Value = object.uint32Value ?? 0;
-    message.enumValue = object.enumValue ?? NumericEnum.ZERO;
-    message.pathEnumValue = object.pathEnumValue ?? PathEnum.ABC;
-    message.nestedPathEnumValue =
-      object.nestedPathEnumValue ?? MessagePathEnum_NestedPathEnum.GHI;
+    message.enumValue = object.enumValue ?? 0;
+    message.pathEnumValue = object.pathEnumValue ?? 0;
+    message.nestedPathEnumValue = object.nestedPathEnumValue ?? 0;
     message.sfixed32Value = object.sfixed32Value ?? 0;
     message.sfixed64Value = object.sfixed64Value ?? 0;
     message.sint32Value = object.sint32Value ?? 0;
@@ -1002,8 +1001,7 @@ export const ABitOfEverything: MessageFns<ABitOfEverything> = {
     message.repeatedEnumValue = object.repeatedEnumValue?.map((e) => e) || [];
     message.repeatedEnumAnnotation =
       object.repeatedEnumAnnotation?.map((e) => e) || [];
-    message.enumValueAnnotation =
-      object.enumValueAnnotation ?? NumericEnum.ZERO;
+    message.enumValueAnnotation = object.enumValueAnnotation ?? 0;
     message.repeatedStringAnnotation =
       object.repeatedStringAnnotation?.map((e) => e) || [];
     message.repeatedNestedAnnotation =
@@ -1038,7 +1036,7 @@ export const ABitOfEverything: MessageFns<ABitOfEverything> = {
 };
 
 function createBaseABitOfEverything_Nested(): ABitOfEverything_Nested {
-  return { name: "", amount: 0, ok: ABitOfEverything_Nested_DeepEnum.FALSE };
+  return { name: "", amount: 0, ok: 0 };
 }
 
 export const ABitOfEverything_Nested: MessageFns<ABitOfEverything_Nested> = {
@@ -1048,7 +1046,7 @@ export const ABitOfEverything_Nested: MessageFns<ABitOfEverything_Nested> = {
       amount: isSet(object.amount) ? globalThis.Number(object.amount) : 0,
       ok: isSet(object.ok)
         ? aBitOfEverything_Nested_DeepEnumFromJSON(object.ok)
-        : ABitOfEverything_Nested_DeepEnum.FALSE,
+        : 0,
     };
   },
 
@@ -1060,7 +1058,7 @@ export const ABitOfEverything_Nested: MessageFns<ABitOfEverything_Nested> = {
     if (message.amount !== 0) {
       obj.amount = Math.round(message.amount);
     }
-    if (message.ok !== ABitOfEverything_Nested_DeepEnum.FALSE) {
+    if (message.ok !== 0) {
       obj.ok = aBitOfEverything_Nested_DeepEnumToJSON(message.ok);
     }
     return obj;
@@ -1075,13 +1073,13 @@ export const ABitOfEverything_Nested: MessageFns<ABitOfEverything_Nested> = {
     const message = createBaseABitOfEverything_Nested();
     message.name = object.name ?? "";
     message.amount = object.amount ?? 0;
-    message.ok = object.ok ?? ABitOfEverything_Nested_DeepEnum.FALSE;
+    message.ok = object.ok ?? 0;
     return message;
   },
 };
 
 function createBaseABitOfEverything_MapValueEntry(): ABitOfEverything_MapValueEntry {
-  return { key: "", value: NumericEnum.ZERO };
+  return { key: "", value: 0 };
 }
 
 export const ABitOfEverything_MapValueEntry: MessageFns<ABitOfEverything_MapValueEntry> =
@@ -1089,9 +1087,7 @@ export const ABitOfEverything_MapValueEntry: MessageFns<ABitOfEverything_MapValu
     fromJSON(object: any): ABitOfEverything_MapValueEntry {
       return {
         key: isSet(object.key) ? globalThis.String(object.key) : "",
-        value: isSet(object.value)
-          ? numericEnumFromJSON(object.value)
-          : NumericEnum.ZERO,
+        value: isSet(object.value) ? numericEnumFromJSON(object.value) : 0,
       };
     },
 
@@ -1100,7 +1096,7 @@ export const ABitOfEverything_MapValueEntry: MessageFns<ABitOfEverything_MapValu
       if (message.key !== "") {
         obj.key = message.key;
       }
-      if (message.value !== NumericEnum.ZERO) {
+      if (message.value !== 0) {
         obj.value = numericEnumToJSON(message.value);
       }
       return obj;
@@ -1116,7 +1112,7 @@ export const ABitOfEverything_MapValueEntry: MessageFns<ABitOfEverything_MapValu
     ): ABitOfEverything_MapValueEntry {
       const message = createBaseABitOfEverything_MapValueEntry();
       message.key = object.key ?? "";
-      message.value = object.value ?? NumericEnum.ZERO;
+      message.value = object.value ?? 0;
       return message;
     },
   };
@@ -1700,37 +1696,27 @@ export const UpdateBookRequest: MessageFns<UpdateBookRequest> = {
 };
 
 function createBaseSnakeEnumRequest(): SnakeEnumRequest {
-  return {
-    what: snakeCaseEnum.value_c,
-    who: snakeCase0Enum.value_e,
-    where: snakeCaseForImport.value_x,
-  };
+  return { what: 0, who: 0, where: 0 };
 }
 
 export const SnakeEnumRequest: MessageFns<SnakeEnumRequest> = {
   fromJSON(object: any): SnakeEnumRequest {
     return {
-      what: isSet(object.what)
-        ? snakeCaseEnumFromJSON(object.what)
-        : snakeCaseEnum.value_c,
-      who: isSet(object.who)
-        ? snakeCase0EnumFromJSON(object.who)
-        : snakeCase0Enum.value_e,
-      where: isSet(object.where)
-        ? snakeCaseForImportFromJSON(object.where)
-        : snakeCaseForImport.value_x,
+      what: isSet(object.what) ? snakeCaseEnumFromJSON(object.what) : 0,
+      who: isSet(object.who) ? snakeCase0EnumFromJSON(object.who) : 0,
+      where: isSet(object.where) ? snakeCaseForImportFromJSON(object.where) : 0,
     };
   },
 
   toJSON(message: SnakeEnumRequest): unknown {
     const obj: any = {};
-    if (message.what !== snakeCaseEnum.value_c) {
+    if (message.what !== 0) {
       obj.what = snakeCaseEnumToJSON(message.what);
     }
-    if (message.who !== snakeCase0Enum.value_e) {
+    if (message.who !== 0) {
       obj.who = snakeCase0EnumToJSON(message.who);
     }
-    if (message.where !== snakeCaseForImport.value_x) {
+    if (message.where !== 0) {
       obj.where = snakeCaseForImportToJSON(message.where);
     }
     return obj;
@@ -1741,9 +1727,9 @@ export const SnakeEnumRequest: MessageFns<SnakeEnumRequest> = {
   },
   fromPartial(object: DeepPartial<SnakeEnumRequest>): SnakeEnumRequest {
     const message = createBaseSnakeEnumRequest();
-    message.what = object.what ?? snakeCaseEnum.value_c;
-    message.who = object.who ?? snakeCase0Enum.value_e;
-    message.where = object.where ?? snakeCaseForImport.value_x;
+    message.what = object.what ?? 0;
+    message.who = object.who ?? 0;
+    message.where = object.where ?? 0;
     return message;
   },
 };

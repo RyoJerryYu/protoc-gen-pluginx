@@ -12,8 +12,9 @@ This plugin designed to implement the Service Client stubs for gRPC gateway, so 
 
 This plugin depends on some flags of ts_proto:
 
-- outputJsonMethods: Should be set to true.
-- outputServices: ts_proto allow set this flag multiple times. Should include `nice-grpc` .
+- outputJsonMethods: Should be set to true. This plugin depends on that json methods.
+- outputServices: ts_proto allow set this flag multiple times. Should include `nice-grpc` . This plugin depends on nice-grpc service interface.
+- stringEnums: protoc_grpc_gateway only allow unmarshal number value when the whole body is just a enum value or repeated enum value. stringEnums should set to `false` for this case.
 
 Some flags of ts_proto should be set depends on Server Config:
 
@@ -31,6 +32,7 @@ ts_proto do not check oneof at client code, so the gateway cli do not check the 
 - [x] body field do not work well with well-known-types
 - [x] UpdateBook: field mask did not remove path params
 - [x] ErrorWithDetails: throw error with details
+- [x] PostOneofEnum: post body only contain one enum field do not work well: protoc-gen-grpc-gateway do not support: force to use enum number.
 
 ### low priority TODO:
 - [ ] GetRepeatedQuery: path param do not work well with repeated
@@ -47,7 +49,6 @@ ts_proto do not check oneof at client code, so the gateway cli do not check the 
 ### no plan:
 - [ ] NoBindings: jsonify do not work well with duration: ts_proto do not support
 - [ ] ErrorWithDetails: throw nice-grpc-error-details: ts_proto do not support json format for Any
-- [ ] PostOneofEnum: post body only contain one enum field do not work well: protoc-gen-grpc-gateway do not support
 - [ ] body field do not work well with map field: protoc-gen-grpc-gateway do not support
 
 ### Features that do not support

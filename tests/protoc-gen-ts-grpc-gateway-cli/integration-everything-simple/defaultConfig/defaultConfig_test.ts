@@ -542,13 +542,13 @@ describe("ABitOfEverythingService", () => {
     );
   });
 
-  // it("PostOneofEnum", async () => {
-  //   const req: OneofEnumMessage = {
-  //     exampleEnum: ExampleEnum.EXAMPLE_ENUM_FIRST,
-  //   };
-  //   const res = await aBitOfEverythingService.postOneofEnum(req);
-  //   expect(res).to.deep.equal(Empty.create());
-  // });
+  it("PostOneofEnum", async () => {
+    const req: OneofEnumMessage = {
+      exampleEnum: ExampleEnum.EXAMPLE_ENUM_FIRST,
+    };
+    const res = await aBitOfEverythingService.postOneofEnum(req);
+    expect(res).to.deep.equal(Empty.create());
+  });
 
   it("PostRequiredMessageType", async () => {
     const req: RequiredMessageTypeRequest = {
@@ -577,10 +577,12 @@ describe("AnotherServiceWithNoBindings", () => {
       });
     } catch (e) {
       errorThrown = true;
-      expect(Status.fromJSON(e)).to.deep.equal(Status.fromJSON({
-        code: 5,
-        message: "Not Found",
-      }));
+      expect(Status.fromJSON(e)).to.deep.equal(
+        Status.fromJSON({
+          code: 5,
+          message: "Not Found",
+        }),
+      );
     }
     expect(errorThrown).to.be.true;
   });
@@ -593,14 +595,14 @@ describe("BodyJsonService", () => {
 
   // body field
 
-  // it("PostEnumBody", async () => {
-  //   const req: Partial<ABitOfEverything> = {
-  //     int32Value: 1,
-  //     enumValue: NumericEnum.ONE,
-  //   };
-  //   const res = await bodyJsonService.postEnumBody(req);
-  //   expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
-  // });
+  it("PostEnumBody", async () => {
+    const req: Partial<ABitOfEverything> = {
+      int32Value: 1,
+      enumValue: NumericEnum.ONE,
+    };
+    const res = await bodyJsonService.postEnumBody(req);
+    expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+  });
 
   it("PostStringBody", async () => {
     const req: Partial<ABitOfEverything> = {
@@ -628,14 +630,14 @@ describe("BodyJsonService", () => {
     expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
   });
 
-  // it("PostRepeatedEnumBody", async () => {
-  //   const req: Partial<ABitOfEverything> = {
-  //     int32Value: 1,
-  //     repeatedEnumValue: [NumericEnum.ONE],
-  //   };
-  //   const res = await bodyJsonService.postRepeatedEnumBody(req);
-  //   expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
-  // });
+  it("PostRepeatedEnumBody", async () => {
+    const req: Partial<ABitOfEverything> = {
+      int32Value: 1,
+      repeatedEnumValue: [NumericEnum.ONE],
+    };
+    const res = await bodyJsonService.postRepeatedEnumBody(req);
+    expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+  });
 
   it("PostRepeatedStringBody", async () => {
     const req: Partial<ABitOfEverything> = {
