@@ -55,10 +55,12 @@ function fetchTransport(
       if (headers) {
         callReq.headers = headers;
       }
+      console.log("path", rpcPath);
       const url = new URL("." + rpcPath, baseUrl).href;
       const res = await fetch(url, callReq);
       const resBody = await res.json();
       if (!res.ok) throw resBody;
+      console.log("resBody", resBody);
       return resBody;
     },
   };
@@ -350,30 +352,32 @@ describe("ABitOfEverythingService", () => {
     expect(res).to.deep.equal(Empty.create());
   });
 
-  // it("GetRepeatedQuery", async () => {
-  //   const req: ABitOfEverythingRepeated = {
-  //     pathRepeatedFloatValue: [1.1, 2.2],
-  //     pathRepeatedDoubleValue: [1.1, 2.2],
-  //     pathRepeatedInt64Value: [1, 2],
-  //     pathRepeatedUint64Value: [1, 2],
-  //     pathRepeatedInt32Value: [1, 2],
-  //     pathRepeatedFixed64Value: [1, 2],
-  //     pathRepeatedFixed32Value: [1, 2],
-  //     pathRepeatedBoolValue: [true, false],
-  //     pathRepeatedStringValue: ["string1", "string2"],
-  //     pathRepeatedBytesValue: [new Uint8Array([1, 2, 3]), new Uint8Array([4, 5, 6])],
-  //     pathRepeatedUint32Value: [1, 2],
-  //     pathRepeatedEnumValue: [NumericEnum.ONE, NumericEnum.ZERO],
-  //     pathRepeatedSfixed32Value: [1, 2],
-  //     pathRepeatedSfixed64Value: [1, 2],
-  //     pathRepeatedSint32Value: [1, 2],
-  //     pathRepeatedSint64Value: [1, 2],
-  //   }
+  it("GetRepeatedQuery", async () => {
+    const req: Partial<ABitOfEverythingRepeated> = {
+      pathRepeatedFloatValue: [1.1, 2.2],
+      pathRepeatedDoubleValue: [1.1, 2.2],
+      pathRepeatedInt64Value: [1, 2],
+      pathRepeatedUint64Value: [1, 2],
+      pathRepeatedInt32Value: [1, 2],
+      pathRepeatedFixed64Value: [1, 2],
+      pathRepeatedFixed32Value: [1, 2],
+      pathRepeatedBoolValue: [true, false],
+      pathRepeatedStringValue: ["string1", "string2"],
+      // pathRepeatedBytesValue: [new Uint8Array([1, 2, 3]), new Uint8Array([4, 5, 6])],
+      pathRepeatedUint32Value: [1, 2],
+      pathRepeatedEnumValue: [NumericEnum.ONE, NumericEnum.ZERO],
+      pathRepeatedSfixed32Value: [1, 2],
+      pathRepeatedSfixed64Value: [1, 2],
+      pathRepeatedSint32Value: [1, 2],
+      pathRepeatedSint64Value: [1, 2],
+    };
 
-  //   const res = await aBitOfEverythingService.getRepeatedQuery(req);
+    const res = await aBitOfEverythingService.getRepeatedQuery(req);
 
-  //   expect(res).to.deep.equal(req);
-  // })
+    res.pathRepeatedBytesValue = []; // bytesValue is not supported in query params
+    console.log("res", res);
+    expect(res).to.deep.equal(ABitOfEverythingRepeated.fromPartial(req));
+  });
 
   it("Echo", async () => {
     const req: StringMessage = {
