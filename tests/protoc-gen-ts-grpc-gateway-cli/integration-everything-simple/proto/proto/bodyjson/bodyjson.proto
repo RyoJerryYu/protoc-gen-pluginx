@@ -141,12 +141,4 @@ service BodyJSONService {
       body: "int64_value"
     };
   }
-
-  // patch
-  rpc PatchBodyWithPathParam(examplepb.ABitOfEverything) returns (examplepb.ABitOfEverything) {
-    option (google.api.http) = {
-      patch: "/v1/bodyjson/patchbodywithpathparam/{single_nested.name}"
-      body: "single_nested"
-    };
-  }
 }

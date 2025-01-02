@@ -60,6 +60,9 @@ function isPrimitive(value: unknown): boolean {
 }
 
 /**
+ 
+
+/**
  * Flattens a deeply nested request payload and returns an object
  * with only primitive values and non-empty array of primitive values
  * as per https://github.com/googleapis/googleapis/blob/master/google/api/http.proto

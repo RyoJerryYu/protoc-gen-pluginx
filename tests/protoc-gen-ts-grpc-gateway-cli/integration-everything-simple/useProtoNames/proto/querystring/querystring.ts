@@ -2,7 +2,7 @@
 // versions:
 //   protoc-gen-ts_proto  v2.3.0
 //   protoc               unknown
-// source: proto/bodyjson/bodyjson.proto
+// source: proto/querystring/querystring.proto
 
 /* eslint-disable */
 import { type CallContext, type CallOptions } from "nice-grpc-common";
@@ -13,7 +13,7 @@ import { FieldMask } from "../../google/protobuf/field_mask";
 import { Timestamp } from "../../google/protobuf/timestamp";
 import { ABitOfEverything } from "../examplepb/a_bit_of_everything";
 
-export const protobufPackage = "proto.bodyjson";
+export const protobufPackage = "proto.querystring";
 
 export interface WellKnownTypesHolder {
   payloadCheck: string;
@@ -206,14 +206,13 @@ export const WellKnownTypesHolder: MessageFns<WellKnownTypesHolder> = {
   },
 };
 
-/** normal fields */
-export type BodyJSONServiceDefinition = typeof BodyJSONServiceDefinition;
-export const BodyJSONServiceDefinition = {
-  name: "BodyJSONService",
-  fullName: "proto.bodyjson.BodyJSONService",
+export type QueryStringServiceDefinition = typeof QueryStringServiceDefinition;
+export const QueryStringServiceDefinition = {
+  name: "QueryStringService",
+  fullName: "proto.querystring.QueryStringService",
   methods: {
-    postEnumBody: {
-      name: "PostEnumBody",
+    getEnumQuerystring: {
+      name: "GetEnumQuerystring",
       requestType: ABitOfEverything,
       requestStream: false,
       responseType: ABitOfEverything,
@@ -222,16 +221,16 @@ export const BodyJSONServiceDefinition = {
         _unknownFields: {
           578365826: [
             new Uint8Array([
-              35, 58, 10, 101, 110, 117, 109, 95, 118, 97, 108, 117, 101, 34,
-              21, 47, 118, 49, 47, 98, 111, 100, 121, 106, 115, 111, 110, 47,
-              101, 110, 117, 109, 98, 111, 100, 121,
+              33, 18, 31, 47, 118, 49, 47, 113, 117, 101, 114, 121, 115, 116,
+              114, 105, 110, 103, 47, 101, 110, 117, 109, 113, 117, 101, 114,
+              121, 115, 116, 114, 105, 110, 103,
             ]),
           ],
         },
       },
     },
-    postStringBody: {
-      name: "PostStringBody",
+    getStringQuerystring: {
+      name: "GetStringQuerystring",
       requestType: ABitOfEverything,
       requestStream: false,
       responseType: ABitOfEverything,
@@ -240,16 +239,16 @@ export const BodyJSONServiceDefinition = {
         _unknownFields: {
           578365826: [
             new Uint8Array([
-              39, 58, 12, 115, 116, 114, 105, 110, 103, 95, 118, 97, 108, 117,
-              101, 34, 23, 47, 118, 49, 47, 98, 111, 100, 121, 106, 115, 111,
-              110, 47, 115, 116, 114, 105, 110, 103, 98, 111, 100, 121,
+              35, 18, 33, 47, 118, 49, 47, 113, 117, 101, 114, 121, 115, 116,
+              114, 105, 110, 103, 47, 115, 116, 114, 105, 110, 103, 113, 117,
+              101, 114, 121, 115, 116, 114, 105, 110, 103,
             ]),
           ],
         },
       },
     },
-    postRepeatedMessageBody: {
-      name: "PostRepeatedMessageBody",
+    getRepeatedEnumQuerystring: {
+      name: "GetRepeatedEnumQuerystring",
       requestType: ABitOfEverything,
       requestStream: false,
       responseType: ABitOfEverything,
@@ -258,17 +257,17 @@ export const BodyJSONServiceDefinition = {
         _unknownFields: {
           578365826: [
             new Uint8Array([
-              42, 58, 6, 110, 101, 115, 116, 101, 100, 34, 32, 47, 118, 49, 47,
-              98, 111, 100, 121, 106, 115, 111, 110, 47, 114, 101, 112, 101, 97,
-              116, 101, 100, 109, 101, 115, 115, 97, 103, 101, 98, 111, 100,
-              121,
+              41, 18, 39, 47, 118, 49, 47, 113, 117, 101, 114, 121, 115, 116,
+              114, 105, 110, 103, 47, 114, 101, 112, 101, 97, 116, 101, 100,
+              101, 110, 117, 109, 113, 117, 101, 114, 121, 115, 116, 114, 105,
+              110, 103,
             ]),
           ],
         },
       },
     },
-    postRepeatedEnumBody: {
-      name: "PostRepeatedEnumBody",
+    getRepeatedStringQuerystring: {
+      name: "GetRepeatedStringQuerystring",
       requestType: ABitOfEverything,
       requestStream: false,
       responseType: ABitOfEverything,
@@ -277,138 +276,10 @@ export const BodyJSONServiceDefinition = {
         _unknownFields: {
           578365826: [
             new Uint8Array([
-              52, 58, 19, 114, 101, 112, 101, 97, 116, 101, 100, 95, 101, 110,
-              117, 109, 95, 118, 97, 108, 117, 101, 34, 29, 47, 118, 49, 47, 98,
-              111, 100, 121, 106, 115, 111, 110, 47, 114, 101, 112, 101, 97,
-              116, 101, 100, 101, 110, 117, 109, 98, 111, 100, 121,
-            ]),
-          ],
-        },
-      },
-    },
-    postRepeatedStringBody: {
-      name: "PostRepeatedStringBody",
-      requestType: ABitOfEverything,
-      requestStream: false,
-      responseType: ABitOfEverything,
-      responseStream: false,
-      options: {
-        _unknownFields: {
-          578365826: [
-            new Uint8Array([
-              56, 58, 21, 114, 101, 112, 101, 97, 116, 101, 100, 95, 115, 116,
-              114, 105, 110, 103, 95, 118, 97, 108, 117, 101, 34, 31, 47, 118,
-              49, 47, 98, 111, 100, 121, 106, 115, 111, 110, 47, 114, 101, 112,
-              101, 97, 116, 101, 100, 115, 116, 114, 105, 110, 103, 98, 111,
-              100, 121,
-            ]),
-          ],
-        },
-      },
-    },
-    postTimestampBody: {
-      name: "PostTimestampBody",
-      requestType: WellKnownTypesHolder,
-      requestStream: false,
-      responseType: WellKnownTypesHolder,
-      responseStream: false,
-      options: {
-        _unknownFields: {
-          578365826: [
-            new Uint8Array([
-              39, 58, 9, 116, 105, 109, 101, 115, 116, 97, 109, 112, 34, 26, 47,
-              118, 49, 47, 98, 111, 100, 121, 106, 115, 111, 110, 47, 116, 105,
-              109, 101, 115, 116, 97, 109, 112, 98, 111, 100, 121,
-            ]),
-          ],
-        },
-      },
-    },
-    postFieldMaskBody: {
-      name: "PostFieldMaskBody",
-      requestType: WellKnownTypesHolder,
-      requestStream: false,
-      responseType: WellKnownTypesHolder,
-      responseStream: false,
-      options: {
-        _unknownFields: {
-          578365826: [
-            new Uint8Array([
-              40, 58, 10, 102, 105, 101, 108, 100, 95, 109, 97, 115, 107, 34,
-              26, 47, 118, 49, 47, 98, 111, 100, 121, 106, 115, 111, 110, 47,
-              102, 105, 101, 108, 100, 109, 97, 115, 107, 98, 111, 100, 121,
-            ]),
-          ],
-        },
-      },
-    },
-    postStructBody: {
-      name: "PostStructBody",
-      requestType: WellKnownTypesHolder,
-      requestStream: false,
-      responseType: WellKnownTypesHolder,
-      responseStream: false,
-      options: {
-        _unknownFields: {
-          578365826: [
-            new Uint8Array([
-              33, 58, 6, 115, 116, 114, 117, 99, 116, 34, 23, 47, 118, 49, 47,
-              98, 111, 100, 121, 106, 115, 111, 110, 47, 115, 116, 114, 117, 99,
-              116, 98, 111, 100, 121,
-            ]),
-          ],
-        },
-      },
-    },
-    postValueBody: {
-      name: "PostValueBody",
-      requestType: WellKnownTypesHolder,
-      requestStream: false,
-      responseType: WellKnownTypesHolder,
-      responseStream: false,
-      options: {
-        _unknownFields: {
-          578365826: [
-            new Uint8Array([
-              31, 58, 5, 118, 97, 108, 117, 101, 34, 22, 47, 118, 49, 47, 98,
-              111, 100, 121, 106, 115, 111, 110, 47, 118, 97, 108, 117, 101, 98,
-              111, 100, 121,
-            ]),
-          ],
-        },
-      },
-    },
-    postListValueBody: {
-      name: "PostListValueBody",
-      requestType: WellKnownTypesHolder,
-      requestStream: false,
-      responseType: WellKnownTypesHolder,
-      responseStream: false,
-      options: {
-        _unknownFields: {
-          578365826: [
-            new Uint8Array([
-              40, 58, 10, 108, 105, 115, 116, 95, 118, 97, 108, 117, 101, 34,
-              26, 47, 118, 49, 47, 98, 111, 100, 121, 106, 115, 111, 110, 47,
-              108, 105, 115, 116, 118, 97, 108, 117, 101, 98, 111, 100, 121,
-            ]),
-          ],
-        },
-      },
-    },
-    postWrapperBody: {
-      name: "PostWrapperBody",
-      requestType: WellKnownTypesHolder,
-      requestStream: false,
-      responseType: WellKnownTypesHolder,
-      responseStream: false,
-      options: {
-        _unknownFields: {
-          578365826: [
-            new Uint8Array([
-              39, 58, 11, 105, 110, 116, 54, 52, 95, 118, 97, 108, 117, 101, 34,
-              24, 47, 118, 49, 47, 98, 111, 100, 121, 106, 115, 111, 110, 47,
-              119, 114, 97, 112, 112, 101, 114, 98, 111, 100, 121,
+              43, 18, 41, 47, 118, 49, 47, 113, 117, 101, 114, 121, 115, 116,
+              114, 105, 110, 103, 47, 114, 101, 112, 101, 97, 116, 101, 100,
+              115, 116, 114, 105, 110, 103, 113, 117, 101, 114, 121, 115, 116,
+              114, 105, 110, 103,
             ]),
           ],
         },
@@ -417,98 +288,42 @@ export const BodyJSONServiceDefinition = {
   },
 } as const;
 
-export interface BodyJSONServiceImplementation<CallContextExt = {}> {
-  postEnumBody(
+export interface QueryStringServiceImplementation<CallContextExt = {}> {
+  getEnumQuerystring(
     request: ABitOfEverything,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<ABitOfEverything>>;
-  postStringBody(
+  getStringQuerystring(
     request: ABitOfEverything,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<ABitOfEverything>>;
-  postRepeatedMessageBody(
+  getRepeatedEnumQuerystring(
     request: ABitOfEverything,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<ABitOfEverything>>;
-  postRepeatedEnumBody(
+  getRepeatedStringQuerystring(
     request: ABitOfEverything,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<ABitOfEverything>>;
-  postRepeatedStringBody(
-    request: ABitOfEverything,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<ABitOfEverything>>;
-  postTimestampBody(
-    request: WellKnownTypesHolder,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<WellKnownTypesHolder>>;
-  postFieldMaskBody(
-    request: WellKnownTypesHolder,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<WellKnownTypesHolder>>;
-  postStructBody(
-    request: WellKnownTypesHolder,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<WellKnownTypesHolder>>;
-  postValueBody(
-    request: WellKnownTypesHolder,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<WellKnownTypesHolder>>;
-  postListValueBody(
-    request: WellKnownTypesHolder,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<WellKnownTypesHolder>>;
-  postWrapperBody(
-    request: WellKnownTypesHolder,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<WellKnownTypesHolder>>;
 }
 
-export interface BodyJSONServiceClient<CallOptionsExt = {}> {
-  postEnumBody(
+export interface QueryStringServiceClient<CallOptionsExt = {}> {
+  getEnumQuerystring(
     request: DeepPartial<ABitOfEverything>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<ABitOfEverything>;
-  postStringBody(
+  getStringQuerystring(
     request: DeepPartial<ABitOfEverything>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<ABitOfEverything>;
-  postRepeatedMessageBody(
+  getRepeatedEnumQuerystring(
     request: DeepPartial<ABitOfEverything>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<ABitOfEverything>;
-  postRepeatedEnumBody(
+  getRepeatedStringQuerystring(
     request: DeepPartial<ABitOfEverything>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<ABitOfEverything>;
-  postRepeatedStringBody(
-    request: DeepPartial<ABitOfEverything>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<ABitOfEverything>;
-  postTimestampBody(
-    request: DeepPartial<WellKnownTypesHolder>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<WellKnownTypesHolder>;
-  postFieldMaskBody(
-    request: DeepPartial<WellKnownTypesHolder>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<WellKnownTypesHolder>;
-  postStructBody(
-    request: DeepPartial<WellKnownTypesHolder>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<WellKnownTypesHolder>;
-  postValueBody(
-    request: DeepPartial<WellKnownTypesHolder>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<WellKnownTypesHolder>;
-  postListValueBody(
-    request: DeepPartial<WellKnownTypesHolder>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<WellKnownTypesHolder>;
-  postWrapperBody(
-    request: DeepPartial<WellKnownTypesHolder>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<WellKnownTypesHolder>;
 }
 
 type Builtin =

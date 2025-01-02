@@ -48,6 +48,9 @@ function isPrimitive(value: unknown): boolean {
 }
 
 /**
+ 
+
+/**
  * Flattens a deeply nested request payload and returns an object
  * with only primitive values and non-empty array of primitive values
  * as per https://github.com/googleapis/googleapis/blob/master/google/api/http.proto
@@ -363,32 +366,6 @@ export function newBodyJSONService(
         body: JSON.stringify(body),
       });
       return WellKnownTypesHolder.fromJSON(res);
-    },
-
-    // patch
-    async patchBodyWithPathParam(
-      req: DeepPartial<ABitOfEverything>,
-      options?: CallOptions,
-    ): Promise<ABitOfEverything> {
-      const headers = options?.metadata
-        ? metadataToHeaders(options.metadata)
-        : undefined;
-      const fullReq = ABitOfEverything.fromPartial(req);
-      const body: any = ABitOfEverything_Nested.toJSON(
-        must(fullReq.singleNested),
-      );
-      delete body.name;
-      const res = await transport.call({
-        path: `/v1/bodyjson/patchbodywithpathparam/${must(fullReq.singleNested?.name)}`,
-        method: "PATCH",
-        headers: headers,
-        queryParams: renderURLSearchParams(req, [
-          "singleNested.name",
-          "singleNested",
-        ]),
-        body: JSON.stringify(body),
-      });
-      return ABitOfEverything.fromJSON(res);
     },
   };
 }

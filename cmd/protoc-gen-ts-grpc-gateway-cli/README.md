@@ -56,6 +56,7 @@ Usually it should not be change unless `snakeToCamel` flag for ts_proto was manu
 - [x] PostOneofEnum: post body only contain one enum field do not work well: protoc-gen-grpc-gateway do not support: force to use enum number.
 - [x] body remove field do not support useProtoNames
 - [x] GetRepeatedQuery: path param do not work well with repeated
+- [x] GetRepeatedQuery: path param do not work well with repeated enum
 
 ### low priority:
 - [ ] GetRepeatedQuery: path param do not work well with bytes, required base64
@@ -65,10 +66,10 @@ Usually it should not be change unless `snakeToCamel` flag for ts_proto was manu
 - [ ] Create: query params for empty message field do not work well
 - [ ] Create: query params for `json_name` do not work well
 - [ ] CheckGetQueryParams, CheckNestedEnumGetQueryParams: repeated nested query params did not pass to server
-- [ ] Exists,CustomOptionsRequest,TraceRequest: do not work well with custom method
-- [ ] camelCaseServiceName: camelCase service names are valid
 
 ### no plan:
+- [ ] Exists,CustomOptionsRequest,TraceRequest: do not work well with custom method
+- [ ] camelCaseServiceName: camelCase service names are valid
 - [ ] NoBindings: jsonify do not work well with duration: ts_proto do not support
 - [ ] ErrorWithDetails: throw nice-grpc-error-details: ts_proto do not support json format for Any
 - [ ] body field do not work well with map field: protoc-gen-grpc-gateway do not support
