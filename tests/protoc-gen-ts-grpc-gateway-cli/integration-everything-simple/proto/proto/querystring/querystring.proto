@@ -47,4 +47,11 @@ service QueryStringService {
   rpc GetRepeatedStringQuerystring(examplepb.ABitOfEverything) returns (examplepb.ABitOfEverything) {
     option (google.api.http) = {get: "/v1/querystring/repeatedstringquerystring"};
   }
+
+  rpc GetTimestampQuerystring(WellKnownTypesHolder) returns (WellKnownTypesHolder) {
+    option (google.api.http) = {get: "/v1/querystring/timestampquerystring"};
+  }
+  rpc GetWrapperQuerystring(WellKnownTypesHolder) returns (WellKnownTypesHolder) {
+    option (google.api.http) = {get: "/v1/querystring/wrapperquerystring"};
+  }
 }

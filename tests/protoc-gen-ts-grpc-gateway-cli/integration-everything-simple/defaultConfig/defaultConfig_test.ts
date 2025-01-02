@@ -57,7 +57,6 @@ function fetchTransport(
         callReq.headers = headers;
       }
       const url = new URL("." + rpcPath, baseUrl).href;
-      console.log("queryParam", queryParams, "for url", url);
       const res = await fetch(url, callReq);
       const resBody = await res.json();
       if (!res.ok) throw resBody;
@@ -788,5 +787,23 @@ describe("QueryStringService", () => {
     };
     const res = await queryStringService.getRepeatedStringQuerystring(req);
     expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+  });
+
+  it("GetTimestampQuerystring", async () => {
+    const req: Partial<WellKnownTypesHolder> = {
+      int32Value: 1,
+      timestamp: new Date("2021-01-01T00:00:00Z"),
+    };
+    const res = await queryStringService.getTimestampQuerystring(req);
+    expect(res).to.deep.equal(WellKnownTypesHolder.fromPartial(req));
+  });
+
+  it("GetWrapperQuerystring", async () => {
+    const req: Partial<WellKnownTypesHolder> = {
+      int32Value: 1,
+      stringValue: "string",
+    };
+    const res = await queryStringService.getWrapperQuerystring(req);
+    expect(res).to.deep.equal(WellKnownTypesHolder.fromPartial(req));
   });
 });

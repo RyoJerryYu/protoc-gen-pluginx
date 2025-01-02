@@ -23,7 +23,7 @@ import {
 } from "../pathenum/path_enum";
 import { IdMessage } from "../sub2/message";
 
-type Primitive = string | boolean | number;
+type Primitive = string | boolean | number | Date | Uint8Array;
 type RequestPayload = Record<string, unknown>;
 type FlattenedRequestPayload = Record<string, Primitive | Primitive[]>;
 
@@ -56,11 +56,39 @@ function isPlainObject(value: unknown): boolean {
  * Checks if given value is of a primitive type
  */
 function isPrimitive(value: unknown): boolean {
-  return ["string", "number", "boolean"].some((t) => typeof value === t);
+  if (["string", "number", "boolean"].some((t) => typeof value === t)) {
+    return true;
+  }
+
+  if (value instanceof Date) {
+    return true;
+  }
+
+  if (value instanceof Uint8Array) {
+    return true;
+  }
+
+  return false;
 }
 
 /**
- 
+ * Convert a primitive value to a string that can be used in a URL search parameter
+ */
+function valueStringify(param: Primitive): string {
+  if (param instanceof Date) {
+    return param.toISOString();
+  }
+
+  if (param instanceof Uint8Array) {
+    const bin: string[] = [];
+    param.forEach((byte) => {
+      bin.push(globalThis.String.fromCharCode(byte));
+    });
+    return globalThis.btoa(bin.join(""));
+  }
+
+  return param.toString();
+}
 
 /**
  * Flattens a deeply nested request payload and returns an object
@@ -111,8 +139,8 @@ function renderURLSearchParams<T extends RequestPayload>(
         return acc;
       }
       return Array.isArray(value)
-        ? [...acc, ...value.map((m) => [key, m.toString()])]
-        : (acc = [...acc, [key, value.toString()]]);
+        ? [...acc, ...value.map((m) => [key, valueStringify(m)])]
+        : (acc = [...acc, [key, valueStringify(value)]]);
     },
     [] as string[][],
   );

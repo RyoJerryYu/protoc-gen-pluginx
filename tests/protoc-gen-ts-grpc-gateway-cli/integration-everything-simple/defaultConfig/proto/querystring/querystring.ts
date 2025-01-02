@@ -285,6 +285,42 @@ export const QueryStringServiceDefinition = {
         },
       },
     },
+    getTimestampQuerystring: {
+      name: "GetTimestampQuerystring",
+      requestType: WellKnownTypesHolder,
+      requestStream: false,
+      responseType: WellKnownTypesHolder,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              38, 18, 36, 47, 118, 49, 47, 113, 117, 101, 114, 121, 115, 116,
+              114, 105, 110, 103, 47, 116, 105, 109, 101, 115, 116, 97, 109,
+              112, 113, 117, 101, 114, 121, 115, 116, 114, 105, 110, 103,
+            ]),
+          ],
+        },
+      },
+    },
+    getWrapperQuerystring: {
+      name: "GetWrapperQuerystring",
+      requestType: WellKnownTypesHolder,
+      requestStream: false,
+      responseType: WellKnownTypesHolder,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              36, 18, 34, 47, 118, 49, 47, 113, 117, 101, 114, 121, 115, 116,
+              114, 105, 110, 103, 47, 119, 114, 97, 112, 112, 101, 114, 113,
+              117, 101, 114, 121, 115, 116, 114, 105, 110, 103,
+            ]),
+          ],
+        },
+      },
+    },
   },
 } as const;
 
@@ -305,6 +341,14 @@ export interface QueryStringServiceImplementation<CallContextExt = {}> {
     request: ABitOfEverything,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<ABitOfEverything>>;
+  getTimestampQuerystring(
+    request: WellKnownTypesHolder,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<WellKnownTypesHolder>>;
+  getWrapperQuerystring(
+    request: WellKnownTypesHolder,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<WellKnownTypesHolder>>;
 }
 
 export interface QueryStringServiceClient<CallOptionsExt = {}> {
@@ -324,6 +368,14 @@ export interface QueryStringServiceClient<CallOptionsExt = {}> {
     request: DeepPartial<ABitOfEverything>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<ABitOfEverything>;
+  getTimestampQuerystring(
+    request: DeepPartial<WellKnownTypesHolder>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<WellKnownTypesHolder>;
+  getWrapperQuerystring(
+    request: DeepPartial<WellKnownTypesHolder>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<WellKnownTypesHolder>;
 }
 
 type Builtin =

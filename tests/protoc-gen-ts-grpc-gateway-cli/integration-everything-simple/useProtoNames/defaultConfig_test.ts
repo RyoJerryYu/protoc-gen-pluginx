@@ -30,6 +30,7 @@ import { StringMessage } from "./proto/sub/message";
 import { newBodyJSONService } from "./proto/bodyjson/bodyjson_pb_gwcli";
 import { WellKnownTypesHolder } from "./proto/bodyjson/bodyjson";
 import { Any } from "./google/protobuf/any";
+import { newQueryStringService } from "./proto/querystring/querystring_pb_gwcli";
 
 function fetchTransport(
   baseUrl: string,
@@ -55,12 +56,10 @@ function fetchTransport(
       if (headers) {
         callReq.headers = headers;
       }
-      console.log("path", rpcPath);
       const url = new URL("." + rpcPath, baseUrl).href;
       const res = await fetch(url, callReq);
       const resBody = await res.json();
       if (!res.ok) throw resBody;
-      console.log("resBody", resBody);
       return resBody;
     },
   };
@@ -375,7 +374,6 @@ describe("ABitOfEverythingService", () => {
     const res = await aBitOfEverythingService.getRepeatedQuery(req);
 
     res.pathRepeatedBytesValue = []; // bytesValue is not supported in query params
-    console.log("res", res);
     expect(res).to.deep.equal(ABitOfEverythingRepeated.fromPartial(req));
   });
 
@@ -750,6 +748,66 @@ describe("BodyJsonService", () => {
       int64Value: 1,
     };
     const res = await bodyJsonService.postWrapperBody(req);
+    expect(res).to.deep.equal(WellKnownTypesHolder.fromPartial(req));
+  });
+});
+
+describe("QueryStringService", () => {
+  const queryStringService = newQueryStringService(
+    fetchTransport("http://localhost:8081/api/"),
+  );
+
+  it("GetEnumQuerystring", async () => {
+    const req: Partial<ABitOfEverything> = {
+      int32Value: 1,
+      enumValue: NumericEnum.ONE,
+    };
+    const res = await queryStringService.getEnumQuerystring(req);
+    expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+  });
+
+  it("GetStringQuerystring", async () => {
+    const req: Partial<ABitOfEverything> = {
+      int32Value: 1,
+      stringValue: "string",
+    };
+    const res = await queryStringService.getStringQuerystring(req);
+    expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+  });
+
+  it("GetRepeatedEnumQuerystring", async () => {
+    const req: Partial<ABitOfEverything> = {
+      int32Value: 1,
+      repeatedEnumValue: [NumericEnum.ONE, NumericEnum.ZERO],
+    };
+    const res = await queryStringService.getRepeatedEnumQuerystring(req);
+    expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+  });
+
+  it("GetRepeatedStringQuerystring", async () => {
+    const req: Partial<ABitOfEverything> = {
+      int32Value: 1,
+      repeatedStringValue: ["string", "string2"],
+    };
+    const res = await queryStringService.getRepeatedStringQuerystring(req);
+    expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+  });
+
+  it("GetTimestampQuerystring", async () => {
+    const req: Partial<WellKnownTypesHolder> = {
+      int32Value: 1,
+      timestamp: new Date("2021-01-01T00:00:00Z"),
+    };
+    const res = await queryStringService.getTimestampQuerystring(req);
+    expect(res).to.deep.equal(WellKnownTypesHolder.fromPartial(req));
+  });
+
+  it("GetWrapperQuerystring", async () => {
+    const req: Partial<WellKnownTypesHolder> = {
+      int32Value: 1,
+      stringValue: "string",
+    };
+    const res = await queryStringService.getWrapperQuerystring(req);
     expect(res).to.deep.equal(WellKnownTypesHolder.fromPartial(req));
   });
 });

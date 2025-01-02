@@ -24,6 +24,8 @@ const (
 	QueryStringService_GetStringQuerystring_FullMethodName         = "/proto.querystring.QueryStringService/GetStringQuerystring"
 	QueryStringService_GetRepeatedEnumQuerystring_FullMethodName   = "/proto.querystring.QueryStringService/GetRepeatedEnumQuerystring"
 	QueryStringService_GetRepeatedStringQuerystring_FullMethodName = "/proto.querystring.QueryStringService/GetRepeatedStringQuerystring"
+	QueryStringService_GetTimestampQuerystring_FullMethodName      = "/proto.querystring.QueryStringService/GetTimestampQuerystring"
+	QueryStringService_GetWrapperQuerystring_FullMethodName        = "/proto.querystring.QueryStringService/GetWrapperQuerystring"
 )
 
 // QueryStringServiceClient is the client API for QueryStringService service.
@@ -34,6 +36,8 @@ type QueryStringServiceClient interface {
 	GetStringQuerystring(ctx context.Context, in *examplepb.ABitOfEverything, opts ...grpc.CallOption) (*examplepb.ABitOfEverything, error)
 	GetRepeatedEnumQuerystring(ctx context.Context, in *examplepb.ABitOfEverything, opts ...grpc.CallOption) (*examplepb.ABitOfEverything, error)
 	GetRepeatedStringQuerystring(ctx context.Context, in *examplepb.ABitOfEverything, opts ...grpc.CallOption) (*examplepb.ABitOfEverything, error)
+	GetTimestampQuerystring(ctx context.Context, in *WellKnownTypesHolder, opts ...grpc.CallOption) (*WellKnownTypesHolder, error)
+	GetWrapperQuerystring(ctx context.Context, in *WellKnownTypesHolder, opts ...grpc.CallOption) (*WellKnownTypesHolder, error)
 }
 
 type queryStringServiceClient struct {
@@ -84,6 +88,26 @@ func (c *queryStringServiceClient) GetRepeatedStringQuerystring(ctx context.Cont
 	return out, nil
 }
 
+func (c *queryStringServiceClient) GetTimestampQuerystring(ctx context.Context, in *WellKnownTypesHolder, opts ...grpc.CallOption) (*WellKnownTypesHolder, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(WellKnownTypesHolder)
+	err := c.cc.Invoke(ctx, QueryStringService_GetTimestampQuerystring_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryStringServiceClient) GetWrapperQuerystring(ctx context.Context, in *WellKnownTypesHolder, opts ...grpc.CallOption) (*WellKnownTypesHolder, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(WellKnownTypesHolder)
+	err := c.cc.Invoke(ctx, QueryStringService_GetWrapperQuerystring_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryStringServiceServer is the server API for QueryStringService service.
 // All implementations must embed UnimplementedQueryStringServiceServer
 // for forward compatibility.
@@ -92,6 +116,8 @@ type QueryStringServiceServer interface {
 	GetStringQuerystring(context.Context, *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error)
 	GetRepeatedEnumQuerystring(context.Context, *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error)
 	GetRepeatedStringQuerystring(context.Context, *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error)
+	GetTimestampQuerystring(context.Context, *WellKnownTypesHolder) (*WellKnownTypesHolder, error)
+	GetWrapperQuerystring(context.Context, *WellKnownTypesHolder) (*WellKnownTypesHolder, error)
 	mustEmbedUnimplementedQueryStringServiceServer()
 }
 
@@ -113,6 +139,12 @@ func (UnimplementedQueryStringServiceServer) GetRepeatedEnumQuerystring(context.
 }
 func (UnimplementedQueryStringServiceServer) GetRepeatedStringQuerystring(context.Context, *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetRepeatedStringQuerystring not implemented")
+}
+func (UnimplementedQueryStringServiceServer) GetTimestampQuerystring(context.Context, *WellKnownTypesHolder) (*WellKnownTypesHolder, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTimestampQuerystring not implemented")
+}
+func (UnimplementedQueryStringServiceServer) GetWrapperQuerystring(context.Context, *WellKnownTypesHolder) (*WellKnownTypesHolder, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetWrapperQuerystring not implemented")
 }
 func (UnimplementedQueryStringServiceServer) mustEmbedUnimplementedQueryStringServiceServer() {}
 func (UnimplementedQueryStringServiceServer) testEmbeddedByValue()                            {}
@@ -207,6 +239,42 @@ func _QueryStringService_GetRepeatedStringQuerystring_Handler(srv interface{}, c
 	return interceptor(ctx, in, info, handler)
 }
 
+func _QueryStringService_GetTimestampQuerystring_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WellKnownTypesHolder)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryStringServiceServer).GetTimestampQuerystring(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: QueryStringService_GetTimestampQuerystring_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryStringServiceServer).GetTimestampQuerystring(ctx, req.(*WellKnownTypesHolder))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _QueryStringService_GetWrapperQuerystring_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WellKnownTypesHolder)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryStringServiceServer).GetWrapperQuerystring(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: QueryStringService_GetWrapperQuerystring_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryStringServiceServer).GetWrapperQuerystring(ctx, req.(*WellKnownTypesHolder))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // QueryStringService_ServiceDesc is the grpc.ServiceDesc for QueryStringService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -229,6 +297,14 @@ var QueryStringService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetRepeatedStringQuerystring",
 			Handler:    _QueryStringService_GetRepeatedStringQuerystring_Handler,
+		},
+		{
+			MethodName: "GetTimestampQuerystring",
+			Handler:    _QueryStringService_GetTimestampQuerystring_Handler,
+		},
+		{
+			MethodName: "GetWrapperQuerystring",
+			Handler:    _QueryStringService_GetWrapperQuerystring_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

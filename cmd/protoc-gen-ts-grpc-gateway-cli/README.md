@@ -55,8 +55,9 @@ Usually it should not be change unless `snakeToCamel` flag for ts_proto was manu
 - [x] ErrorWithDetails: throw error with details
 - [x] PostOneofEnum: post body only contain one enum field do not work well: protoc-gen-grpc-gateway do not support: force to use enum number.
 - [x] body remove field do not support useProtoNames
-- [x] GetRepeatedQuery: path param do not work well with repeated
-- [x] GetRepeatedQuery: path param do not work well with repeated enum
+- [x] GetRepeatedQuery: query param do not work well with repeated
+- [x] GetRepeatedQuery: query param do not work well with repeated enum
+- [x] query param do not work well with well known types
 
 ### low priority:
 - [ ] GetRepeatedQuery: path param do not work well with bytes, required base64

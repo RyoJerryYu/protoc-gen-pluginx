@@ -32,3 +32,13 @@ func (q *QueryStringService) GetRepeatedStringQuerystring(ctx context.Context, r
 func (q *QueryStringService) GetStringQuerystring(ctx context.Context, req *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error) {
 	return req, nil
 }
+
+// GetTimestampQuerystring implements querystring.QueryStringServiceServer.
+func (q *QueryStringService) GetTimestampQuerystring(ctx context.Context, req *querystring.WellKnownTypesHolder) (*querystring.WellKnownTypesHolder, error) {
+	return req, nil
+}
+
+// GetWrapperQuerystring implements querystring.QueryStringServiceServer.
+func (q *QueryStringService) GetWrapperQuerystring(ctx context.Context, req *querystring.WellKnownTypesHolder) (*querystring.WellKnownTypesHolder, error) {
+	return req, nil
+}

@@ -176,6 +176,78 @@ func local_request_QueryStringService_GetRepeatedStringQuerystring_0(ctx context
 
 }
 
+var (
+	filter_QueryStringService_GetTimestampQuerystring_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+)
+
+func request_QueryStringService_GetTimestampQuerystring_0(ctx context.Context, marshaler runtime.Marshaler, client QueryStringServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq WellKnownTypesHolder
+	var metadata runtime.ServerMetadata
+
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_QueryStringService_GetTimestampQuerystring_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := client.GetTimestampQuerystring(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_QueryStringService_GetTimestampQuerystring_0(ctx context.Context, marshaler runtime.Marshaler, server QueryStringServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq WellKnownTypesHolder
+	var metadata runtime.ServerMetadata
+
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_QueryStringService_GetTimestampQuerystring_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := server.GetTimestampQuerystring(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
+var (
+	filter_QueryStringService_GetWrapperQuerystring_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+)
+
+func request_QueryStringService_GetWrapperQuerystring_0(ctx context.Context, marshaler runtime.Marshaler, client QueryStringServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq WellKnownTypesHolder
+	var metadata runtime.ServerMetadata
+
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_QueryStringService_GetWrapperQuerystring_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := client.GetWrapperQuerystring(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_QueryStringService_GetWrapperQuerystring_0(ctx context.Context, marshaler runtime.Marshaler, server QueryStringServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq WellKnownTypesHolder
+	var metadata runtime.ServerMetadata
+
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_QueryStringService_GetWrapperQuerystring_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := server.GetWrapperQuerystring(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
 // RegisterQueryStringServiceHandlerServer registers the http handlers for service QueryStringService to "mux".
 // UnaryRPC     :call QueryStringServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
@@ -279,6 +351,56 @@ func RegisterQueryStringServiceHandlerServer(ctx context.Context, mux *runtime.S
 		}
 
 		forward_QueryStringService_GetRepeatedStringQuerystring_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("GET", pattern_QueryStringService_GetTimestampQuerystring_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.querystring.QueryStringService/GetTimestampQuerystring", runtime.WithHTTPPathPattern("/v1/querystring/timestampquerystring"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_QueryStringService_GetTimestampQuerystring_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_QueryStringService_GetTimestampQuerystring_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("GET", pattern_QueryStringService_GetWrapperQuerystring_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.querystring.QueryStringService/GetWrapperQuerystring", runtime.WithHTTPPathPattern("/v1/querystring/wrapperquerystring"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_QueryStringService_GetWrapperQuerystring_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_QueryStringService_GetWrapperQuerystring_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -411,6 +533,50 @@ func RegisterQueryStringServiceHandlerClient(ctx context.Context, mux *runtime.S
 
 	})
 
+	mux.Handle("GET", pattern_QueryStringService_GetTimestampQuerystring_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/proto.querystring.QueryStringService/GetTimestampQuerystring", runtime.WithHTTPPathPattern("/v1/querystring/timestampquerystring"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_QueryStringService_GetTimestampQuerystring_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_QueryStringService_GetTimestampQuerystring_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("GET", pattern_QueryStringService_GetWrapperQuerystring_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/proto.querystring.QueryStringService/GetWrapperQuerystring", runtime.WithHTTPPathPattern("/v1/querystring/wrapperquerystring"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_QueryStringService_GetWrapperQuerystring_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_QueryStringService_GetWrapperQuerystring_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	return nil
 }
 
@@ -422,6 +588,10 @@ var (
 	pattern_QueryStringService_GetRepeatedEnumQuerystring_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "querystring", "repeatedenumquerystring"}, ""))
 
 	pattern_QueryStringService_GetRepeatedStringQuerystring_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "querystring", "repeatedstringquerystring"}, ""))
+
+	pattern_QueryStringService_GetTimestampQuerystring_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "querystring", "timestampquerystring"}, ""))
+
+	pattern_QueryStringService_GetWrapperQuerystring_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "querystring", "wrapperquerystring"}, ""))
 )
 
 var (
@@ -432,4 +602,8 @@ var (
 	forward_QueryStringService_GetRepeatedEnumQuerystring_0 = runtime.ForwardResponseMessage
 
 	forward_QueryStringService_GetRepeatedStringQuerystring_0 = runtime.ForwardResponseMessage
+
+	forward_QueryStringService_GetTimestampQuerystring_0 = runtime.ForwardResponseMessage
+
+	forward_QueryStringService_GetWrapperQuerystring_0 = runtime.ForwardResponseMessage
 )
