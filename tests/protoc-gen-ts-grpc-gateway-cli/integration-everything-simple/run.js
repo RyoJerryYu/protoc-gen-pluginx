@@ -45,26 +45,26 @@ const useProtoNameCases = [
 const testCases = [
   {
     name: "defaultConfig",
-    testDir: "defaultConfig",
+    testDir: "caseDefaultConfig",
     serverDir: "./server",
     cases: defaultConfigCases,
   },
   {
     name: "useProtoNames",
-    testDir: "useProtoNames", 
+    testDir: "caseUseProtoNames", 
     serverDir: "./server",
     cases: useProtoNameCases,
   },
   {
-    name: "defaultConfig_gojsonserver",
-    testDir: "defaultConfig",
-    serverDir: "./gojsonserver",
+    name: "defaultConfig_servergojson",
+    testDir: "caseDefaultConfig",
+    serverDir: "./servergojson",
     cases: defaultConfigCases,
   },
   {
-    name: "stringEnum_gojsonserver",
-    testDir: "stringEnums",
-    serverDir: "./gojsonserver",
+    name: "stringEnum_servergojson",
+    testDir: "caseStringEnums",
+    serverDir: "./servergojson",
     cases: defaultConfigCases,
   }
 ]

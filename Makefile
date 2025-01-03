@@ -13,7 +13,6 @@ bins:
 .PHONY: tools
 tools:
 	@echo "Installing tools..."
-	@cd tests && go mod tidy
 	@./tests/tools/tools.sh
 	@cd tests && pnpm install
 	@echo "Tools installed."
