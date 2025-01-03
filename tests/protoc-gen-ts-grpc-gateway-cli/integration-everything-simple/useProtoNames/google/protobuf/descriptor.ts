@@ -1296,8 +1296,6 @@ export interface EnumValueOptions {
    * credentials.
    */
   debugRedact?: boolean | undefined;
-  /** Information about the support window of a feature value. */
-  featureSupport?: FieldOptions_FeatureSupport | undefined;
   /** The parser stores options it doesn't recognize here. See above. */
   uninterpretedOption: UninterpretedOption[];
 }
@@ -3700,7 +3698,6 @@ function createBaseEnumValueOptions(): EnumValueOptions {
     deprecated: false,
     features: undefined,
     debugRedact: false,
-    featureSupport: undefined,
     uninterpretedOption: [],
   };
 }
@@ -3717,9 +3714,6 @@ export const EnumValueOptions: MessageFns<EnumValueOptions> = {
       debugRedact: isSet(object.debug_redact)
         ? globalThis.Boolean(object.debug_redact)
         : false,
-      featureSupport: isSet(object.feature_support)
-        ? FieldOptions_FeatureSupport.fromJSON(object.feature_support)
-        : undefined,
       uninterpretedOption: globalThis.Array.isArray(
         object?.uninterpreted_option,
       )
@@ -3741,11 +3735,6 @@ export const EnumValueOptions: MessageFns<EnumValueOptions> = {
     if (message.debugRedact !== undefined && message.debugRedact !== false) {
       obj.debug_redact = message.debugRedact;
     }
-    if (message.featureSupport !== undefined) {
-      obj.feature_support = FieldOptions_FeatureSupport.toJSON(
-        message.featureSupport,
-      );
-    }
     if (message.uninterpretedOption?.length) {
       obj.uninterpreted_option = message.uninterpretedOption.map((e) =>
         UninterpretedOption.toJSON(e),
@@ -3765,10 +3754,6 @@ export const EnumValueOptions: MessageFns<EnumValueOptions> = {
         ? FeatureSet.fromPartial(object.features)
         : undefined;
     message.debugRedact = object.debugRedact ?? false;
-    message.featureSupport =
-      object.featureSupport !== undefined && object.featureSupport !== null
-        ? FieldOptions_FeatureSupport.fromPartial(object.featureSupport)
-        : undefined;
     message.uninterpretedOption =
       object.uninterpretedOption?.map((e) =>
         UninterpretedOption.fromPartial(e),
