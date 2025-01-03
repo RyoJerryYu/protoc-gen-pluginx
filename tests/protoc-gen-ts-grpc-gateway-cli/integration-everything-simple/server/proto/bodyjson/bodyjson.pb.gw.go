@@ -10,6 +10,7 @@ package bodyjson
 
 import (
 	"context"
+	"errors"
 	"io"
 	"net/http"
 
@@ -25,590 +26,447 @@ import (
 )
 
 // Suppress "imported and not used" errors
-var _ codes.Code
-var _ io.Reader
-var _ status.Status
-var _ = runtime.String
-var _ = utilities.NewDoubleArray
-var _ = metadata.Join
-
 var (
-	filter_BodyJSONService_PostEnumBody_0 = &utilities.DoubleArray{Encoding: map[string]int{"enum_value": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+	_ codes.Code
+	_ io.Reader
+	_ status.Status
+	_ = errors.New
+	_ = runtime.String
+	_ = utilities.NewDoubleArray
+	_ = metadata.Join
 )
 
-func request_BodyJSONService_PostEnumBody_0(ctx context.Context, marshaler runtime.Marshaler, client BodyJSONServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq examplepb.ABitOfEverything
-	var metadata runtime.ServerMetadata
+var filter_BodyJSONService_PostEnumBody_0 = &utilities.DoubleArray{Encoding: map[string]int{"enum_value": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.EnumValue); err != nil && err != io.EOF {
+func request_BodyJSONService_PostEnumBody_0(ctx context.Context, marshaler runtime.Marshaler, client BodyJSONServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq examplepb.ABitOfEverything
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.EnumValue); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BodyJSONService_PostEnumBody_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.PostEnumBody(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_BodyJSONService_PostEnumBody_0(ctx context.Context, marshaler runtime.Marshaler, server BodyJSONServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq examplepb.ABitOfEverything
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.EnumValue); err != nil && err != io.EOF {
+	var (
+		protoReq examplepb.ABitOfEverything
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.EnumValue); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BodyJSONService_PostEnumBody_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.PostEnumBody(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
-var (
-	filter_BodyJSONService_PostStringBody_0 = &utilities.DoubleArray{Encoding: map[string]int{"string_value": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
-)
+var filter_BodyJSONService_PostStringBody_0 = &utilities.DoubleArray{Encoding: map[string]int{"string_value": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 
 func request_BodyJSONService_PostStringBody_0(ctx context.Context, marshaler runtime.Marshaler, client BodyJSONServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq examplepb.ABitOfEverything
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.StringValue); err != nil && err != io.EOF {
+	var (
+		protoReq examplepb.ABitOfEverything
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.StringValue); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BodyJSONService_PostStringBody_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.PostStringBody(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_BodyJSONService_PostStringBody_0(ctx context.Context, marshaler runtime.Marshaler, server BodyJSONServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq examplepb.ABitOfEverything
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.StringValue); err != nil && err != io.EOF {
+	var (
+		protoReq examplepb.ABitOfEverything
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.StringValue); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BodyJSONService_PostStringBody_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.PostStringBody(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
-var (
-	filter_BodyJSONService_PostRepeatedMessageBody_0 = &utilities.DoubleArray{Encoding: map[string]int{"nested": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
-)
+var filter_BodyJSONService_PostRepeatedMessageBody_0 = &utilities.DoubleArray{Encoding: map[string]int{"nested": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 
 func request_BodyJSONService_PostRepeatedMessageBody_0(ctx context.Context, marshaler runtime.Marshaler, client BodyJSONServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq examplepb.ABitOfEverything
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Nested); err != nil && err != io.EOF {
+	var (
+		protoReq examplepb.ABitOfEverything
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Nested); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BodyJSONService_PostRepeatedMessageBody_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.PostRepeatedMessageBody(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_BodyJSONService_PostRepeatedMessageBody_0(ctx context.Context, marshaler runtime.Marshaler, server BodyJSONServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq examplepb.ABitOfEverything
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Nested); err != nil && err != io.EOF {
+	var (
+		protoReq examplepb.ABitOfEverything
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Nested); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BodyJSONService_PostRepeatedMessageBody_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.PostRepeatedMessageBody(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
-var (
-	filter_BodyJSONService_PostRepeatedEnumBody_0 = &utilities.DoubleArray{Encoding: map[string]int{"repeated_enum_value": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
-)
+var filter_BodyJSONService_PostRepeatedEnumBody_0 = &utilities.DoubleArray{Encoding: map[string]int{"repeated_enum_value": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 
 func request_BodyJSONService_PostRepeatedEnumBody_0(ctx context.Context, marshaler runtime.Marshaler, client BodyJSONServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq examplepb.ABitOfEverything
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.RepeatedEnumValue); err != nil && err != io.EOF {
+	var (
+		protoReq examplepb.ABitOfEverything
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.RepeatedEnumValue); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BodyJSONService_PostRepeatedEnumBody_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.PostRepeatedEnumBody(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_BodyJSONService_PostRepeatedEnumBody_0(ctx context.Context, marshaler runtime.Marshaler, server BodyJSONServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq examplepb.ABitOfEverything
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.RepeatedEnumValue); err != nil && err != io.EOF {
+	var (
+		protoReq examplepb.ABitOfEverything
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.RepeatedEnumValue); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BodyJSONService_PostRepeatedEnumBody_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.PostRepeatedEnumBody(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
-var (
-	filter_BodyJSONService_PostRepeatedStringBody_0 = &utilities.DoubleArray{Encoding: map[string]int{"repeated_string_value": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
-)
+var filter_BodyJSONService_PostRepeatedStringBody_0 = &utilities.DoubleArray{Encoding: map[string]int{"repeated_string_value": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 
 func request_BodyJSONService_PostRepeatedStringBody_0(ctx context.Context, marshaler runtime.Marshaler, client BodyJSONServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq examplepb.ABitOfEverything
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.RepeatedStringValue); err != nil && err != io.EOF {
+	var (
+		protoReq examplepb.ABitOfEverything
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.RepeatedStringValue); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BodyJSONService_PostRepeatedStringBody_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.PostRepeatedStringBody(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_BodyJSONService_PostRepeatedStringBody_0(ctx context.Context, marshaler runtime.Marshaler, server BodyJSONServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq examplepb.ABitOfEverything
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.RepeatedStringValue); err != nil && err != io.EOF {
+	var (
+		protoReq examplepb.ABitOfEverything
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.RepeatedStringValue); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BodyJSONService_PostRepeatedStringBody_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.PostRepeatedStringBody(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
-var (
-	filter_BodyJSONService_PostTimestampBody_0 = &utilities.DoubleArray{Encoding: map[string]int{"timestamp": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
-)
+var filter_BodyJSONService_PostTimestampBody_0 = &utilities.DoubleArray{Encoding: map[string]int{"timestamp": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 
 func request_BodyJSONService_PostTimestampBody_0(ctx context.Context, marshaler runtime.Marshaler, client BodyJSONServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq WellKnownTypesHolder
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Timestamp); err != nil && err != io.EOF {
+	var (
+		protoReq WellKnownTypesHolder
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Timestamp); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BodyJSONService_PostTimestampBody_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.PostTimestampBody(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_BodyJSONService_PostTimestampBody_0(ctx context.Context, marshaler runtime.Marshaler, server BodyJSONServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq WellKnownTypesHolder
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Timestamp); err != nil && err != io.EOF {
+	var (
+		protoReq WellKnownTypesHolder
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Timestamp); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BodyJSONService_PostTimestampBody_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.PostTimestampBody(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
-var (
-	filter_BodyJSONService_PostFieldMaskBody_0 = &utilities.DoubleArray{Encoding: map[string]int{"field_mask": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
-)
+var filter_BodyJSONService_PostFieldMaskBody_0 = &utilities.DoubleArray{Encoding: map[string]int{"field_mask": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 
 func request_BodyJSONService_PostFieldMaskBody_0(ctx context.Context, marshaler runtime.Marshaler, client BodyJSONServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq WellKnownTypesHolder
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.FieldMask); err != nil && err != io.EOF {
+	var (
+		protoReq WellKnownTypesHolder
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.FieldMask); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BodyJSONService_PostFieldMaskBody_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.PostFieldMaskBody(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_BodyJSONService_PostFieldMaskBody_0(ctx context.Context, marshaler runtime.Marshaler, server BodyJSONServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq WellKnownTypesHolder
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.FieldMask); err != nil && err != io.EOF {
+	var (
+		protoReq WellKnownTypesHolder
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.FieldMask); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BodyJSONService_PostFieldMaskBody_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.PostFieldMaskBody(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
-var (
-	filter_BodyJSONService_PostStructBody_0 = &utilities.DoubleArray{Encoding: map[string]int{"struct": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
-)
+var filter_BodyJSONService_PostStructBody_0 = &utilities.DoubleArray{Encoding: map[string]int{"struct": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 
 func request_BodyJSONService_PostStructBody_0(ctx context.Context, marshaler runtime.Marshaler, client BodyJSONServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq WellKnownTypesHolder
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Struct); err != nil && err != io.EOF {
+	var (
+		protoReq WellKnownTypesHolder
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Struct); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BodyJSONService_PostStructBody_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.PostStructBody(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_BodyJSONService_PostStructBody_0(ctx context.Context, marshaler runtime.Marshaler, server BodyJSONServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq WellKnownTypesHolder
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Struct); err != nil && err != io.EOF {
+	var (
+		protoReq WellKnownTypesHolder
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Struct); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BodyJSONService_PostStructBody_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.PostStructBody(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
-var (
-	filter_BodyJSONService_PostValueBody_0 = &utilities.DoubleArray{Encoding: map[string]int{"value": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
-)
+var filter_BodyJSONService_PostValueBody_0 = &utilities.DoubleArray{Encoding: map[string]int{"value": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 
 func request_BodyJSONService_PostValueBody_0(ctx context.Context, marshaler runtime.Marshaler, client BodyJSONServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq WellKnownTypesHolder
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Value); err != nil && err != io.EOF {
+	var (
+		protoReq WellKnownTypesHolder
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Value); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BodyJSONService_PostValueBody_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.PostValueBody(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_BodyJSONService_PostValueBody_0(ctx context.Context, marshaler runtime.Marshaler, server BodyJSONServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq WellKnownTypesHolder
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Value); err != nil && err != io.EOF {
+	var (
+		protoReq WellKnownTypesHolder
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Value); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BodyJSONService_PostValueBody_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.PostValueBody(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
-var (
-	filter_BodyJSONService_PostListValueBody_0 = &utilities.DoubleArray{Encoding: map[string]int{"list_value": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
-)
+var filter_BodyJSONService_PostListValueBody_0 = &utilities.DoubleArray{Encoding: map[string]int{"list_value": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 
 func request_BodyJSONService_PostListValueBody_0(ctx context.Context, marshaler runtime.Marshaler, client BodyJSONServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq WellKnownTypesHolder
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.ListValue); err != nil && err != io.EOF {
+	var (
+		protoReq WellKnownTypesHolder
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.ListValue); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BodyJSONService_PostListValueBody_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.PostListValueBody(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_BodyJSONService_PostListValueBody_0(ctx context.Context, marshaler runtime.Marshaler, server BodyJSONServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq WellKnownTypesHolder
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.ListValue); err != nil && err != io.EOF {
+	var (
+		protoReq WellKnownTypesHolder
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.ListValue); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BodyJSONService_PostListValueBody_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.PostListValueBody(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
-var (
-	filter_BodyJSONService_PostWrapperBody_0 = &utilities.DoubleArray{Encoding: map[string]int{"int64_value": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
-)
+var filter_BodyJSONService_PostWrapperBody_0 = &utilities.DoubleArray{Encoding: map[string]int{"int64_value": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 
 func request_BodyJSONService_PostWrapperBody_0(ctx context.Context, marshaler runtime.Marshaler, client BodyJSONServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq WellKnownTypesHolder
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Int64Value); err != nil && err != io.EOF {
+	var (
+		protoReq WellKnownTypesHolder
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Int64Value); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BodyJSONService_PostWrapperBody_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.PostWrapperBody(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_BodyJSONService_PostWrapperBody_0(ctx context.Context, marshaler runtime.Marshaler, server BodyJSONServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq WellKnownTypesHolder
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Int64Value); err != nil && err != io.EOF {
+	var (
+		protoReq WellKnownTypesHolder
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Int64Value); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BodyJSONService_PostWrapperBody_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.PostWrapperBody(ctx, &protoReq)
 	return msg, metadata, err
-
-}
-
-var (
-	filter_BodyJSONService_PatchBodyWithPathParam_0 = &utilities.DoubleArray{Encoding: map[string]int{"single_nested": 0, "name": 1}, Base: []int{1, 2, 1, 0, 0}, Check: []int{0, 1, 2, 3, 2}}
-)
-
-func request_BodyJSONService_PatchBodyWithPathParam_0(ctx context.Context, marshaler runtime.Marshaler, client BodyJSONServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq examplepb.ABitOfEverything
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.SingleNested); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["single_nested.name"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "single_nested.name")
-	}
-
-	err = runtime.PopulateFieldFromPath(&protoReq, "single_nested.name", val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "single_nested.name", err)
-	}
-
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BodyJSONService_PatchBodyWithPathParam_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-
-	msg, err := client.PatchBodyWithPathParam(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
-	return msg, metadata, err
-
-}
-
-func local_request_BodyJSONService_PatchBodyWithPathParam_0(ctx context.Context, marshaler runtime.Marshaler, server BodyJSONServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq examplepb.ABitOfEverything
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.SingleNested); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["single_nested.name"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "single_nested.name")
-	}
-
-	err = runtime.PopulateFieldFromPath(&protoReq, "single_nested.name", val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "single_nested.name", err)
-	}
-
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BodyJSONService_PatchBodyWithPathParam_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-
-	msg, err := server.PatchBodyWithPathParam(ctx, &protoReq)
-	return msg, metadata, err
-
 }
 
 // RegisterBodyJSONServiceHandlerServer registers the http handlers for service BodyJSONService to "mux".
 // UnaryRPC     :call BodyJSONServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterBodyJSONServiceHandlerFromEndpoint instead.
+// GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterBodyJSONServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server BodyJSONServiceServer) error {
-
-	mux.Handle("POST", pattern_BodyJSONService_PostEnumBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_BodyJSONService_PostEnumBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostEnumBody", runtime.WithHTTPPathPattern("/v1/bodyjson/enumbody"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostEnumBody", runtime.WithHTTPPathPattern("/v1/bodyjson/enumbody"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -620,20 +478,15 @@ func RegisterBodyJSONServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_BodyJSONService_PostEnumBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_BodyJSONService_PostStringBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_BodyJSONService_PostStringBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostStringBody", runtime.WithHTTPPathPattern("/v1/bodyjson/stringbody"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostStringBody", runtime.WithHTTPPathPattern("/v1/bodyjson/stringbody"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -645,20 +498,15 @@ func RegisterBodyJSONServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_BodyJSONService_PostStringBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_BodyJSONService_PostRepeatedMessageBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_BodyJSONService_PostRepeatedMessageBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostRepeatedMessageBody", runtime.WithHTTPPathPattern("/v1/bodyjson/repeatedmessagebody"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostRepeatedMessageBody", runtime.WithHTTPPathPattern("/v1/bodyjson/repeatedmessagebody"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -670,20 +518,15 @@ func RegisterBodyJSONServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_BodyJSONService_PostRepeatedMessageBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_BodyJSONService_PostRepeatedEnumBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_BodyJSONService_PostRepeatedEnumBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostRepeatedEnumBody", runtime.WithHTTPPathPattern("/v1/bodyjson/repeatedenumbody"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostRepeatedEnumBody", runtime.WithHTTPPathPattern("/v1/bodyjson/repeatedenumbody"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -695,20 +538,15 @@ func RegisterBodyJSONServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_BodyJSONService_PostRepeatedEnumBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_BodyJSONService_PostRepeatedStringBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_BodyJSONService_PostRepeatedStringBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostRepeatedStringBody", runtime.WithHTTPPathPattern("/v1/bodyjson/repeatedstringbody"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostRepeatedStringBody", runtime.WithHTTPPathPattern("/v1/bodyjson/repeatedstringbody"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -720,20 +558,15 @@ func RegisterBodyJSONServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_BodyJSONService_PostRepeatedStringBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_BodyJSONService_PostTimestampBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_BodyJSONService_PostTimestampBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostTimestampBody", runtime.WithHTTPPathPattern("/v1/bodyjson/timestampbody"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostTimestampBody", runtime.WithHTTPPathPattern("/v1/bodyjson/timestampbody"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -745,20 +578,15 @@ func RegisterBodyJSONServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_BodyJSONService_PostTimestampBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_BodyJSONService_PostFieldMaskBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_BodyJSONService_PostFieldMaskBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostFieldMaskBody", runtime.WithHTTPPathPattern("/v1/bodyjson/fieldmaskbody"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostFieldMaskBody", runtime.WithHTTPPathPattern("/v1/bodyjson/fieldmaskbody"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -770,20 +598,15 @@ func RegisterBodyJSONServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_BodyJSONService_PostFieldMaskBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_BodyJSONService_PostStructBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_BodyJSONService_PostStructBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostStructBody", runtime.WithHTTPPathPattern("/v1/bodyjson/structbody"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostStructBody", runtime.WithHTTPPathPattern("/v1/bodyjson/structbody"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -795,20 +618,15 @@ func RegisterBodyJSONServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_BodyJSONService_PostStructBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_BodyJSONService_PostValueBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_BodyJSONService_PostValueBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostValueBody", runtime.WithHTTPPathPattern("/v1/bodyjson/valuebody"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostValueBody", runtime.WithHTTPPathPattern("/v1/bodyjson/valuebody"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -820,20 +638,15 @@ func RegisterBodyJSONServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_BodyJSONService_PostValueBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_BodyJSONService_PostListValueBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_BodyJSONService_PostListValueBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostListValueBody", runtime.WithHTTPPathPattern("/v1/bodyjson/listvaluebody"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostListValueBody", runtime.WithHTTPPathPattern("/v1/bodyjson/listvaluebody"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -845,20 +658,15 @@ func RegisterBodyJSONServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_BodyJSONService_PostListValueBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_BodyJSONService_PostWrapperBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_BodyJSONService_PostWrapperBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostWrapperBody", runtime.WithHTTPPathPattern("/v1/bodyjson/wrapperbody"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostWrapperBody", runtime.WithHTTPPathPattern("/v1/bodyjson/wrapperbody"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -870,34 +678,7 @@ func RegisterBodyJSONServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_BodyJSONService_PostWrapperBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
-	})
-
-	mux.Handle("PATCH", pattern_BodyJSONService_PatchBodyWithPathParam_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		var stream runtime.ServerTransportStream
-		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PatchBodyWithPathParam", runtime.WithHTTPPathPattern("/v1/bodyjson/patchbodywithpathparam/{single_nested.name}"))
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := local_request_BodyJSONService_PatchBodyWithPathParam_0(annotatedContext, inboundMarshaler, server, req, pathParams)
-		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
-		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
-		if err != nil {
-			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
-			return
-		}
-
-		forward_BodyJSONService_PatchBodyWithPathParam_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	return nil
@@ -906,25 +687,24 @@ func RegisterBodyJSONServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 // RegisterBodyJSONServiceHandlerFromEndpoint is same as RegisterBodyJSONServiceHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterBodyJSONServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.DialContext(ctx, endpoint, opts...)
+	conn, err := grpc.NewClient(endpoint, opts...)
 	if err != nil {
 		return err
 	}
 	defer func() {
 		if err != nil {
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 			return
 		}
 		go func() {
 			<-ctx.Done()
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 		}()
 	}()
-
 	return RegisterBodyJSONServiceHandler(ctx, mux, conn)
 }
 
@@ -938,16 +718,13 @@ func RegisterBodyJSONServiceHandler(ctx context.Context, mux *runtime.ServeMux, 
 // to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "BodyJSONServiceClient".
 // Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "BodyJSONServiceClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "BodyJSONServiceClient" to call the correct interceptors.
+// "BodyJSONServiceClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterBodyJSONServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client BodyJSONServiceClient) error {
-
-	mux.Handle("POST", pattern_BodyJSONService_PostEnumBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_BodyJSONService_PostEnumBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostEnumBody", runtime.WithHTTPPathPattern("/v1/bodyjson/enumbody"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostEnumBody", runtime.WithHTTPPathPattern("/v1/bodyjson/enumbody"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -958,18 +735,13 @@ func RegisterBodyJSONServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_BodyJSONService_PostEnumBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_BodyJSONService_PostStringBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_BodyJSONService_PostStringBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostStringBody", runtime.WithHTTPPathPattern("/v1/bodyjson/stringbody"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostStringBody", runtime.WithHTTPPathPattern("/v1/bodyjson/stringbody"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -980,18 +752,13 @@ func RegisterBodyJSONServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_BodyJSONService_PostStringBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_BodyJSONService_PostRepeatedMessageBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_BodyJSONService_PostRepeatedMessageBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostRepeatedMessageBody", runtime.WithHTTPPathPattern("/v1/bodyjson/repeatedmessagebody"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostRepeatedMessageBody", runtime.WithHTTPPathPattern("/v1/bodyjson/repeatedmessagebody"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1002,18 +769,13 @@ func RegisterBodyJSONServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_BodyJSONService_PostRepeatedMessageBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_BodyJSONService_PostRepeatedEnumBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_BodyJSONService_PostRepeatedEnumBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostRepeatedEnumBody", runtime.WithHTTPPathPattern("/v1/bodyjson/repeatedenumbody"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostRepeatedEnumBody", runtime.WithHTTPPathPattern("/v1/bodyjson/repeatedenumbody"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1024,18 +786,13 @@ func RegisterBodyJSONServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_BodyJSONService_PostRepeatedEnumBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_BodyJSONService_PostRepeatedStringBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_BodyJSONService_PostRepeatedStringBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostRepeatedStringBody", runtime.WithHTTPPathPattern("/v1/bodyjson/repeatedstringbody"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostRepeatedStringBody", runtime.WithHTTPPathPattern("/v1/bodyjson/repeatedstringbody"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1046,18 +803,13 @@ func RegisterBodyJSONServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_BodyJSONService_PostRepeatedStringBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_BodyJSONService_PostTimestampBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_BodyJSONService_PostTimestampBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostTimestampBody", runtime.WithHTTPPathPattern("/v1/bodyjson/timestampbody"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostTimestampBody", runtime.WithHTTPPathPattern("/v1/bodyjson/timestampbody"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1068,18 +820,13 @@ func RegisterBodyJSONServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_BodyJSONService_PostTimestampBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_BodyJSONService_PostFieldMaskBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_BodyJSONService_PostFieldMaskBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostFieldMaskBody", runtime.WithHTTPPathPattern("/v1/bodyjson/fieldmaskbody"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostFieldMaskBody", runtime.WithHTTPPathPattern("/v1/bodyjson/fieldmaskbody"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1090,18 +837,13 @@ func RegisterBodyJSONServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_BodyJSONService_PostFieldMaskBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_BodyJSONService_PostStructBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_BodyJSONService_PostStructBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostStructBody", runtime.WithHTTPPathPattern("/v1/bodyjson/structbody"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostStructBody", runtime.WithHTTPPathPattern("/v1/bodyjson/structbody"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1112,18 +854,13 @@ func RegisterBodyJSONServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_BodyJSONService_PostStructBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_BodyJSONService_PostValueBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_BodyJSONService_PostValueBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostValueBody", runtime.WithHTTPPathPattern("/v1/bodyjson/valuebody"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostValueBody", runtime.WithHTTPPathPattern("/v1/bodyjson/valuebody"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1134,18 +871,13 @@ func RegisterBodyJSONServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_BodyJSONService_PostValueBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_BodyJSONService_PostListValueBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_BodyJSONService_PostListValueBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostListValueBody", runtime.WithHTTPPathPattern("/v1/bodyjson/listvaluebody"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostListValueBody", runtime.WithHTTPPathPattern("/v1/bodyjson/listvaluebody"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1156,18 +888,13 @@ func RegisterBodyJSONServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_BodyJSONService_PostListValueBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_BodyJSONService_PostWrapperBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_BodyJSONService_PostWrapperBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostWrapperBody", runtime.WithHTTPPathPattern("/v1/bodyjson/wrapperbody"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostWrapperBody", runtime.WithHTTPPathPattern("/v1/bodyjson/wrapperbody"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1178,84 +905,35 @@ func RegisterBodyJSONServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_BodyJSONService_PostWrapperBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("PATCH", pattern_BodyJSONService_PatchBodyWithPathParam_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PatchBodyWithPathParam", runtime.WithHTTPPathPattern("/v1/bodyjson/patchbodywithpathparam/{single_nested.name}"))
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := request_BodyJSONService_PatchBodyWithPathParam_0(annotatedContext, inboundMarshaler, client, req, pathParams)
-		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
-		if err != nil {
-			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
-			return
-		}
-
-		forward_BodyJSONService_PatchBodyWithPathParam_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
-	})
-
 	return nil
 }
 
 var (
-	pattern_BodyJSONService_PostEnumBody_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "bodyjson", "enumbody"}, ""))
-
-	pattern_BodyJSONService_PostStringBody_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "bodyjson", "stringbody"}, ""))
-
+	pattern_BodyJSONService_PostEnumBody_0            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "bodyjson", "enumbody"}, ""))
+	pattern_BodyJSONService_PostStringBody_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "bodyjson", "stringbody"}, ""))
 	pattern_BodyJSONService_PostRepeatedMessageBody_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "bodyjson", "repeatedmessagebody"}, ""))
-
-	pattern_BodyJSONService_PostRepeatedEnumBody_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "bodyjson", "repeatedenumbody"}, ""))
-
-	pattern_BodyJSONService_PostRepeatedStringBody_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "bodyjson", "repeatedstringbody"}, ""))
-
-	pattern_BodyJSONService_PostTimestampBody_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "bodyjson", "timestampbody"}, ""))
-
-	pattern_BodyJSONService_PostFieldMaskBody_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "bodyjson", "fieldmaskbody"}, ""))
-
-	pattern_BodyJSONService_PostStructBody_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "bodyjson", "structbody"}, ""))
-
-	pattern_BodyJSONService_PostValueBody_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "bodyjson", "valuebody"}, ""))
-
-	pattern_BodyJSONService_PostListValueBody_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "bodyjson", "listvaluebody"}, ""))
-
-	pattern_BodyJSONService_PostWrapperBody_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "bodyjson", "wrapperbody"}, ""))
-
-	pattern_BodyJSONService_PatchBodyWithPathParam_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "bodyjson", "patchbodywithpathparam", "single_nested.name"}, ""))
+	pattern_BodyJSONService_PostRepeatedEnumBody_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "bodyjson", "repeatedenumbody"}, ""))
+	pattern_BodyJSONService_PostRepeatedStringBody_0  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "bodyjson", "repeatedstringbody"}, ""))
+	pattern_BodyJSONService_PostTimestampBody_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "bodyjson", "timestampbody"}, ""))
+	pattern_BodyJSONService_PostFieldMaskBody_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "bodyjson", "fieldmaskbody"}, ""))
+	pattern_BodyJSONService_PostStructBody_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "bodyjson", "structbody"}, ""))
+	pattern_BodyJSONService_PostValueBody_0           = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "bodyjson", "valuebody"}, ""))
+	pattern_BodyJSONService_PostListValueBody_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "bodyjson", "listvaluebody"}, ""))
+	pattern_BodyJSONService_PostWrapperBody_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "bodyjson", "wrapperbody"}, ""))
 )
 
 var (
-	forward_BodyJSONService_PostEnumBody_0 = runtime.ForwardResponseMessage
-
-	forward_BodyJSONService_PostStringBody_0 = runtime.ForwardResponseMessage
-
+	forward_BodyJSONService_PostEnumBody_0            = runtime.ForwardResponseMessage
+	forward_BodyJSONService_PostStringBody_0          = runtime.ForwardResponseMessage
 	forward_BodyJSONService_PostRepeatedMessageBody_0 = runtime.ForwardResponseMessage
-
-	forward_BodyJSONService_PostRepeatedEnumBody_0 = runtime.ForwardResponseMessage
-
-	forward_BodyJSONService_PostRepeatedStringBody_0 = runtime.ForwardResponseMessage
-
-	forward_BodyJSONService_PostTimestampBody_0 = runtime.ForwardResponseMessage
-
-	forward_BodyJSONService_PostFieldMaskBody_0 = runtime.ForwardResponseMessage
-
-	forward_BodyJSONService_PostStructBody_0 = runtime.ForwardResponseMessage
-
-	forward_BodyJSONService_PostValueBody_0 = runtime.ForwardResponseMessage
-
-	forward_BodyJSONService_PostListValueBody_0 = runtime.ForwardResponseMessage
-
-	forward_BodyJSONService_PostWrapperBody_0 = runtime.ForwardResponseMessage
-
-	forward_BodyJSONService_PatchBodyWithPathParam_0 = runtime.ForwardResponseMessage
+	forward_BodyJSONService_PostRepeatedEnumBody_0    = runtime.ForwardResponseMessage
+	forward_BodyJSONService_PostRepeatedStringBody_0  = runtime.ForwardResponseMessage
+	forward_BodyJSONService_PostTimestampBody_0       = runtime.ForwardResponseMessage
+	forward_BodyJSONService_PostFieldMaskBody_0       = runtime.ForwardResponseMessage
+	forward_BodyJSONService_PostStructBody_0          = runtime.ForwardResponseMessage
+	forward_BodyJSONService_PostValueBody_0           = runtime.ForwardResponseMessage
+	forward_BodyJSONService_PostListValueBody_0       = runtime.ForwardResponseMessage
+	forward_BodyJSONService_PostWrapperBody_0         = runtime.ForwardResponseMessage
 )

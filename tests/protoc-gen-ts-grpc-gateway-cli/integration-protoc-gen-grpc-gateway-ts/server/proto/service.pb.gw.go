@@ -10,6 +10,7 @@ package proto
 
 import (
 	"context"
+	"errors"
 	"io"
 	"net/http"
 
@@ -24,47 +25,48 @@ import (
 )
 
 // Suppress "imported and not used" errors
-var _ codes.Code
-var _ io.Reader
-var _ status.Status
-var _ = runtime.String
-var _ = utilities.NewDoubleArray
-var _ = metadata.Join
+var (
+	_ codes.Code
+	_ io.Reader
+	_ status.Status
+	_ = errors.New
+	_ = runtime.String
+	_ = utilities.NewDoubleArray
+	_ = metadata.Join
+)
 
 func request_CounterService_Increment_0(ctx context.Context, marshaler runtime.Marshaler, client CounterServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq UnaryRequest
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq UnaryRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.Increment(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_CounterService_Increment_0(ctx context.Context, marshaler runtime.Marshaler, server CounterServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq UnaryRequest
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq UnaryRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.Increment(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_CounterService_StreamingIncrements_0(ctx context.Context, marshaler runtime.Marshaler, client CounterServiceClient, req *http.Request, pathParams map[string]string) (CounterService_StreamingIncrementsClient, runtime.ServerMetadata, error) {
-	var protoReq StreamingRequest
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq StreamingRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	stream, err := client.StreamingIncrements(ctx, &protoReq)
 	if err != nil {
 		return nil, metadata, err
@@ -75,584 +77,453 @@ func request_CounterService_StreamingIncrements_0(ctx context.Context, marshaler
 	}
 	metadata.HeaderMD = header
 	return stream, metadata, nil
-
 }
 
 func request_CounterService_FailingIncrement_0(ctx context.Context, marshaler runtime.Marshaler, client CounterServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq UnaryRequest
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq UnaryRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.FailingIncrement(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_CounterService_FailingIncrement_0(ctx context.Context, marshaler runtime.Marshaler, server CounterServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq UnaryRequest
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq UnaryRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.FailingIncrement(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_CounterService_EchoBinary_0(ctx context.Context, marshaler runtime.Marshaler, client CounterServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq BinaryRequest
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq BinaryRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.EchoBinary(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_CounterService_EchoBinary_0(ctx context.Context, marshaler runtime.Marshaler, server CounterServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq BinaryRequest
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq BinaryRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.EchoBinary(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_CounterService_HTTPGet_0(ctx context.Context, marshaler runtime.Marshaler, client CounterServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq HttpGetRequest
-	var metadata runtime.ServerMetadata
-
 	var (
-		val string
-		ok  bool
-		err error
-		_   = err
+		protoReq HttpGetRequest
+		metadata runtime.ServerMetadata
+		err      error
 	)
-
-	val, ok = pathParams["num_to_increase"]
+	val, ok := pathParams["num_to_increase"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "num_to_increase")
 	}
-
 	protoReq.NumToIncrease, err = runtime.Int32(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "num_to_increase", err)
 	}
-
 	msg, err := client.HTTPGet(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_CounterService_HTTPGet_0(ctx context.Context, marshaler runtime.Marshaler, server CounterServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq HttpGetRequest
-	var metadata runtime.ServerMetadata
-
 	var (
-		val string
-		ok  bool
-		err error
-		_   = err
+		protoReq HttpGetRequest
+		metadata runtime.ServerMetadata
+		err      error
 	)
-
-	val, ok = pathParams["num_to_increase"]
+	val, ok := pathParams["num_to_increase"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "num_to_increase")
 	}
-
 	protoReq.NumToIncrease, err = runtime.Int32(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "num_to_increase", err)
 	}
-
 	msg, err := server.HTTPGet(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
-var (
-	filter_CounterService_HTTPPostWithNestedBodyPath_0 = &utilities.DoubleArray{Encoding: map[string]int{"req": 0, "a": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
-)
+var filter_CounterService_HTTPPostWithNestedBodyPath_0 = &utilities.DoubleArray{Encoding: map[string]int{"req": 0, "a": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
 
 func request_CounterService_HTTPPostWithNestedBodyPath_0(ctx context.Context, marshaler runtime.Marshaler, client CounterServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq HttpPostRequest
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Req); err != nil && err != io.EOF {
+	var (
+		protoReq HttpPostRequest
+		metadata runtime.ServerMetadata
+		err      error
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Req); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["a"]
+	val, ok := pathParams["a"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
 	}
-
 	protoReq.A, err = runtime.Int32(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_CounterService_HTTPPostWithNestedBodyPath_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.HTTPPostWithNestedBodyPath(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_CounterService_HTTPPostWithNestedBodyPath_0(ctx context.Context, marshaler runtime.Marshaler, server CounterServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq HttpPostRequest
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Req); err != nil && err != io.EOF {
+	var (
+		protoReq HttpPostRequest
+		metadata runtime.ServerMetadata
+		err      error
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Req); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["a"]
+	val, ok := pathParams["a"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
 	}
-
 	protoReq.A, err = runtime.Int32(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_CounterService_HTTPPostWithNestedBodyPath_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.HTTPPostWithNestedBodyPath(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_CounterService_HTTPPostWithStarBodyPath_0(ctx context.Context, marshaler runtime.Marshaler, client CounterServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq HttpPostRequest
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq HttpPostRequest
+		metadata runtime.ServerMetadata
+		err      error
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["a"]
+	val, ok := pathParams["a"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
 	}
-
 	protoReq.A, err = runtime.Int32(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a", err)
 	}
-
 	val, ok = pathParams["c"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "c")
 	}
-
 	protoReq.C, err = runtime.Int32(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "c", err)
 	}
-
 	msg, err := client.HTTPPostWithStarBodyPath(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_CounterService_HTTPPostWithStarBodyPath_0(ctx context.Context, marshaler runtime.Marshaler, server CounterServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq HttpPostRequest
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq HttpPostRequest
+		metadata runtime.ServerMetadata
+		err      error
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["a"]
+	val, ok := pathParams["a"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
 	}
-
 	protoReq.A, err = runtime.Int32(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a", err)
 	}
-
 	val, ok = pathParams["c"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "c")
 	}
-
 	protoReq.C, err = runtime.Int32(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "c", err)
 	}
-
 	msg, err := server.HTTPPostWithStarBodyPath(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_CounterService_HTTPPatch_0(ctx context.Context, marshaler runtime.Marshaler, client CounterServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq HttpPatchRequest
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq HttpPatchRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.HTTPPatch(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_CounterService_HTTPPatch_0(ctx context.Context, marshaler runtime.Marshaler, server CounterServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq HttpPatchRequest
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq HttpPatchRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.HTTPPatch(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_CounterService_HTTPDelete_0(ctx context.Context, marshaler runtime.Marshaler, client CounterServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq HttpDeleteRequest
-	var metadata runtime.ServerMetadata
-
 	var (
-		val string
-		ok  bool
-		err error
-		_   = err
+		protoReq HttpDeleteRequest
+		metadata runtime.ServerMetadata
+		err      error
 	)
-
-	val, ok = pathParams["a"]
+	val, ok := pathParams["a"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
 	}
-
 	protoReq.A, err = runtime.Int32(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a", err)
 	}
-
 	msg, err := client.HTTPDelete(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_CounterService_HTTPDelete_0(ctx context.Context, marshaler runtime.Marshaler, server CounterServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq HttpDeleteRequest
-	var metadata runtime.ServerMetadata
-
 	var (
-		val string
-		ok  bool
-		err error
-		_   = err
+		protoReq HttpDeleteRequest
+		metadata runtime.ServerMetadata
+		err      error
 	)
-
-	val, ok = pathParams["a"]
+	val, ok := pathParams["a"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
 	}
-
 	protoReq.A, err = runtime.Int32(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a", err)
 	}
-
 	msg, err := server.HTTPDelete(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
-var (
-	filter_CounterService_HTTPDeleteWithParams_0 = &utilities.DoubleArray{Encoding: map[string]int{"id": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
-)
+var filter_CounterService_HTTPDeleteWithParams_0 = &utilities.DoubleArray{Encoding: map[string]int{"id": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 
 func request_CounterService_HTTPDeleteWithParams_0(ctx context.Context, marshaler runtime.Marshaler, client CounterServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq HttpDeleteWithParamsRequest
-	var metadata runtime.ServerMetadata
-
 	var (
-		val string
-		ok  bool
-		err error
-		_   = err
+		protoReq HttpDeleteWithParamsRequest
+		metadata runtime.ServerMetadata
+		err      error
 	)
-
-	val, ok = pathParams["id"]
+	val, ok := pathParams["id"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
 	}
-
 	protoReq.Id, err = runtime.Int32(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_CounterService_HTTPDeleteWithParams_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.HTTPDeleteWithParams(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_CounterService_HTTPDeleteWithParams_0(ctx context.Context, marshaler runtime.Marshaler, server CounterServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq HttpDeleteWithParamsRequest
-	var metadata runtime.ServerMetadata
-
 	var (
-		val string
-		ok  bool
-		err error
-		_   = err
+		protoReq HttpDeleteWithParamsRequest
+		metadata runtime.ServerMetadata
+		err      error
 	)
-
-	val, ok = pathParams["id"]
+	val, ok := pathParams["id"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
 	}
-
 	protoReq.Id, err = runtime.Int32(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_CounterService_HTTPDeleteWithParams_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.HTTPDeleteWithParams(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_CounterService_ExternalMessage_0(ctx context.Context, marshaler runtime.Marshaler, client CounterServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq ExternalRequest
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq ExternalRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.ExternalMessage(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_CounterService_ExternalMessage_0(ctx context.Context, marshaler runtime.Marshaler, server CounterServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq ExternalRequest
-	var metadata runtime.ServerMetadata
-
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
+	var (
+		protoReq ExternalRequest
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.ExternalMessage(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
-var (
-	filter_CounterService_HTTPGetWithURLSearchParams_0 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
-)
+var filter_CounterService_HTTPGetWithURLSearchParams_0 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 
 func request_CounterService_HTTPGetWithURLSearchParams_0(ctx context.Context, marshaler runtime.Marshaler, client CounterServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq HTTPGetWithURLSearchParamsRequest
-	var metadata runtime.ServerMetadata
-
 	var (
-		val string
-		ok  bool
-		err error
-		_   = err
+		protoReq HTTPGetWithURLSearchParamsRequest
+		metadata runtime.ServerMetadata
+		err      error
 	)
-
-	val, ok = pathParams["a"]
+	val, ok := pathParams["a"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
 	}
-
 	protoReq.A, err = runtime.Int32(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_CounterService_HTTPGetWithURLSearchParams_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.HTTPGetWithURLSearchParams(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_CounterService_HTTPGetWithURLSearchParams_0(ctx context.Context, marshaler runtime.Marshaler, server CounterServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq HTTPGetWithURLSearchParamsRequest
-	var metadata runtime.ServerMetadata
-
 	var (
-		val string
-		ok  bool
-		err error
-		_   = err
+		protoReq HTTPGetWithURLSearchParamsRequest
+		metadata runtime.ServerMetadata
+		err      error
 	)
-
-	val, ok = pathParams["a"]
+	val, ok := pathParams["a"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
 	}
-
 	protoReq.A, err = runtime.Int32(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a", err)
 	}
-
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_CounterService_HTTPGetWithURLSearchParams_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.HTTPGetWithURLSearchParams(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
-var (
-	filter_CounterService_HTTPGetWithZeroValueURLSearchParams_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
-)
+var filter_CounterService_HTTPGetWithZeroValueURLSearchParams_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 
 func request_CounterService_HTTPGetWithZeroValueURLSearchParams_0(ctx context.Context, marshaler runtime.Marshaler, client CounterServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq HTTPGetWithZeroValueURLSearchParamsRequest
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq HTTPGetWithZeroValueURLSearchParamsRequest
+		metadata runtime.ServerMetadata
+	)
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_CounterService_HTTPGetWithZeroValueURLSearchParams_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := client.HTTPGetWithZeroValueURLSearchParams(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_CounterService_HTTPGetWithZeroValueURLSearchParams_0(ctx context.Context, marshaler runtime.Marshaler, server CounterServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq HTTPGetWithZeroValueURLSearchParamsRequest
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq HTTPGetWithZeroValueURLSearchParamsRequest
+		metadata runtime.ServerMetadata
+	)
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_CounterService_HTTPGetWithZeroValueURLSearchParams_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-
 	msg, err := server.HTTPGetWithZeroValueURLSearchParams(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 func request_CounterService_HTTPGetWithOptionalFields_0(ctx context.Context, marshaler runtime.Marshaler, client CounterServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq OptionalFieldsRequest
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq OptionalFieldsRequest
+		metadata runtime.ServerMetadata
+	)
 	msg, err := client.HTTPGetWithOptionalFields(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
-
 }
 
 func local_request_CounterService_HTTPGetWithOptionalFields_0(ctx context.Context, marshaler runtime.Marshaler, server CounterServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq OptionalFieldsRequest
-	var metadata runtime.ServerMetadata
-
+	var (
+		protoReq OptionalFieldsRequest
+		metadata runtime.ServerMetadata
+	)
 	msg, err := server.HTTPGetWithOptionalFields(ctx, &protoReq)
 	return msg, metadata, err
-
 }
 
 // RegisterCounterServiceHandlerServer registers the http handlers for service CounterService to "mux".
 // UnaryRPC     :call CounterServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterCounterServiceHandlerFromEndpoint instead.
+// GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterCounterServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server CounterServiceServer) error {
-
-	mux.Handle("POST", pattern_CounterService_Increment_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_CounterService_Increment_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/main.CounterService/Increment", runtime.WithHTTPPathPattern("/main.CounterService/Increment"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/main.CounterService/Increment", runtime.WithHTTPPathPattern("/main.CounterService/Increment"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -664,27 +535,22 @@ func RegisterCounterServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_CounterService_Increment_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
-	mux.Handle("POST", pattern_CounterService_StreamingIncrements_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_CounterService_StreamingIncrements_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		err := status.Error(codes.Unimplemented, "streaming calls are not yet supported in the in-process transport")
 		_, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 		return
 	})
-
-	mux.Handle("POST", pattern_CounterService_FailingIncrement_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_CounterService_FailingIncrement_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/main.CounterService/FailingIncrement", runtime.WithHTTPPathPattern("/main.CounterService/FailingIncrement"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/main.CounterService/FailingIncrement", runtime.WithHTTPPathPattern("/main.CounterService/FailingIncrement"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -696,20 +562,15 @@ func RegisterCounterServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_CounterService_FailingIncrement_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_CounterService_EchoBinary_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_CounterService_EchoBinary_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/main.CounterService/EchoBinary", runtime.WithHTTPPathPattern("/main.CounterService/EchoBinary"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/main.CounterService/EchoBinary", runtime.WithHTTPPathPattern("/main.CounterService/EchoBinary"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -721,20 +582,15 @@ func RegisterCounterServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_CounterService_EchoBinary_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("GET", pattern_CounterService_HTTPGet_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodGet, pattern_CounterService_HTTPGet_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/main.CounterService/HTTPGet", runtime.WithHTTPPathPattern("/api/{num_to_increase}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/main.CounterService/HTTPGet", runtime.WithHTTPPathPattern("/api/{num_to_increase}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -746,20 +602,15 @@ func RegisterCounterServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_CounterService_HTTPGet_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_CounterService_HTTPPostWithNestedBodyPath_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_CounterService_HTTPPostWithNestedBodyPath_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/main.CounterService/HTTPPostWithNestedBodyPath", runtime.WithHTTPPathPattern("/post/{a}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/main.CounterService/HTTPPostWithNestedBodyPath", runtime.WithHTTPPathPattern("/post/{a}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -771,20 +622,15 @@ func RegisterCounterServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_CounterService_HTTPPostWithNestedBodyPath_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_CounterService_HTTPPostWithStarBodyPath_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_CounterService_HTTPPostWithStarBodyPath_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/main.CounterService/HTTPPostWithStarBodyPath", runtime.WithHTTPPathPattern("/post/{a}/{c}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/main.CounterService/HTTPPostWithStarBodyPath", runtime.WithHTTPPathPattern("/post/{a}/{c}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -796,20 +642,15 @@ func RegisterCounterServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_CounterService_HTTPPostWithStarBodyPath_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("PATCH", pattern_CounterService_HTTPPatch_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPatch, pattern_CounterService_HTTPPatch_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/main.CounterService/HTTPPatch", runtime.WithHTTPPathPattern("/patch"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/main.CounterService/HTTPPatch", runtime.WithHTTPPathPattern("/patch"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -821,20 +662,15 @@ func RegisterCounterServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_CounterService_HTTPPatch_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("DELETE", pattern_CounterService_HTTPDelete_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodDelete, pattern_CounterService_HTTPDelete_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/main.CounterService/HTTPDelete", runtime.WithHTTPPathPattern("/delete/{a}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/main.CounterService/HTTPDelete", runtime.WithHTTPPathPattern("/delete/{a}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -846,20 +682,15 @@ func RegisterCounterServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_CounterService_HTTPDelete_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("DELETE", pattern_CounterService_HTTPDeleteWithParams_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodDelete, pattern_CounterService_HTTPDeleteWithParams_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/main.CounterService/HTTPDeleteWithParams", runtime.WithHTTPPathPattern("/delete/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/main.CounterService/HTTPDeleteWithParams", runtime.WithHTTPPathPattern("/delete/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -871,20 +702,15 @@ func RegisterCounterServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_CounterService_HTTPDeleteWithParams_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_CounterService_ExternalMessage_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_CounterService_ExternalMessage_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/main.CounterService/ExternalMessage", runtime.WithHTTPPathPattern("/main.CounterService/ExternalMessage"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/main.CounterService/ExternalMessage", runtime.WithHTTPPathPattern("/main.CounterService/ExternalMessage"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -896,20 +722,15 @@ func RegisterCounterServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_CounterService_ExternalMessage_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("GET", pattern_CounterService_HTTPGetWithURLSearchParams_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodGet, pattern_CounterService_HTTPGetWithURLSearchParams_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/main.CounterService/HTTPGetWithURLSearchParams", runtime.WithHTTPPathPattern("/api/query/{a}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/main.CounterService/HTTPGetWithURLSearchParams", runtime.WithHTTPPathPattern("/api/query/{a}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -921,20 +742,15 @@ func RegisterCounterServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_CounterService_HTTPGetWithURLSearchParams_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("GET", pattern_CounterService_HTTPGetWithZeroValueURLSearchParams_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodGet, pattern_CounterService_HTTPGetWithZeroValueURLSearchParams_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/main.CounterService/HTTPGetWithZeroValueURLSearchParams", runtime.WithHTTPPathPattern("/path/query"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/main.CounterService/HTTPGetWithZeroValueURLSearchParams", runtime.WithHTTPPathPattern("/path/query"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -946,20 +762,15 @@ func RegisterCounterServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_CounterService_HTTPGetWithZeroValueURLSearchParams_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("GET", pattern_CounterService_HTTPGetWithOptionalFields_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodGet, pattern_CounterService_HTTPGetWithOptionalFields_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/main.CounterService/HTTPGetWithOptionalFields", runtime.WithHTTPPathPattern("/optional"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/main.CounterService/HTTPGetWithOptionalFields", runtime.WithHTTPPathPattern("/optional"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -971,9 +782,7 @@ func RegisterCounterServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_CounterService_HTTPGetWithOptionalFields_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
 
 	return nil
@@ -982,25 +791,24 @@ func RegisterCounterServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 // RegisterCounterServiceHandlerFromEndpoint is same as RegisterCounterServiceHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterCounterServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.DialContext(ctx, endpoint, opts...)
+	conn, err := grpc.NewClient(endpoint, opts...)
 	if err != nil {
 		return err
 	}
 	defer func() {
 		if err != nil {
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 			return
 		}
 		go func() {
 			<-ctx.Done()
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 		}()
 	}()
-
 	return RegisterCounterServiceHandler(ctx, mux, conn)
 }
 
@@ -1014,16 +822,13 @@ func RegisterCounterServiceHandler(ctx context.Context, mux *runtime.ServeMux, c
 // to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "CounterServiceClient".
 // Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "CounterServiceClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "CounterServiceClient" to call the correct interceptors.
+// "CounterServiceClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterCounterServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client CounterServiceClient) error {
-
-	mux.Handle("POST", pattern_CounterService_Increment_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_CounterService_Increment_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/main.CounterService/Increment", runtime.WithHTTPPathPattern("/main.CounterService/Increment"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/main.CounterService/Increment", runtime.WithHTTPPathPattern("/main.CounterService/Increment"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1034,18 +839,13 @@ func RegisterCounterServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_CounterService_Increment_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_CounterService_StreamingIncrements_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_CounterService_StreamingIncrements_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/main.CounterService/StreamingIncrements", runtime.WithHTTPPathPattern("/main.CounterService/StreamingIncrements"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/main.CounterService/StreamingIncrements", runtime.WithHTTPPathPattern("/main.CounterService/StreamingIncrements"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1056,18 +856,13 @@ func RegisterCounterServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_CounterService_StreamingIncrements_0(annotatedContext, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_CounterService_FailingIncrement_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_CounterService_FailingIncrement_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/main.CounterService/FailingIncrement", runtime.WithHTTPPathPattern("/main.CounterService/FailingIncrement"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/main.CounterService/FailingIncrement", runtime.WithHTTPPathPattern("/main.CounterService/FailingIncrement"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1078,18 +873,13 @@ func RegisterCounterServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_CounterService_FailingIncrement_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_CounterService_EchoBinary_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_CounterService_EchoBinary_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/main.CounterService/EchoBinary", runtime.WithHTTPPathPattern("/main.CounterService/EchoBinary"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/main.CounterService/EchoBinary", runtime.WithHTTPPathPattern("/main.CounterService/EchoBinary"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1100,18 +890,13 @@ func RegisterCounterServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_CounterService_EchoBinary_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("GET", pattern_CounterService_HTTPGet_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodGet, pattern_CounterService_HTTPGet_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/main.CounterService/HTTPGet", runtime.WithHTTPPathPattern("/api/{num_to_increase}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/main.CounterService/HTTPGet", runtime.WithHTTPPathPattern("/api/{num_to_increase}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1122,18 +907,13 @@ func RegisterCounterServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_CounterService_HTTPGet_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_CounterService_HTTPPostWithNestedBodyPath_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_CounterService_HTTPPostWithNestedBodyPath_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/main.CounterService/HTTPPostWithNestedBodyPath", runtime.WithHTTPPathPattern("/post/{a}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/main.CounterService/HTTPPostWithNestedBodyPath", runtime.WithHTTPPathPattern("/post/{a}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1144,18 +924,13 @@ func RegisterCounterServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_CounterService_HTTPPostWithNestedBodyPath_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_CounterService_HTTPPostWithStarBodyPath_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_CounterService_HTTPPostWithStarBodyPath_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/main.CounterService/HTTPPostWithStarBodyPath", runtime.WithHTTPPathPattern("/post/{a}/{c}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/main.CounterService/HTTPPostWithStarBodyPath", runtime.WithHTTPPathPattern("/post/{a}/{c}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1166,18 +941,13 @@ func RegisterCounterServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_CounterService_HTTPPostWithStarBodyPath_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("PATCH", pattern_CounterService_HTTPPatch_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPatch, pattern_CounterService_HTTPPatch_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/main.CounterService/HTTPPatch", runtime.WithHTTPPathPattern("/patch"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/main.CounterService/HTTPPatch", runtime.WithHTTPPathPattern("/patch"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1188,18 +958,13 @@ func RegisterCounterServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_CounterService_HTTPPatch_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("DELETE", pattern_CounterService_HTTPDelete_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodDelete, pattern_CounterService_HTTPDelete_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/main.CounterService/HTTPDelete", runtime.WithHTTPPathPattern("/delete/{a}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/main.CounterService/HTTPDelete", runtime.WithHTTPPathPattern("/delete/{a}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1210,18 +975,13 @@ func RegisterCounterServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_CounterService_HTTPDelete_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("DELETE", pattern_CounterService_HTTPDeleteWithParams_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodDelete, pattern_CounterService_HTTPDeleteWithParams_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/main.CounterService/HTTPDeleteWithParams", runtime.WithHTTPPathPattern("/delete/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/main.CounterService/HTTPDeleteWithParams", runtime.WithHTTPPathPattern("/delete/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1232,18 +992,13 @@ func RegisterCounterServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_CounterService_HTTPDeleteWithParams_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("POST", pattern_CounterService_ExternalMessage_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodPost, pattern_CounterService_ExternalMessage_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/main.CounterService/ExternalMessage", runtime.WithHTTPPathPattern("/main.CounterService/ExternalMessage"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/main.CounterService/ExternalMessage", runtime.WithHTTPPathPattern("/main.CounterService/ExternalMessage"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1254,18 +1009,13 @@ func RegisterCounterServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_CounterService_ExternalMessage_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("GET", pattern_CounterService_HTTPGetWithURLSearchParams_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodGet, pattern_CounterService_HTTPGetWithURLSearchParams_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/main.CounterService/HTTPGetWithURLSearchParams", runtime.WithHTTPPathPattern("/api/query/{a}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/main.CounterService/HTTPGetWithURLSearchParams", runtime.WithHTTPPathPattern("/api/query/{a}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1276,18 +1026,13 @@ func RegisterCounterServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_CounterService_HTTPGetWithURLSearchParams_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("GET", pattern_CounterService_HTTPGetWithZeroValueURLSearchParams_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodGet, pattern_CounterService_HTTPGetWithZeroValueURLSearchParams_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/main.CounterService/HTTPGetWithZeroValueURLSearchParams", runtime.WithHTTPPathPattern("/path/query"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/main.CounterService/HTTPGetWithZeroValueURLSearchParams", runtime.WithHTTPPathPattern("/path/query"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1298,18 +1043,13 @@ func RegisterCounterServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_CounterService_HTTPGetWithZeroValueURLSearchParams_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
-	mux.Handle("GET", pattern_CounterService_HTTPGetWithOptionalFields_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle(http.MethodGet, pattern_CounterService_HTTPGetWithOptionalFields_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/main.CounterService/HTTPGetWithOptionalFields", runtime.WithHTTPPathPattern("/optional"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/main.CounterService/HTTPGetWithOptionalFields", runtime.WithHTTPPathPattern("/optional"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1320,70 +1060,41 @@ func RegisterCounterServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
-
 		forward_CounterService_HTTPGetWithOptionalFields_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
 	})
-
 	return nil
 }
 
 var (
-	pattern_CounterService_Increment_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"main.CounterService", "Increment"}, ""))
-
-	pattern_CounterService_StreamingIncrements_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"main.CounterService", "StreamingIncrements"}, ""))
-
-	pattern_CounterService_FailingIncrement_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"main.CounterService", "FailingIncrement"}, ""))
-
-	pattern_CounterService_EchoBinary_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"main.CounterService", "EchoBinary"}, ""))
-
-	pattern_CounterService_HTTPGet_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"api", "num_to_increase"}, ""))
-
-	pattern_CounterService_HTTPPostWithNestedBodyPath_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"post", "a"}, ""))
-
-	pattern_CounterService_HTTPPostWithStarBodyPath_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1, 1, 0, 4, 1, 5, 2}, []string{"post", "a", "c"}, ""))
-
-	pattern_CounterService_HTTPPatch_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"patch"}, ""))
-
-	pattern_CounterService_HTTPDelete_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"delete", "a"}, ""))
-
-	pattern_CounterService_HTTPDeleteWithParams_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"delete", "id"}, ""))
-
-	pattern_CounterService_ExternalMessage_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"main.CounterService", "ExternalMessage"}, ""))
-
-	pattern_CounterService_HTTPGetWithURLSearchParams_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"api", "query", "a"}, ""))
-
+	pattern_CounterService_Increment_0                           = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"main.CounterService", "Increment"}, ""))
+	pattern_CounterService_StreamingIncrements_0                 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"main.CounterService", "StreamingIncrements"}, ""))
+	pattern_CounterService_FailingIncrement_0                    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"main.CounterService", "FailingIncrement"}, ""))
+	pattern_CounterService_EchoBinary_0                          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"main.CounterService", "EchoBinary"}, ""))
+	pattern_CounterService_HTTPGet_0                             = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"api", "num_to_increase"}, ""))
+	pattern_CounterService_HTTPPostWithNestedBodyPath_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"post", "a"}, ""))
+	pattern_CounterService_HTTPPostWithStarBodyPath_0            = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1, 1, 0, 4, 1, 5, 2}, []string{"post", "a", "c"}, ""))
+	pattern_CounterService_HTTPPatch_0                           = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"patch"}, ""))
+	pattern_CounterService_HTTPDelete_0                          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"delete", "a"}, ""))
+	pattern_CounterService_HTTPDeleteWithParams_0                = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"delete", "id"}, ""))
+	pattern_CounterService_ExternalMessage_0                     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"main.CounterService", "ExternalMessage"}, ""))
+	pattern_CounterService_HTTPGetWithURLSearchParams_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"api", "query", "a"}, ""))
 	pattern_CounterService_HTTPGetWithZeroValueURLSearchParams_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"path", "query"}, ""))
-
-	pattern_CounterService_HTTPGetWithOptionalFields_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"optional"}, ""))
+	pattern_CounterService_HTTPGetWithOptionalFields_0           = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"optional"}, ""))
 )
 
 var (
-	forward_CounterService_Increment_0 = runtime.ForwardResponseMessage
-
-	forward_CounterService_StreamingIncrements_0 = runtime.ForwardResponseStream
-
-	forward_CounterService_FailingIncrement_0 = runtime.ForwardResponseMessage
-
-	forward_CounterService_EchoBinary_0 = runtime.ForwardResponseMessage
-
-	forward_CounterService_HTTPGet_0 = runtime.ForwardResponseMessage
-
-	forward_CounterService_HTTPPostWithNestedBodyPath_0 = runtime.ForwardResponseMessage
-
-	forward_CounterService_HTTPPostWithStarBodyPath_0 = runtime.ForwardResponseMessage
-
-	forward_CounterService_HTTPPatch_0 = runtime.ForwardResponseMessage
-
-	forward_CounterService_HTTPDelete_0 = runtime.ForwardResponseMessage
-
-	forward_CounterService_HTTPDeleteWithParams_0 = runtime.ForwardResponseMessage
-
-	forward_CounterService_ExternalMessage_0 = runtime.ForwardResponseMessage
-
-	forward_CounterService_HTTPGetWithURLSearchParams_0 = runtime.ForwardResponseMessage
-
+	forward_CounterService_Increment_0                           = runtime.ForwardResponseMessage
+	forward_CounterService_StreamingIncrements_0                 = runtime.ForwardResponseStream
+	forward_CounterService_FailingIncrement_0                    = runtime.ForwardResponseMessage
+	forward_CounterService_EchoBinary_0                          = runtime.ForwardResponseMessage
+	forward_CounterService_HTTPGet_0                             = runtime.ForwardResponseMessage
+	forward_CounterService_HTTPPostWithNestedBodyPath_0          = runtime.ForwardResponseMessage
+	forward_CounterService_HTTPPostWithStarBodyPath_0            = runtime.ForwardResponseMessage
+	forward_CounterService_HTTPPatch_0                           = runtime.ForwardResponseMessage
+	forward_CounterService_HTTPDelete_0                          = runtime.ForwardResponseMessage
+	forward_CounterService_HTTPDeleteWithParams_0                = runtime.ForwardResponseMessage
+	forward_CounterService_ExternalMessage_0                     = runtime.ForwardResponseMessage
+	forward_CounterService_HTTPGetWithURLSearchParams_0          = runtime.ForwardResponseMessage
 	forward_CounterService_HTTPGetWithZeroValueURLSearchParams_0 = runtime.ForwardResponseMessage
-
-	forward_CounterService_HTTPGetWithOptionalFields_0 = runtime.ForwardResponseMessage
+	forward_CounterService_HTTPGetWithOptionalFields_0           = runtime.ForwardResponseMessage
 )

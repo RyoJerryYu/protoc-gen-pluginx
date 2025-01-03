@@ -67,8 +67,3 @@ func (b *BodyJSONService) PostValueBody(ctx context.Context, req *bodyjson.WellK
 func (b *BodyJSONService) PostWrapperBody(ctx context.Context, req *bodyjson.WellKnownTypesHolder) (*bodyjson.WellKnownTypesHolder, error) {
 	return req, nil
 }
-
-// PatchBodyWithPathParam implements bodyjson.BodyJSONServiceServer.
-func (b *BodyJSONService) PatchBodyWithPathParam(ctx context.Context, req *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error) {
-	return req, nil
-}

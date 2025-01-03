@@ -30,6 +30,7 @@ import { StringMessage } from "./proto/sub/message";
 import { newBodyJSONService } from "./proto/bodyjson/bodyjson_pb_gwcli";
 import { WellKnownTypesHolder } from "./proto/bodyjson/bodyjson";
 import { Any } from "./google/protobuf/any";
+import { newQueryStringService } from "./proto/querystring/querystring_pb_gwcli";
 
 function fetchTransport(
   baseUrl: string,
@@ -350,30 +351,31 @@ describe("ABitOfEverythingService", () => {
     expect(res).to.deep.equal(Empty.create());
   });
 
-  // it("GetRepeatedQuery", async () => {
-  //   const req: ABitOfEverythingRepeated = {
-  //     pathRepeatedFloatValue: [1.1, 2.2],
-  //     pathRepeatedDoubleValue: [1.1, 2.2],
-  //     pathRepeatedInt64Value: [1, 2],
-  //     pathRepeatedUint64Value: [1, 2],
-  //     pathRepeatedInt32Value: [1, 2],
-  //     pathRepeatedFixed64Value: [1, 2],
-  //     pathRepeatedFixed32Value: [1, 2],
-  //     pathRepeatedBoolValue: [true, false],
-  //     pathRepeatedStringValue: ["string1", "string2"],
-  //     pathRepeatedBytesValue: [new Uint8Array([1, 2, 3]), new Uint8Array([4, 5, 6])],
-  //     pathRepeatedUint32Value: [1, 2],
-  //     pathRepeatedEnumValue: [NumericEnum.ONE, NumericEnum.ZERO],
-  //     pathRepeatedSfixed32Value: [1, 2],
-  //     pathRepeatedSfixed64Value: [1, 2],
-  //     pathRepeatedSint32Value: [1, 2],
-  //     pathRepeatedSint64Value: [1, 2],
-  //   }
+  it("GetRepeatedQuery", async () => {
+    const req: Partial<ABitOfEverythingRepeated> = {
+      pathRepeatedFloatValue: [1.1, 2.2],
+      pathRepeatedDoubleValue: [1.1, 2.2],
+      pathRepeatedInt64Value: [1, 2],
+      pathRepeatedUint64Value: [1, 2],
+      pathRepeatedInt32Value: [1, 2],
+      pathRepeatedFixed64Value: [1, 2],
+      pathRepeatedFixed32Value: [1, 2],
+      pathRepeatedBoolValue: [true, false],
+      pathRepeatedStringValue: ["string1", "string2"],
+      // pathRepeatedBytesValue: [new Uint8Array([1, 2, 3]), new Uint8Array([4, 5, 6])],
+      pathRepeatedUint32Value: [1, 2],
+      pathRepeatedEnumValue: [NumericEnum.ONE, NumericEnum.ZERO],
+      pathRepeatedSfixed32Value: [1, 2],
+      pathRepeatedSfixed64Value: [1, 2],
+      pathRepeatedSint32Value: [1, 2],
+      pathRepeatedSint64Value: [1, 2],
+    };
 
-  //   const res = await aBitOfEverythingService.getRepeatedQuery(req);
+    const res = await aBitOfEverythingService.getRepeatedQuery(req);
 
-  //   expect(res).to.deep.equal(req);
-  // })
+    res.pathRepeatedBytesValue = []; // bytesValue is not supported in query params
+    expect(res).to.deep.equal(ABitOfEverythingRepeated.fromPartial(req));
+  });
 
   it("Echo", async () => {
     const req: StringMessage = {
@@ -746,6 +748,66 @@ describe("BodyJsonService", () => {
       int64Value: 1,
     };
     const res = await bodyJsonService.postWrapperBody(req);
+    expect(res).to.deep.equal(WellKnownTypesHolder.fromPartial(req));
+  });
+});
+
+describe("QueryStringService", () => {
+  const queryStringService = newQueryStringService(
+    fetchTransport("http://localhost:8081/api/"),
+  );
+
+  it("GetEnumQuerystring", async () => {
+    const req: Partial<ABitOfEverything> = {
+      int32Value: 1,
+      enumValue: NumericEnum.ONE,
+    };
+    const res = await queryStringService.getEnumQuerystring(req);
+    expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+  });
+
+  it("GetStringQuerystring", async () => {
+    const req: Partial<ABitOfEverything> = {
+      int32Value: 1,
+      stringValue: "string",
+    };
+    const res = await queryStringService.getStringQuerystring(req);
+    expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+  });
+
+  it("GetRepeatedEnumQuerystring", async () => {
+    const req: Partial<ABitOfEverything> = {
+      int32Value: 1,
+      repeatedEnumValue: [NumericEnum.ONE, NumericEnum.ZERO],
+    };
+    const res = await queryStringService.getRepeatedEnumQuerystring(req);
+    expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+  });
+
+  it("GetRepeatedStringQuerystring", async () => {
+    const req: Partial<ABitOfEverything> = {
+      int32Value: 1,
+      repeatedStringValue: ["string", "string2"],
+    };
+    const res = await queryStringService.getRepeatedStringQuerystring(req);
+    expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+  });
+
+  it("GetTimestampQuerystring", async () => {
+    const req: Partial<WellKnownTypesHolder> = {
+      int32Value: 1,
+      timestamp: new Date("2021-01-01T00:00:00Z"),
+    };
+    const res = await queryStringService.getTimestampQuerystring(req);
+    expect(res).to.deep.equal(WellKnownTypesHolder.fromPartial(req));
+  });
+
+  it("GetWrapperQuerystring", async () => {
+    const req: Partial<WellKnownTypesHolder> = {
+      int32Value: 1,
+      stringValue: "string",
+    };
+    const res = await queryStringService.getWrapperQuerystring(req);
     expect(res).to.deep.equal(WellKnownTypesHolder.fromPartial(req));
   });
 });
