@@ -17,8 +17,10 @@ func EndWithDefault(field protoreflect.FieldDescriptor) bool {
 }
 
 func EndWithJsonScalar(field protoreflect.FieldDescriptor) bool {
-	if field.Kind() != protoreflect.MessageKind &&
-		field.Kind() != protoreflect.GroupKind {
+	if field.IsMap() ||
+		field.IsList() ||
+		(field.Kind() != protoreflect.MessageKind &&
+			field.Kind() != protoreflect.GroupKind) {
 		// scalar field, including enum, list, map
 		return true
 	}
@@ -184,4 +186,56 @@ func lessPath(x, y string) bool {
 		}
 	}
 	return len(x) < len(y)
+}
+
+func GetField(md protoreflect.MessageDescriptor, path string) protoreflect.FieldDescriptor {
+	if path == "" {
+		return nil
+	}
+	var field protoreflect.FieldDescriptor
+	valid := rangeFields(path, func(f string) bool {
+		if md == nil {
+			return false
+		}
+
+		field = md.Fields().ByName(protoreflect.Name(f))
+		if field == nil {
+			return false
+		}
+
+		// Identify the next message to search within.
+		md = field.Message() // may be nil
+
+		// Repeated fields are only allowed at the last position.
+		if field.IsList() || field.IsMap() {
+			md = nil
+		}
+		return true
+	})
+	if !valid {
+		return nil
+	}
+	return field
+}
+
+// rangeFields is like strings.Split(path, "."), but avoids allocations by
+// iterating over each field in place and calling a iterator function.
+func rangeFields(path string, f func(field string) bool) bool {
+	for {
+		var field string
+		if i := strings.IndexByte(path, '.'); i >= 0 {
+			field, path = path[:i], path[i:]
+		} else {
+			field, path = path, ""
+		}
+
+		if !f(field) {
+			return false
+		}
+
+		if len(path) == 0 {
+			return true
+		}
+		path = strings.TrimPrefix(path, ".")
+	}
 }
