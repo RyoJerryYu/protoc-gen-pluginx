@@ -6,7 +6,6 @@ cd $TEST_DIR
 INTEGRATION_TEST_DIR=(
     "protoc-gen-ts-grpc-gateway-cli/integration-protoc-gen-grpc-gateway-ts"
     "protoc-gen-ts-grpc-gateway-cli/integration-everything-simple"
-    "protoc-gen-ts-grpc-gateway-cli/integration-enum-string"
 )
 
 for dir in ${INTEGRATION_TEST_DIR[@]}; do

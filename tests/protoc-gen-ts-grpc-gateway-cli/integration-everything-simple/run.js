@@ -4,48 +4,70 @@
 // various configurations. This node script is a helper which sets up the server
 // and then runs the correct test files using web-test-runner.
 
-let testCases = [
+const defaultConfigCases = [
   {
     name: "defaultConfig",
-    testDir: "defaultConfig",
     serverFlags: [],
   },
   {
     name: "allowPartial",
-    testDir: "defaultConfig",
     serverFlags: ["--marshal_allow_partial=true"],
   },
   {
-    name: "useProtoNames",
-    testDir: "useProtoNames", // This test case has a different test file.
-    serverFlags: ["--marshal_use_proto_names=true"],
-  },
-  {
     name: "useEnumNumbers",
-    testDir: "defaultConfig",
     serverFlags: ["--marshal_use_enum_numbers=true"],
   },
   {
     name: "emitUnpopulated",
-    testDir: "defaultConfig",
     serverFlags: ["--marshal_emit_unpopulated=true"],
   },
   {
     name: "emitDefaultValues",
-    testDir: "defaultConfig",
     serverFlags: ["--marshal_emit_default_values=true"],
   },
   {
     name: "unmarshalAllowPartial",
-    testDir: "defaultConfig",
     serverFlags: ["--unmarshal_allow_partial=true"],
   },
   {
     name: "unmarshalDiscardUnknown",
-    testDir: "defaultConfig",
     serverFlags: ["--unmarshal_discard_unknown=true"],
   }
 ];
+
+const useProtoNameCases = [
+  {
+    name: "useProtoNames", // This test case has a different test file.
+    serverFlags: ["--marshal_use_proto_names=true"],
+  },
+];
+
+const testCases = [
+  {
+    name: "defaultConfig",
+    testDir: "defaultConfig",
+    serverDir: "./server",
+    cases: defaultConfigCases,
+  },
+  {
+    name: "useProtoNames",
+    testDir: "useProtoNames", 
+    serverDir: "./server",
+    cases: useProtoNameCases,
+  },
+  {
+    name: "defaultConfig_gojsonserver",
+    testDir: "defaultConfig",
+    serverDir: "./gojsonserver",
+    cases: defaultConfigCases,
+  },
+  {
+    name: "stringEnum_gojsonserver",
+    testDir: "stringEnums",
+    serverDir: "./gojsonserver",
+    cases: defaultConfigCases,
+  }
+]
 
 import kill from "tree-kill";
 import { createConnection } from "net";
@@ -78,7 +100,7 @@ function runTest(testCase) {
       "go",
       [
         "run",
-        "./server",
+        testCase.serverDir,
         ...testCase.serverFlags,
       ],
       { stdio: "inherit" }
@@ -109,7 +131,15 @@ function runTest(testCase) {
   });
 }
 
-while (testCases.length > 0) {
-  let testCase = testCases.pop();
-  await runTest(testCase);
+for (let i = 0; i < testCases.length; i++) {
+  let testCase = testCases[i];
+  for (let j = 0; j < testCase.cases.length; j++) {
+    let test = testCase.cases[j];
+    await runTest({
+      name: `${testCase.name} ${test.name}`,
+      testDir: testCase.testDir,
+      serverDir: testCase.serverDir,
+      serverFlags: test.serverFlags,
+    })
+  }
 }
