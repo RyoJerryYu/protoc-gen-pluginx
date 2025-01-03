@@ -14,13 +14,53 @@ This plugin depends on some flags of ts_proto:
 
 - `outputJsonMethods`: Should be set to true. This plugin depends on that json methods.
 - `outputServices`: ts_proto allow set this flag multiple times. Should include `nice-grpc` . This plugin depends on nice-grpc service interface.
+- `stringEnums`: protoc_grpc_gateway only allow unmarshal number value when the whole body, or a query param or a path param, is just an enum value or repeated enum value. stringEnums should set to `false` for this case.
 
 Some flags of ts_proto should be set depends on Server Config:
 
 - `snakeToCamel`: If `MarshalOptions.UseProtoNames` was `true` on serverside, ts_proto should not include `json` on it's `snakeToCamel` flag. (You should set this flag to `keys` or `false` manualy, because it's default to `keys_json`)
-- `stringEnums`: protoc_grpc_gateway only allow unmarshal number value when the whole body is just a enum value or repeated enum value. stringEnums should set to `false` for this case.
 
 ts_proto do not check oneof at client code, so the gateway cli do not check the oneof duplicated set.
+
+<details>
+<summary> If You still want to use `stringEnums` with enums in query param or path param</summary>
+
+You can first use [`protoc-gen-go-json`](../protoc-gen-go-json/README.md) to generate `MarshalJSON` and `UnmarshalJSON` method for protobuf enum types. example for using `buf.gen.yaml` :
+
+```yaml
+  - local: protoc-gen-go
+    out: ../server
+    opt:
+      - paths=source_relative
+  - local: protoc-gen-go-grpc
+    out: ../server
+    opt:
+      - paths=source_relative
+  - local: protoc-gen-grpc-gateway
+    out: ../server
+    opt:
+      - paths=source_relative
+  - local: protoc-gen-go-json
+    out: ../server
+    opt:
+      - paths=source_relative
+```
+
+Then import `GenGoJsonMarshaler` from `github.com/RyoJerryYu/protoc-gen-pluginx/pkg/gatewayx`,
+and use it as the `runtime.Marshaler` instead of `runtime.JSONPb` . e.g.:
+
+```go
+gateway := runtime.NewServeMux(runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.HTTPBodyMarshaler{
+	Marshaler: &gatewayx.GenGoJsonMarshaler{
+		JSONPb: runtime.JSONPb{
+			MarshalOptions:   marshalOptions,
+			UnmarshalOptions: unmarshalOptions,
+		},
+	},
+}))
+```
+
+</details>
 
 ## Flags
 
