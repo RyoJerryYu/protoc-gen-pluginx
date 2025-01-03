@@ -53,6 +53,10 @@ func (g *Generator) must(rootName string, path string) string {
 	return fmt.Sprintf(`must(%s.%s)`, rootName, fieldName)
 }
 
+func (g *Generator) pathStr(in string) string {
+	return fmt.Sprintf(`pathStr(%s)`, in)
+}
+
 func (g *Generator) jsonify(in string) string {
 	return fmt.Sprintf(`JSON.stringify(%s)`, in)
 }
@@ -70,7 +74,7 @@ func (g *Generator) renderPath(r *tsutils.TSOption) func(method *protogen.Method
 				expToReplace := m[0]
 				fieldNameRaw := m[1]
 				// fieldValuePattern := m[2]
-				part := fmt.Sprintf(`${%s}`, g.must("fullReq", fieldNameRaw))
+				part := fmt.Sprintf(`${%s}`, g.pathStr(g.must("fullReq", fieldNameRaw)))
 				methodURL = strings.ReplaceAll(methodURL, expToReplace, part)
 				fieldsInPath = append(fieldsInPath, fieldNameRaw)
 			}

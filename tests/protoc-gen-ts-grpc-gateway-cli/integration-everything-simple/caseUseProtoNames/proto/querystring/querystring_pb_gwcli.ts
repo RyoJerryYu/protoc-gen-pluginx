@@ -58,7 +58,7 @@ function isPrimitive(value: unknown): boolean {
 /**
  * Convert a primitive value to a string that can be used in a URL search parameter
  */
-function valueStringify(param: Primitive): string {
+function toStr(param: Primitive): string {
   if (param instanceof Date) {
     return param.toISOString();
   }
@@ -72,6 +72,16 @@ function valueStringify(param: Primitive): string {
   }
 
   return param.toString();
+}
+
+/**
+ * Convert a primitive value or an array of primitive values to a string that can be used in a URL path parameter
+ */
+function pathStr(param: Primitive | Primitive[]): string {
+  if (Array.isArray(param)) {
+    return param.map((p) => toStr(p)).join(",");
+  }
+  return toStr(param);
 }
 
 /**
@@ -123,8 +133,8 @@ function renderURLSearchParams<T extends RequestPayload>(
         return acc;
       }
       return Array.isArray(value)
-        ? [...acc, ...value.map((m) => [key, valueStringify(m)])]
-        : (acc = [...acc, [key, valueStringify(value)]]);
+        ? [...acc, ...value.map((m) => [key, toStr(m)])]
+        : (acc = [...acc, [key, toStr(value)]]);
     },
     [] as string[][],
   );
