@@ -80,7 +80,7 @@ function isPrimitive(value: unknown): boolean {
 /**
  * Convert a primitive value to a string that can be used in a URL search parameter
  */
-function valueStringify(param: Primitive): string {
+function toStr(param: Primitive): string {
   if (param instanceof Date) {
     return param.toISOString();
   }
@@ -94,6 +94,16 @@ function valueStringify(param: Primitive): string {
   }
 
   return param.toString();
+}
+
+/**
+ * Convert a primitive value or an array of primitive values to a string that can be used in a URL path parameter
+ */
+function pathStr(param: Primitive | Primitive[]): string {
+  if (Array.isArray(param)) {
+    return param.map((p) => toStr(p)).join(",");
+  }
+  return toStr(param);
 }
 
 /**
@@ -145,8 +155,8 @@ function renderURLSearchParams<T extends RequestPayload>(
         return acc;
       }
       return Array.isArray(value)
-        ? [...acc, ...value.map((m) => [key, valueStringify(m)])]
-        : (acc = [...acc, [key, valueStringify(value)]]);
+        ? [...acc, ...value.map((m) => [key, toStr(m)])]
+        : (acc = [...acc, [key, toStr(value)]]);
     },
     [] as string[][],
   );
@@ -269,7 +279,7 @@ export function newCounterService(transport: Transport): CounterServiceClient {
         : undefined;
       const fullReq = HttpGetRequest.fromPartial(req);
       const res = await transport.call({
-        path: `/api/${must(fullReq.num_to_increase)}`,
+        path: `/api/${pathStr(must(fullReq.num_to_increase))}`,
         method: "GET",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["num_to_increase"]),
@@ -288,7 +298,7 @@ export function newCounterService(transport: Transport): CounterServiceClient {
       const body: any = PostRequest.toJSON(must(fullReq.req));
       delete body.a;
       const res = await transport.call({
-        path: `/post/${must(fullReq.a)}`,
+        path: `/post/${pathStr(must(fullReq.a))}`,
         method: "POST",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["a", "req"]),
@@ -309,7 +319,7 @@ export function newCounterService(transport: Transport): CounterServiceClient {
       delete body.a;
       delete body.c;
       const res = await transport.call({
-        path: `/post/${must(fullReq.a)}/${must(fullReq.c)}`,
+        path: `/post/${pathStr(must(fullReq.a))}/${pathStr(must(fullReq.c))}`,
         method: "POST",
         headers: headers,
         body: JSON.stringify(body),
@@ -344,7 +354,7 @@ export function newCounterService(transport: Transport): CounterServiceClient {
         : undefined;
       const fullReq = HttpDeleteRequest.fromPartial(req);
       const res = await transport.call({
-        path: `/delete/${must(fullReq.a)}`,
+        path: `/delete/${pathStr(must(fullReq.a))}`,
         method: "DELETE",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["a"]),
@@ -361,7 +371,7 @@ export function newCounterService(transport: Transport): CounterServiceClient {
         : undefined;
       const fullReq = HttpDeleteWithParamsRequest.fromPartial(req);
       const res = await transport.call({
-        path: `/delete/${must(fullReq.id)}`,
+        path: `/delete/${pathStr(must(fullReq.id))}`,
         method: "DELETE",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["id"]),
@@ -396,7 +406,7 @@ export function newCounterService(transport: Transport): CounterServiceClient {
         : undefined;
       const fullReq = HTTPGetWithURLSearchParamsRequest.fromPartial(req);
       const res = await transport.call({
-        path: `/api/query/${must(fullReq.a)}`,
+        path: `/api/query/${pathStr(must(fullReq.a))}`,
         method: "GET",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["a"]),

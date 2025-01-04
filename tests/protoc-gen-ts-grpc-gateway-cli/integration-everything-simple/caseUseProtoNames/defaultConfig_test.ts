@@ -190,7 +190,7 @@ describe("ABitOfEverythingService", () => {
       fixed32Value: 1,
       boolValue: true,
       stringValue: "strprefix/string",
-      // bytesValue: new Uint8Array([1, 2, 3]),
+      bytesValue: new Uint8Array([1, 2, 3]),
       uint32Value: 1,
       enumValue: NumericEnum.ONE,
       pathEnumValue: PathEnum.DEF,
@@ -223,7 +223,7 @@ describe("ABitOfEverythingService", () => {
       //   },
       // },
       nonConventionalNameValue: "string",
-      // timestampValue: new Date("2021-01-01T00:00:00Z"),
+      timestampValue: new Date("2021-01-01T00:00:00Z"),
       repeatedEnumValue: [NumericEnum.ONE, NumericEnum.ZERO],
       repeatedEnumAnnotation: [NumericEnum.ONE, NumericEnum.ZERO],
       enumValueAnnotation: NumericEnum.ONE,
@@ -362,7 +362,10 @@ describe("ABitOfEverythingService", () => {
       pathRepeatedFixed32Value: [1, 2],
       pathRepeatedBoolValue: [true, false],
       pathRepeatedStringValue: ["string1", "string2"],
-      // pathRepeatedBytesValue: [new Uint8Array([1, 2, 3]), new Uint8Array([4, 5, 6])],
+      pathRepeatedBytesValue: [
+        new Uint8Array([1, 2, 3]),
+        new Uint8Array([4, 5, 6]),
+      ],
       pathRepeatedUint32Value: [1, 2],
       pathRepeatedEnumValue: [NumericEnum.ONE, NumericEnum.ZERO],
       pathRepeatedSfixed32Value: [1, 2],
@@ -373,7 +376,6 @@ describe("ABitOfEverythingService", () => {
 
     const res = await aBitOfEverythingService.getRepeatedQuery(req);
 
-    res.pathRepeatedBytesValue = []; // bytesValue is not supported in query params
     expect(res).to.deep.equal(ABitOfEverythingRepeated.fromPartial(req));
   });
 

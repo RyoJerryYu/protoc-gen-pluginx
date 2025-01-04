@@ -81,7 +81,7 @@ function isPrimitive(value: unknown): boolean {
 /**
  * Convert a primitive value to a string that can be used in a URL search parameter
  */
-function valueStringify(param: Primitive): string {
+function toStr(param: Primitive): string {
   if (param instanceof Date) {
     return param.toISOString();
   }
@@ -95,6 +95,16 @@ function valueStringify(param: Primitive): string {
   }
 
   return param.toString();
+}
+
+/**
+ * Convert a primitive value or an array of primitive values to a string that can be used in a URL path parameter
+ */
+function pathStr(param: Primitive | Primitive[]): string {
+  if (Array.isArray(param)) {
+    return param.map((p) => toStr(p)).join(",");
+  }
+  return toStr(param);
 }
 
 /**
@@ -146,8 +156,8 @@ function renderURLSearchParams<T extends RequestPayload>(
         return acc;
       }
       return Array.isArray(value)
-        ? [...acc, ...value.map((m) => [key, valueStringify(m)])]
-        : (acc = [...acc, [key, valueStringify(value)]]);
+        ? [...acc, ...value.map((m) => [key, toStr(m)])]
+        : (acc = [...acc, [key, toStr(value)]]);
     },
     [] as string[][],
   );
@@ -216,7 +226,7 @@ export function newABitOfEverythingService(
         : undefined;
       const fullReq = ABitOfEverything.fromPartial(req);
       const res = await transport.call({
-        path: `/v1/example/a_bit_of_everything/${must(fullReq.floatValue)}/${must(fullReq.doubleValue)}/${must(fullReq.int64Value)}/separator/${must(fullReq.uint64Value)}/${must(fullReq.int32Value)}/${must(fullReq.fixed64Value)}/${must(fullReq.fixed32Value)}/${must(fullReq.boolValue)}/${must(fullReq.stringValue)}/${must(fullReq.uint32Value)}/${must(fullReq.sfixed32Value)}/${must(fullReq.sfixed64Value)}/${must(fullReq.sint32Value)}/${must(fullReq.sint64Value)}/${must(fullReq.nonConventionalNameValue)}/${must(fullReq.enumValue)}/${must(fullReq.pathEnumValue)}/${must(fullReq.nestedPathEnumValue)}/${must(fullReq.enumValueAnnotation)}`,
+        path: `/v1/example/a_bit_of_everything/${pathStr(must(fullReq.floatValue))}/${pathStr(must(fullReq.doubleValue))}/${pathStr(must(fullReq.int64Value))}/separator/${pathStr(must(fullReq.uint64Value))}/${pathStr(must(fullReq.int32Value))}/${pathStr(must(fullReq.fixed64Value))}/${pathStr(must(fullReq.fixed32Value))}/${pathStr(must(fullReq.boolValue))}/${pathStr(must(fullReq.stringValue))}/${pathStr(must(fullReq.uint32Value))}/${pathStr(must(fullReq.sfixed32Value))}/${pathStr(must(fullReq.sfixed64Value))}/${pathStr(must(fullReq.sint32Value))}/${pathStr(must(fullReq.sint64Value))}/${pathStr(must(fullReq.nonConventionalNameValue))}/${pathStr(must(fullReq.enumValue))}/${pathStr(must(fullReq.pathEnumValue))}/${pathStr(must(fullReq.nestedPathEnumValue))}/${pathStr(must(fullReq.enumValueAnnotation))}`,
         method: "POST",
         headers: headers,
         queryParams: renderURLSearchParams(req, [
@@ -274,7 +284,7 @@ export function newABitOfEverythingService(
       const body: any = Book.toJSON(must(fullReq.book));
       delete body.parent;
       const res = await transport.call({
-        path: `/v1/${must(fullReq.parent)}/books`,
+        path: `/v1/${pathStr(must(fullReq.parent))}/books`,
         method: "POST",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["parent", "book"]),
@@ -294,7 +304,7 @@ export function newABitOfEverythingService(
       const body: any = Book.toJSON(must(fullReq.book));
       delete body.name;
       const res = await transport.call({
-        path: `/v1/${must(fullReq.book?.name)}`,
+        path: `/v1/${pathStr(must(fullReq.book?.name))}`,
         method: "PATCH",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["book.name", "book"]),
@@ -312,7 +322,7 @@ export function newABitOfEverythingService(
         : undefined;
       const fullReq = IdMessage.fromPartial(req);
       const res = await transport.call({
-        path: `/v1/example/a_bit_of_everything/${must(fullReq.uuid)}`,
+        path: `/v1/example/a_bit_of_everything/${pathStr(must(fullReq.uuid))}`,
         method: "GET",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["uuid"]),
@@ -329,7 +339,7 @@ export function newABitOfEverythingService(
         : undefined;
       const fullReq = ABitOfEverything.fromPartial(req);
       const res = await transport.call({
-        path: `/v1/example/a_bit_of_everything/${must(fullReq.uuid)}:custom`,
+        path: `/v1/example/a_bit_of_everything/${pathStr(must(fullReq.uuid))}:custom`,
         method: "POST",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["uuid"]),
@@ -346,7 +356,7 @@ export function newABitOfEverythingService(
         : undefined;
       const fullReq = ABitOfEverything.fromPartial(req);
       const res = await transport.call({
-        path: `/v1/example/a_bit_of_everything/${must(fullReq.uuid)}:custom:custom`,
+        path: `/v1/example/a_bit_of_everything/${pathStr(must(fullReq.uuid))}:custom:custom`,
         method: "POST",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["uuid"]),
@@ -365,7 +375,7 @@ export function newABitOfEverythingService(
       const body: any = ABitOfEverything.toJSON(fullReq);
       delete body.uuid;
       const res = await transport.call({
-        path: `/v1/example/a_bit_of_everything/${must(fullReq.uuid)}`,
+        path: `/v1/example/a_bit_of_everything/${pathStr(must(fullReq.uuid))}`,
         method: "PUT",
         headers: headers,
         body: JSON.stringify(body),
@@ -384,7 +394,7 @@ export function newABitOfEverythingService(
       const body: any = ABitOfEverything.toJSON(must(fullReq.abe));
       delete body.uuid;
       const res = await transport.call({
-        path: `/v2/example/a_bit_of_everything/${must(fullReq.abe?.uuid)}`,
+        path: `/v2/example/a_bit_of_everything/${pathStr(must(fullReq.abe?.uuid))}`,
         method: "PUT",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["abe.uuid", "abe"]),
@@ -402,7 +412,7 @@ export function newABitOfEverythingService(
         : undefined;
       const fullReq = IdMessage.fromPartial(req);
       const res = await transport.call({
-        path: `/v1/example/a_bit_of_everything/${must(fullReq.uuid)}`,
+        path: `/v1/example/a_bit_of_everything/${pathStr(must(fullReq.uuid))}`,
         method: "DELETE",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["uuid"]),
@@ -419,7 +429,7 @@ export function newABitOfEverythingService(
         : undefined;
       const fullReq = ABitOfEverything.fromPartial(req);
       const res = await transport.call({
-        path: `/v1/example/a_bit_of_everything/query/${must(fullReq.uuid)}`,
+        path: `/v1/example/a_bit_of_everything/query/${pathStr(must(fullReq.uuid))}`,
         method: "GET",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["uuid"]),
@@ -436,7 +446,7 @@ export function newABitOfEverythingService(
         : undefined;
       const fullReq = ABitOfEverythingRepeated.fromPartial(req);
       const res = await transport.call({
-        path: `/v1/example/a_bit_of_everything_repeated/${must(fullReq.pathRepeatedFloatValue)}/${must(fullReq.pathRepeatedDoubleValue)}/${must(fullReq.pathRepeatedInt64Value)}/${must(fullReq.pathRepeatedUint64Value)}/${must(fullReq.pathRepeatedInt32Value)}/${must(fullReq.pathRepeatedFixed64Value)}/${must(fullReq.pathRepeatedFixed32Value)}/${must(fullReq.pathRepeatedBoolValue)}/${must(fullReq.pathRepeatedStringValue)}/${must(fullReq.pathRepeatedBytesValue)}/${must(fullReq.pathRepeatedUint32Value)}/${must(fullReq.pathRepeatedEnumValue)}/${must(fullReq.pathRepeatedSfixed32Value)}/${must(fullReq.pathRepeatedSfixed64Value)}/${must(fullReq.pathRepeatedSint32Value)}/${must(fullReq.pathRepeatedSint64Value)}`,
+        path: `/v1/example/a_bit_of_everything_repeated/${pathStr(must(fullReq.pathRepeatedFloatValue))}/${pathStr(must(fullReq.pathRepeatedDoubleValue))}/${pathStr(must(fullReq.pathRepeatedInt64Value))}/${pathStr(must(fullReq.pathRepeatedUint64Value))}/${pathStr(must(fullReq.pathRepeatedInt32Value))}/${pathStr(must(fullReq.pathRepeatedFixed64Value))}/${pathStr(must(fullReq.pathRepeatedFixed32Value))}/${pathStr(must(fullReq.pathRepeatedBoolValue))}/${pathStr(must(fullReq.pathRepeatedStringValue))}/${pathStr(must(fullReq.pathRepeatedBytesValue))}/${pathStr(must(fullReq.pathRepeatedUint32Value))}/${pathStr(must(fullReq.pathRepeatedEnumValue))}/${pathStr(must(fullReq.pathRepeatedSfixed32Value))}/${pathStr(must(fullReq.pathRepeatedSfixed64Value))}/${pathStr(must(fullReq.pathRepeatedSint32Value))}/${pathStr(must(fullReq.pathRepeatedSint64Value))}`,
         method: "GET",
         headers: headers,
         queryParams: renderURLSearchParams(req, [
@@ -477,7 +487,7 @@ export function newABitOfEverythingService(
         : undefined;
       const fullReq = StringMessage.fromPartial(req);
       const res = await transport.call({
-        path: `/v1/example/a_bit_of_everything/echo/${must(fullReq.value)}`,
+        path: `/v1/example/a_bit_of_everything/echo/${pathStr(must(fullReq.value))}`,
         method: "GET",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["value"]),
@@ -496,7 +506,7 @@ export function newABitOfEverythingService(
       const body: any = ABitOfEverything.toJSON(fullReq);
       delete body.single_nested.name;
       const res = await transport.call({
-        path: `/v1/example/deep_path/${must(fullReq.singleNested?.name)}`,
+        path: `/v1/example/deep_path/${pathStr(must(fullReq.singleNested?.name))}`,
         method: "POST",
         headers: headers,
         body: JSON.stringify(body),
@@ -567,7 +577,7 @@ export function newABitOfEverythingService(
       const body: any = Body.toJSON(must(fullReq.data));
       delete body.id;
       const res = await transport.call({
-        path: `/v2/example/withbody/${must(fullReq.id)}`,
+        path: `/v2/example/withbody/${pathStr(must(fullReq.id))}`,
         method: "POST",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["id", "data"]),
@@ -587,7 +597,7 @@ export function newABitOfEverythingService(
       const body: any = Body.toJSON(fullReq);
       delete body.name;
       const res = await transport.call({
-        path: `/v2/example/postwithemptybody/${must(fullReq.name)}`,
+        path: `/v2/example/postwithemptybody/${pathStr(must(fullReq.name))}`,
         method: "POST",
         headers: headers,
         body: JSON.stringify(body),
@@ -604,7 +614,7 @@ export function newABitOfEverythingService(
         : undefined;
       const fullReq = ABitOfEverything.fromPartial(req);
       const res = await transport.call({
-        path: `/v1/example/a_bit_of_everything/params/get/${must(fullReq.singleNested?.name)}`,
+        path: `/v1/example/a_bit_of_everything/params/get/${pathStr(must(fullReq.singleNested?.name))}`,
         method: "GET",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["singleNested.name"]),
@@ -621,7 +631,7 @@ export function newABitOfEverythingService(
         : undefined;
       const fullReq = ABitOfEverything.fromPartial(req);
       const res = await transport.call({
-        path: `/v1/example/a_bit_of_everything/params/get/nested_enum/${must(fullReq.singleNested?.ok)}`,
+        path: `/v1/example/a_bit_of_everything/params/get/nested_enum/${pathStr(must(fullReq.singleNested?.ok))}`,
         method: "GET",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["singleNested.ok"]),
@@ -642,7 +652,7 @@ export function newABitOfEverythingService(
       );
       delete body.string_value;
       const res = await transport.call({
-        path: `/v1/example/a_bit_of_everything/params/post/${must(fullReq.stringValue)}`,
+        path: `/v1/example/a_bit_of_everything/params/post/${pathStr(must(fullReq.stringValue))}`,
         method: "POST",
         headers: headers,
         queryParams: renderURLSearchParams(req, [
@@ -698,7 +708,7 @@ export function newABitOfEverythingService(
         : undefined;
       const fullReq = MessageWithPathEnum.fromPartial(req);
       const res = await transport.call({
-        path: `/v2/${must(fullReq.value)}:check`,
+        path: `/v2/${pathStr(must(fullReq.value))}:check`,
         method: "GET",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["value"]),
@@ -715,7 +725,7 @@ export function newABitOfEverythingService(
         : undefined;
       const fullReq = MessageWithNestedPathEnum.fromPartial(req);
       const res = await transport.call({
-        path: `/v3/${must(fullReq.value)}:check`,
+        path: `/v3/${pathStr(must(fullReq.value))}:check`,
         method: "GET",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["value"]),
@@ -822,7 +832,7 @@ export function newSnakeEnumService(
         : undefined;
       const fullReq = SnakeEnumRequest.fromPartial(req);
       const res = await transport.call({
-        path: `/v1/example/snake/${must(fullReq.who)}/${must(fullReq.what)}/${must(fullReq.where)}`,
+        path: `/v1/example/snake/${pathStr(must(fullReq.who))}/${pathStr(must(fullReq.what))}/${pathStr(must(fullReq.where))}`,
         method: "GET",
         headers: headers,
         queryParams: renderURLSearchParams(req, ["who", "what", "where"]),
