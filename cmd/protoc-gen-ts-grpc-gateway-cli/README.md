@@ -13,7 +13,6 @@ This plugin designed to implement the Service Client stubs for gRPC gateway, so 
 This plugin depends on some flags of ts_proto:
 
 - `outputJsonMethods`: Should be set to true. This plugin depends on that json methods.
-- `outputServices`: ts_proto allow set this flag multiple times. Should include `nice-grpc` . This plugin depends on nice-grpc service interface.
 - `stringEnums`: protoc_grpc_gateway only allow unmarshal number value when the whole body, or a query param or a path param, is just an enum value or repeated enum value. stringEnums should set to `false` for this case.
 
 Some flags of ts_proto should be set depends on Server Config:
