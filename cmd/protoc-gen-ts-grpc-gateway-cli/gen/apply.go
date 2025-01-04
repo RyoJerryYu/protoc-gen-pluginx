@@ -13,11 +13,6 @@ type Options struct {
 	tsutils.TSOption
 }
 
-var (
-	niceGrpcCommon = tsutils.TSModule{ModuleName: "NiceGrpcCommon", Path: "nice-grpc-common"}
-	jsBase64       = tsutils.TSModule{ModuleName: "JsBase64", Path: "js-base64"}
-)
-
 type Generator struct {
 	Options
 	Generator pluginutils.GenerateOptions
@@ -29,6 +24,7 @@ func (g *Generator) ApplyTemplate() error {
 
 	// services do not nest, so we can apply them directly
 	for _, s := range g.Generator.F.Services {
+		g.applyClientIface(s)
 		g.applyService(s)
 	}
 	g.Apply(g.Generator.W)
@@ -40,6 +36,15 @@ func (g *Generator) applyHelperFunc() {
 type Primitive = string | boolean | number | Date | Uint8Array;
 type RequestPayload = Record<string, unknown>;
 type FlattenedRequestPayload = Record<string, Primitive | Primitive[]>;
+export type DeepPartial<T> = T extends Primitive
+  ? T
+  : T extends Array<infer U>
+    ? Array<DeepPartial<U>>
+    : T extends ReadonlyArray<infer U>
+      ? ReadonlyArray<DeepPartial<U>>
+      : T extends {}
+        ? { [K in keyof T]?: DeepPartial<T[K]> }
+        : Partial<T>;
 
 /**
  * Checks if given value is a plain object
@@ -201,36 +206,56 @@ export type Transport = {
     params: CallParams,
   ): Promise<any>;
 }
-`
-	g.P(s)
-	g.Pf(`function metadataToHeaders(metadata: %s): Headers {
+
+/**
+ * Metadata is a type that represents the metadata that can be passed to a call
+ */
+export type Metadata = Headers;
+
+/**
+ * Client is a type that represents the interface of a client object
+ */
+export type CallOptions = {
+  metadata?: Metadata;
+}
+
+function metadataToHeaders(metadata: Metadata): Headers {
   const headers = new Headers();
 
   for (const [key, values] of metadata) {
     for (const value of values) {
-      headers.append(
-        key,
-        typeof value === 'string' ? value : %s.fromUint8Array(value),
-      );
+      headers.append("Grpc-Metadata-"+key, value);
     }
   }
 
   return headers;
 }
-`,
-		niceGrpcCommon.Ident("Metadata"),
-		jsBase64.Ident("Base64"),
-	)
+`
+	g.P(s)
 	g.P("")
 }
 
-func (g *Generator) applyService(service *protogen.Service) {
-	serviceModule := tsutils.TSModule_TSProto(service.Desc.ParentFile())
-	for _, leadingDetached := range service.Comments.LeadingDetached {
-		g.P(leadingDetached)
-	}
+func (g *Generator) clientIfaceIdent(service *protogen.Service) string {
+	return service.GoName + "Client"
+}
+
+func (g *Generator) applyClientIface(service *protogen.Service) {
 	g.P(service.Comments.Leading)
-	g.P("export function new", service.GoName, "(transport: Transport): ", serviceModule.Ident(service.GoName+"Client"), " {")
+	g.P("export interface ", g.clientIfaceIdent(service), " {")
+	for _, method := range service.Methods {
+		if method.Desc.IsStreamingServer() {
+			g.Pf("%s(req: DeepPartial<%s>, options?: CallOptions): AsyncIterable<%s>;", tsutils.FunctionCase_TSProto(method.GoName), tsutils.TSIdent_TSProto_Message(method.Input), tsutils.TSIdent_TSProto_Message(method.Output))
+			continue
+		}
+		g.Pf("%s(req: DeepPartial<%s>, options?: CallOptions): Promise<%s>;", tsutils.FunctionCase_TSProto(method.GoName), tsutils.TSIdent_TSProto_Message(method.Input), tsutils.TSIdent_TSProto_Message(method.Output))
+	}
+	g.P("}")
+	g.P(service.Comments.Trailing)
+}
+
+func (g *Generator) applyService(service *protogen.Service) {
+	g.P(service.Comments.Leading)
+	g.P("export function new", service.GoName, "(transport: Transport): ", g.clientIfaceIdent(service), " {")
 	g.P("return {")
 
 	for _, method := range service.Methods {
@@ -244,23 +269,22 @@ func (g *Generator) applyService(service *protogen.Service) {
 func (g *Generator) applyMethod(method *protogen.Method) {
 	input := tsutils.TSIdent_TSProto_Message(method.Input)
 	output := tsutils.TSIdent_TSProto_Message(method.Output)
-	methodModule := tsutils.TSModule_TSProto(method.Desc.ParentFile())
 
 	g.P(method.Comments.Leading)
 	glog.V(3).Infof("method location: %s, %s", method.Location.SourceFile, method.Location.Path)
 
 	if method.Desc.IsStreamingServer() {
 		g.Pf("%s(", tsutils.FunctionCase_TSProto(method.GoName))
-		g.Pf("  req: %s<%s>,", methodModule.Ident("DeepPartial"), input)
-		g.Pf("  options?: %s,", niceGrpcCommon.Ident("CallOptions"))
+		g.Pf("  req: DeepPartial<%s>,", input)
+		g.Pf("  options?: CallOptions,")
 		g.Pf("): AsyncIterable<%s> {", output)
 		g.Pf("  throw new Error('not implemented');")
 		g.Pf("},")
 
 	} else {
 		g.Pf("async %s(", tsutils.FunctionCase_TSProto(method.GoName))
-		g.Pf("  req: %s<%s>,", methodModule.Ident("DeepPartial"), input)
-		g.Pf("  options?: %s,", niceGrpcCommon.Ident("CallOptions"))
+		g.Pf("  req: DeepPartial<%s>,", input)
+		g.Pf("  options?: CallOptions,")
 		g.Pf("): Promise<%s> {", output)
 		g.Pf("  const headers = options?.metadata ? metadataToHeaders(options.metadata) : undefined;")
 		g.Pf("  const fullReq = %s.fromPartial(req);", input)
