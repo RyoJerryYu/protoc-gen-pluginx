@@ -39,6 +39,7 @@ func main() {
 			Options:    options,
 			Generator:  genOpt,
 			TSRegistry: tsutils.NewTSRegistry(genOpt),
+			Definition: tsutils.TSProtoDefinition{},
 		}
 		return g.ApplyTemplate()
 	})

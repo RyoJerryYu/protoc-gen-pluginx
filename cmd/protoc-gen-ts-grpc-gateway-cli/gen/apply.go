@@ -17,6 +17,7 @@ type Generator struct {
 	Options
 	Generator pluginutils.GenerateOptions
 	*tsutils.TSRegistry
+	tsutils.Definition
 }
 
 func (g *Generator) ApplyTemplate() error {
@@ -244,10 +245,10 @@ func (g *Generator) applyClientIface(service *protogen.Service) {
 	g.P("export interface ", g.clientIfaceIdent(service), " {")
 	for _, method := range service.Methods {
 		if method.Desc.IsStreamingServer() {
-			g.Pf("%s(req: DeepPartial<%s>, options?: CallOptions): AsyncIterable<%s>;", tsutils.FunctionCase_TSProto(method.GoName), tsutils.TSIdent_TSProto_Message(method.Input), tsutils.TSIdent_TSProto_Message(method.Output))
+			g.Pf("%s(req: DeepPartial<%s>, options?: CallOptions): AsyncIterable<%s>;", g.methodName(method), g.TSIdentMsg(method.Input), g.TSIdentMsg(method.Output))
 			continue
 		}
-		g.Pf("%s(req: DeepPartial<%s>, options?: CallOptions): Promise<%s>;", tsutils.FunctionCase_TSProto(method.GoName), tsutils.TSIdent_TSProto_Message(method.Input), tsutils.TSIdent_TSProto_Message(method.Output))
+		g.Pf("%s(req: DeepPartial<%s>, options?: CallOptions): Promise<%s>;", g.methodName(method), g.TSIdentMsg(method.Input), g.TSIdentMsg(method.Output))
 	}
 	g.P("}")
 	g.P(service.Comments.Trailing)
@@ -267,14 +268,14 @@ func (g *Generator) applyService(service *protogen.Service) {
 }
 
 func (g *Generator) applyMethod(method *protogen.Method) {
-	input := tsutils.TSIdent_TSProto_Message(method.Input)
-	output := tsutils.TSIdent_TSProto_Message(method.Output)
+	input := g.TSIdentMsg(method.Input)
+	output := g.TSIdentMsg(method.Output)
 
 	g.P(method.Comments.Leading)
 	glog.V(3).Infof("method location: %s, %s", method.Location.SourceFile, method.Location.Path)
 
 	if method.Desc.IsStreamingServer() {
-		g.Pf("%s(", tsutils.FunctionCase_TSProto(method.GoName))
+		g.Pf("%s(", g.methodName(method))
 		g.Pf("  req: DeepPartial<%s>,", input)
 		g.Pf("  options?: CallOptions,")
 		g.Pf("): AsyncIterable<%s> {", output)
@@ -282,7 +283,7 @@ func (g *Generator) applyMethod(method *protogen.Method) {
 		g.Pf("},")
 
 	} else {
-		g.Pf("async %s(", tsutils.FunctionCase_TSProto(method.GoName))
+		g.Pf("async %s(", g.methodName(method))
 		g.Pf("  req: DeepPartial<%s>,", input)
 		g.Pf("  options?: CallOptions,")
 		g.Pf("): Promise<%s> {", output)

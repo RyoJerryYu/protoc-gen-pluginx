@@ -8,6 +8,7 @@ import (
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils"
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils/tsutils"
 	"github.com/golang/glog"
+	"github.com/iancoleman/strcase"
 	"google.golang.org/protobuf/compiler/protogen"
 )
 
@@ -61,6 +62,10 @@ func (g *Generator) jsonify(in string) string {
 	return fmt.Sprintf(`JSON.stringify(%s)`, in)
 }
 
+func (g *Generator) methodName(method *protogen.Method) string {
+	return strcase.ToLowerCamel(string(method.GoName))
+}
+
 // return (URL string, pathParams)
 func (g *Generator) renderPath(r *tsutils.TSOption) func(method *protogen.Method) (string, []string) {
 	return func(method *protogen.Method) (string, []string) {
@@ -93,14 +98,14 @@ func (g *Generator) renderBody(r *tsutils.TSOption) func(method *protogen.Method
 		if httpBody == nil || *httpBody == "*" { // Unpopulated rpc, or body == "*", jsonify the whole message
 			bodyMsg := method.Input
 			// method.Input should always be a message
-			return tsutils.TSProtoMessageToJson(bodyMsg)(g.TSRegistry, "fullReq"), "*"
+			return g.MessageToJson(bodyMsg)(g.TSRegistry, "fullReq"), "*"
 		} else if *httpBody == "" {
 			return "", ""
 		}
 
 		// body in a field
 		bodyField := pluginutils.FindFieldByTextName(method.Input, *httpBody)
-		return tsutils.TSProtoFieldToJson(bodyField)(g.TSRegistry, g.must("fullReq", *httpBody)), *httpBody
+		return g.FieldToJson(bodyField)(g.TSRegistry, g.must("fullReq", *httpBody)), *httpBody
 	}
 }
 

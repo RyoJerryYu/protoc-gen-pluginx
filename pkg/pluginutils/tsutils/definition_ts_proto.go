@@ -6,13 +6,16 @@ import (
 
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/protobufx"
 	"github.com/golang/glog"
+	"github.com/iancoleman/strcase"
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 // Work with protoc-gen-ts_proto: https://github.com/stephenh/ts-proto
 
-func TSModule_TSProto(file protoreflect.FileDescriptor) TSModule {
+type TSProtoDefinition struct{}
+
+func (d TSProtoDefinition) TSModule(file protoreflect.FileDescriptor) TSModule {
 	protoPath := file.Path()
 	return TSModule{
 		ModuleName: GetModuleName(file),
@@ -21,20 +24,16 @@ func TSModule_TSProto(file protoreflect.FileDescriptor) TSModule {
 	}
 }
 
-func TSIdent_TSProto_Message(msg *protogen.Message) TSIdent {
-	return TSModule_TSProto(msg.Desc.ParentFile()).Ident(msg.GoIdent.GoName)
+func (d TSProtoDefinition) TSIdentMsg(msg *protogen.Message) TSIdent {
+	return d.TSModule(msg.Desc.ParentFile()).Ident(msg.GoIdent.GoName)
 }
 
-func TSProto_EnumToJSONFuncName(g *TSRegistry, enum protoreflect.EnumDescriptor) string {
-	return FunctionCase_TSProto(string(enum.Name())) + "ToJSON"
-}
-
-func TSProtoFieldToJson(field *protogen.Field) func(g *TSRegistry, in string) string {
+func (d TSProtoDefinition) FieldToJson(field *protogen.Field) func(g *TSRegistry, in string) string {
 	if field.Desc.IsMap() {
 		keyField := field.Message.Fields[0]
 		valueField := field.Message.Fields[1]
-		keyFieldToJson := TSProtoFieldToJson(keyField)
-		valueFieldToJson := TSProtoFieldToJson(valueField)
+		keyFieldToJson := d.FieldToJson(keyField)
+		valueFieldToJson := d.FieldToJson(valueField)
 
 		return func(g *TSRegistry, in string) string {
 			return fmt.Sprintf(`((s) => {
@@ -55,12 +54,12 @@ func TSProtoFieldToJson(field *protogen.Field) func(g *TSRegistry, in string) st
 	switch field.Desc.Kind() {
 	case protoreflect.MessageKind:
 		bodyType := field.Message
-		toJsonFunc = TSProtoMessageToJson(bodyType)
+		toJsonFunc = d.MessageToJson(bodyType)
 	case protoreflect.EnumKind:
 		// bodyType := field.Enum
 		// if root is enum, it can only be parsed as a number
 		// so it should not use TSProtoEnumToJson
-		toJsonFunc = TSProtoScalarToJson()
+		toJsonFunc = d.ScalarToJson()
 	case protoreflect.BoolKind,
 		protoreflect.StringKind,
 		protoreflect.Int32Kind,
@@ -74,10 +73,10 @@ func TSProtoFieldToJson(field *protogen.Field) func(g *TSRegistry, in string) st
 		protoreflect.Fixed32Kind,
 		protoreflect.Fixed64Kind:
 		// scalar types
-		toJsonFunc = TSProtoScalarToJson()
+		toJsonFunc = d.ScalarToJson()
 	default:
 		glog.Fatalf("unsupported body field type: %s", field.Desc.Kind())
-		toJsonFunc = TSProtoScalarToJson()
+		toJsonFunc = d.ScalarToJson()
 	}
 	if isList {
 		return func(g *TSRegistry, in string) string {
@@ -90,9 +89,9 @@ func TSProtoFieldToJson(field *protogen.Field) func(g *TSRegistry, in string) st
 	return toJsonFunc
 }
 
-func TSProtoMessageToJson(msgTyp *protogen.Message) func(g *TSRegistry, in string) string {
+func (d TSProtoDefinition) MessageToJson(msgTyp *protogen.Message) func(g *TSRegistry, in string) string {
 	messageToJson := func(g *TSRegistry, in string) string {
-		ident := g.QualifiedTSIdent(TSIdent_TSProto_Message(msgTyp))
+		ident := g.QualifiedTSIdent(d.TSIdentMsg(msgTyp))
 		return ident + `.toJSON(` + in + `)`
 	}
 	if protobufx.IsWellKnownType(msgTyp.Desc) {
@@ -106,11 +105,11 @@ func TSProtoMessageToJson(msgTyp *protogen.Message) func(g *TSRegistry, in strin
 			protobufx.ListValue_message_name:
 			// Struct, Value, ListValue, jsonify as what they are
 			// It presents as a JSON object, so we don't need to convert it
-			return TSProtoScalarToJson()
+			return d.ScalarToJson()
 		case protobufx.Timestamp_message_name:
 			// Timestamp represents as Date in ts-proto
 			// and need to convert to a ISO string
-			return TSProtoTimestampToJson()
+			return d.TimestampToJson()
 		case protobufx.Duration_message_name:
 			// don't know why ts-proto treats Duration as a normal message
 			// in the docs, it should be a string like "1.234s"
@@ -118,7 +117,7 @@ func TSProtoMessageToJson(msgTyp *protogen.Message) func(g *TSRegistry, in strin
 		case protobufx.FieldMask_message_name:
 			// FieldMask represents as []string in ts-proto
 			// and need to convert to strings joined by ","
-			return TSProtoFieldMaskToJson(msgTyp)
+			return d.FieldMaskToJson(msgTyp)
 		case protobufx.BoolValue_message_name,
 			protobufx.StringValue_message_name,
 			protobufx.DoubleValue_message_name,
@@ -130,42 +129,46 @@ func TSProtoMessageToJson(msgTyp *protogen.Message) func(g *TSRegistry, in strin
 			// well-known scalar types,
 			// represent as a scalar in ts-proto
 			// and should be as it is in JSON
-			return TSProtoScalarToJson()
+			return d.ScalarToJson()
 		default:
 			// other types for reflection or syntax types
 			// should be treated as a normal message
-			return TSProtoMessageToJson(msgTyp)
+			return messageToJson
 		}
 	}
 	return messageToJson
 }
 
-func TSProtoEnumToJson(enumTyp *protogen.Enum) func(g *TSRegistry, in string) string {
+func (d TSProtoDefinition) enumToJSONFuncName(g *TSRegistry, enum protoreflect.EnumDescriptor) string {
+	return strcase.ToLowerCamel(string(enum.Name())) + "ToJSON"
+}
+
+func (d TSProtoDefinition) EnumToJson(enumTyp *protogen.Enum) func(g *TSRegistry, in string) string {
 	return func(g *TSRegistry, in string) string {
-		enumModule := TSModule_TSProto(enumTyp.Desc.ParentFile())
-		toJsonIdent := enumModule.Ident(TSProto_EnumToJSONFuncName(g, enumTyp.Desc))
+		enumModule := d.TSModule(enumTyp.Desc.ParentFile())
+		toJsonIdent := enumModule.Ident(d.enumToJSONFuncName(g, enumTyp.Desc))
 		toJsonFunc := g.QualifiedTSIdent(toJsonIdent)
 		return toJsonFunc + `(` + in + `)`
 	}
 }
 
-func TSProtoScalarToJson() func(g *TSRegistry, in string) string {
+func (d TSProtoDefinition) ScalarToJson() func(g *TSRegistry, in string) string {
 	return func(g *TSRegistry, in string) string {
 		return in
 	}
 }
 
-func TSProtoTimestampToJson() func(g *TSRegistry, in string) string {
+func (d TSProtoDefinition) TimestampToJson() func(g *TSRegistry, in string) string {
 	return func(g *TSRegistry, in string) string {
 		// in is type of Date
 		return in + `.toISOString()`
 	}
 }
 
-func TSProtoFieldMaskToJson(msgTyp *protogen.Message) func(g *TSRegistry, in string) string {
+func (d TSProtoDefinition) FieldMaskToJson(msgTyp *protogen.Message) func(g *TSRegistry, in string) string {
 	return func(g *TSRegistry, in string) string {
 		// in is type of FieldMask
-		ident := g.QualifiedTSIdent(TSIdent_TSProto_Message(msgTyp))
+		ident := g.QualifiedTSIdent(d.TSIdentMsg(msgTyp))
 		return fmt.Sprintf(`%s.toJSON(%s.wrap(%s))`, ident, ident, in)
 	}
 }

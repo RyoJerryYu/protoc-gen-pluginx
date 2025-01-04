@@ -40,8 +40,13 @@ func tsRelativeImportPath(thisPath string, modulePath string) string {
 	return strings.TrimSuffix(relativePath, ".ts")
 }
 
+func (g *TSRegistry) thisModulePath() string {
+	protoPath := g.GenOpts.FileGenerator.F.Desc.Path()
+	return strings.TrimSuffix(protoPath, ".proto") + ".ts"
+}
+
 func (g *TSRegistry) ImportSegments() string {
-	thisModule := TSModule_TSProto(g.GenOpts.FileGenerator.F.Desc)
+	thisModulePath := g.thisModulePath()
 	var imports []string
 	modulePaths := make([]string, 0, len(g.ImportIdents))
 	for path := range g.ImportIdents {
@@ -57,9 +62,9 @@ func (g *TSRegistry) ImportSegments() string {
 		module := idents[0].TSModule
 		importPath := module.Path
 		if module.Relative {
-			importPath = tsRelativeImportPath(thisModule.Path, module.Path)
+			importPath = tsRelativeImportPath(thisModulePath, module.Path)
 		}
-		glog.V(3).Infof("ImportSegments: thisPath: %s, modulePath: %s, importPath: %s", thisModule.Path, module.Path, importPath)
+		glog.V(3).Infof("ImportSegments: thisPath: %s, modulePath: %s, importPath: %s", thisModulePath, module.Path, importPath)
 		imports = append(imports, g.importSegmentDirect(importPath, idents))
 	}
 	return strings.Join(imports, "\n")
