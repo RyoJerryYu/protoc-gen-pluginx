@@ -221,7 +221,85 @@ export type Transport = {
 		niceGrpcCommon.Ident("Metadata"),
 		jsBase64.Ident("Base64"),
 	)
+	iClientMiddleware := niceGrpcCommon.Ident("ClientMiddleware")
+	iClientMiddlewareCall := niceGrpcCommon.Ident("ClientMiddlewareCall")
+	iCallOptions := niceGrpcCommon.Ident("CallOptions")
+	iMethodDescriptor := niceGrpcCommon.Ident("MethodDescriptor")
+
+	g.Pf(`function composeClientMiddleware<Ext1, Ext2, RequiredCallOptionsExt>(
+  middleware1: %s<Ext1, RequiredCallOptionsExt>,
+  middleware2: %s<Ext2, RequiredCallOptionsExt & Ext1>,
+): %s<Ext1 & Ext2, RequiredCallOptionsExt> {
+  return <Request, Response>(
+    call: %s<
+      Request,
+      Response,
+      Ext1 & Ext2 & RequiredCallOptionsExt
+    >,
+    options: CallOptions & Partial<Ext1 & Ext2 & RequiredCallOptionsExt>,
+  ) => {
+    return middleware2<Request, Response>(
+      {
+        ...call,
+        next: (request, options2) => {
+          return middleware1<Request, Response>(
+            {...call, request} as any,
+            options2,
+          ) as any;
+        },
+      },
+      options,
+    );
+  };
+}`, iClientMiddleware, iClientMiddleware, iClientMiddleware, iClientMiddlewareCall)
 	g.P("")
+
+	g.Pf(`function applyClientMiddleware<Request, Response>(
+  unaryClientMethod: (req: Request, opts: %s) => Promise<Response>,
+  middleware: %s,
+): (req: Request,opts: %s) => Promise<Response> {
+  const methodDescriptor: %s = {
+    path: '',
+    requestStream: false,
+    responseStream: false,
+    options: {},
+  }
+
+  async function* unaryMethod(
+    request: Request,
+    options: %s,
+  ): AsyncGenerator<never, Response, undefined> {
+    const response = unaryClientMethod(request,options,);
+    return response;
+  }
+
+  return async (req: Request,opts: %s) => {
+    const middlewareCall: %s<Request, Response, {}> = {
+      request: req,
+      next: unaryMethod,
+      method: methodDescriptor,
+      requestStream: false,
+      responseStream: false,
+    }
+    const method = middleware(middlewareCall, opts);
+    const iterator = method[Symbol.asyncIterator]();
+    let result = await iterator.next();
+    while (true) {
+      if (!result.done) {
+        result = await iterator.throw(new Error('Middleware must not call next'));
+        continue;
+      }
+
+      if (result.value === null || result.value === undefined) {
+        result = await iterator.throw(new Error('Middleware must return a response'));
+        continue;
+      }
+
+      return result.value as Response;
+    }
+  };
+}
+`, iCallOptions, iClientMiddleware, iCallOptions, iMethodDescriptor, iCallOptions, iCallOptions, iClientMiddlewareCall)
 }
 
 func (g *Generator) applyService(service *protogen.Service) {
@@ -230,13 +308,33 @@ func (g *Generator) applyService(service *protogen.Service) {
 		g.P(leadingDetached)
 	}
 	g.P(service.Comments.Leading)
-	g.P("export function new", service.GoName, "(transport: Transport): ", serviceModule.Ident(service.GoName+"Client"), " {")
-	g.P("return {")
+	g.P("export function new", service.GoName, "(")
+	g.P("  transport: Transport,")
+	g.P("  middlewares?:", niceGrpcCommon.Ident("ClientMiddleware"), "[],")
+	g.P("): ", serviceModule.Ident(service.GoName+"Client"), " {")
 
+	g.P("const cli: ", serviceModule.Ident(service.GoName+"Client"), " = {")
 	for _, method := range service.Methods {
 		g.applyMethod(method)
 	}
 	g.P("};")
+	g.P("if (!middlewares?.length) {")
+	g.P("  return cli;")
+	g.P("}")
+	g.PComment("Compose middleware")
+	g.Pf(`let middleware: %s = (call, options) => {
+    return call.next(call.request, options);
+  };`, niceGrpcCommon.Ident("ClientMiddleware"))
+	g.Pf(`for (let i = 0; i < middlewares?.length || 0; i++) {
+    middleware = composeClientMiddleware(middleware, middlewares[i]);
+  }`)
+	g.P("return {")
+	for _, method := range service.Methods {
+		g.Pf("%s: applyClientMiddleware(cli.%s, middleware),", tsutils.FunctionCase_TSProto(method.GoName), tsutils.FunctionCase_TSProto(method.GoName))
+	}
+	g.P("};")
+
+	g.P("")
 	g.P("}")
 	g.P(service.Comments.Trailing)
 }
