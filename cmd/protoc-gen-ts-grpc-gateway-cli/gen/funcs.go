@@ -7,9 +7,11 @@ import (
 
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils"
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils/tsutils"
+	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/protobufx"
 	"github.com/golang/glog"
 	"github.com/iancoleman/strcase"
 	"google.golang.org/protobuf/compiler/protogen"
+	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 type httpOptions struct {
@@ -46,16 +48,25 @@ var (
 	pathParamRegexp = regexp.MustCompile(`{([^=}/]+)(?:=([^}]+))?}`)
 )
 
-func (g *Generator) must(rootName string, path string) string {
+func (g *Generator) getFieldSyntax(rootName string, path string) string {
 	fieldName := tsutils.FieldName(&g.TSOption)(path)
 	fields := strings.Split(fieldName, ".")
 	fieldName = strings.Join(fields, "?.")
 
-	return fmt.Sprintf(`must(%s.%s)`, rootName, fieldName)
+	return fmt.Sprintf(`%s.%s`, rootName, fieldName)
+}
+
+func (g *Generator) must(rootName string, path string) string {
+	return fmt.Sprintf(`must(%s)`, g.getFieldSyntax(rootName, path))
 }
 
 func (g *Generator) pathStr(in string) string {
 	return fmt.Sprintf(`pathStr(%s)`, in)
+}
+
+func (g *Generator) queryParam(key string, value string) string {
+	key = tsutils.JsonFieldName(&g.TSOption)(key)
+	return fmt.Sprintf(`queryParam("%s", %s)`, key, value)
 }
 
 func (g *Generator) jsonify(in string) string {
@@ -109,30 +120,71 @@ func (g *Generator) renderBody(r *tsutils.TSOption) func(method *protogen.Method
 	}
 }
 
-func (g *Generator) renderQueryString(r *tsutils.TSOption) func(method *protogen.Method, pathParams []string, bodyParam string) string {
-	return func(method *protogen.Method, urlPathParams []string, bodyParam string) string {
+func (g *Generator) renderQueryString(r *tsutils.TSOption) func(method *protogen.Method, pathParams []string, bodyParam string) []string {
+	return func(method *protogen.Method, urlPathParams []string, bodyParam string) []string {
 		// allow query params for all methods, not just GET and DELETE
 		// httpOpts := g.httpOptions(method)
 		// methodMethod := httpOpts.Method
 
 		if method.Desc.IsStreamingClient() {
-			return ""
+			return nil
 		}
 		if bodyParam == "*" {
-			return "" // all fields are in the body, there will be no query params
+			return nil // all fields are in the body, there will be no query params
 		}
 
 		usedParams := urlPathParams[:]
 		if bodyParam != "" {
 			usedParams = append(usedParams, bodyParam)
 		}
-		usedParamStrs := make([]string, 0, len(usedParams))
-		for _, param := range usedParams {
-			param = tsutils.FieldName(&g.TSOption)(param)
-			usedParamStrs = append(usedParamStrs, fmt.Sprintf(`"%s"`, param))
+
+		allFieldPaths := pluginutils.ListPaths("", method.Input.Desc, pluginutils.EndWithJsonScalar)
+		queryParams := pluginutils.Substract(allFieldPaths, usedParams)
+		var res []string // [ [param, fieldSyntax] ]
+		for _, param := range queryParams {
+			field := pluginutils.GetField(method.Input.Desc, param)
+			if field == nil {
+				glog.V(1).Infof("field not found: %s", param)
+				continue
+			}
+
+			syntax := g.getFieldSyntax("fullReq", param)
+
+			if field.IsMap() {
+				glog.V(1).Infof("not supporting map fields in query params: %s", param)
+				continue
+			}
+			// if field.Kind() == protoreflect.MessageKind && field.IsList() {
+			// 	glog.V(1).Infof("not supporting repeated message fields in query params: %s", param)
+			// 	continue
+			// }
+			if field.Kind() == protoreflect.MessageKind && !g.isQueryParamSupportedMessage(field.Message()) {
+				glog.V(1).Infof("not supporting message fields in query params: %s", param)
+				continue
+			}
+			res = append(res, g.queryParam(param, syntax))
 		}
-		urlPathParamStr := fmt.Sprintf("[%s]", strings.Join(usedParamStrs, ", "))
-		renderURLSearchParams := fmt.Sprintf("renderURLSearchParams(req, %s)", urlPathParamStr)
-		return renderURLSearchParams
+
+		return res
 	}
+}
+
+func (g *Generator) isQueryParamSupportedMessage(msg protoreflect.MessageDescriptor) bool {
+	if !protobufx.IsWellKnownType(msg) {
+		return false
+	}
+	notSupportedMessage := []protoreflect.FullName{
+		protobufx.Any_message_fullname,
+		protobufx.Empty_message_fullname,
+		protobufx.Struct_message_fullname,
+		protobufx.Value_message_fullname,
+		protobufx.ListValue_message_fullname,
+		protobufx.Duration_message_fullname,
+	}
+	for _, n := range notSupportedMessage {
+		if msg.FullName() == n {
+			return false
+		}
+	}
+	return true
 }

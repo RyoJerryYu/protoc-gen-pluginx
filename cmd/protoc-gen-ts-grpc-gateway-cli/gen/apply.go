@@ -34,9 +34,7 @@ func (g *Generator) ApplyTemplate() error {
 
 func (g *Generator) applyHelperFunc() {
 	s := `
-type Primitive = string | boolean | number | Date | Uint8Array;
-type RequestPayload = Record<string, unknown>;
-type FlattenedRequestPayload = Record<string, Primitive | Primitive[]>;
+type Primitive = string | boolean | number | Date | Uint8Array | bigint;
 export type DeepPartial<T> = T extends Primitive
   ? T
   : T extends Array<infer U>
@@ -46,50 +44,6 @@ export type DeepPartial<T> = T extends Primitive
       : T extends {}
         ? { [K in keyof T]?: DeepPartial<T[K]> }
         : Partial<T>;
-
-/**
- * Checks if given value is a plain object
- * Logic copied and adapted from below source:
- * https://github.com/char0n/ramda-adjunct/blob/master/src/isPlainObj.js
- */
-function isPlainObject(value: unknown): boolean {
-  const isObject =
-    Object.prototype.toString.call(value).slice(8, -1) === "Object";
-  const isObjLike = value !== null && isObject;
-
-  if (!isObjLike || !isObject) {
-    return false;
-  }
-
-  const proto: unknown = Object.getPrototypeOf(value);
-
-  const hasObjectConstructor = !!(
-    proto &&
-    typeof proto === "object" &&
-    proto.constructor === Object.prototype.constructor
-  );
-
-  return hasObjectConstructor;
-}
-
-/**
- * Checks if given value is of a primitive type
- */
-function isPrimitive(value: unknown): boolean {
-  if(["string", "number", "boolean"].some((t) => typeof value === t)) {
-    return true;
-  }
-
-  if( value instanceof Date) {
-    return true;
-  }
-
-  if (value instanceof Uint8Array) {
-    return true;
-  }
-
-  return false;
-}
 
 /**
  * Convert a primitive value to a string that can be used in a URL search parameter
@@ -121,61 +75,15 @@ function pathStr(param: Primitive | Primitive[]): string {
 }
 
 /**
- * Flattens a deeply nested request payload and returns an object
- * with only primitive values and non-empty array of primitive values
- * as per https://github.com/googleapis/googleapis/blob/master/google/api/http.proto
+ * Convert a key-value pair to a URL search parameter
  */
-function flattenRequestPayload<T extends RequestPayload>(
-  requestPayload: T,
-  path = ""
-): FlattenedRequestPayload {
-  return Object.keys(requestPayload).reduce((acc: T, key: string): T => {
-    const value = requestPayload[key];
-    const newPath = path ? [path, key].join(".") : key;
-
-    const isNonEmptyPrimitiveArray =
-      Array.isArray(value) &&
-      value.every((v) => isPrimitive(v)) &&
-      value.length > 0;
-
-    let objectToMerge = {};
-
-    if (isPlainObject(value)) {
-      objectToMerge = flattenRequestPayload(value as RequestPayload, newPath);
-    } else if (isPrimitive(value) || isNonEmptyPrimitiveArray) {
-      objectToMerge = { [newPath]: value };
-    }
-
-    return { ...acc, ...objectToMerge };
-  }, {} as T) as FlattenedRequestPayload;
-}
-
-/**
- * Renders a deeply nested request payload into a string of URL search
- * parameters by first flattening the request payload and then removing keys
- * which are already present in the URL path.
- */
-function renderURLSearchParams<T extends RequestPayload>(
-  requestPayload: T,
-  urlPathParams: string[] = []
-): string[][] {
-  const flattenedRequestPayload = flattenRequestPayload(requestPayload);
-
-  const urlSearchParams = Object.keys(flattenedRequestPayload).reduce(
-    (acc: string[][], key: string): string[][] => {
-      // key should not be present in the url path as a parameter
-      const value = flattenedRequestPayload[key];
-      if (urlPathParams.find((f) => f === key)) {
-        return acc;
-      }
-      return Array.isArray(value)
-        ? [...acc, ...value.map((m) => [key, toStr(m)])]
-        : (acc = [...acc, [key, toStr(value)]]);
-    },
-    [] as string[][]
-  );
-
-  return urlSearchParams;
+function queryParam(key: string, value: Primitive | Primitive[] | undefined | null): string[][] {
+  if (value === undefined || value === null) {
+    return [];
+  }
+  return Array.isArray(value)
+    ? value.map((v) => [key, toStr(v)])
+    : [[key, toStr(value)]];
 }
 
 /**
@@ -295,8 +203,16 @@ func (g *Generator) applyMethod(method *protogen.Method) {
 		renderedPath, pathParams := g.renderPath(&g.TSOption)(method)
 		// body
 		renderedBody, bodyParam := g.renderBody(&g.TSOption)(method)
-		// queryParams
-		queryParams := g.renderQueryString(&g.TSOption)(method, pathParams, bodyParam)
+		// renderedQuery
+		renderedQuery := g.renderQueryString(&g.TSOption)(method, pathParams, bodyParam)
+
+		if len(renderedQuery) > 0 {
+			g.Pf("  const queryParams = [")
+			for _, qp := range renderedQuery {
+				g.P("...", qp, ",")
+			}
+			g.Pf("  ];")
+		}
 
 		if renderedBody != "" {
 			g.Pf("  const body: any = %s;", renderedBody)
@@ -316,8 +232,8 @@ func (g *Generator) applyMethod(method *protogen.Method) {
 		g.Pf("    path: `%s`,", renderedPath)
 		g.Pf(`    method: "%s",`, methodMethod)
 		g.Pf("    headers: headers,")
-		if queryParams != "" {
-			g.Pf("    queryParams: %s,", queryParams)
+		if len(renderedQuery) > 0 {
+			g.Pf("    queryParams: queryParams,")
 		}
 		if renderedBody != "" {
 			g.Pf("    body: %s,", g.jsonify("body"))
