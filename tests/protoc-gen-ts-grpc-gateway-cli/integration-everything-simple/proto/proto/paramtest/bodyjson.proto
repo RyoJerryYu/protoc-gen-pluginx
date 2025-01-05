@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package proto.bodyjson;
+package proto.paramtest;
 
 import "google/api/annotations.proto";
 import "google/protobuf/any.proto";
@@ -12,7 +12,7 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 import "proto/examplepb/a_bit_of_everything.proto";
 
-option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/bodyjson";
+option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/paramtest";
 
 message WellKnownTypesHolder {
   string payload_check = 100;

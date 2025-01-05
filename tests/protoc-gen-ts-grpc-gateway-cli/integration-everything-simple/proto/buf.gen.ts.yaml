@@ -7,18 +7,18 @@ plugins:
     out: ../caseDefaultConfig
     opt:
       - paths=source_relative
+      - logtostderr=true
+      - v=1
   - remote: buf.build/community/stephenh-ts-proto
     out: ../caseDefaultConfig
     opt:
       - env=browser
       - esModuleInterop=true
-      - useOptionals=messages
       - outputServices=generic-definitions
-      - outputServices=nice-grpc
       - outputEncodeMethods=false
       - outputJsonMethods=true
-      - stringEnums=false
       - useExactTypes=false
+      - stringEnums=false
 
   # client, caseUseProtoNames
   - local: protoc-gen-ts-grpc-gateway-cli
@@ -31,13 +31,11 @@ plugins:
     opt:
       - env=browser
       - esModuleInterop=true
-      - useOptionals=messages
       - outputServices=generic-definitions
-      - outputServices=nice-grpc
       - outputEncodeMethods=false
       - outputJsonMethods=true
-      - stringEnums=false
       - useExactTypes=false
+      - stringEnums=false
       - snakeToCamel=keys # this is different from the caseDefaultConfig
 
   # client, caseStringEnums
@@ -51,13 +49,11 @@ plugins:
     opt:
       - env=browser
       - esModuleInterop=true
-      - useOptionals=messages
       - outputServices=generic-definitions
-      - outputServices=nice-grpc
       - outputEncodeMethods=false
       - outputJsonMethods=true
-      - stringEnums=true # this is different from the caseDefaultConfig
       - useExactTypes=false
+      - stringEnums=true # this is different from the caseDefaultConfig
   
   # client, caseProtobufES
   - local: protoc-gen-ts-grpc-gateway-cli
@@ -70,4 +66,3 @@ plugins:
     include_imports: true
     opt:
       - target=ts
-      - json_types=true

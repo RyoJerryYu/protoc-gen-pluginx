@@ -10,8 +10,8 @@ import (
 	"strings"
 
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/gatewayx"
-	"github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-ts-grpc-gateway-cli/integration-everything-simple/servergojson/proto/bodyjson"
 	"github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-ts-grpc-gateway-cli/integration-everything-simple/servergojson/proto/examplepb"
+	"github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-ts-grpc-gateway-cli/integration-everything-simple/servergojson/proto/paramtest"
 	"github.com/go-chi/chi/v5"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	httpSwagger "github.com/swaggo/http-swagger"
@@ -73,8 +73,8 @@ func main() {
 
 	grpcServer := grpc.NewServer()
 	examplepb.RegisterABitOfEverythingServiceServer(grpcServer, &ABitOfEverythingService{})
-	bodyjson.RegisterBodyJSONServiceServer(grpcServer, &BodyJSONService{})
-	bodyjson.RegisterQueryStringServiceServer(grpcServer, &QueryStringService{})
+	paramtest.RegisterBodyJSONServiceServer(grpcServer, &BodyJSONService{})
+	paramtest.RegisterQueryStringServiceServer(grpcServer, &QueryStringService{})
 
 	gateway := runtime.NewServeMux(runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.HTTPBodyMarshaler{
 		Marshaler: &gatewayx.GenGoJsonMarshaler{
@@ -91,13 +91,13 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	err = bodyjson.RegisterBodyJSONServiceHandlerFromEndpoint(ctx, gateway, grpcEndpoint, []grpc.DialOption{
+	err = paramtest.RegisterBodyJSONServiceHandlerFromEndpoint(ctx, gateway, grpcEndpoint, []grpc.DialOption{
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	})
 	if err != nil {
 		panic(err)
 	}
-	err = bodyjson.RegisterQueryStringServiceHandlerFromEndpoint(ctx, gateway, grpcEndpoint, []grpc.DialOption{
+	err = paramtest.RegisterQueryStringServiceHandlerFromEndpoint(ctx, gateway, grpcEndpoint, []grpc.DialOption{
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	})
 	if err != nil {

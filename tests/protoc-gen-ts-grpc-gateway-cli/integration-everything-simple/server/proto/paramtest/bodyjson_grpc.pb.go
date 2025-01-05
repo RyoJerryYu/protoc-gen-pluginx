@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             (unknown)
-// source: proto/bodyjson/bodyjson.proto
+// source: proto/paramtest/bodyjson.proto
 
-package bodyjson
+package paramtest
 
 import (
 	context "context"
@@ -20,20 +20,20 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	BodyJSONService_PostEnumBody_FullMethodName            = "/proto.bodyjson.BodyJSONService/PostEnumBody"
-	BodyJSONService_PostStringBody_FullMethodName          = "/proto.bodyjson.BodyJSONService/PostStringBody"
-	BodyJSONService_PostRepeatedMessageBody_FullMethodName = "/proto.bodyjson.BodyJSONService/PostRepeatedMessageBody"
-	BodyJSONService_PostRepeatedEnumBody_FullMethodName    = "/proto.bodyjson.BodyJSONService/PostRepeatedEnumBody"
-	BodyJSONService_PostRepeatedStringBody_FullMethodName  = "/proto.bodyjson.BodyJSONService/PostRepeatedStringBody"
-	BodyJSONService_PostMapMessageBody_FullMethodName      = "/proto.bodyjson.BodyJSONService/PostMapMessageBody"
-	BodyJSONService_PostMapEnumBody_FullMethodName         = "/proto.bodyjson.BodyJSONService/PostMapEnumBody"
-	BodyJSONService_PostMapStringBody_FullMethodName       = "/proto.bodyjson.BodyJSONService/PostMapStringBody"
-	BodyJSONService_PostTimestampBody_FullMethodName       = "/proto.bodyjson.BodyJSONService/PostTimestampBody"
-	BodyJSONService_PostFieldMaskBody_FullMethodName       = "/proto.bodyjson.BodyJSONService/PostFieldMaskBody"
-	BodyJSONService_PostStructBody_FullMethodName          = "/proto.bodyjson.BodyJSONService/PostStructBody"
-	BodyJSONService_PostValueBody_FullMethodName           = "/proto.bodyjson.BodyJSONService/PostValueBody"
-	BodyJSONService_PostListValueBody_FullMethodName       = "/proto.bodyjson.BodyJSONService/PostListValueBody"
-	BodyJSONService_PostWrapperBody_FullMethodName         = "/proto.bodyjson.BodyJSONService/PostWrapperBody"
+	BodyJSONService_PostEnumBody_FullMethodName            = "/proto.paramtest.BodyJSONService/PostEnumBody"
+	BodyJSONService_PostStringBody_FullMethodName          = "/proto.paramtest.BodyJSONService/PostStringBody"
+	BodyJSONService_PostRepeatedMessageBody_FullMethodName = "/proto.paramtest.BodyJSONService/PostRepeatedMessageBody"
+	BodyJSONService_PostRepeatedEnumBody_FullMethodName    = "/proto.paramtest.BodyJSONService/PostRepeatedEnumBody"
+	BodyJSONService_PostRepeatedStringBody_FullMethodName  = "/proto.paramtest.BodyJSONService/PostRepeatedStringBody"
+	BodyJSONService_PostMapMessageBody_FullMethodName      = "/proto.paramtest.BodyJSONService/PostMapMessageBody"
+	BodyJSONService_PostMapEnumBody_FullMethodName         = "/proto.paramtest.BodyJSONService/PostMapEnumBody"
+	BodyJSONService_PostMapStringBody_FullMethodName       = "/proto.paramtest.BodyJSONService/PostMapStringBody"
+	BodyJSONService_PostTimestampBody_FullMethodName       = "/proto.paramtest.BodyJSONService/PostTimestampBody"
+	BodyJSONService_PostFieldMaskBody_FullMethodName       = "/proto.paramtest.BodyJSONService/PostFieldMaskBody"
+	BodyJSONService_PostStructBody_FullMethodName          = "/proto.paramtest.BodyJSONService/PostStructBody"
+	BodyJSONService_PostValueBody_FullMethodName           = "/proto.paramtest.BodyJSONService/PostValueBody"
+	BodyJSONService_PostListValueBody_FullMethodName       = "/proto.paramtest.BodyJSONService/PostListValueBody"
+	BodyJSONService_PostWrapperBody_FullMethodName         = "/proto.paramtest.BodyJSONService/PostWrapperBody"
 )
 
 // BodyJSONServiceClient is the client API for BodyJSONService service.
@@ -551,7 +551,7 @@ func _BodyJSONService_PostWrapperBody_Handler(srv interface{}, ctx context.Conte
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var BodyJSONService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "proto.bodyjson.BodyJSONService",
+	ServiceName: "proto.paramtest.BodyJSONService",
 	HandlerType: (*BodyJSONServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -612,16 +612,16 @@ var BodyJSONService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/bodyjson/bodyjson.proto",
+	Metadata: "proto/paramtest/bodyjson.proto",
 }
 
 const (
-	QueryStringService_GetEnumQuerystring_FullMethodName           = "/proto.bodyjson.QueryStringService/GetEnumQuerystring"
-	QueryStringService_GetStringQuerystring_FullMethodName         = "/proto.bodyjson.QueryStringService/GetStringQuerystring"
-	QueryStringService_GetRepeatedEnumQuerystring_FullMethodName   = "/proto.bodyjson.QueryStringService/GetRepeatedEnumQuerystring"
-	QueryStringService_GetRepeatedStringQuerystring_FullMethodName = "/proto.bodyjson.QueryStringService/GetRepeatedStringQuerystring"
-	QueryStringService_GetTimestampQuerystring_FullMethodName      = "/proto.bodyjson.QueryStringService/GetTimestampQuerystring"
-	QueryStringService_GetWrapperQuerystring_FullMethodName        = "/proto.bodyjson.QueryStringService/GetWrapperQuerystring"
+	QueryStringService_GetEnumQuerystring_FullMethodName           = "/proto.paramtest.QueryStringService/GetEnumQuerystring"
+	QueryStringService_GetStringQuerystring_FullMethodName         = "/proto.paramtest.QueryStringService/GetStringQuerystring"
+	QueryStringService_GetRepeatedEnumQuerystring_FullMethodName   = "/proto.paramtest.QueryStringService/GetRepeatedEnumQuerystring"
+	QueryStringService_GetRepeatedStringQuerystring_FullMethodName = "/proto.paramtest.QueryStringService/GetRepeatedStringQuerystring"
+	QueryStringService_GetTimestampQuerystring_FullMethodName      = "/proto.paramtest.QueryStringService/GetTimestampQuerystring"
+	QueryStringService_GetWrapperQuerystring_FullMethodName        = "/proto.paramtest.QueryStringService/GetWrapperQuerystring"
 )
 
 // QueryStringServiceClient is the client API for QueryStringService service.
@@ -875,7 +875,7 @@ func _QueryStringService_GetWrapperQuerystring_Handler(srv interface{}, ctx cont
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var QueryStringService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "proto.bodyjson.QueryStringService",
+	ServiceName: "proto.paramtest.QueryStringService",
 	HandlerType: (*QueryStringServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -904,5 +904,5 @@ var QueryStringService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/bodyjson/bodyjson.proto",
+	Metadata: "proto/paramtest/bodyjson.proto",
 }

@@ -525,7 +525,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/bodyjsonWellKnownTypesHolder"
+              "$ref": "#/definitions/paramtestWellKnownTypesHolder"
             }
           },
           "403": {
@@ -727,7 +727,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/bodyjsonWellKnownTypesHolder"
+              "$ref": "#/definitions/paramtestWellKnownTypesHolder"
             }
           },
           "403": {
@@ -4233,7 +4233,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/bodyjsonWellKnownTypesHolder"
+              "$ref": "#/definitions/paramtestWellKnownTypesHolder"
             }
           },
           "403": {
@@ -4435,7 +4435,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/bodyjsonWellKnownTypesHolder"
+              "$ref": "#/definitions/paramtestWellKnownTypesHolder"
             }
           },
           "403": {
@@ -4637,7 +4637,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/bodyjsonWellKnownTypesHolder"
+              "$ref": "#/definitions/paramtestWellKnownTypesHolder"
             }
           },
           "403": {
@@ -4803,7 +4803,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/bodyjsonWellKnownTypesHolder"
+              "$ref": "#/definitions/paramtestWellKnownTypesHolder"
             }
           },
           "403": {
@@ -10947,7 +10947,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/bodyjsonWellKnownTypesHolder"
+              "$ref": "#/definitions/paramtestWellKnownTypesHolder"
             }
           },
           "403": {
@@ -11147,7 +11147,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/bodyjsonWellKnownTypesHolder"
+              "$ref": "#/definitions/paramtestWellKnownTypesHolder"
             }
           },
           "403": {
@@ -13621,75 +13621,6 @@
       "default": "FALSE",
       "description": "DeepEnum is one or zero.\n\n - FALSE: FALSE is false.\n - TRUE: TRUE is true."
     },
-    "bodyjsonWellKnownTypesHolder": {
-      "type": "object",
-      "properties": {
-        "payloadCheck": {
-          "type": "string"
-        },
-        "any": {
-          "$ref": "#/definitions/protobufAny"
-        },
-        "empty": {
-          "type": "object",
-          "properties": {}
-        },
-        "struct": {
-          "type": "object"
-        },
-        "value": {},
-        "listValue": {
-          "type": "array",
-          "items": {
-            "type": "object"
-          }
-        },
-        "timestamp": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "duration": {
-          "type": "string"
-        },
-        "fieldMask": {
-          "type": "string"
-        },
-        "boolValue": {
-          "type": "boolean"
-        },
-        "int32Value": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "uint32Value": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "int64Value": {
-          "type": "string",
-          "format": "int64"
-        },
-        "uint64Value": {
-          "type": "string",
-          "format": "uint64"
-        },
-        "stringValue": {
-          "type": "string"
-        },
-        "bytesValue": {
-          "type": "string",
-          "format": "byte"
-        },
-        "doubleValue": {
-          "type": "number",
-          "format": "double"
-        },
-        "floatValue": {
-          "type": "number",
-          "format": "float"
-        }
-      }
-    },
     "examplepbABitOfEverything": {
       "type": "object",
       "example": {
@@ -14230,6 +14161,75 @@
         "EXAMPLE_ENUM_FIRST"
       ],
       "default": "EXAMPLE_ENUM_UNSPECIFIED"
+    },
+    "paramtestWellKnownTypesHolder": {
+      "type": "object",
+      "properties": {
+        "payloadCheck": {
+          "type": "string"
+        },
+        "any": {
+          "$ref": "#/definitions/protobufAny"
+        },
+        "empty": {
+          "type": "object",
+          "properties": {}
+        },
+        "struct": {
+          "type": "object"
+        },
+        "value": {},
+        "listValue": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "duration": {
+          "type": "string"
+        },
+        "fieldMask": {
+          "type": "string"
+        },
+        "boolValue": {
+          "type": "boolean"
+        },
+        "int32Value": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "uint32Value": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "int64Value": {
+          "type": "string",
+          "format": "int64"
+        },
+        "uint64Value": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "stringValue": {
+          "type": "string"
+        },
+        "bytesValue": {
+          "type": "string",
+          "format": "byte"
+        },
+        "doubleValue": {
+          "type": "number",
+          "format": "double"
+        },
+        "floatValue": {
+          "type": "number",
+          "format": "float"
+        }
+      }
     },
     "pathenumPathEnum": {
       "type": "string",

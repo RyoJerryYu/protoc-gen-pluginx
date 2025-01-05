@@ -2,9 +2,9 @@
 //versions:
 //- protoc-gen-go-json v1.0.25
 //- protoc (unknown)
-//source: proto/bodyjson/bodyjson.proto
+//source: proto/paramtest/bodyjson.proto
 
-package bodyjson
+package paramtest
 
 import (
 	protojson "google.golang.org/protobuf/encoding/protojson"
