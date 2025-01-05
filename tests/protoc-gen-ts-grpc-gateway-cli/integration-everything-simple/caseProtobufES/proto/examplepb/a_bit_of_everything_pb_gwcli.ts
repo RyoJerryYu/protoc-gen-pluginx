@@ -1,29 +1,53 @@
-import { Duration } from "../../google/protobuf/duration";
-import { Empty } from "../../google/protobuf/empty";
-import { FieldMask } from "../../google/protobuf/field_mask";
-import { StringValue } from "../../google/protobuf/wrappers";
+import { MessageInitShape, create, fromJson, toJson } from "@bufbuild/protobuf";
+import {
+  Duration,
+  DurationSchema,
+  Empty,
+  EmptySchema,
+  FieldMaskSchema,
+  StringValue,
+  StringValueSchema,
+  TimestampSchema,
+} from "@bufbuild/protobuf/wkt";
 import {
   ABitOfEverything,
   ABitOfEverythingRepeated,
-  ABitOfEverything_Nested,
+  ABitOfEverythingRepeatedSchema,
+  ABitOfEverythingSchema,
+  ABitOfEverything_NestedSchema,
   Body,
+  BodySchema,
   Book,
+  BookSchema,
   CheckStatusResponse,
+  CheckStatusResponseSchema,
   CreateBookRequest,
+  CreateBookRequestSchema,
   MessageWithBody,
+  MessageWithBodySchema,
   RequiredMessageTypeRequest,
+  RequiredMessageTypeRequestSchema,
   SnakeEnumRequest,
+  SnakeEnumRequestSchema,
   SnakeEnumResponse,
+  SnakeEnumResponseSchema,
   UpdateBookRequest,
+  UpdateBookRequestSchema,
   UpdateV2Request,
-} from "./a_bit_of_everything";
-import { OneofEnumMessage } from "../oneofenum/oneof_enum";
+  UpdateV2RequestSchema,
+} from "./a_bit_of_everything_pb";
+import {
+  OneofEnumMessage,
+  OneofEnumMessageSchema,
+} from "../oneofenum/oneof_enum_pb";
 import {
   MessageWithNestedPathEnum,
+  MessageWithNestedPathEnumSchema,
   MessageWithPathEnum,
-} from "../pathenum/path_enum";
-import { StringMessage } from "../sub/message";
-import { IdMessage } from "../sub2/message";
+  MessageWithPathEnumSchema,
+} from "../pathenum/path_enum_pb";
+import { StringMessage, StringMessageSchema } from "../sub/message_pb";
+import { IdMessage, IdMessageSchema } from "../sub2/message_pb";
 
 type Primitive = string | boolean | number | Date | Uint8Array | bigint;
 export type DeepPartial<T> = T extends Primitive
@@ -260,7 +284,10 @@ export function newABitOfEverythingService(
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = ABitOfEverything.fromPartial(req);
+      const fullReq = create(
+        ABitOfEverythingSchema,
+        req as MessageInitShape<typeof ABitOfEverythingSchema>,
+      );
       const queryParams = [
         ...queryParam("bytesValue", fullReq.bytesValue),
         ...queryParam("int64OverrideType", fullReq.int64OverrideType),
@@ -270,7 +297,12 @@ export function newABitOfEverythingService(
         ),
         ...queryParam("nestedAnnotation.name", fullReq.nestedAnnotation?.name),
         ...queryParam("nestedAnnotation.ok", fullReq.nestedAnnotation?.ok),
-        ...queryParam("oneofString", fullReq.oneofString),
+        ...queryParam(
+          "oneofString",
+          fullReq.oneofValue.case === "oneofString"
+            ? fullReq.oneofValue.value
+            : undefined,
+        ),
         ...queryParam("optionalStringField", fullReq.optionalStringField),
         ...queryParam("optionalStringValue", fullReq.optionalStringValue),
         ...queryParam(
@@ -317,7 +349,7 @@ export function newABitOfEverythingService(
         ...queryParam(
           "timestampValue",
           fullReq.timestampValue
-            ? fullReq.timestampValue.toISOString()
+            ? toJson(TimestampSchema, fullReq.timestampValue)
             : undefined,
         ),
         ...queryParam("trailingBoth", fullReq.trailingBoth),
@@ -336,7 +368,7 @@ export function newABitOfEverythingService(
         headers: headers,
         queryParams: queryParams,
       });
-      return ABitOfEverything.fromJSON(res);
+      return fromJson(ABitOfEverythingSchema, res);
     },
 
     async createBody(
@@ -346,15 +378,18 @@ export function newABitOfEverythingService(
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = ABitOfEverything.fromPartial(req);
-      const body: any = ABitOfEverything.toJSON(fullReq);
+      const fullReq = create(
+        ABitOfEverythingSchema,
+        req as MessageInitShape<typeof ABitOfEverythingSchema>,
+      );
+      const body: any = toJson(ABitOfEverythingSchema, fullReq);
       const res = await transport.call({
         path: `/v1/example/a_bit_of_everything`,
         method: "POST",
         headers: headers,
         body: JSON.stringify(body),
       });
-      return ABitOfEverything.fromJSON(res);
+      return fromJson(ABitOfEverythingSchema, res);
     },
 
     // Create a book.
@@ -365,9 +400,12 @@ export function newABitOfEverythingService(
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = CreateBookRequest.fromPartial(req);
+      const fullReq = create(
+        CreateBookRequestSchema,
+        req as MessageInitShape<typeof CreateBookRequestSchema>,
+      );
       const queryParams = [...queryParam("bookId", fullReq.bookId)];
-      const body: any = Book.toJSON(must(fullReq.book));
+      const body: any = toJson(BookSchema, must(fullReq.book));
       const res = await transport.call({
         path: `/v1/${pathStr(must(fullReq.parent))}/books`,
         method: "POST",
@@ -375,7 +413,7 @@ export function newABitOfEverythingService(
         queryParams: queryParams,
         body: JSON.stringify(body),
       });
-      return Book.fromJSON(res);
+      return fromJson(BookSchema, res);
     },
 
     async updateBook(
@@ -385,18 +423,21 @@ export function newABitOfEverythingService(
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = UpdateBookRequest.fromPartial(req);
+      const fullReq = create(
+        UpdateBookRequestSchema,
+        req as MessageInitShape<typeof UpdateBookRequestSchema>,
+      );
       const queryParams = [
         ...queryParam("allowMissing", fullReq.allowMissing),
         ...queryParam(
           "updateMask",
           fullReq.updateMask
-            ? (FieldMask.toJSON(FieldMask.wrap(fullReq.updateMask)) as string)
+            ? toJson(FieldMaskSchema, fullReq.updateMask)
             : undefined,
         ),
       ];
       const body: any = (() => {
-        const body: any = Book.toJSON(must(fullReq.book));
+        const body: any = toJson(BookSchema, must(fullReq.book));
         delete body.name;
         return body;
       })();
@@ -407,7 +448,7 @@ export function newABitOfEverythingService(
         queryParams: queryParams,
         body: JSON.stringify(body),
       });
-      return Book.fromJSON(res);
+      return fromJson(BookSchema, res);
     },
 
     async lookup(
@@ -417,13 +458,16 @@ export function newABitOfEverythingService(
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = IdMessage.fromPartial(req);
+      const fullReq = create(
+        IdMessageSchema,
+        req as MessageInitShape<typeof IdMessageSchema>,
+      );
       const res = await transport.call({
         path: `/v1/example/a_bit_of_everything/${pathStr(must(fullReq.uuid))}`,
         method: "GET",
         headers: headers,
       });
-      return ABitOfEverything.fromJSON(res);
+      return fromJson(ABitOfEverythingSchema, res);
     },
 
     async custom(
@@ -433,7 +477,10 @@ export function newABitOfEverythingService(
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = ABitOfEverything.fromPartial(req);
+      const fullReq = create(
+        ABitOfEverythingSchema,
+        req as MessageInitShape<typeof ABitOfEverythingSchema>,
+      );
       const queryParams = [
         ...queryParam("boolValue", fullReq.boolValue),
         ...queryParam("bytesValue", fullReq.bytesValue),
@@ -457,7 +504,12 @@ export function newABitOfEverythingService(
           "nonConventionalNameValue",
           fullReq.nonConventionalNameValue,
         ),
-        ...queryParam("oneofString", fullReq.oneofString),
+        ...queryParam(
+          "oneofString",
+          fullReq.oneofValue.case === "oneofString"
+            ? fullReq.oneofValue.value
+            : undefined,
+        ),
         ...queryParam("optionalStringField", fullReq.optionalStringField),
         ...queryParam("optionalStringValue", fullReq.optionalStringValue),
         ...queryParam(
@@ -510,7 +562,7 @@ export function newABitOfEverythingService(
         ...queryParam(
           "timestampValue",
           fullReq.timestampValue
-            ? fullReq.timestampValue.toISOString()
+            ? toJson(TimestampSchema, fullReq.timestampValue)
             : undefined,
         ),
         ...queryParam("trailingBoth", fullReq.trailingBoth),
@@ -530,7 +582,7 @@ export function newABitOfEverythingService(
         headers: headers,
         queryParams: queryParams,
       });
-      return ABitOfEverything.fromJSON(res);
+      return fromJson(ABitOfEverythingSchema, res);
     },
 
     async doubleColon(
@@ -540,7 +592,10 @@ export function newABitOfEverythingService(
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = ABitOfEverything.fromPartial(req);
+      const fullReq = create(
+        ABitOfEverythingSchema,
+        req as MessageInitShape<typeof ABitOfEverythingSchema>,
+      );
       const queryParams = [
         ...queryParam("boolValue", fullReq.boolValue),
         ...queryParam("bytesValue", fullReq.bytesValue),
@@ -564,7 +619,12 @@ export function newABitOfEverythingService(
           "nonConventionalNameValue",
           fullReq.nonConventionalNameValue,
         ),
-        ...queryParam("oneofString", fullReq.oneofString),
+        ...queryParam(
+          "oneofString",
+          fullReq.oneofValue.case === "oneofString"
+            ? fullReq.oneofValue.value
+            : undefined,
+        ),
         ...queryParam("optionalStringField", fullReq.optionalStringField),
         ...queryParam("optionalStringValue", fullReq.optionalStringValue),
         ...queryParam(
@@ -617,7 +677,7 @@ export function newABitOfEverythingService(
         ...queryParam(
           "timestampValue",
           fullReq.timestampValue
-            ? fullReq.timestampValue.toISOString()
+            ? toJson(TimestampSchema, fullReq.timestampValue)
             : undefined,
         ),
         ...queryParam("trailingBoth", fullReq.trailingBoth),
@@ -637,7 +697,7 @@ export function newABitOfEverythingService(
         headers: headers,
         queryParams: queryParams,
       });
-      return ABitOfEverything.fromJSON(res);
+      return fromJson(ABitOfEverythingSchema, res);
     },
 
     async update(
@@ -647,9 +707,12 @@ export function newABitOfEverythingService(
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = ABitOfEverything.fromPartial(req);
+      const fullReq = create(
+        ABitOfEverythingSchema,
+        req as MessageInitShape<typeof ABitOfEverythingSchema>,
+      );
       const body: any = (() => {
-        const body: any = ABitOfEverything.toJSON(fullReq);
+        const body: any = toJson(ABitOfEverythingSchema, fullReq);
         delete body.uuid;
         return body;
       })();
@@ -659,7 +722,7 @@ export function newABitOfEverythingService(
         headers: headers,
         body: JSON.stringify(body),
       });
-      return Empty.fromJSON(res);
+      return fromJson(EmptySchema, res);
     },
 
     async updateV2(
@@ -669,17 +732,20 @@ export function newABitOfEverythingService(
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = UpdateV2Request.fromPartial(req);
+      const fullReq = create(
+        UpdateV2RequestSchema,
+        req as MessageInitShape<typeof UpdateV2RequestSchema>,
+      );
       const queryParams = [
         ...queryParam(
           "updateMask",
           fullReq.updateMask
-            ? (FieldMask.toJSON(FieldMask.wrap(fullReq.updateMask)) as string)
+            ? toJson(FieldMaskSchema, fullReq.updateMask)
             : undefined,
         ),
       ];
       const body: any = (() => {
-        const body: any = ABitOfEverything.toJSON(must(fullReq.abe));
+        const body: any = toJson(ABitOfEverythingSchema, must(fullReq.abe));
         delete body.uuid;
         return body;
       })();
@@ -690,7 +756,7 @@ export function newABitOfEverythingService(
         queryParams: queryParams,
         body: JSON.stringify(body),
       });
-      return Empty.fromJSON(res);
+      return fromJson(EmptySchema, res);
     },
 
     async delete(
@@ -700,13 +766,16 @@ export function newABitOfEverythingService(
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = IdMessage.fromPartial(req);
+      const fullReq = create(
+        IdMessageSchema,
+        req as MessageInitShape<typeof IdMessageSchema>,
+      );
       const res = await transport.call({
         path: `/v1/example/a_bit_of_everything/${pathStr(must(fullReq.uuid))}`,
         method: "DELETE",
         headers: headers,
       });
-      return Empty.fromJSON(res);
+      return fromJson(EmptySchema, res);
     },
 
     async getQuery(
@@ -716,7 +785,10 @@ export function newABitOfEverythingService(
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = ABitOfEverything.fromPartial(req);
+      const fullReq = create(
+        ABitOfEverythingSchema,
+        req as MessageInitShape<typeof ABitOfEverythingSchema>,
+      );
       const queryParams = [
         ...queryParam("boolValue", fullReq.boolValue),
         ...queryParam("bytesValue", fullReq.bytesValue),
@@ -740,7 +812,12 @@ export function newABitOfEverythingService(
           "nonConventionalNameValue",
           fullReq.nonConventionalNameValue,
         ),
-        ...queryParam("oneofString", fullReq.oneofString),
+        ...queryParam(
+          "oneofString",
+          fullReq.oneofValue.case === "oneofString"
+            ? fullReq.oneofValue.value
+            : undefined,
+        ),
         ...queryParam("optionalStringField", fullReq.optionalStringField),
         ...queryParam("optionalStringValue", fullReq.optionalStringValue),
         ...queryParam(
@@ -793,7 +870,7 @@ export function newABitOfEverythingService(
         ...queryParam(
           "timestampValue",
           fullReq.timestampValue
-            ? fullReq.timestampValue.toISOString()
+            ? toJson(TimestampSchema, fullReq.timestampValue)
             : undefined,
         ),
         ...queryParam("trailingBoth", fullReq.trailingBoth),
@@ -813,7 +890,7 @@ export function newABitOfEverythingService(
         headers: headers,
         queryParams: queryParams,
       });
-      return Empty.fromJSON(res);
+      return fromJson(EmptySchema, res);
     },
 
     async getRepeatedQuery(
@@ -823,13 +900,16 @@ export function newABitOfEverythingService(
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = ABitOfEverythingRepeated.fromPartial(req);
+      const fullReq = create(
+        ABitOfEverythingRepeatedSchema,
+        req as MessageInitShape<typeof ABitOfEverythingRepeatedSchema>,
+      );
       const res = await transport.call({
         path: `/v1/example/a_bit_of_everything_repeated/${pathStr(must(fullReq.pathRepeatedFloatValue))}/${pathStr(must(fullReq.pathRepeatedDoubleValue))}/${pathStr(must(fullReq.pathRepeatedInt64Value))}/${pathStr(must(fullReq.pathRepeatedUint64Value))}/${pathStr(must(fullReq.pathRepeatedInt32Value))}/${pathStr(must(fullReq.pathRepeatedFixed64Value))}/${pathStr(must(fullReq.pathRepeatedFixed32Value))}/${pathStr(must(fullReq.pathRepeatedBoolValue))}/${pathStr(must(fullReq.pathRepeatedStringValue))}/${pathStr(must(fullReq.pathRepeatedBytesValue))}/${pathStr(must(fullReq.pathRepeatedUint32Value))}/${pathStr(must(fullReq.pathRepeatedEnumValue))}/${pathStr(must(fullReq.pathRepeatedSfixed32Value))}/${pathStr(must(fullReq.pathRepeatedSfixed64Value))}/${pathStr(must(fullReq.pathRepeatedSint32Value))}/${pathStr(must(fullReq.pathRepeatedSint64Value))}`,
         method: "GET",
         headers: headers,
       });
-      return ABitOfEverythingRepeated.fromJSON(res);
+      return fromJson(ABitOfEverythingRepeatedSchema, res);
     },
 
     // Echo allows posting a StringMessage value.
@@ -846,13 +926,16 @@ export function newABitOfEverythingService(
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = StringMessage.fromPartial(req);
+      const fullReq = create(
+        StringMessageSchema,
+        req as MessageInitShape<typeof StringMessageSchema>,
+      );
       const res = await transport.call({
         path: `/v1/example/a_bit_of_everything/echo/${pathStr(must(fullReq.value))}`,
         method: "GET",
         headers: headers,
       });
-      return StringMessage.fromJSON(res);
+      return fromJson(StringMessageSchema, res);
     },
 
     async deepPathEcho(
@@ -862,9 +945,12 @@ export function newABitOfEverythingService(
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = ABitOfEverything.fromPartial(req);
+      const fullReq = create(
+        ABitOfEverythingSchema,
+        req as MessageInitShape<typeof ABitOfEverythingSchema>,
+      );
       const body: any = (() => {
-        const body: any = ABitOfEverything.toJSON(fullReq);
+        const body: any = toJson(ABitOfEverythingSchema, fullReq);
         delete body.singleNested.name;
         return body;
       })();
@@ -874,7 +960,7 @@ export function newABitOfEverythingService(
         headers: headers,
         body: JSON.stringify(body),
       });
-      return ABitOfEverything.fromJSON(res);
+      return fromJson(ABitOfEverythingSchema, res);
     },
 
     async noBindings(
@@ -884,15 +970,18 @@ export function newABitOfEverythingService(
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = Duration.fromPartial(req);
-      const body: any = Duration.toJSON(fullReq);
+      const fullReq = create(
+        DurationSchema,
+        req as MessageInitShape<typeof DurationSchema>,
+      );
+      const body: any = toJson(DurationSchema, fullReq);
       const res = await transport.call({
         path: `/proto.examplepb.ABitOfEverythingService/NoBindings`,
         method: "POST",
         headers: headers,
         body: JSON.stringify(body),
       });
-      return Empty.fromJSON(res);
+      return fromJson(EmptySchema, res);
     },
 
     async timeout(
@@ -902,13 +991,16 @@ export function newABitOfEverythingService(
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = Empty.fromPartial(req);
+      const fullReq = create(
+        EmptySchema,
+        req as MessageInitShape<typeof EmptySchema>,
+      );
       const res = await transport.call({
         path: `/v2/example/timeout`,
         method: "GET",
         headers: headers,
       });
-      return Empty.fromJSON(res);
+      return fromJson(EmptySchema, res);
     },
 
     async errorWithDetails(
@@ -918,13 +1010,16 @@ export function newABitOfEverythingService(
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = Empty.fromPartial(req);
+      const fullReq = create(
+        EmptySchema,
+        req as MessageInitShape<typeof EmptySchema>,
+      );
       const res = await transport.call({
         path: `/v2/example/errorwithdetails`,
         method: "GET",
         headers: headers,
       });
-      return Empty.fromJSON(res);
+      return fromJson(EmptySchema, res);
     },
 
     async getMessageWithBody(
@@ -934,15 +1029,18 @@ export function newABitOfEverythingService(
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = MessageWithBody.fromPartial(req);
-      const body: any = Body.toJSON(must(fullReq.data));
+      const fullReq = create(
+        MessageWithBodySchema,
+        req as MessageInitShape<typeof MessageWithBodySchema>,
+      );
+      const body: any = toJson(BodySchema, must(fullReq.data));
       const res = await transport.call({
         path: `/v2/example/withbody/${pathStr(must(fullReq.id))}`,
         method: "POST",
         headers: headers,
         body: JSON.stringify(body),
       });
-      return Empty.fromJSON(res);
+      return fromJson(EmptySchema, res);
     },
 
     async postWithEmptyBody(
@@ -952,9 +1050,12 @@ export function newABitOfEverythingService(
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = Body.fromPartial(req);
+      const fullReq = create(
+        BodySchema,
+        req as MessageInitShape<typeof BodySchema>,
+      );
       const body: any = (() => {
-        const body: any = Body.toJSON(fullReq);
+        const body: any = toJson(BodySchema, fullReq);
         delete body.name;
         return body;
       })();
@@ -964,7 +1065,7 @@ export function newABitOfEverythingService(
         headers: headers,
         body: JSON.stringify(body),
       });
-      return Empty.fromJSON(res);
+      return fromJson(EmptySchema, res);
     },
 
     async checkGetQueryParams(
@@ -974,7 +1075,10 @@ export function newABitOfEverythingService(
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = ABitOfEverything.fromPartial(req);
+      const fullReq = create(
+        ABitOfEverythingSchema,
+        req as MessageInitShape<typeof ABitOfEverythingSchema>,
+      );
       const queryParams = [
         ...queryParam("boolValue", fullReq.boolValue),
         ...queryParam("bytesValue", fullReq.bytesValue),
@@ -998,7 +1102,12 @@ export function newABitOfEverythingService(
           "nonConventionalNameValue",
           fullReq.nonConventionalNameValue,
         ),
-        ...queryParam("oneofString", fullReq.oneofString),
+        ...queryParam(
+          "oneofString",
+          fullReq.oneofValue.case === "oneofString"
+            ? fullReq.oneofValue.value
+            : undefined,
+        ),
         ...queryParam("optionalStringField", fullReq.optionalStringField),
         ...queryParam("optionalStringValue", fullReq.optionalStringValue),
         ...queryParam(
@@ -1050,7 +1159,7 @@ export function newABitOfEverythingService(
         ...queryParam(
           "timestampValue",
           fullReq.timestampValue
-            ? fullReq.timestampValue.toISOString()
+            ? toJson(TimestampSchema, fullReq.timestampValue)
             : undefined,
         ),
         ...queryParam("trailingBoth", fullReq.trailingBoth),
@@ -1071,7 +1180,7 @@ export function newABitOfEverythingService(
         headers: headers,
         queryParams: queryParams,
       });
-      return ABitOfEverything.fromJSON(res);
+      return fromJson(ABitOfEverythingSchema, res);
     },
 
     async checkNestedEnumGetQueryParams(
@@ -1081,7 +1190,10 @@ export function newABitOfEverythingService(
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = ABitOfEverything.fromPartial(req);
+      const fullReq = create(
+        ABitOfEverythingSchema,
+        req as MessageInitShape<typeof ABitOfEverythingSchema>,
+      );
       const queryParams = [
         ...queryParam("boolValue", fullReq.boolValue),
         ...queryParam("bytesValue", fullReq.bytesValue),
@@ -1105,7 +1217,12 @@ export function newABitOfEverythingService(
           "nonConventionalNameValue",
           fullReq.nonConventionalNameValue,
         ),
-        ...queryParam("oneofString", fullReq.oneofString),
+        ...queryParam(
+          "oneofString",
+          fullReq.oneofValue.case === "oneofString"
+            ? fullReq.oneofValue.value
+            : undefined,
+        ),
         ...queryParam("optionalStringField", fullReq.optionalStringField),
         ...queryParam("optionalStringValue", fullReq.optionalStringValue),
         ...queryParam(
@@ -1157,7 +1274,7 @@ export function newABitOfEverythingService(
         ...queryParam(
           "timestampValue",
           fullReq.timestampValue
-            ? fullReq.timestampValue.toISOString()
+            ? toJson(TimestampSchema, fullReq.timestampValue)
             : undefined,
         ),
         ...queryParam("trailingBoth", fullReq.trailingBoth),
@@ -1178,7 +1295,7 @@ export function newABitOfEverythingService(
         headers: headers,
         queryParams: queryParams,
       });
-      return ABitOfEverything.fromJSON(res);
+      return fromJson(ABitOfEverythingSchema, res);
     },
 
     async checkPostQueryParams(
@@ -1188,7 +1305,10 @@ export function newABitOfEverythingService(
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = ABitOfEverything.fromPartial(req);
+      const fullReq = create(
+        ABitOfEverythingSchema,
+        req as MessageInitShape<typeof ABitOfEverythingSchema>,
+      );
       const queryParams = [
         ...queryParam("boolValue", fullReq.boolValue),
         ...queryParam("bytesValue", fullReq.bytesValue),
@@ -1212,7 +1332,12 @@ export function newABitOfEverythingService(
           "nonConventionalNameValue",
           fullReq.nonConventionalNameValue,
         ),
-        ...queryParam("oneofString", fullReq.oneofString),
+        ...queryParam(
+          "oneofString",
+          fullReq.oneofValue.case === "oneofString"
+            ? fullReq.oneofValue.value
+            : undefined,
+        ),
         ...queryParam("optionalStringField", fullReq.optionalStringField),
         ...queryParam("optionalStringValue", fullReq.optionalStringValue),
         ...queryParam(
@@ -1261,7 +1386,7 @@ export function newABitOfEverythingService(
         ...queryParam(
           "timestampValue",
           fullReq.timestampValue
-            ? fullReq.timestampValue.toISOString()
+            ? toJson(TimestampSchema, fullReq.timestampValue)
             : undefined,
         ),
         ...queryParam("trailingBoth", fullReq.trailingBoth),
@@ -1276,7 +1401,8 @@ export function newABitOfEverythingService(
           fullReq.uuids.map((e) => e),
         ),
       ];
-      const body: any = ABitOfEverything_Nested.toJSON(
+      const body: any = toJson(
+        ABitOfEverything_NestedSchema,
         must(fullReq.singleNested),
       );
       const res = await transport.call({
@@ -1286,7 +1412,7 @@ export function newABitOfEverythingService(
         queryParams: queryParams,
         body: JSON.stringify(body),
       });
-      return ABitOfEverything.fromJSON(res);
+      return fromJson(ABitOfEverythingSchema, res);
     },
 
     async overwriteRequestContentType(
@@ -1296,15 +1422,18 @@ export function newABitOfEverythingService(
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = Body.fromPartial(req);
-      const body: any = Body.toJSON(fullReq);
+      const fullReq = create(
+        BodySchema,
+        req as MessageInitShape<typeof BodySchema>,
+      );
+      const body: any = toJson(BodySchema, fullReq);
       const res = await transport.call({
         path: `/v2/example/overwriterequestcontenttype`,
         method: "POST",
         headers: headers,
         body: JSON.stringify(body),
       });
-      return Empty.fromJSON(res);
+      return fromJson(EmptySchema, res);
     },
 
     async overwriteResponseContentType(
@@ -1314,13 +1443,16 @@ export function newABitOfEverythingService(
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = Empty.fromPartial(req);
+      const fullReq = create(
+        EmptySchema,
+        req as MessageInitShape<typeof EmptySchema>,
+      );
       const res = await transport.call({
         path: `/v2/example/overwriteresponsecontenttype`,
         method: "GET",
         headers: headers,
       });
-      return StringValue.fromJSON(res);
+      return fromJson(StringValueSchema, res);
     },
 
     async checkExternalPathEnum(
@@ -1330,13 +1462,16 @@ export function newABitOfEverythingService(
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = MessageWithPathEnum.fromPartial(req);
+      const fullReq = create(
+        MessageWithPathEnumSchema,
+        req as MessageInitShape<typeof MessageWithPathEnumSchema>,
+      );
       const res = await transport.call({
         path: `/v2/${pathStr(must(fullReq.value))}:check`,
         method: "GET",
         headers: headers,
       });
-      return Empty.fromJSON(res);
+      return fromJson(EmptySchema, res);
     },
 
     async checkExternalNestedPathEnum(
@@ -1346,13 +1481,16 @@ export function newABitOfEverythingService(
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = MessageWithNestedPathEnum.fromPartial(req);
+      const fullReq = create(
+        MessageWithNestedPathEnumSchema,
+        req as MessageInitShape<typeof MessageWithNestedPathEnumSchema>,
+      );
       const res = await transport.call({
         path: `/v3/${pathStr(must(fullReq.value))}:check`,
         method: "GET",
         headers: headers,
       });
-      return Empty.fromJSON(res);
+      return fromJson(EmptySchema, res);
     },
 
     async checkStatus(
@@ -1362,13 +1500,16 @@ export function newABitOfEverythingService(
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = Empty.fromPartial(req);
+      const fullReq = create(
+        EmptySchema,
+        req as MessageInitShape<typeof EmptySchema>,
+      );
       const res = await transport.call({
         path: `/v1/example/checkStatus`,
         method: "GET",
         headers: headers,
       });
-      return CheckStatusResponse.fromJSON(res);
+      return fromJson(CheckStatusResponseSchema, res);
     },
 
     async postOneofEnum(
@@ -1378,15 +1519,20 @@ export function newABitOfEverythingService(
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = OneofEnumMessage.fromPartial(req);
-      const body: any = must(fullReq.exampleEnum);
+      const fullReq = create(
+        OneofEnumMessageSchema,
+        req as MessageInitShape<typeof OneofEnumMessageSchema>,
+      );
+      const body: any = must(
+        fullReq.one.case === "exampleEnum" ? fullReq.one.value : undefined,
+      );
       const res = await transport.call({
         path: `/v1/example/oneofenum`,
         method: "POST",
         headers: headers,
         body: JSON.stringify(body),
       });
-      return Empty.fromJSON(res);
+      return fromJson(EmptySchema, res);
     },
 
     async postRequiredMessageType(
@@ -1396,15 +1542,18 @@ export function newABitOfEverythingService(
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = RequiredMessageTypeRequest.fromPartial(req);
-      const body: any = RequiredMessageTypeRequest.toJSON(fullReq);
+      const fullReq = create(
+        RequiredMessageTypeRequestSchema,
+        req as MessageInitShape<typeof RequiredMessageTypeRequestSchema>,
+      );
+      const body: any = toJson(RequiredMessageTypeRequestSchema, fullReq);
       const res = await transport.call({
         path: `/v1/example/requiredmessagetype`,
         method: "POST",
         headers: headers,
         body: JSON.stringify(body),
       });
-      return Empty.fromJSON(res);
+      return fromJson(EmptySchema, res);
     },
   };
 }
@@ -1436,15 +1585,18 @@ export function newAnotherServiceWithNoBindings(
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = Empty.fromPartial(req);
-      const body: any = Empty.toJSON(fullReq);
+      const fullReq = create(
+        EmptySchema,
+        req as MessageInitShape<typeof EmptySchema>,
+      );
+      const body: any = toJson(EmptySchema, fullReq);
       const res = await transport.call({
         path: `/proto.examplepb.AnotherServiceWithNoBindings/NoBindings`,
         method: "POST",
         headers: headers,
         body: JSON.stringify(body),
       });
-      return Empty.fromJSON(res);
+      return fromJson(EmptySchema, res);
     },
   };
 }
@@ -1467,13 +1619,16 @@ export function newSnakeEnumService(
       const headers = options?.metadata
         ? metadataToHeaders(options.metadata)
         : undefined;
-      const fullReq = SnakeEnumRequest.fromPartial(req);
+      const fullReq = create(
+        SnakeEnumRequestSchema,
+        req as MessageInitShape<typeof SnakeEnumRequestSchema>,
+      );
       const res = await transport.call({
         path: `/v1/example/snake/${pathStr(must(fullReq.who))}/${pathStr(must(fullReq.what))}/${pathStr(must(fullReq.where))}`,
         method: "GET",
         headers: headers,
       });
-      return SnakeEnumResponse.fromJSON(res);
+      return fromJson(SnakeEnumResponseSchema, res);
     },
   };
 }

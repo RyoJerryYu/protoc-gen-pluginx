@@ -1,24 +1,19 @@
 import { Duration } from "../../google/protobuf/duration";
 import { Empty } from "../../google/protobuf/empty";
+import { FieldMask } from "../../google/protobuf/field_mask";
 import { StringValue } from "../../google/protobuf/wrappers";
-import { Base64 } from "js-base64";
-import { CallOptions, Metadata } from "nice-grpc-common";
 import {
   ABitOfEverything,
   ABitOfEverythingRepeated,
-  ABitOfEverythingServiceClient,
   ABitOfEverything_Nested,
-  AnotherServiceWithNoBindingsClient,
   Body,
   Book,
   CheckStatusResponse,
   CreateBookRequest,
-  DeepPartial,
   MessageWithBody,
   RequiredMessageTypeRequest,
   SnakeEnumRequest,
   SnakeEnumResponse,
-  SnakeEnumServiceClient,
   UpdateBookRequest,
   UpdateV2Request,
 } from "./a_bit_of_everything";
@@ -30,53 +25,16 @@ import {
 import { StringMessage } from "../sub/message";
 import { IdMessage } from "../sub2/message";
 
-type Primitive = string | boolean | number | Date | Uint8Array;
-type RequestPayload = Record<string, unknown>;
-type FlattenedRequestPayload = Record<string, Primitive | Primitive[]>;
-
-/**
- * Checks if given value is a plain object
- * Logic copied and adapted from below source:
- * https://github.com/char0n/ramda-adjunct/blob/master/src/isPlainObj.js
- */
-function isPlainObject(value: unknown): boolean {
-  const isObject =
-    Object.prototype.toString.call(value).slice(8, -1) === "Object";
-  const isObjLike = value !== null && isObject;
-
-  if (!isObjLike || !isObject) {
-    return false;
-  }
-
-  const proto: unknown = Object.getPrototypeOf(value);
-
-  const hasObjectConstructor = !!(
-    proto &&
-    typeof proto === "object" &&
-    proto.constructor === Object.prototype.constructor
-  );
-
-  return hasObjectConstructor;
-}
-
-/**
- * Checks if given value is of a primitive type
- */
-function isPrimitive(value: unknown): boolean {
-  if (["string", "number", "boolean"].some((t) => typeof value === t)) {
-    return true;
-  }
-
-  if (value instanceof Date) {
-    return true;
-  }
-
-  if (value instanceof Uint8Array) {
-    return true;
-  }
-
-  return false;
-}
+type Primitive = string | boolean | number | Date | Uint8Array | bigint;
+export type DeepPartial<T> = T extends Primitive
+  ? T
+  : T extends Array<infer U>
+    ? Array<DeepPartial<U>>
+    : T extends ReadonlyArray<infer U>
+      ? ReadonlyArray<DeepPartial<U>>
+      : T extends {}
+        ? { [K in keyof T]?: DeepPartial<T[K]> }
+        : Partial<T>;
 
 /**
  * Convert a primitive value to a string that can be used in a URL search parameter
@@ -108,61 +66,18 @@ function pathStr(param: Primitive | Primitive[]): string {
 }
 
 /**
- * Flattens a deeply nested request payload and returns an object
- * with only primitive values and non-empty array of primitive values
- * as per https://github.com/googleapis/googleapis/blob/master/google/api/http.proto
+ * Convert a key-value pair to a URL search parameter
  */
-function flattenRequestPayload<T extends RequestPayload>(
-  requestPayload: T,
-  path = "",
-): FlattenedRequestPayload {
-  return Object.keys(requestPayload).reduce((acc: T, key: string): T => {
-    const value = requestPayload[key];
-    const newPath = path ? [path, key].join(".") : key;
-
-    const isNonEmptyPrimitiveArray =
-      Array.isArray(value) &&
-      value.every((v) => isPrimitive(v)) &&
-      value.length > 0;
-
-    let objectToMerge = {};
-
-    if (isPlainObject(value)) {
-      objectToMerge = flattenRequestPayload(value as RequestPayload, newPath);
-    } else if (isPrimitive(value) || isNonEmptyPrimitiveArray) {
-      objectToMerge = { [newPath]: value };
-    }
-
-    return { ...acc, ...objectToMerge };
-  }, {} as T) as FlattenedRequestPayload;
-}
-
-/**
- * Renders a deeply nested request payload into a string of URL search
- * parameters by first flattening the request payload and then removing keys
- * which are already present in the URL path.
- */
-function renderURLSearchParams<T extends RequestPayload>(
-  requestPayload: T,
-  urlPathParams: string[] = [],
+function queryParam(
+  key: string,
+  value: Primitive | Primitive[] | undefined | null,
 ): string[][] {
-  const flattenedRequestPayload = flattenRequestPayload(requestPayload);
-
-  const urlSearchParams = Object.keys(flattenedRequestPayload).reduce(
-    (acc: string[][], key: string): string[][] => {
-      // key should not be present in the url path as a parameter
-      const value = flattenedRequestPayload[key];
-      if (urlPathParams.find((f) => f === key)) {
-        return acc;
-      }
-      return Array.isArray(value)
-        ? [...acc, ...value.map((m) => [key, toStr(m)])]
-        : (acc = [...acc, [key, toStr(value)]]);
-    },
-    [] as string[][],
-  );
-
-  return urlSearchParams;
+  if (value === undefined || value === null) {
+    return [];
+  }
+  return Array.isArray(value)
+    ? value.map((v) => [key, toStr(v)])
+    : [[key, toStr(value)]];
 }
 
 /**
@@ -193,19 +108,140 @@ export type Transport = {
   call(params: CallParams): Promise<any>;
 };
 
+/**
+ * Metadata is a type that represents the metadata that can be passed to a call
+ */
+export type Metadata = Headers;
+
+/**
+ * Client is a type that represents the interface of a client object
+ */
+export type CallOptions = {
+  metadata?: Metadata;
+};
+
 function metadataToHeaders(metadata: Metadata): Headers {
   const headers = new Headers();
 
   for (const [key, values] of metadata) {
     for (const value of values) {
-      headers.append(
-        key,
-        typeof value === "string" ? value : Base64.fromUint8Array(value),
-      );
+      headers.append("Grpc-Metadata-" + key, value);
     }
   }
 
   return headers;
+}
+
+// ABitOfEverything service is used to validate that APIs with complicated
+// proto messages and URL templates are still processed correctly.
+export interface ABitOfEverythingServiceClient {
+  create(
+    req: DeepPartial<ABitOfEverything>,
+    options?: CallOptions,
+  ): Promise<ABitOfEverything>;
+  createBody(
+    req: DeepPartial<ABitOfEverything>,
+    options?: CallOptions,
+  ): Promise<ABitOfEverything>;
+  createBook(
+    req: DeepPartial<CreateBookRequest>,
+    options?: CallOptions,
+  ): Promise<Book>;
+  updateBook(
+    req: DeepPartial<UpdateBookRequest>,
+    options?: CallOptions,
+  ): Promise<Book>;
+  lookup(
+    req: DeepPartial<IdMessage>,
+    options?: CallOptions,
+  ): Promise<ABitOfEverything>;
+  custom(
+    req: DeepPartial<ABitOfEverything>,
+    options?: CallOptions,
+  ): Promise<ABitOfEverything>;
+  doubleColon(
+    req: DeepPartial<ABitOfEverything>,
+    options?: CallOptions,
+  ): Promise<ABitOfEverything>;
+  update(
+    req: DeepPartial<ABitOfEverything>,
+    options?: CallOptions,
+  ): Promise<Empty>;
+  updateV2(
+    req: DeepPartial<UpdateV2Request>,
+    options?: CallOptions,
+  ): Promise<Empty>;
+  delete(req: DeepPartial<IdMessage>, options?: CallOptions): Promise<Empty>;
+  getQuery(
+    req: DeepPartial<ABitOfEverything>,
+    options?: CallOptions,
+  ): Promise<Empty>;
+  getRepeatedQuery(
+    req: DeepPartial<ABitOfEverythingRepeated>,
+    options?: CallOptions,
+  ): Promise<ABitOfEverythingRepeated>;
+  echo(
+    req: DeepPartial<StringMessage>,
+    options?: CallOptions,
+  ): Promise<StringMessage>;
+  deepPathEcho(
+    req: DeepPartial<ABitOfEverything>,
+    options?: CallOptions,
+  ): Promise<ABitOfEverything>;
+  noBindings(req: DeepPartial<Duration>, options?: CallOptions): Promise<Empty>;
+  timeout(req: DeepPartial<Empty>, options?: CallOptions): Promise<Empty>;
+  errorWithDetails(
+    req: DeepPartial<Empty>,
+    options?: CallOptions,
+  ): Promise<Empty>;
+  getMessageWithBody(
+    req: DeepPartial<MessageWithBody>,
+    options?: CallOptions,
+  ): Promise<Empty>;
+  postWithEmptyBody(
+    req: DeepPartial<Body>,
+    options?: CallOptions,
+  ): Promise<Empty>;
+  checkGetQueryParams(
+    req: DeepPartial<ABitOfEverything>,
+    options?: CallOptions,
+  ): Promise<ABitOfEverything>;
+  checkNestedEnumGetQueryParams(
+    req: DeepPartial<ABitOfEverything>,
+    options?: CallOptions,
+  ): Promise<ABitOfEverything>;
+  checkPostQueryParams(
+    req: DeepPartial<ABitOfEverything>,
+    options?: CallOptions,
+  ): Promise<ABitOfEverything>;
+  overwriteRequestContentType(
+    req: DeepPartial<Body>,
+    options?: CallOptions,
+  ): Promise<Empty>;
+  overwriteResponseContentType(
+    req: DeepPartial<Empty>,
+    options?: CallOptions,
+  ): Promise<StringValue>;
+  checkExternalPathEnum(
+    req: DeepPartial<MessageWithPathEnum>,
+    options?: CallOptions,
+  ): Promise<Empty>;
+  checkExternalNestedPathEnum(
+    req: DeepPartial<MessageWithNestedPathEnum>,
+    options?: CallOptions,
+  ): Promise<Empty>;
+  checkStatus(
+    req: DeepPartial<Empty>,
+    options?: CallOptions,
+  ): Promise<CheckStatusResponse>;
+  postOneofEnum(
+    req: DeepPartial<OneofEnumMessage>,
+    options?: CallOptions,
+  ): Promise<Empty>;
+  postRequiredMessageType(
+    req: DeepPartial<RequiredMessageTypeRequest>,
+    options?: CallOptions,
+  ): Promise<Empty>;
 }
 
 // ABitOfEverything service is used to validate that APIs with complicated
@@ -225,31 +261,80 @@ export function newABitOfEverythingService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = ABitOfEverything.fromPartial(req);
+      const queryParams = [
+        ...queryParam("bytes_value", fullReq.bytesValue),
+        ...queryParam("int64_override_type", fullReq.int64OverrideType),
+        ...queryParam(
+          "nested_annotation.amount",
+          fullReq.nestedAnnotation?.amount,
+        ),
+        ...queryParam("nested_annotation.name", fullReq.nestedAnnotation?.name),
+        ...queryParam("nested_annotation.ok", fullReq.nestedAnnotation?.ok),
+        ...queryParam("oneof_string", fullReq.oneofString),
+        ...queryParam("optional_string_field", fullReq.optionalStringField),
+        ...queryParam("optional_string_value", fullReq.optionalStringValue),
+        ...queryParam(
+          "output_only_string_via_field_behavior_annotation",
+          fullReq.outputOnlyStringViaFieldBehaviorAnnotation,
+        ),
+        ...queryParam(
+          "product_id",
+          fullReq.productId.map((e) => e),
+        ),
+        ...queryParam(
+          "repeated_enum_annotation",
+          fullReq.repeatedEnumAnnotation.map((e) => e),
+        ),
+        ...queryParam(
+          "repeated_enum_value",
+          fullReq.repeatedEnumValue.map((e) => e),
+        ),
+        ...queryParam(
+          "repeated_string_annotation",
+          fullReq.repeatedStringAnnotation.map((e) => e),
+        ),
+        ...queryParam(
+          "repeated_string_value",
+          fullReq.repeatedStringValue.map((e) => e),
+        ),
+        ...queryParam(
+          "required_field_behavior_json_name",
+          fullReq.requiredFieldBehaviorJsonName,
+        ),
+        ...queryParam(
+          "required_field_schema_json_name",
+          fullReq.requiredFieldSchemaJsonName,
+        ),
+        ...queryParam("required_string_field_1", fullReq.requiredStringField1),
+        ...queryParam("required_string_field_2", fullReq.requiredStringField2),
+        ...queryParam(
+          "required_string_via_field_behavior_annotation",
+          fullReq.requiredStringViaFieldBehaviorAnnotation,
+        ),
+        ...queryParam("single_nested.amount", fullReq.singleNested?.amount),
+        ...queryParam("single_nested.name", fullReq.singleNested?.name),
+        ...queryParam("single_nested.ok", fullReq.singleNested?.ok),
+        ...queryParam(
+          "timestamp_value",
+          fullReq.timestampValue
+            ? fullReq.timestampValue.toISOString()
+            : undefined,
+        ),
+        ...queryParam("trailing_both", fullReq.trailingBoth),
+        ...queryParam("trailing_multiline", fullReq.trailingMultiline),
+        ...queryParam("trailing_only", fullReq.trailingOnly),
+        ...queryParam("trailing_only_dot", fullReq.trailingOnlyDot),
+        ...queryParam("uuid", fullReq.uuid),
+        ...queryParam(
+          "uuids",
+          fullReq.uuids.map((e) => e),
+        ),
+      ];
       const res = await transport.call({
         path: `/v1/example/a_bit_of_everything/${pathStr(must(fullReq.floatValue))}/${pathStr(must(fullReq.doubleValue))}/${pathStr(must(fullReq.int64Value))}/separator/${pathStr(must(fullReq.uint64Value))}/${pathStr(must(fullReq.int32Value))}/${pathStr(must(fullReq.fixed64Value))}/${pathStr(must(fullReq.fixed32Value))}/${pathStr(must(fullReq.boolValue))}/${pathStr(must(fullReq.stringValue))}/${pathStr(must(fullReq.uint32Value))}/${pathStr(must(fullReq.sfixed32Value))}/${pathStr(must(fullReq.sfixed64Value))}/${pathStr(must(fullReq.sint32Value))}/${pathStr(must(fullReq.sint64Value))}/${pathStr(must(fullReq.nonConventionalNameValue))}/${pathStr(must(fullReq.enumValue))}/${pathStr(must(fullReq.pathEnumValue))}/${pathStr(must(fullReq.nestedPathEnumValue))}/${pathStr(must(fullReq.enumValueAnnotation))}`,
         method: "POST",
         headers: headers,
-        queryParams: renderURLSearchParams(req, [
-          "floatValue",
-          "doubleValue",
-          "int64Value",
-          "uint64Value",
-          "int32Value",
-          "fixed64Value",
-          "fixed32Value",
-          "boolValue",
-          "stringValue",
-          "uint32Value",
-          "sfixed32Value",
-          "sfixed64Value",
-          "sint32Value",
-          "sint64Value",
-          "nonConventionalNameValue",
-          "enumValue",
-          "pathEnumValue",
-          "nestedPathEnumValue",
-          "enumValueAnnotation",
-        ]),
+        queryParams: queryParams,
       });
       return ABitOfEverything.fromJSON(res);
     },
@@ -281,13 +366,13 @@ export function newABitOfEverythingService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = CreateBookRequest.fromPartial(req);
+      const queryParams = [...queryParam("book_id", fullReq.bookId)];
       const body: any = Book.toJSON(must(fullReq.book));
-      delete body.parent;
       const res = await transport.call({
         path: `/v1/${pathStr(must(fullReq.parent))}/books`,
         method: "POST",
         headers: headers,
-        queryParams: renderURLSearchParams(req, ["parent", "book"]),
+        queryParams: queryParams,
         body: JSON.stringify(body),
       });
       return Book.fromJSON(res);
@@ -301,13 +386,25 @@ export function newABitOfEverythingService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = UpdateBookRequest.fromPartial(req);
-      const body: any = Book.toJSON(must(fullReq.book));
-      delete body.name;
+      const queryParams = [
+        ...queryParam("allow_missing", fullReq.allowMissing),
+        ...queryParam(
+          "update_mask",
+          fullReq.updateMask
+            ? (FieldMask.toJSON(FieldMask.wrap(fullReq.updateMask)) as string)
+            : undefined,
+        ),
+      ];
+      const body: any = (() => {
+        const body: any = Book.toJSON(must(fullReq.book));
+        delete body.name;
+        return body;
+      })();
       const res = await transport.call({
         path: `/v1/${pathStr(must(fullReq.book?.name))}`,
         method: "PATCH",
         headers: headers,
-        queryParams: renderURLSearchParams(req, ["book.name", "book"]),
+        queryParams: queryParams,
         body: JSON.stringify(body),
       });
       return Book.fromJSON(res);
@@ -325,7 +422,6 @@ export function newABitOfEverythingService(
         path: `/v1/example/a_bit_of_everything/${pathStr(must(fullReq.uuid))}`,
         method: "GET",
         headers: headers,
-        queryParams: renderURLSearchParams(req, ["uuid"]),
       });
       return ABitOfEverything.fromJSON(res);
     },
@@ -338,11 +434,101 @@ export function newABitOfEverythingService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = ABitOfEverything.fromPartial(req);
+      const queryParams = [
+        ...queryParam("bool_value", fullReq.boolValue),
+        ...queryParam("bytes_value", fullReq.bytesValue),
+        ...queryParam("double_value", fullReq.doubleValue),
+        ...queryParam("enum_value", fullReq.enumValue),
+        ...queryParam("enum_value_annotation", fullReq.enumValueAnnotation),
+        ...queryParam("fixed32_value", fullReq.fixed32Value),
+        ...queryParam("fixed64_value", fullReq.fixed64Value),
+        ...queryParam("float_value", fullReq.floatValue),
+        ...queryParam("int32_value", fullReq.int32Value),
+        ...queryParam("int64_override_type", fullReq.int64OverrideType),
+        ...queryParam("int64_value", fullReq.int64Value),
+        ...queryParam(
+          "nested_annotation.amount",
+          fullReq.nestedAnnotation?.amount,
+        ),
+        ...queryParam("nested_annotation.name", fullReq.nestedAnnotation?.name),
+        ...queryParam("nested_annotation.ok", fullReq.nestedAnnotation?.ok),
+        ...queryParam("nested_path_enum_value", fullReq.nestedPathEnumValue),
+        ...queryParam(
+          "nonConventionalNameValue",
+          fullReq.nonConventionalNameValue,
+        ),
+        ...queryParam("oneof_string", fullReq.oneofString),
+        ...queryParam("optional_string_field", fullReq.optionalStringField),
+        ...queryParam("optional_string_value", fullReq.optionalStringValue),
+        ...queryParam(
+          "output_only_string_via_field_behavior_annotation",
+          fullReq.outputOnlyStringViaFieldBehaviorAnnotation,
+        ),
+        ...queryParam("path_enum_value", fullReq.pathEnumValue),
+        ...queryParam(
+          "product_id",
+          fullReq.productId.map((e) => e),
+        ),
+        ...queryParam(
+          "repeated_enum_annotation",
+          fullReq.repeatedEnumAnnotation.map((e) => e),
+        ),
+        ...queryParam(
+          "repeated_enum_value",
+          fullReq.repeatedEnumValue.map((e) => e),
+        ),
+        ...queryParam(
+          "repeated_string_annotation",
+          fullReq.repeatedStringAnnotation.map((e) => e),
+        ),
+        ...queryParam(
+          "repeated_string_value",
+          fullReq.repeatedStringValue.map((e) => e),
+        ),
+        ...queryParam(
+          "required_field_behavior_json_name",
+          fullReq.requiredFieldBehaviorJsonName,
+        ),
+        ...queryParam(
+          "required_field_schema_json_name",
+          fullReq.requiredFieldSchemaJsonName,
+        ),
+        ...queryParam("required_string_field_1", fullReq.requiredStringField1),
+        ...queryParam("required_string_field_2", fullReq.requiredStringField2),
+        ...queryParam(
+          "required_string_via_field_behavior_annotation",
+          fullReq.requiredStringViaFieldBehaviorAnnotation,
+        ),
+        ...queryParam("sfixed32_value", fullReq.sfixed32Value),
+        ...queryParam("sfixed64_value", fullReq.sfixed64Value),
+        ...queryParam("single_nested.amount", fullReq.singleNested?.amount),
+        ...queryParam("single_nested.name", fullReq.singleNested?.name),
+        ...queryParam("single_nested.ok", fullReq.singleNested?.ok),
+        ...queryParam("sint32_value", fullReq.sint32Value),
+        ...queryParam("sint64_value", fullReq.sint64Value),
+        ...queryParam("string_value", fullReq.stringValue),
+        ...queryParam(
+          "timestamp_value",
+          fullReq.timestampValue
+            ? fullReq.timestampValue.toISOString()
+            : undefined,
+        ),
+        ...queryParam("trailing_both", fullReq.trailingBoth),
+        ...queryParam("trailing_multiline", fullReq.trailingMultiline),
+        ...queryParam("trailing_only", fullReq.trailingOnly),
+        ...queryParam("trailing_only_dot", fullReq.trailingOnlyDot),
+        ...queryParam("uint32_value", fullReq.uint32Value),
+        ...queryParam("uint64_value", fullReq.uint64Value),
+        ...queryParam(
+          "uuids",
+          fullReq.uuids.map((e) => e),
+        ),
+      ];
       const res = await transport.call({
         path: `/v1/example/a_bit_of_everything/${pathStr(must(fullReq.uuid))}:custom`,
         method: "POST",
         headers: headers,
-        queryParams: renderURLSearchParams(req, ["uuid"]),
+        queryParams: queryParams,
       });
       return ABitOfEverything.fromJSON(res);
     },
@@ -355,11 +541,101 @@ export function newABitOfEverythingService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = ABitOfEverything.fromPartial(req);
+      const queryParams = [
+        ...queryParam("bool_value", fullReq.boolValue),
+        ...queryParam("bytes_value", fullReq.bytesValue),
+        ...queryParam("double_value", fullReq.doubleValue),
+        ...queryParam("enum_value", fullReq.enumValue),
+        ...queryParam("enum_value_annotation", fullReq.enumValueAnnotation),
+        ...queryParam("fixed32_value", fullReq.fixed32Value),
+        ...queryParam("fixed64_value", fullReq.fixed64Value),
+        ...queryParam("float_value", fullReq.floatValue),
+        ...queryParam("int32_value", fullReq.int32Value),
+        ...queryParam("int64_override_type", fullReq.int64OverrideType),
+        ...queryParam("int64_value", fullReq.int64Value),
+        ...queryParam(
+          "nested_annotation.amount",
+          fullReq.nestedAnnotation?.amount,
+        ),
+        ...queryParam("nested_annotation.name", fullReq.nestedAnnotation?.name),
+        ...queryParam("nested_annotation.ok", fullReq.nestedAnnotation?.ok),
+        ...queryParam("nested_path_enum_value", fullReq.nestedPathEnumValue),
+        ...queryParam(
+          "nonConventionalNameValue",
+          fullReq.nonConventionalNameValue,
+        ),
+        ...queryParam("oneof_string", fullReq.oneofString),
+        ...queryParam("optional_string_field", fullReq.optionalStringField),
+        ...queryParam("optional_string_value", fullReq.optionalStringValue),
+        ...queryParam(
+          "output_only_string_via_field_behavior_annotation",
+          fullReq.outputOnlyStringViaFieldBehaviorAnnotation,
+        ),
+        ...queryParam("path_enum_value", fullReq.pathEnumValue),
+        ...queryParam(
+          "product_id",
+          fullReq.productId.map((e) => e),
+        ),
+        ...queryParam(
+          "repeated_enum_annotation",
+          fullReq.repeatedEnumAnnotation.map((e) => e),
+        ),
+        ...queryParam(
+          "repeated_enum_value",
+          fullReq.repeatedEnumValue.map((e) => e),
+        ),
+        ...queryParam(
+          "repeated_string_annotation",
+          fullReq.repeatedStringAnnotation.map((e) => e),
+        ),
+        ...queryParam(
+          "repeated_string_value",
+          fullReq.repeatedStringValue.map((e) => e),
+        ),
+        ...queryParam(
+          "required_field_behavior_json_name",
+          fullReq.requiredFieldBehaviorJsonName,
+        ),
+        ...queryParam(
+          "required_field_schema_json_name",
+          fullReq.requiredFieldSchemaJsonName,
+        ),
+        ...queryParam("required_string_field_1", fullReq.requiredStringField1),
+        ...queryParam("required_string_field_2", fullReq.requiredStringField2),
+        ...queryParam(
+          "required_string_via_field_behavior_annotation",
+          fullReq.requiredStringViaFieldBehaviorAnnotation,
+        ),
+        ...queryParam("sfixed32_value", fullReq.sfixed32Value),
+        ...queryParam("sfixed64_value", fullReq.sfixed64Value),
+        ...queryParam("single_nested.amount", fullReq.singleNested?.amount),
+        ...queryParam("single_nested.name", fullReq.singleNested?.name),
+        ...queryParam("single_nested.ok", fullReq.singleNested?.ok),
+        ...queryParam("sint32_value", fullReq.sint32Value),
+        ...queryParam("sint64_value", fullReq.sint64Value),
+        ...queryParam("string_value", fullReq.stringValue),
+        ...queryParam(
+          "timestamp_value",
+          fullReq.timestampValue
+            ? fullReq.timestampValue.toISOString()
+            : undefined,
+        ),
+        ...queryParam("trailing_both", fullReq.trailingBoth),
+        ...queryParam("trailing_multiline", fullReq.trailingMultiline),
+        ...queryParam("trailing_only", fullReq.trailingOnly),
+        ...queryParam("trailing_only_dot", fullReq.trailingOnlyDot),
+        ...queryParam("uint32_value", fullReq.uint32Value),
+        ...queryParam("uint64_value", fullReq.uint64Value),
+        ...queryParam(
+          "uuids",
+          fullReq.uuids.map((e) => e),
+        ),
+      ];
       const res = await transport.call({
         path: `/v1/example/a_bit_of_everything/${pathStr(must(fullReq.uuid))}:custom:custom`,
         method: "POST",
         headers: headers,
-        queryParams: renderURLSearchParams(req, ["uuid"]),
+        queryParams: queryParams,
       });
       return ABitOfEverything.fromJSON(res);
     },
@@ -372,8 +648,11 @@ export function newABitOfEverythingService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = ABitOfEverything.fromPartial(req);
-      const body: any = ABitOfEverything.toJSON(fullReq);
-      delete body.uuid;
+      const body: any = (() => {
+        const body: any = ABitOfEverything.toJSON(fullReq);
+        delete body.uuid;
+        return body;
+      })();
       const res = await transport.call({
         path: `/v1/example/a_bit_of_everything/${pathStr(must(fullReq.uuid))}`,
         method: "PUT",
@@ -391,13 +670,24 @@ export function newABitOfEverythingService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = UpdateV2Request.fromPartial(req);
-      const body: any = ABitOfEverything.toJSON(must(fullReq.abe));
-      delete body.uuid;
+      const queryParams = [
+        ...queryParam(
+          "update_mask",
+          fullReq.updateMask
+            ? (FieldMask.toJSON(FieldMask.wrap(fullReq.updateMask)) as string)
+            : undefined,
+        ),
+      ];
+      const body: any = (() => {
+        const body: any = ABitOfEverything.toJSON(must(fullReq.abe));
+        delete body.uuid;
+        return body;
+      })();
       const res = await transport.call({
         path: `/v2/example/a_bit_of_everything/${pathStr(must(fullReq.abe?.uuid))}`,
         method: "PUT",
         headers: headers,
-        queryParams: renderURLSearchParams(req, ["abe.uuid", "abe"]),
+        queryParams: queryParams,
         body: JSON.stringify(body),
       });
       return Empty.fromJSON(res);
@@ -415,7 +705,6 @@ export function newABitOfEverythingService(
         path: `/v1/example/a_bit_of_everything/${pathStr(must(fullReq.uuid))}`,
         method: "DELETE",
         headers: headers,
-        queryParams: renderURLSearchParams(req, ["uuid"]),
       });
       return Empty.fromJSON(res);
     },
@@ -428,11 +717,101 @@ export function newABitOfEverythingService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = ABitOfEverything.fromPartial(req);
+      const queryParams = [
+        ...queryParam("bool_value", fullReq.boolValue),
+        ...queryParam("bytes_value", fullReq.bytesValue),
+        ...queryParam("double_value", fullReq.doubleValue),
+        ...queryParam("enum_value", fullReq.enumValue),
+        ...queryParam("enum_value_annotation", fullReq.enumValueAnnotation),
+        ...queryParam("fixed32_value", fullReq.fixed32Value),
+        ...queryParam("fixed64_value", fullReq.fixed64Value),
+        ...queryParam("float_value", fullReq.floatValue),
+        ...queryParam("int32_value", fullReq.int32Value),
+        ...queryParam("int64_override_type", fullReq.int64OverrideType),
+        ...queryParam("int64_value", fullReq.int64Value),
+        ...queryParam(
+          "nested_annotation.amount",
+          fullReq.nestedAnnotation?.amount,
+        ),
+        ...queryParam("nested_annotation.name", fullReq.nestedAnnotation?.name),
+        ...queryParam("nested_annotation.ok", fullReq.nestedAnnotation?.ok),
+        ...queryParam("nested_path_enum_value", fullReq.nestedPathEnumValue),
+        ...queryParam(
+          "nonConventionalNameValue",
+          fullReq.nonConventionalNameValue,
+        ),
+        ...queryParam("oneof_string", fullReq.oneofString),
+        ...queryParam("optional_string_field", fullReq.optionalStringField),
+        ...queryParam("optional_string_value", fullReq.optionalStringValue),
+        ...queryParam(
+          "output_only_string_via_field_behavior_annotation",
+          fullReq.outputOnlyStringViaFieldBehaviorAnnotation,
+        ),
+        ...queryParam("path_enum_value", fullReq.pathEnumValue),
+        ...queryParam(
+          "product_id",
+          fullReq.productId.map((e) => e),
+        ),
+        ...queryParam(
+          "repeated_enum_annotation",
+          fullReq.repeatedEnumAnnotation.map((e) => e),
+        ),
+        ...queryParam(
+          "repeated_enum_value",
+          fullReq.repeatedEnumValue.map((e) => e),
+        ),
+        ...queryParam(
+          "repeated_string_annotation",
+          fullReq.repeatedStringAnnotation.map((e) => e),
+        ),
+        ...queryParam(
+          "repeated_string_value",
+          fullReq.repeatedStringValue.map((e) => e),
+        ),
+        ...queryParam(
+          "required_field_behavior_json_name",
+          fullReq.requiredFieldBehaviorJsonName,
+        ),
+        ...queryParam(
+          "required_field_schema_json_name",
+          fullReq.requiredFieldSchemaJsonName,
+        ),
+        ...queryParam("required_string_field_1", fullReq.requiredStringField1),
+        ...queryParam("required_string_field_2", fullReq.requiredStringField2),
+        ...queryParam(
+          "required_string_via_field_behavior_annotation",
+          fullReq.requiredStringViaFieldBehaviorAnnotation,
+        ),
+        ...queryParam("sfixed32_value", fullReq.sfixed32Value),
+        ...queryParam("sfixed64_value", fullReq.sfixed64Value),
+        ...queryParam("single_nested.amount", fullReq.singleNested?.amount),
+        ...queryParam("single_nested.name", fullReq.singleNested?.name),
+        ...queryParam("single_nested.ok", fullReq.singleNested?.ok),
+        ...queryParam("sint32_value", fullReq.sint32Value),
+        ...queryParam("sint64_value", fullReq.sint64Value),
+        ...queryParam("string_value", fullReq.stringValue),
+        ...queryParam(
+          "timestamp_value",
+          fullReq.timestampValue
+            ? fullReq.timestampValue.toISOString()
+            : undefined,
+        ),
+        ...queryParam("trailing_both", fullReq.trailingBoth),
+        ...queryParam("trailing_multiline", fullReq.trailingMultiline),
+        ...queryParam("trailing_only", fullReq.trailingOnly),
+        ...queryParam("trailing_only_dot", fullReq.trailingOnlyDot),
+        ...queryParam("uint32_value", fullReq.uint32Value),
+        ...queryParam("uint64_value", fullReq.uint64Value),
+        ...queryParam(
+          "uuids",
+          fullReq.uuids.map((e) => e),
+        ),
+      ];
       const res = await transport.call({
         path: `/v1/example/a_bit_of_everything/query/${pathStr(must(fullReq.uuid))}`,
         method: "GET",
         headers: headers,
-        queryParams: renderURLSearchParams(req, ["uuid"]),
+        queryParams: queryParams,
       });
       return Empty.fromJSON(res);
     },
@@ -449,24 +828,6 @@ export function newABitOfEverythingService(
         path: `/v1/example/a_bit_of_everything_repeated/${pathStr(must(fullReq.pathRepeatedFloatValue))}/${pathStr(must(fullReq.pathRepeatedDoubleValue))}/${pathStr(must(fullReq.pathRepeatedInt64Value))}/${pathStr(must(fullReq.pathRepeatedUint64Value))}/${pathStr(must(fullReq.pathRepeatedInt32Value))}/${pathStr(must(fullReq.pathRepeatedFixed64Value))}/${pathStr(must(fullReq.pathRepeatedFixed32Value))}/${pathStr(must(fullReq.pathRepeatedBoolValue))}/${pathStr(must(fullReq.pathRepeatedStringValue))}/${pathStr(must(fullReq.pathRepeatedBytesValue))}/${pathStr(must(fullReq.pathRepeatedUint32Value))}/${pathStr(must(fullReq.pathRepeatedEnumValue))}/${pathStr(must(fullReq.pathRepeatedSfixed32Value))}/${pathStr(must(fullReq.pathRepeatedSfixed64Value))}/${pathStr(must(fullReq.pathRepeatedSint32Value))}/${pathStr(must(fullReq.pathRepeatedSint64Value))}`,
         method: "GET",
         headers: headers,
-        queryParams: renderURLSearchParams(req, [
-          "pathRepeatedFloatValue",
-          "pathRepeatedDoubleValue",
-          "pathRepeatedInt64Value",
-          "pathRepeatedUint64Value",
-          "pathRepeatedInt32Value",
-          "pathRepeatedFixed64Value",
-          "pathRepeatedFixed32Value",
-          "pathRepeatedBoolValue",
-          "pathRepeatedStringValue",
-          "pathRepeatedBytesValue",
-          "pathRepeatedUint32Value",
-          "pathRepeatedEnumValue",
-          "pathRepeatedSfixed32Value",
-          "pathRepeatedSfixed64Value",
-          "pathRepeatedSint32Value",
-          "pathRepeatedSint64Value",
-        ]),
       });
       return ABitOfEverythingRepeated.fromJSON(res);
     },
@@ -490,7 +851,6 @@ export function newABitOfEverythingService(
         path: `/v1/example/a_bit_of_everything/echo/${pathStr(must(fullReq.value))}`,
         method: "GET",
         headers: headers,
-        queryParams: renderURLSearchParams(req, ["value"]),
       });
       return StringMessage.fromJSON(res);
     },
@@ -503,8 +863,11 @@ export function newABitOfEverythingService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = ABitOfEverything.fromPartial(req);
-      const body: any = ABitOfEverything.toJSON(fullReq);
-      delete body.single_nested.name;
+      const body: any = (() => {
+        const body: any = ABitOfEverything.toJSON(fullReq);
+        delete body.single_nested.name;
+        return body;
+      })();
       const res = await transport.call({
         path: `/v1/example/deep_path/${pathStr(must(fullReq.singleNested?.name))}`,
         method: "POST",
@@ -544,7 +907,6 @@ export function newABitOfEverythingService(
         path: `/v2/example/timeout`,
         method: "GET",
         headers: headers,
-        queryParams: renderURLSearchParams(req, []),
       });
       return Empty.fromJSON(res);
     },
@@ -561,7 +923,6 @@ export function newABitOfEverythingService(
         path: `/v2/example/errorwithdetails`,
         method: "GET",
         headers: headers,
-        queryParams: renderURLSearchParams(req, []),
       });
       return Empty.fromJSON(res);
     },
@@ -575,12 +936,10 @@ export function newABitOfEverythingService(
         : undefined;
       const fullReq = MessageWithBody.fromPartial(req);
       const body: any = Body.toJSON(must(fullReq.data));
-      delete body.id;
       const res = await transport.call({
         path: `/v2/example/withbody/${pathStr(must(fullReq.id))}`,
         method: "POST",
         headers: headers,
-        queryParams: renderURLSearchParams(req, ["id", "data"]),
         body: JSON.stringify(body),
       });
       return Empty.fromJSON(res);
@@ -594,8 +953,11 @@ export function newABitOfEverythingService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = Body.fromPartial(req);
-      const body: any = Body.toJSON(fullReq);
-      delete body.name;
+      const body: any = (() => {
+        const body: any = Body.toJSON(fullReq);
+        delete body.name;
+        return body;
+      })();
       const res = await transport.call({
         path: `/v2/example/postwithemptybody/${pathStr(must(fullReq.name))}`,
         method: "POST",
@@ -613,11 +975,101 @@ export function newABitOfEverythingService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = ABitOfEverything.fromPartial(req);
+      const queryParams = [
+        ...queryParam("bool_value", fullReq.boolValue),
+        ...queryParam("bytes_value", fullReq.bytesValue),
+        ...queryParam("double_value", fullReq.doubleValue),
+        ...queryParam("enum_value", fullReq.enumValue),
+        ...queryParam("enum_value_annotation", fullReq.enumValueAnnotation),
+        ...queryParam("fixed32_value", fullReq.fixed32Value),
+        ...queryParam("fixed64_value", fullReq.fixed64Value),
+        ...queryParam("float_value", fullReq.floatValue),
+        ...queryParam("int32_value", fullReq.int32Value),
+        ...queryParam("int64_override_type", fullReq.int64OverrideType),
+        ...queryParam("int64_value", fullReq.int64Value),
+        ...queryParam(
+          "nested_annotation.amount",
+          fullReq.nestedAnnotation?.amount,
+        ),
+        ...queryParam("nested_annotation.name", fullReq.nestedAnnotation?.name),
+        ...queryParam("nested_annotation.ok", fullReq.nestedAnnotation?.ok),
+        ...queryParam("nested_path_enum_value", fullReq.nestedPathEnumValue),
+        ...queryParam(
+          "nonConventionalNameValue",
+          fullReq.nonConventionalNameValue,
+        ),
+        ...queryParam("oneof_string", fullReq.oneofString),
+        ...queryParam("optional_string_field", fullReq.optionalStringField),
+        ...queryParam("optional_string_value", fullReq.optionalStringValue),
+        ...queryParam(
+          "output_only_string_via_field_behavior_annotation",
+          fullReq.outputOnlyStringViaFieldBehaviorAnnotation,
+        ),
+        ...queryParam("path_enum_value", fullReq.pathEnumValue),
+        ...queryParam(
+          "product_id",
+          fullReq.productId.map((e) => e),
+        ),
+        ...queryParam(
+          "repeated_enum_annotation",
+          fullReq.repeatedEnumAnnotation.map((e) => e),
+        ),
+        ...queryParam(
+          "repeated_enum_value",
+          fullReq.repeatedEnumValue.map((e) => e),
+        ),
+        ...queryParam(
+          "repeated_string_annotation",
+          fullReq.repeatedStringAnnotation.map((e) => e),
+        ),
+        ...queryParam(
+          "repeated_string_value",
+          fullReq.repeatedStringValue.map((e) => e),
+        ),
+        ...queryParam(
+          "required_field_behavior_json_name",
+          fullReq.requiredFieldBehaviorJsonName,
+        ),
+        ...queryParam(
+          "required_field_schema_json_name",
+          fullReq.requiredFieldSchemaJsonName,
+        ),
+        ...queryParam("required_string_field_1", fullReq.requiredStringField1),
+        ...queryParam("required_string_field_2", fullReq.requiredStringField2),
+        ...queryParam(
+          "required_string_via_field_behavior_annotation",
+          fullReq.requiredStringViaFieldBehaviorAnnotation,
+        ),
+        ...queryParam("sfixed32_value", fullReq.sfixed32Value),
+        ...queryParam("sfixed64_value", fullReq.sfixed64Value),
+        ...queryParam("single_nested.amount", fullReq.singleNested?.amount),
+        ...queryParam("single_nested.ok", fullReq.singleNested?.ok),
+        ...queryParam("sint32_value", fullReq.sint32Value),
+        ...queryParam("sint64_value", fullReq.sint64Value),
+        ...queryParam("string_value", fullReq.stringValue),
+        ...queryParam(
+          "timestamp_value",
+          fullReq.timestampValue
+            ? fullReq.timestampValue.toISOString()
+            : undefined,
+        ),
+        ...queryParam("trailing_both", fullReq.trailingBoth),
+        ...queryParam("trailing_multiline", fullReq.trailingMultiline),
+        ...queryParam("trailing_only", fullReq.trailingOnly),
+        ...queryParam("trailing_only_dot", fullReq.trailingOnlyDot),
+        ...queryParam("uint32_value", fullReq.uint32Value),
+        ...queryParam("uint64_value", fullReq.uint64Value),
+        ...queryParam("uuid", fullReq.uuid),
+        ...queryParam(
+          "uuids",
+          fullReq.uuids.map((e) => e),
+        ),
+      ];
       const res = await transport.call({
         path: `/v1/example/a_bit_of_everything/params/get/${pathStr(must(fullReq.singleNested?.name))}`,
         method: "GET",
         headers: headers,
-        queryParams: renderURLSearchParams(req, ["singleNested.name"]),
+        queryParams: queryParams,
       });
       return ABitOfEverything.fromJSON(res);
     },
@@ -630,11 +1082,101 @@ export function newABitOfEverythingService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = ABitOfEverything.fromPartial(req);
+      const queryParams = [
+        ...queryParam("bool_value", fullReq.boolValue),
+        ...queryParam("bytes_value", fullReq.bytesValue),
+        ...queryParam("double_value", fullReq.doubleValue),
+        ...queryParam("enum_value", fullReq.enumValue),
+        ...queryParam("enum_value_annotation", fullReq.enumValueAnnotation),
+        ...queryParam("fixed32_value", fullReq.fixed32Value),
+        ...queryParam("fixed64_value", fullReq.fixed64Value),
+        ...queryParam("float_value", fullReq.floatValue),
+        ...queryParam("int32_value", fullReq.int32Value),
+        ...queryParam("int64_override_type", fullReq.int64OverrideType),
+        ...queryParam("int64_value", fullReq.int64Value),
+        ...queryParam(
+          "nested_annotation.amount",
+          fullReq.nestedAnnotation?.amount,
+        ),
+        ...queryParam("nested_annotation.name", fullReq.nestedAnnotation?.name),
+        ...queryParam("nested_annotation.ok", fullReq.nestedAnnotation?.ok),
+        ...queryParam("nested_path_enum_value", fullReq.nestedPathEnumValue),
+        ...queryParam(
+          "nonConventionalNameValue",
+          fullReq.nonConventionalNameValue,
+        ),
+        ...queryParam("oneof_string", fullReq.oneofString),
+        ...queryParam("optional_string_field", fullReq.optionalStringField),
+        ...queryParam("optional_string_value", fullReq.optionalStringValue),
+        ...queryParam(
+          "output_only_string_via_field_behavior_annotation",
+          fullReq.outputOnlyStringViaFieldBehaviorAnnotation,
+        ),
+        ...queryParam("path_enum_value", fullReq.pathEnumValue),
+        ...queryParam(
+          "product_id",
+          fullReq.productId.map((e) => e),
+        ),
+        ...queryParam(
+          "repeated_enum_annotation",
+          fullReq.repeatedEnumAnnotation.map((e) => e),
+        ),
+        ...queryParam(
+          "repeated_enum_value",
+          fullReq.repeatedEnumValue.map((e) => e),
+        ),
+        ...queryParam(
+          "repeated_string_annotation",
+          fullReq.repeatedStringAnnotation.map((e) => e),
+        ),
+        ...queryParam(
+          "repeated_string_value",
+          fullReq.repeatedStringValue.map((e) => e),
+        ),
+        ...queryParam(
+          "required_field_behavior_json_name",
+          fullReq.requiredFieldBehaviorJsonName,
+        ),
+        ...queryParam(
+          "required_field_schema_json_name",
+          fullReq.requiredFieldSchemaJsonName,
+        ),
+        ...queryParam("required_string_field_1", fullReq.requiredStringField1),
+        ...queryParam("required_string_field_2", fullReq.requiredStringField2),
+        ...queryParam(
+          "required_string_via_field_behavior_annotation",
+          fullReq.requiredStringViaFieldBehaviorAnnotation,
+        ),
+        ...queryParam("sfixed32_value", fullReq.sfixed32Value),
+        ...queryParam("sfixed64_value", fullReq.sfixed64Value),
+        ...queryParam("single_nested.amount", fullReq.singleNested?.amount),
+        ...queryParam("single_nested.name", fullReq.singleNested?.name),
+        ...queryParam("sint32_value", fullReq.sint32Value),
+        ...queryParam("sint64_value", fullReq.sint64Value),
+        ...queryParam("string_value", fullReq.stringValue),
+        ...queryParam(
+          "timestamp_value",
+          fullReq.timestampValue
+            ? fullReq.timestampValue.toISOString()
+            : undefined,
+        ),
+        ...queryParam("trailing_both", fullReq.trailingBoth),
+        ...queryParam("trailing_multiline", fullReq.trailingMultiline),
+        ...queryParam("trailing_only", fullReq.trailingOnly),
+        ...queryParam("trailing_only_dot", fullReq.trailingOnlyDot),
+        ...queryParam("uint32_value", fullReq.uint32Value),
+        ...queryParam("uint64_value", fullReq.uint64Value),
+        ...queryParam("uuid", fullReq.uuid),
+        ...queryParam(
+          "uuids",
+          fullReq.uuids.map((e) => e),
+        ),
+      ];
       const res = await transport.call({
         path: `/v1/example/a_bit_of_everything/params/get/nested_enum/${pathStr(must(fullReq.singleNested?.ok))}`,
         method: "GET",
         headers: headers,
-        queryParams: renderURLSearchParams(req, ["singleNested.ok"]),
+        queryParams: queryParams,
       });
       return ABitOfEverything.fromJSON(res);
     },
@@ -647,18 +1189,101 @@ export function newABitOfEverythingService(
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = ABitOfEverything.fromPartial(req);
+      const queryParams = [
+        ...queryParam("bool_value", fullReq.boolValue),
+        ...queryParam("bytes_value", fullReq.bytesValue),
+        ...queryParam("double_value", fullReq.doubleValue),
+        ...queryParam("enum_value", fullReq.enumValue),
+        ...queryParam("enum_value_annotation", fullReq.enumValueAnnotation),
+        ...queryParam("fixed32_value", fullReq.fixed32Value),
+        ...queryParam("fixed64_value", fullReq.fixed64Value),
+        ...queryParam("float_value", fullReq.floatValue),
+        ...queryParam("int32_value", fullReq.int32Value),
+        ...queryParam("int64_override_type", fullReq.int64OverrideType),
+        ...queryParam("int64_value", fullReq.int64Value),
+        ...queryParam(
+          "nested_annotation.amount",
+          fullReq.nestedAnnotation?.amount,
+        ),
+        ...queryParam("nested_annotation.name", fullReq.nestedAnnotation?.name),
+        ...queryParam("nested_annotation.ok", fullReq.nestedAnnotation?.ok),
+        ...queryParam("nested_path_enum_value", fullReq.nestedPathEnumValue),
+        ...queryParam(
+          "nonConventionalNameValue",
+          fullReq.nonConventionalNameValue,
+        ),
+        ...queryParam("oneof_string", fullReq.oneofString),
+        ...queryParam("optional_string_field", fullReq.optionalStringField),
+        ...queryParam("optional_string_value", fullReq.optionalStringValue),
+        ...queryParam(
+          "output_only_string_via_field_behavior_annotation",
+          fullReq.outputOnlyStringViaFieldBehaviorAnnotation,
+        ),
+        ...queryParam("path_enum_value", fullReq.pathEnumValue),
+        ...queryParam(
+          "product_id",
+          fullReq.productId.map((e) => e),
+        ),
+        ...queryParam(
+          "repeated_enum_annotation",
+          fullReq.repeatedEnumAnnotation.map((e) => e),
+        ),
+        ...queryParam(
+          "repeated_enum_value",
+          fullReq.repeatedEnumValue.map((e) => e),
+        ),
+        ...queryParam(
+          "repeated_string_annotation",
+          fullReq.repeatedStringAnnotation.map((e) => e),
+        ),
+        ...queryParam(
+          "repeated_string_value",
+          fullReq.repeatedStringValue.map((e) => e),
+        ),
+        ...queryParam(
+          "required_field_behavior_json_name",
+          fullReq.requiredFieldBehaviorJsonName,
+        ),
+        ...queryParam(
+          "required_field_schema_json_name",
+          fullReq.requiredFieldSchemaJsonName,
+        ),
+        ...queryParam("required_string_field_1", fullReq.requiredStringField1),
+        ...queryParam("required_string_field_2", fullReq.requiredStringField2),
+        ...queryParam(
+          "required_string_via_field_behavior_annotation",
+          fullReq.requiredStringViaFieldBehaviorAnnotation,
+        ),
+        ...queryParam("sfixed32_value", fullReq.sfixed32Value),
+        ...queryParam("sfixed64_value", fullReq.sfixed64Value),
+        ...queryParam("sint32_value", fullReq.sint32Value),
+        ...queryParam("sint64_value", fullReq.sint64Value),
+        ...queryParam(
+          "timestamp_value",
+          fullReq.timestampValue
+            ? fullReq.timestampValue.toISOString()
+            : undefined,
+        ),
+        ...queryParam("trailing_both", fullReq.trailingBoth),
+        ...queryParam("trailing_multiline", fullReq.trailingMultiline),
+        ...queryParam("trailing_only", fullReq.trailingOnly),
+        ...queryParam("trailing_only_dot", fullReq.trailingOnlyDot),
+        ...queryParam("uint32_value", fullReq.uint32Value),
+        ...queryParam("uint64_value", fullReq.uint64Value),
+        ...queryParam("uuid", fullReq.uuid),
+        ...queryParam(
+          "uuids",
+          fullReq.uuids.map((e) => e),
+        ),
+      ];
       const body: any = ABitOfEverything_Nested.toJSON(
         must(fullReq.singleNested),
       );
-      delete body.string_value;
       const res = await transport.call({
         path: `/v1/example/a_bit_of_everything/params/post/${pathStr(must(fullReq.stringValue))}`,
         method: "POST",
         headers: headers,
-        queryParams: renderURLSearchParams(req, [
-          "stringValue",
-          "singleNested",
-        ]),
+        queryParams: queryParams,
         body: JSON.stringify(body),
       });
       return ABitOfEverything.fromJSON(res);
@@ -694,7 +1319,6 @@ export function newABitOfEverythingService(
         path: `/v2/example/overwriteresponsecontenttype`,
         method: "GET",
         headers: headers,
-        queryParams: renderURLSearchParams(req, []),
       });
       return StringValue.fromJSON(res);
     },
@@ -711,7 +1335,6 @@ export function newABitOfEverythingService(
         path: `/v2/${pathStr(must(fullReq.value))}:check`,
         method: "GET",
         headers: headers,
-        queryParams: renderURLSearchParams(req, ["value"]),
       });
       return Empty.fromJSON(res);
     },
@@ -728,7 +1351,6 @@ export function newABitOfEverythingService(
         path: `/v3/${pathStr(must(fullReq.value))}:check`,
         method: "GET",
         headers: headers,
-        queryParams: renderURLSearchParams(req, ["value"]),
       });
       return Empty.fromJSON(res);
     },
@@ -745,7 +1367,6 @@ export function newABitOfEverythingService(
         path: `/v1/example/checkStatus`,
         method: "GET",
         headers: headers,
-        queryParams: renderURLSearchParams(req, []),
       });
       return CheckStatusResponse.fromJSON(res);
     },
@@ -763,7 +1384,6 @@ export function newABitOfEverythingService(
         path: `/v1/example/oneofenum`,
         method: "POST",
         headers: headers,
-        queryParams: renderURLSearchParams(req, ["exampleEnum"]),
         body: JSON.stringify(body),
       });
       return Empty.fromJSON(res);
@@ -787,6 +1407,16 @@ export function newABitOfEverythingService(
       return Empty.fromJSON(res);
     },
   };
+}
+
+// // camelCase and lowercase service names are valid but not recommended (use TitleCase instead)
+// service camelCaseServiceName {
+//   rpc Empty(google.protobuf.Empty) returns (google.protobuf.Empty) {
+//     option (google.api.http) = {get: "/v2/example/empty"};
+//   }
+// }
+export interface AnotherServiceWithNoBindingsClient {
+  noBindings(req: DeepPartial<Empty>, options?: CallOptions): Promise<Empty>;
 }
 
 // // camelCase and lowercase service names are valid but not recommended (use TitleCase instead)
@@ -819,6 +1449,13 @@ export function newAnotherServiceWithNoBindings(
   };
 }
 
+export interface SnakeEnumServiceClient {
+  snakeEnum(
+    req: DeepPartial<SnakeEnumRequest>,
+    options?: CallOptions,
+  ): Promise<SnakeEnumResponse>;
+}
+
 export function newSnakeEnumService(
   transport: Transport,
 ): SnakeEnumServiceClient {
@@ -835,7 +1472,6 @@ export function newSnakeEnumService(
         path: `/v1/example/snake/${pathStr(must(fullReq.who))}/${pathStr(must(fullReq.what))}/${pathStr(must(fullReq.where))}`,
         method: "GET",
         headers: headers,
-        queryParams: renderURLSearchParams(req, ["who", "what", "where"]),
       });
       return SnakeEnumResponse.fromJSON(res);
     },

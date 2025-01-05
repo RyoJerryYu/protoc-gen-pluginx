@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 TEST_DIR=$(dirname $0)
 cd $TEST_DIR
 

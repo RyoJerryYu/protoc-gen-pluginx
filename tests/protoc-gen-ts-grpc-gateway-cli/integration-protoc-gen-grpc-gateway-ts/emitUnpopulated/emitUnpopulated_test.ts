@@ -49,7 +49,7 @@ describe("test with emit unpopulated", () => {
     fetchTransport("http://localhost:8081"),
   );
   it("http get request with optional fields", async () => {
-    const result = await CounterService.hTTPGetWithOptionalFields({});
+    const result = await CounterService.httpgetWithOptionalFields({});
 
     const expected: OptionalFieldsResponse = {
       emptyStr: "",

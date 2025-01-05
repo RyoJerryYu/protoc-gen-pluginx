@@ -2,10 +2,9 @@
 // versions:
 //   protoc-gen-ts_proto  v2.3.0
 //   protoc               unknown
-// source: proto/bodyjson/bodyjson.proto
+// source: proto/paramtest/bodyjson.proto
 
 /* eslint-disable */
-import { type CallContext, type CallOptions } from "nice-grpc-common";
 import { Any } from "../../google/protobuf/any";
 import { Duration } from "../../google/protobuf/duration";
 import { Empty } from "../../google/protobuf/empty";
@@ -13,27 +12,27 @@ import { FieldMask } from "../../google/protobuf/field_mask";
 import { Timestamp } from "../../google/protobuf/timestamp";
 import { ABitOfEverything } from "../examplepb/a_bit_of_everything";
 
-export const protobufPackage = "proto.bodyjson";
+export const protobufPackage = "proto.paramtest";
 
 export interface WellKnownTypesHolder {
   payloadCheck: string;
-  any?: Any | undefined;
-  empty?: Empty | undefined;
-  struct?: { [key: string]: any } | undefined;
-  value?: any | undefined;
-  listValue?: Array<any> | undefined;
-  timestamp?: Date | undefined;
-  duration?: Duration | undefined;
-  fieldMask?: string[] | undefined;
-  boolValue?: boolean | undefined;
-  int32Value?: number | undefined;
-  uint32Value?: number | undefined;
-  int64Value?: number | undefined;
-  uint64Value?: number | undefined;
-  stringValue?: string | undefined;
-  bytesValue?: Uint8Array | undefined;
-  doubleValue?: number | undefined;
-  floatValue?: number | undefined;
+  any: Any | undefined;
+  empty: Empty | undefined;
+  struct: { [key: string]: any } | undefined;
+  value: any | undefined;
+  listValue: Array<any> | undefined;
+  timestamp: Date | undefined;
+  duration: Duration | undefined;
+  fieldMask: string[] | undefined;
+  boolValue: boolean | undefined;
+  int32Value: number | undefined;
+  uint32Value: number | undefined;
+  int64Value: number | undefined;
+  uint64Value: number | undefined;
+  stringValue: string | undefined;
+  bytesValue: Uint8Array | undefined;
+  doubleValue: number | undefined;
+  floatValue: number | undefined;
 }
 
 function createBaseWellKnownTypesHolder(): WellKnownTypesHolder {
@@ -62,15 +61,15 @@ function createBaseWellKnownTypesHolder(): WellKnownTypesHolder {
 export const WellKnownTypesHolder: MessageFns<WellKnownTypesHolder> = {
   fromJSON(object: any): WellKnownTypesHolder {
     return {
-      payloadCheck: isSet(object.payload_check)
-        ? globalThis.String(object.payload_check)
+      payloadCheck: isSet(object.payloadCheck)
+        ? globalThis.String(object.payloadCheck)
         : "",
       any: isSet(object.any) ? Any.fromJSON(object.any) : undefined,
       empty: isSet(object.empty) ? Empty.fromJSON(object.empty) : undefined,
       struct: isObject(object.struct) ? object.struct : undefined,
       value: isSet(object?.value) ? object.value : undefined,
-      listValue: globalThis.Array.isArray(object.list_value)
-        ? [...object.list_value]
+      listValue: globalThis.Array.isArray(object.listValue)
+        ? [...object.listValue]
         : undefined,
       timestamp: isSet(object.timestamp)
         ? fromJsonTimestamp(object.timestamp)
@@ -78,35 +77,35 @@ export const WellKnownTypesHolder: MessageFns<WellKnownTypesHolder> = {
       duration: isSet(object.duration)
         ? Duration.fromJSON(object.duration)
         : undefined,
-      fieldMask: isSet(object.field_mask)
-        ? FieldMask.unwrap(FieldMask.fromJSON(object.field_mask))
+      fieldMask: isSet(object.fieldMask)
+        ? FieldMask.unwrap(FieldMask.fromJSON(object.fieldMask))
         : undefined,
-      boolValue: isSet(object.bool_value)
-        ? Boolean(object.bool_value)
+      boolValue: isSet(object.boolValue)
+        ? Boolean(object.boolValue)
         : undefined,
-      int32Value: isSet(object.int32_value)
-        ? Number(object.int32_value)
+      int32Value: isSet(object.int32Value)
+        ? Number(object.int32Value)
         : undefined,
-      uint32Value: isSet(object.uint32_value)
-        ? Number(object.uint32_value)
+      uint32Value: isSet(object.uint32Value)
+        ? Number(object.uint32Value)
         : undefined,
-      int64Value: isSet(object.int64_value)
-        ? Number(object.int64_value)
+      int64Value: isSet(object.int64Value)
+        ? Number(object.int64Value)
         : undefined,
-      uint64Value: isSet(object.uint64_value)
-        ? Number(object.uint64_value)
+      uint64Value: isSet(object.uint64Value)
+        ? Number(object.uint64Value)
         : undefined,
-      stringValue: isSet(object.string_value)
-        ? String(object.string_value)
+      stringValue: isSet(object.stringValue)
+        ? String(object.stringValue)
         : undefined,
-      bytesValue: isSet(object.bytes_value)
-        ? new Uint8Array(object.bytes_value)
+      bytesValue: isSet(object.bytesValue)
+        ? new Uint8Array(object.bytesValue)
         : undefined,
-      doubleValue: isSet(object.double_value)
-        ? Number(object.double_value)
+      doubleValue: isSet(object.doubleValue)
+        ? Number(object.doubleValue)
         : undefined,
-      floatValue: isSet(object.float_value)
-        ? Number(object.float_value)
+      floatValue: isSet(object.floatValue)
+        ? Number(object.floatValue)
         : undefined,
     };
   },
@@ -114,7 +113,7 @@ export const WellKnownTypesHolder: MessageFns<WellKnownTypesHolder> = {
   toJSON(message: WellKnownTypesHolder): unknown {
     const obj: any = {};
     if (message.payloadCheck !== "") {
-      obj.payload_check = message.payloadCheck;
+      obj.payloadCheck = message.payloadCheck;
     }
     if (message.any !== undefined) {
       obj.any = Any.toJSON(message.any);
@@ -129,7 +128,7 @@ export const WellKnownTypesHolder: MessageFns<WellKnownTypesHolder> = {
       obj.value = message.value;
     }
     if (message.listValue !== undefined) {
-      obj.list_value = message.listValue;
+      obj.listValue = message.listValue;
     }
     if (message.timestamp !== undefined) {
       obj.timestamp = message.timestamp.toISOString();
@@ -138,34 +137,34 @@ export const WellKnownTypesHolder: MessageFns<WellKnownTypesHolder> = {
       obj.duration = Duration.toJSON(message.duration);
     }
     if (message.fieldMask !== undefined) {
-      obj.field_mask = FieldMask.toJSON(FieldMask.wrap(message.fieldMask));
+      obj.fieldMask = FieldMask.toJSON(FieldMask.wrap(message.fieldMask));
     }
     if (message.boolValue !== undefined) {
-      obj.bool_value = message.boolValue;
+      obj.boolValue = message.boolValue;
     }
     if (message.int32Value !== undefined) {
-      obj.int32_value = message.int32Value;
+      obj.int32Value = message.int32Value;
     }
     if (message.uint32Value !== undefined) {
-      obj.uint32_value = message.uint32Value;
+      obj.uint32Value = message.uint32Value;
     }
     if (message.int64Value !== undefined) {
-      obj.int64_value = message.int64Value;
+      obj.int64Value = message.int64Value;
     }
     if (message.uint64Value !== undefined) {
-      obj.uint64_value = message.uint64Value;
+      obj.uint64Value = message.uint64Value;
     }
     if (message.stringValue !== undefined) {
-      obj.string_value = message.stringValue;
+      obj.stringValue = message.stringValue;
     }
     if (message.bytesValue !== undefined) {
-      obj.bytes_value = message.bytesValue;
+      obj.bytesValue = message.bytesValue;
     }
     if (message.doubleValue !== undefined) {
-      obj.double_value = message.doubleValue;
+      obj.doubleValue = message.doubleValue;
     }
     if (message.floatValue !== undefined) {
-      obj.float_value = message.floatValue;
+      obj.floatValue = message.floatValue;
     }
     return obj;
   },
@@ -210,7 +209,7 @@ export const WellKnownTypesHolder: MessageFns<WellKnownTypesHolder> = {
 export type BodyJSONServiceDefinition = typeof BodyJSONServiceDefinition;
 export const BodyJSONServiceDefinition = {
   name: "BodyJSONService",
-  fullName: "proto.bodyjson.BodyJSONService",
+  fullName: "proto.paramtest.BodyJSONService",
   methods: {
     postEnumBody: {
       name: "PostEnumBody",
@@ -301,6 +300,62 @@ export const BodyJSONServiceDefinition = {
               49, 47, 98, 111, 100, 121, 106, 115, 111, 110, 47, 114, 101, 112,
               101, 97, 116, 101, 100, 115, 116, 114, 105, 110, 103, 98, 111,
               100, 121,
+            ]),
+          ],
+        },
+      },
+    },
+    postMapMessageBody: {
+      name: "PostMapMessageBody",
+      requestType: ABitOfEverything,
+      requestStream: false,
+      responseType: ABitOfEverything,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              50, 58, 19, 109, 97, 112, 112, 101, 100, 95, 110, 101, 115, 116,
+              101, 100, 95, 118, 97, 108, 117, 101, 34, 27, 47, 118, 49, 47, 98,
+              111, 100, 121, 106, 115, 111, 110, 47, 109, 97, 112, 109, 101,
+              115, 115, 97, 103, 101, 98, 111, 100, 121,
+            ]),
+          ],
+        },
+      },
+    },
+    postMapEnumBody: {
+      name: "PostMapEnumBody",
+      requestType: ABitOfEverything,
+      requestStream: false,
+      responseType: ABitOfEverything,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              37, 58, 9, 109, 97, 112, 95, 118, 97, 108, 117, 101, 34, 24, 47,
+              118, 49, 47, 98, 111, 100, 121, 106, 115, 111, 110, 47, 109, 97,
+              112, 101, 110, 117, 109, 98, 111, 100, 121,
+            ]),
+          ],
+        },
+      },
+    },
+    postMapStringBody: {
+      name: "PostMapStringBody",
+      requestType: ABitOfEverything,
+      requestStream: false,
+      responseType: ABitOfEverything,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              49, 58, 19, 109, 97, 112, 112, 101, 100, 95, 115, 116, 114, 105,
+              110, 103, 95, 118, 97, 108, 117, 101, 34, 26, 47, 118, 49, 47, 98,
+              111, 100, 121, 106, 115, 111, 110, 47, 109, 97, 112, 115, 116,
+              114, 105, 110, 103, 98, 111, 100, 121,
             ]),
           ],
         },
@@ -417,99 +472,123 @@ export const BodyJSONServiceDefinition = {
   },
 } as const;
 
-export interface BodyJSONServiceImplementation<CallContextExt = {}> {
-  postEnumBody(
-    request: ABitOfEverything,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<ABitOfEverything>>;
-  postStringBody(
-    request: ABitOfEverything,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<ABitOfEverything>>;
-  postRepeatedMessageBody(
-    request: ABitOfEverything,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<ABitOfEverything>>;
-  postRepeatedEnumBody(
-    request: ABitOfEverything,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<ABitOfEverything>>;
-  postRepeatedStringBody(
-    request: ABitOfEverything,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<ABitOfEverything>>;
-  postTimestampBody(
-    request: WellKnownTypesHolder,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<WellKnownTypesHolder>>;
-  postFieldMaskBody(
-    request: WellKnownTypesHolder,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<WellKnownTypesHolder>>;
-  postStructBody(
-    request: WellKnownTypesHolder,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<WellKnownTypesHolder>>;
-  postValueBody(
-    request: WellKnownTypesHolder,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<WellKnownTypesHolder>>;
-  postListValueBody(
-    request: WellKnownTypesHolder,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<WellKnownTypesHolder>>;
-  postWrapperBody(
-    request: WellKnownTypesHolder,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<WellKnownTypesHolder>>;
-}
-
-export interface BodyJSONServiceClient<CallOptionsExt = {}> {
-  postEnumBody(
-    request: DeepPartial<ABitOfEverything>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<ABitOfEverything>;
-  postStringBody(
-    request: DeepPartial<ABitOfEverything>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<ABitOfEverything>;
-  postRepeatedMessageBody(
-    request: DeepPartial<ABitOfEverything>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<ABitOfEverything>;
-  postRepeatedEnumBody(
-    request: DeepPartial<ABitOfEverything>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<ABitOfEverything>;
-  postRepeatedStringBody(
-    request: DeepPartial<ABitOfEverything>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<ABitOfEverything>;
-  postTimestampBody(
-    request: DeepPartial<WellKnownTypesHolder>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<WellKnownTypesHolder>;
-  postFieldMaskBody(
-    request: DeepPartial<WellKnownTypesHolder>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<WellKnownTypesHolder>;
-  postStructBody(
-    request: DeepPartial<WellKnownTypesHolder>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<WellKnownTypesHolder>;
-  postValueBody(
-    request: DeepPartial<WellKnownTypesHolder>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<WellKnownTypesHolder>;
-  postListValueBody(
-    request: DeepPartial<WellKnownTypesHolder>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<WellKnownTypesHolder>;
-  postWrapperBody(
-    request: DeepPartial<WellKnownTypesHolder>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<WellKnownTypesHolder>;
-}
+export type QueryStringServiceDefinition = typeof QueryStringServiceDefinition;
+export const QueryStringServiceDefinition = {
+  name: "QueryStringService",
+  fullName: "proto.paramtest.QueryStringService",
+  methods: {
+    getEnumQuerystring: {
+      name: "GetEnumQuerystring",
+      requestType: ABitOfEverything,
+      requestStream: false,
+      responseType: ABitOfEverything,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              33, 18, 31, 47, 118, 49, 47, 113, 117, 101, 114, 121, 115, 116,
+              114, 105, 110, 103, 47, 101, 110, 117, 109, 113, 117, 101, 114,
+              121, 115, 116, 114, 105, 110, 103,
+            ]),
+          ],
+        },
+      },
+    },
+    getStringQuerystring: {
+      name: "GetStringQuerystring",
+      requestType: ABitOfEverything,
+      requestStream: false,
+      responseType: ABitOfEverything,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              35, 18, 33, 47, 118, 49, 47, 113, 117, 101, 114, 121, 115, 116,
+              114, 105, 110, 103, 47, 115, 116, 114, 105, 110, 103, 113, 117,
+              101, 114, 121, 115, 116, 114, 105, 110, 103,
+            ]),
+          ],
+        },
+      },
+    },
+    getRepeatedEnumQuerystring: {
+      name: "GetRepeatedEnumQuerystring",
+      requestType: ABitOfEverything,
+      requestStream: false,
+      responseType: ABitOfEverything,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              41, 18, 39, 47, 118, 49, 47, 113, 117, 101, 114, 121, 115, 116,
+              114, 105, 110, 103, 47, 114, 101, 112, 101, 97, 116, 101, 100,
+              101, 110, 117, 109, 113, 117, 101, 114, 121, 115, 116, 114, 105,
+              110, 103,
+            ]),
+          ],
+        },
+      },
+    },
+    getRepeatedStringQuerystring: {
+      name: "GetRepeatedStringQuerystring",
+      requestType: ABitOfEverything,
+      requestStream: false,
+      responseType: ABitOfEverything,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              43, 18, 41, 47, 118, 49, 47, 113, 117, 101, 114, 121, 115, 116,
+              114, 105, 110, 103, 47, 114, 101, 112, 101, 97, 116, 101, 100,
+              115, 116, 114, 105, 110, 103, 113, 117, 101, 114, 121, 115, 116,
+              114, 105, 110, 103,
+            ]),
+          ],
+        },
+      },
+    },
+    getTimestampQuerystring: {
+      name: "GetTimestampQuerystring",
+      requestType: WellKnownTypesHolder,
+      requestStream: false,
+      responseType: WellKnownTypesHolder,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              38, 18, 36, 47, 118, 49, 47, 113, 117, 101, 114, 121, 115, 116,
+              114, 105, 110, 103, 47, 116, 105, 109, 101, 115, 116, 97, 109,
+              112, 113, 117, 101, 114, 121, 115, 116, 114, 105, 110, 103,
+            ]),
+          ],
+        },
+      },
+    },
+    getWrapperQuerystring: {
+      name: "GetWrapperQuerystring",
+      requestType: WellKnownTypesHolder,
+      requestStream: false,
+      responseType: WellKnownTypesHolder,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              36, 18, 34, 47, 118, 49, 47, 113, 117, 101, 114, 121, 115, 116,
+              114, 105, 110, 103, 47, 119, 114, 97, 112, 112, 101, 114, 113,
+              117, 101, 114, 121, 115, 116, 114, 105, 110, 103,
+            ]),
+          ],
+        },
+      },
+    },
+  },
+} as const;
 
 type Builtin =
   | Date

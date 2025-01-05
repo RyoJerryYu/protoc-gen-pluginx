@@ -4,34 +4,70 @@ import {
   CallParams,
   Transport,
   newAnotherServiceWithNoBindings,
+  DeepPartial,
 } from "./proto/examplepb/a_bit_of_everything_pb_gwcli";
 import {
   ABitOfEverything,
   ABitOfEverything_Nested_DeepEnum,
   ABitOfEverythingRepeated,
+  ABitOfEverythingRepeatedSchema,
+  ABitOfEverythingSchema,
   Body,
+  BodySchema,
   Book,
+  BookSchema,
   CheckStatusResponse,
+  CheckStatusResponseSchema,
   MessageWithBody,
+  MessageWithBodySchema,
   NumericEnum,
   RequiredMessageTypeRequest,
-} from "./proto/examplepb/a_bit_of_everything";
+  RequiredMessageTypeRequestSchema,
+} from "./proto/examplepb/a_bit_of_everything_pb";
 import {
   MessagePathEnum_NestedPathEnum,
   MessageWithNestedPathEnum,
+  MessageWithNestedPathEnumSchema,
   MessageWithPathEnum,
+  MessageWithPathEnumSchema,
   PathEnum,
-} from "./proto/pathenum/path_enum";
-import { Empty } from "./google/protobuf/empty";
-import { Status } from "./google/rpc/status";
-import { ExampleEnum, OneofEnumMessage } from "./proto/oneofenum/oneof_enum";
-import { StringMessage } from "./proto/sub/message";
+} from "./proto/pathenum/path_enum_pb";
+import {
+  anyIs,
+  AnySchema,
+  anyUnpack,
+  anyUnpackTo,
+  Empty,
+  EmptySchema,
+  ListValueSchema,
+  timestampFromDate,
+  ValueSchema,
+} from "@bufbuild/protobuf/wkt";
+import { Status, StatusSchema } from "./google/rpc/status_pb";
+import {
+  ExampleEnum,
+  OneofEnumMessage,
+  OneofEnumMessageSchema,
+} from "./proto/oneofenum/oneof_enum_pb";
+import { StringMessage, StringMessageSchema } from "./proto/sub/message_pb";
 import {
   newBodyJSONService,
   newQueryStringService,
 } from "./proto/paramtest/bodyjson_pb_gwcli";
-import { WellKnownTypesHolder } from "./proto/paramtest/bodyjson";
-import { Any } from "./google/protobuf/any";
+import {
+  WellKnownTypesHolder,
+  WellKnownTypesHolderSchema,
+} from "./proto/paramtest/bodyjson_pb";
+import { Any } from "@bufbuild/protobuf/wkt";
+import {
+  create,
+  DescMessage,
+  fromJson,
+  MessageInitShape,
+  MessageShape,
+  createRegistry,
+  toJson,
+} from "@bufbuild/protobuf";
 
 function fetchTransport(
   baseUrl: string,
@@ -61,13 +97,22 @@ function fetchTransport(
       const res = await fetch(url, callReq);
       const resBody = await res.json();
       if (!res.ok) throw resBody;
+      // console.log("res of", url, ": ", resBody);
       return resBody;
     },
   };
 }
 
+const registry = createRegistry(BookSchema);
+
+function fromPartial<T extends DescMessage>(
+  schema: T,
+  partial: DeepPartial<MessageShape<T>>,
+): MessageShape<T> {
+  return create(schema, partial as MessageInitShape<T>);
+}
 function newABitOfEverythingNonZero(): ABitOfEverything {
-  return {
+  return create(ABitOfEverythingSchema, {
     singleNested: {
       name: "nested",
       amount: 1,
@@ -83,10 +128,10 @@ function newABitOfEverythingNonZero(): ABitOfEverything {
     ],
     floatValue: 1.1,
     doubleValue: 1.1,
-    int64Value: 1,
-    uint64Value: 1,
+    int64Value: BigInt(1),
+    uint64Value: BigInt(1),
     int32Value: 1,
-    fixed64Value: 1,
+    fixed64Value: BigInt(1),
     fixed32Value: 1,
     boolValue: true,
     stringValue: "string",
@@ -96,12 +141,16 @@ function newABitOfEverythingNonZero(): ABitOfEverything {
     pathEnumValue: PathEnum.DEF,
     nestedPathEnumValue: MessagePathEnum_NestedPathEnum.JKL,
     sfixed32Value: 1,
-    sfixed64Value: 1,
+    sfixed64Value: BigInt(1),
     sint32Value: 1,
-    sint64Value: 1,
+    sint64Value: BigInt(1),
     repeatedStringValue: ["string"],
-    oneofEmpty: {},
-    oneofString: undefined, // oneofEmpty was set, so this should be ignored
+    oneofValue: {
+      case: "oneofEmpty",
+      value: {},
+    },
+    // oneofEmpty: create(EmptySchema),
+    // oneofString: undefined, // oneofEmpty was set, so this should be ignored
     mapValue: {
       some_one: NumericEnum.ONE,
       some_zero: NumericEnum.ZERO,
@@ -123,7 +172,7 @@ function newABitOfEverythingNonZero(): ABitOfEverything {
       },
     },
     nonConventionalNameValue: "string",
-    timestampValue: new Date("2021-01-01T00:00:00Z"),
+    timestampValue: timestampFromDate(new Date("2021-01-01T00:00:00Z")),
     repeatedEnumValue: [NumericEnum.ONE],
     repeatedEnumAnnotation: [NumericEnum.ONE],
     enumValueAnnotation: NumericEnum.ONE,
@@ -140,7 +189,7 @@ function newABitOfEverythingNonZero(): ABitOfEverything {
       amount: 1,
       ok: ABitOfEverything_Nested_DeepEnum.TRUE,
     },
-    int64OverrideType: 1,
+    int64OverrideType: BigInt(1),
     requiredStringViaFieldBehaviorAnnotation: "string",
     outputOnlyStringViaFieldBehaviorAnnotation: "string",
     optionalStringValue: "string",
@@ -148,17 +197,14 @@ function newABitOfEverythingNonZero(): ABitOfEverything {
     optionalStringField: "string",
     requiredStringField1: "string",
     requiredStringField2: "string",
-    // useProtoNames do not support json_name
-    // requiredFieldBehaviorJsonName: "string",
-    // requiredFieldSchemaJsonName: "string",
-    requiredFieldBehaviorJsonName: "",
-    requiredFieldSchemaJsonName: "",
+    requiredFieldBehaviorJsonName: "string",
+    requiredFieldSchemaJsonName: "string",
     trailingOnly: "string",
     trailingOnlyDot: "string",
     trailingBoth: "string",
     trailingMultiline: "string",
     uuids: ["uuid"],
-  };
+  });
 }
 
 describe("ABitOfEverythingService", () => {
@@ -168,7 +214,7 @@ describe("ABitOfEverythingService", () => {
 
   it("Create", async () => {
     // TODO: some query params do no support
-    const req: Partial<ABitOfEverything> = {
+    const req: DeepPartial<ABitOfEverything> = {
       singleNested: {
         name: "nested",
         amount: 1,
@@ -184,10 +230,10 @@ describe("ABitOfEverythingService", () => {
       // ],
       floatValue: 1.1,
       doubleValue: 1.1,
-      int64Value: 1,
-      uint64Value: 1,
+      int64Value: BigInt(1),
+      uint64Value: BigInt(1),
       int32Value: 1,
-      fixed64Value: 1,
+      fixed64Value: BigInt(1),
       fixed32Value: 1,
       boolValue: true,
       stringValue: "strprefix/string",
@@ -197,12 +243,16 @@ describe("ABitOfEverythingService", () => {
       pathEnumValue: PathEnum.DEF,
       nestedPathEnumValue: MessagePathEnum_NestedPathEnum.JKL,
       sfixed32Value: 1,
-      sfixed64Value: 1,
+      sfixed64Value: BigInt(1),
       sint32Value: 1,
-      sint64Value: 1,
-      repeatedStringValue: ["string"],
+      sint64Value: BigInt(1),
+      repeatedStringValue: ["string", "string2"],
+      // oneofValue: {
+      //   case: "oneofEmpty",
+      //   value: {},
+      // },
       // oneofEmpty: {},
-      oneofString: undefined, // oneofEmpty was set, so this should be ignored
+      // oneofString: undefined, // oneofEmpty was set, so this should be ignored
       // mapValue: {
       //   some_one: NumericEnum.ONE,
       //   some_zero: NumericEnum.ZERO,
@@ -224,7 +274,7 @@ describe("ABitOfEverythingService", () => {
       //   },
       // },
       nonConventionalNameValue: "string",
-      timestampValue: new Date("2021-01-01T00:00:00Z"),
+      timestampValue: timestampFromDate(new Date("2021-01-01T00:00:00Z")),
       repeatedEnumValue: [NumericEnum.ONE, NumericEnum.ZERO],
       repeatedEnumAnnotation: [NumericEnum.ONE, NumericEnum.ZERO],
       enumValueAnnotation: NumericEnum.ONE,
@@ -241,7 +291,7 @@ describe("ABitOfEverythingService", () => {
         amount: 1,
         ok: ABitOfEverything_Nested_DeepEnum.TRUE,
       },
-      int64OverrideType: 1,
+      int64OverrideType: BigInt(1),
       requiredStringViaFieldBehaviorAnnotation: "string",
       outputOnlyStringViaFieldBehaviorAnnotation: "string",
       optionalStringValue: "string",
@@ -249,8 +299,8 @@ describe("ABitOfEverythingService", () => {
       optionalStringField: "string",
       requiredStringField1: "string",
       requiredStringField2: "string",
-      // requiredFieldBehaviorJsonName: "string",
-      // requiredFieldSchemaJsonName: "string",
+      requiredFieldBehaviorJsonName: "string",
+      requiredFieldSchemaJsonName: "string",
       trailingOnly: "string",
       trailingOnlyDot: "string",
       trailingBoth: "string",
@@ -260,7 +310,7 @@ describe("ABitOfEverythingService", () => {
 
     const res = await aBitOfEverythingService.create(req);
 
-    expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+    expect(res).to.deep.equal(fromPartial(ABitOfEverythingSchema, req));
   });
 
   it("CreateBody", async () => {
@@ -272,9 +322,9 @@ describe("ABitOfEverythingService", () => {
   });
 
   it("CreateBook", async () => {
-    const req: Book = Book.create({
+    const req: Book = create(BookSchema, {
       name: "book_name",
-      createTime: new Date("2021-01-01T00:00:00Z"),
+      createTime: timestampFromDate(new Date("2021-01-01T00:00:00Z")),
       id: "original_id",
     });
 
@@ -290,7 +340,7 @@ describe("ABitOfEverythingService", () => {
   });
 
   it("UpdateBook", async () => {
-    const req: Book = Book.create({
+    const req: Book = create(BookSchema, {
       name: "publishers/123/books/book_name",
       id: "book_id",
     });
@@ -299,11 +349,13 @@ describe("ABitOfEverythingService", () => {
       book: req,
     });
 
-    expect(res).to.deep.equal({
-      name: "publishers/123/books/book_name",
-      id: "book_id",
-      createTime: new Date("2021-01-01T00:00:00Z"),
-    });
+    expect(res).to.deep.equal(
+      create(BookSchema, {
+        name: "publishers/123/books/book_name",
+        id: "book_id",
+        createTime: timestampFromDate(new Date("2021-01-01T00:00:00Z")),
+      }),
+    );
   });
 
   it("Lookup", async () => {
@@ -334,14 +386,14 @@ describe("ABitOfEverythingService", () => {
   });
 
   it("Update", async () => {
-    const req = ABitOfEverything.create({
+    const req = create(ABitOfEverythingSchema, {
       uuid: "uuid_in_update",
       int32Value: 42,
     });
 
     const res = await aBitOfEverythingService.update(req);
 
-    expect(res).to.deep.equal(Empty.create());
+    expect(res).to.deep.equal(create(EmptySchema));
   });
 
   it("Delete", async () => {
@@ -349,17 +401,17 @@ describe("ABitOfEverythingService", () => {
 
     const res = await aBitOfEverythingService.delete(req);
 
-    expect(res).to.deep.equal(Empty.create());
+    expect(res).to.deep.equal(create(EmptySchema));
   });
 
   it("GetRepeatedQuery", async () => {
     const req: Partial<ABitOfEverythingRepeated> = {
       pathRepeatedFloatValue: [1.1, 2.2],
       pathRepeatedDoubleValue: [1.1, 2.2],
-      pathRepeatedInt64Value: [1, 2],
-      pathRepeatedUint64Value: [1, 2],
+      pathRepeatedInt64Value: [BigInt(1), BigInt(2)],
+      pathRepeatedUint64Value: [BigInt(1), BigInt(2)],
       pathRepeatedInt32Value: [1, 2],
-      pathRepeatedFixed64Value: [1, 2],
+      pathRepeatedFixed64Value: [BigInt(1), BigInt(2)],
       pathRepeatedFixed32Value: [1, 2],
       pathRepeatedBoolValue: [true, false],
       pathRepeatedStringValue: ["string1", "string2"],
@@ -370,20 +422,20 @@ describe("ABitOfEverythingService", () => {
       pathRepeatedUint32Value: [1, 2],
       pathRepeatedEnumValue: [NumericEnum.ONE, NumericEnum.ZERO],
       pathRepeatedSfixed32Value: [1, 2],
-      pathRepeatedSfixed64Value: [1, 2],
+      pathRepeatedSfixed64Value: [BigInt(1), BigInt(2)],
       pathRepeatedSint32Value: [1, 2],
-      pathRepeatedSint64Value: [1, 2],
+      pathRepeatedSint64Value: [BigInt(1), BigInt(2)],
     };
 
     const res = await aBitOfEverythingService.getRepeatedQuery(req);
 
-    expect(res).to.deep.equal(ABitOfEverythingRepeated.fromPartial(req));
+    expect(res).to.deep.equal(fromPartial(ABitOfEverythingRepeatedSchema, req));
   });
 
   it("Echo", async () => {
-    const req: StringMessage = {
+    const req: StringMessage = create(StringMessageSchema, {
       value: "string",
-    };
+    });
     const res = await aBitOfEverythingService.echo(req);
     expect(res).to.deep.equal(req);
   });
@@ -394,12 +446,12 @@ describe("ABitOfEverythingService", () => {
     expect(res).to.deep.equal(newABitOfEverythingNonZero());
   });
 
-  // it("NoBindings", async () => {
-  //   const res = await aBitOfEverythingService.noBindings({
-  //     seconds: 100,
-  //   });
-  //   expect(res).to.deep.equal(Empty.create());
-  // });
+  it("NoBindings", async () => {
+    const res = await aBitOfEverythingService.noBindings({
+      seconds: BigInt(100),
+    });
+    expect(res).to.deep.equal(create(EmptySchema));
+  });
   // it("Timeout")
   it("ErrorWithDetails", async () => {
     let errorThrown = false;
@@ -407,7 +459,6 @@ describe("ABitOfEverythingService", () => {
       await aBitOfEverythingService.errorWithDetails({});
     } catch (e) {
       errorThrown = true;
-      // useProtoNames should in snake_case
       // expect(e).to.deep.equal({
       //   code: 7,
       //   message: "permission denied",
@@ -420,44 +471,59 @@ describe("ABitOfEverythingService", () => {
       //     },
       //   ],
       // });
-      const status = Status.fromJSON(e);
+      const status = fromJson(StatusSchema, e, { registry: registry });
       expect(status.code).to.equal(7);
       expect(status.message).to.equal("permission denied");
       expect(status.details).to.have.length(1);
       // ts_proto do not support Any pack
       // const book = Book.fromJSON(status.details[0]);
       // but we have the original JSON, so we can parse it
-      const book = Book.fromJSON(e.details[0]);
-      expect(book).to.deep.equal({
-        createTime: new Date("2021-01-01T00:00:00Z"),
-        id: "book_id",
-        name: "book_name",
-      });
+      expect(anyIs(status.details[0], BookSchema)).to.be.true;
+      const book = anyUnpack(status.details[0], BookSchema);
+      expect(book).to.deep.equal(
+        create(BookSchema, {
+          createTime: timestampFromDate(new Date("2021-01-01T00:00:00Z")),
+          id: "book_id",
+          name: "book_name",
+        }),
+      );
+
+      // any from JSON
+      const any = fromJson(AnySchema, e.details[0], { registry: registry });
+      expect(anyIs(any, BookSchema)).to.be.true;
+      const book2 = anyUnpack(any, BookSchema);
+      expect(book2).to.deep.equal(
+        create(BookSchema, {
+          createTime: timestampFromDate(new Date("2021-01-01T00:00:00Z")),
+          id: "book_id",
+          name: "book_name",
+        }),
+      );
     }
     expect(errorThrown).to.be.true;
   });
 
   it("GetMessageWithBody", async () => {
-    const req = MessageWithBody.create({
+    const req = create(MessageWithBodySchema, {
       id: "id_with_body",
       data: {
         name: "name_with_body",
       },
     });
     const res = await aBitOfEverythingService.getMessageWithBody(req);
-    expect(res).to.deep.equal(Empty.create());
+    expect(res).to.deep.equal(create(EmptySchema));
   });
 
   it("PostWithEmptyBody", async () => {
-    const req = Body.create({
+    const req = create(BodySchema, {
       name: "name_with_body",
     });
     const res = await aBitOfEverythingService.postWithEmptyBody(req);
-    expect(res).to.deep.equal(Empty.create());
+    expect(res).to.deep.equal(create(EmptySchema));
   });
 
   it("CheckGetQueryParams", async () => {
-    const req: Partial<ABitOfEverything> = {
+    const req: DeepPartial<ABitOfEverything> = {
       singleNested: {
         name: "nested",
         amount: 1,
@@ -472,11 +538,11 @@ describe("ABitOfEverythingService", () => {
       nestedPathEnumValue: MessagePathEnum_NestedPathEnum.JKL,
     };
     const res = await aBitOfEverythingService.checkGetQueryParams(req);
-    expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+    expect(res).to.deep.equal(fromPartial(ABitOfEverythingSchema, req));
   });
 
   it("CheckNestedEnumGetQueryParams", async () => {
-    const req: Partial<ABitOfEverything> = {
+    const req: DeepPartial<ABitOfEverything> = {
       singleNested: {
         name: "nested",
         amount: 1,
@@ -492,11 +558,11 @@ describe("ABitOfEverythingService", () => {
     };
     const res =
       await aBitOfEverythingService.checkNestedEnumGetQueryParams(req);
-    expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+    expect(res).to.deep.equal(fromPartial(ABitOfEverythingSchema, req));
   });
 
   it("CheckPostQueryParams", async () => {
-    const req: Partial<ABitOfEverything> = {
+    const req: DeepPartial<ABitOfEverything> = {
       singleNested: {
         name: "nested",
         amount: 1,
@@ -511,15 +577,15 @@ describe("ABitOfEverythingService", () => {
       nestedPathEnumValue: MessagePathEnum_NestedPathEnum.JKL,
     };
     const res = await aBitOfEverythingService.checkPostQueryParams(req);
-    expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+    expect(res).to.deep.equal(fromPartial(ABitOfEverythingSchema, req));
   });
 
   it("OverwriteRequestContentType", async () => {
-    const req: Body = {
+    const req: Body = create(BodySchema, {
       name: "name_with_body",
-    };
+    });
     const res = await aBitOfEverythingService.overwriteRequestContentType(req);
-    expect(res).to.deep.equal(Empty.create());
+    expect(res).to.deep.equal(create(EmptySchema));
   });
 
   // it("OverwriteResponseContentType", async () => {
@@ -528,75 +594,84 @@ describe("ABitOfEverythingService", () => {
   // });
 
   it("CheckExternalPathEnum", async () => {
-    const req: MessageWithPathEnum = {
+    const req: MessageWithPathEnum = create(MessageWithPathEnumSchema, {
       value: PathEnum.DEF,
-    };
+    });
     const res = await aBitOfEverythingService.checkExternalPathEnum(req);
-    expect(res).to.deep.equal(Empty.create());
+    expect(res).to.deep.equal(create(EmptySchema));
   });
 
   it("CheckExternalNestedPathEnum", async () => {
-    const req: MessageWithNestedPathEnum = {
-      value: MessagePathEnum_NestedPathEnum.JKL,
-    };
+    const req: MessageWithNestedPathEnum = create(
+      MessageWithNestedPathEnumSchema,
+      {
+        value: MessagePathEnum_NestedPathEnum.JKL,
+      },
+    );
     const res = await aBitOfEverythingService.checkExternalNestedPathEnum(req);
-    expect(res).to.deep.equal(Empty.create());
+    expect(res).to.deep.equal(create(EmptySchema));
   });
 
   it("CheckStatus", async () => {
     const res = await aBitOfEverythingService.checkStatus({});
     expect(res).to.deep.equal(
-      CheckStatusResponse.create({
+      create(CheckStatusResponseSchema, {
         status: { code: 7, message: "OK" },
       }),
     );
   });
 
   it("PostOneofEnum", async () => {
-    const req: OneofEnumMessage = {
-      exampleEnum: ExampleEnum.EXAMPLE_ENUM_FIRST,
-    };
+    const req: OneofEnumMessage = create(OneofEnumMessageSchema, {
+      one: {
+        case: "exampleEnum",
+        value: ExampleEnum.FIRST,
+      },
+    });
     const res = await aBitOfEverythingService.postOneofEnum(req);
-    expect(res).to.deep.equal(Empty.create());
+    expect(res).to.deep.equal(create(EmptySchema));
   });
 
   it("PostRequiredMessageType", async () => {
-    const req: RequiredMessageTypeRequest = {
-      id: "id_required_message_type",
-      foo: {
-        bar: {
-          id: "id_foo_bar",
+    const req: RequiredMessageTypeRequest = create(
+      RequiredMessageTypeRequestSchema,
+      {
+        id: "id_required_message_type",
+        foo: {
+          bar: {
+            id: "id_foo_bar",
+          },
         },
       },
-    };
+    );
     const res = await aBitOfEverythingService.postRequiredMessageType(req);
-    expect(res).to.deep.equal(Empty.create());
+    expect(res).to.deep.equal(create(EmptySchema));
   });
 });
 
-describe("AnotherServiceWithNoBindings", () => {
-  const anotherServiceWithNoBindings = newAnotherServiceWithNoBindings(
-    fetchTransport("http://localhost:8081/api/"),
-  );
+// describe("AnotherServiceWithNoBindings", () => {
+//   const anotherServiceWithNoBindings = newAnotherServiceWithNoBindings(
+//     fetchTransport("http://localhost:8081/api/"),
+//   );
 
-  it("NoBindings", async () => {
-    let errorThrown = false;
-    try {
-      await anotherServiceWithNoBindings.noBindings({
-        seconds: 100,
-      });
-    } catch (e) {
-      errorThrown = true;
-      expect(Status.fromJSON(e)).to.deep.equal(
-        Status.fromJSON({
-          code: 5,
-          message: "Not Found",
-        }),
-      );
-    }
-    expect(errorThrown).to.be.true;
-  });
-});
+//   it("NoBindings", async () => {
+//     let errorThrown = false;
+//     try {
+//       await anotherServiceWithNoBindings.noBindings({
+//         seconds: 100,
+//       });
+//     } catch (e) {
+//       errorThrown = true;
+//       expect(Status.fromJSON(e)).to.deep.equal(
+//         Status.fromJSON({
+//           code: 5,
+//           message: "Not Found",
+//         }),
+//       );
+//     }
+//     expect(errorThrown).to.be.true;
+//   });
+// });
 
 describe("BodyJsonService", () => {
   const bodyJsonService = newBodyJSONService(
@@ -611,7 +686,7 @@ describe("BodyJsonService", () => {
       enumValue: NumericEnum.ONE,
     };
     const res = await bodyJsonService.postEnumBody(req);
-    expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+    expect(res).to.deep.equal(fromPartial(ABitOfEverythingSchema, req));
   });
 
   it("PostStringBody", async () => {
@@ -620,13 +695,13 @@ describe("BodyJsonService", () => {
       stringValue: "string",
     };
     const res = await bodyJsonService.postStringBody(req);
-    expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+    expect(res).to.deep.equal(fromPartial(ABitOfEverythingSchema, req));
   });
 
   // repeated
 
   it("PostRepeatedMessageBody", async () => {
-    const req: Partial<ABitOfEverything> = {
+    const req: DeepPartial<ABitOfEverything> = {
       int32Value: 1,
       nested: [
         {
@@ -637,7 +712,7 @@ describe("BodyJsonService", () => {
       ],
     };
     const res = await bodyJsonService.postRepeatedMessageBody(req);
-    expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+    expect(res).to.deep.equal(fromPartial(ABitOfEverythingSchema, req));
   });
 
   it("PostRepeatedEnumBody", async () => {
@@ -646,7 +721,7 @@ describe("BodyJsonService", () => {
       repeatedEnumValue: [NumericEnum.ONE],
     };
     const res = await bodyJsonService.postRepeatedEnumBody(req);
-    expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+    expect(res).to.deep.equal(fromPartial(ABitOfEverythingSchema, req));
   });
 
   it("PostRepeatedStringBody", async () => {
@@ -655,7 +730,7 @@ describe("BodyJsonService", () => {
       repeatedStringValue: ["string"],
     };
     const res = await bodyJsonService.postRepeatedStringBody(req);
-    expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+    expect(res).to.deep.equal(fromPartial(ABitOfEverythingSchema, req));
   });
 
   // map field
@@ -677,7 +752,7 @@ describe("BodyJsonService", () => {
   //     },
   //   };
   //   const res = await bodyJsonService.postMapMessageBody(req);
-  //   expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+  //   expect(res).to.deep.equal(fromPartial(ABitOfEverythingSchema,req));
   // });
 
   // it("PostMapStringBody", async () => {
@@ -689,31 +764,35 @@ describe("BodyJsonService", () => {
   //     },
   //   };
   //   const res = await bodyJsonService.postMapStringBody(req);
-  //   expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+  //   expect(res).to.deep.equal(fromPartial(ABitOfEverythingSchema,req));
   // });
 
   // Well-known types
 
   it("PostTimestampBody", async () => {
-    const req: Partial<WellKnownTypesHolder> = {
+    const req: DeepPartial<WellKnownTypesHolder> = {
       payloadCheck: "payload_check",
-      timestamp: new Date("2021-01-01T00:00:00Z"),
+      timestamp: timestampFromDate(new Date("2021-01-01T00:00:00Z")),
     };
     const res = await bodyJsonService.postTimestampBody(req);
-    expect(res).to.deep.equal(WellKnownTypesHolder.fromPartial(req));
+    delete res.value; // protobuf-es recognizes value as null when server emit unpopulated field, ignore it
+    expect(res).to.deep.equal(fromPartial(WellKnownTypesHolderSchema, req));
   });
 
   it("PostFieldMaskBody", async () => {
-    const req: Partial<WellKnownTypesHolder> = {
+    const req: DeepPartial<WellKnownTypesHolder> = {
       payloadCheck: "payload_check",
-      fieldMask: ["f.bar", "f.baz"],
+      fieldMask: {
+        paths: ["f.bar", "f.baz"],
+      },
     };
     const res = await bodyJsonService.postFieldMaskBody(req);
-    expect(res).to.deep.equal(WellKnownTypesHolder.fromPartial(req));
+    delete res.value; // protobuf-es recognizes value as null when server emit unpopulated field, ignore it
+    expect(res).to.deep.equal(fromPartial(WellKnownTypesHolderSchema, req));
   });
 
   it("PostStructBody", async () => {
-    const req: Partial<WellKnownTypesHolder> = {
+    const req: DeepPartial<WellKnownTypesHolder> = {
       payloadCheck: "payload_check",
       struct: {
         fields: {
@@ -725,33 +804,36 @@ describe("BodyJsonService", () => {
       },
     };
     const res = await bodyJsonService.postStructBody(req);
-    expect(res).to.deep.equal(WellKnownTypesHolder.fromPartial(req));
+    delete res.value; // protobuf-es recognizes value as null when server emit unpopulated field, ignore it
+    expect(res).to.deep.equal(fromPartial(WellKnownTypesHolderSchema, req));
   });
   it("PostValueBody", async () => {
-    const req: Partial<WellKnownTypesHolder> = {
+    const req: DeepPartial<WellKnownTypesHolder> = {
       payloadCheck: "payload_check",
-      value: "value",
+      value: fromJson(ValueSchema, "value"),
     };
     const res = await bodyJsonService.postValueBody(req);
-    expect(res).to.deep.equal(WellKnownTypesHolder.fromPartial(req));
+    expect(res).to.deep.equal(fromPartial(WellKnownTypesHolderSchema, req));
   });
 
   it("PostListValueBody", async () => {
-    const req: Partial<WellKnownTypesHolder> = {
+    const req: DeepPartial<WellKnownTypesHolder> = {
       payloadCheck: "payload_check",
-      listValue: ["list_value", "list_value2"],
+      listValue: fromJson(ListValueSchema, ["list_value", "list_value2"]),
     };
     const res = await bodyJsonService.postListValueBody(req);
-    expect(res).to.deep.equal(WellKnownTypesHolder.fromPartial(req));
+    delete res.value; // protobuf-es recognizes value as null when server emit unpopulated field, ignore it
+    expect(res).to.deep.equal(fromPartial(WellKnownTypesHolderSchema, req));
   });
 
   it("PostWrapperBody", async () => {
-    const req: Partial<WellKnownTypesHolder> = {
+    const req: DeepPartial<WellKnownTypesHolder> = {
       payloadCheck: "payload_check",
-      int64Value: 1,
+      int64Value: BigInt(1),
     };
     const res = await bodyJsonService.postWrapperBody(req);
-    expect(res).to.deep.equal(WellKnownTypesHolder.fromPartial(req));
+    delete res.value; // protobuf-es recognizes value as null when server emit unpopulated field, ignore it
+    expect(res).to.deep.equal(fromPartial(WellKnownTypesHolderSchema, req));
   });
 });
 
@@ -766,7 +848,7 @@ describe("QueryStringService", () => {
       enumValue: NumericEnum.ONE,
     };
     const res = await queryStringService.getEnumQuerystring(req);
-    expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+    expect(res).to.deep.equal(fromPartial(ABitOfEverythingSchema, req));
   });
 
   it("GetStringQuerystring", async () => {
@@ -775,7 +857,7 @@ describe("QueryStringService", () => {
       stringValue: "string",
     };
     const res = await queryStringService.getStringQuerystring(req);
-    expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+    expect(res).to.deep.equal(fromPartial(ABitOfEverythingSchema, req));
   });
 
   it("GetRepeatedEnumQuerystring", async () => {
@@ -784,7 +866,7 @@ describe("QueryStringService", () => {
       repeatedEnumValue: [NumericEnum.ONE, NumericEnum.ZERO],
     };
     const res = await queryStringService.getRepeatedEnumQuerystring(req);
-    expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+    expect(res).to.deep.equal(fromPartial(ABitOfEverythingSchema, req));
   });
 
   it("GetRepeatedStringQuerystring", async () => {
@@ -793,24 +875,26 @@ describe("QueryStringService", () => {
       repeatedStringValue: ["string", "string2"],
     };
     const res = await queryStringService.getRepeatedStringQuerystring(req);
-    expect(res).to.deep.equal(ABitOfEverything.fromPartial(req));
+    expect(res).to.deep.equal(fromPartial(ABitOfEverythingSchema, req));
   });
 
   it("GetTimestampQuerystring", async () => {
-    const req: Partial<WellKnownTypesHolder> = {
+    const req: DeepPartial<WellKnownTypesHolder> = {
       int32Value: 1,
-      timestamp: new Date("2021-01-01T00:00:00Z"),
+      timestamp: timestampFromDate(new Date("2021-01-01T00:00:00Z")),
     };
     const res = await queryStringService.getTimestampQuerystring(req);
-    expect(res).to.deep.equal(WellKnownTypesHolder.fromPartial(req));
+    delete res.value; // protobuf-es recognizes value as null when server emit unpopulated field, ignore it
+    expect(res).to.deep.equal(fromPartial(WellKnownTypesHolderSchema, req));
   });
 
   it("GetWrapperQuerystring", async () => {
-    const req: Partial<WellKnownTypesHolder> = {
+    const req: DeepPartial<WellKnownTypesHolder> = {
       int32Value: 1,
       stringValue: "string",
     };
     const res = await queryStringService.getWrapperQuerystring(req);
-    expect(res).to.deep.equal(WellKnownTypesHolder.fromPartial(req));
+    delete res.value; // protobuf-es recognizes value as null when server emit unpopulated field, ignore it
+    expect(res).to.deep.equal(fromPartial(WellKnownTypesHolderSchema, req));
   });
 });

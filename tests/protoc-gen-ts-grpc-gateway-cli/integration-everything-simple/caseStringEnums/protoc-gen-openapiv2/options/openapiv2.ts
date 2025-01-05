@@ -101,7 +101,7 @@ export interface Swagger {
    * Provides metadata about the API. The metadata can be used by the
    * clients if needed.
    */
-  info?: Info | undefined;
+  info: Info | undefined;
   /**
    * The host (name or ip) serving the API. This MUST be the host only and does
    * not include the scheme nor sub-paths. It MAY include a port. If the host is
@@ -145,7 +145,7 @@ export interface Swagger {
    */
   responses: { [key: string]: Response };
   /** Security scheme definitions that can be used across the specification. */
-  securityDefinitions?: SecurityDefinitions | undefined;
+  securityDefinitions: SecurityDefinitions | undefined;
   /**
    * A declaration of which security schemes are applied for the API as a whole.
    * The list of values describes alternative security schemes that can be used
@@ -159,7 +159,7 @@ export interface Swagger {
    */
   tags: Tag[];
   /** Additional external documentation. */
-  externalDocs?: ExternalDocumentation | undefined;
+  externalDocs: ExternalDocumentation | undefined;
   /**
    * Custom properties that start with "x-" such as "x-foo" used to describe
    * extra functionality that is not covered by the standard OpenAPI Specification.
@@ -170,12 +170,12 @@ export interface Swagger {
 
 export interface Swagger_ResponsesEntry {
   key: string;
-  value?: Response | undefined;
+  value: Response | undefined;
 }
 
 export interface Swagger_ExtensionsEntry {
   key: string;
-  value?: any | undefined;
+  value: any | undefined;
 }
 
 /**
@@ -222,7 +222,7 @@ export interface Operation {
    */
   description: string;
   /** Additional external documentation for this operation. */
-  externalDocs?: ExternalDocumentation | undefined;
+  externalDocs: ExternalDocumentation | undefined;
   /**
    * Unique string used to identify the operation. The id MUST be unique among
    * all operations described in the API. Tools and libraries MAY use the
@@ -277,17 +277,17 @@ export interface Operation {
    * See: https://swagger.io/docs/specification/2-0/describing-parameters/
    * and https://swagger.io/specification/v2/#parameter-object.
    */
-  parameters?: Parameters | undefined;
+  parameters: Parameters | undefined;
 }
 
 export interface Operation_ResponsesEntry {
   key: string;
-  value?: Response | undefined;
+  value: Response | undefined;
 }
 
 export interface Operation_ExtensionsEntry {
   key: string;
-  value?: any | undefined;
+  value: any | undefined;
 }
 
 /**
@@ -421,7 +421,7 @@ export interface Response {
    * `Schema` optionally defines the structure of the response.
    * If `Schema` is not provided, it means there is no content to the response.
    */
-  schema?: Schema | undefined;
+  schema: Schema | undefined;
   /**
    * `Headers` A list of headers that are sent with the response.
    * `Header` name is expected to be a string in the canonical format of the MIME header key
@@ -443,7 +443,7 @@ export interface Response {
 
 export interface Response_HeadersEntry {
   key: string;
-  value?: Header | undefined;
+  value: Header | undefined;
 }
 
 export interface Response_ExamplesEntry {
@@ -453,7 +453,7 @@ export interface Response_ExamplesEntry {
 
 export interface Response_ExtensionsEntry {
   key: string;
-  value?: any | undefined;
+  value: any | undefined;
 }
 
 /**
@@ -492,9 +492,9 @@ export interface Info {
   /** The Terms of Service for the API. */
   termsOfService: string;
   /** The contact information for the exposed API. */
-  contact?: Contact | undefined;
+  contact: Contact | undefined;
   /** The license information for the exposed API. */
-  license?: License | undefined;
+  license: License | undefined;
   /**
    * Provides the version of the application API (not to be confused
    * with the specification version).
@@ -510,7 +510,7 @@ export interface Info {
 
 export interface Info_ExtensionsEntry {
   key: string;
-  value?: any | undefined;
+  value: any | undefined;
 }
 
 /**
@@ -610,7 +610,7 @@ export interface ExternalDocumentation {
  * See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#schemaObject
  */
 export interface Schema {
-  jsonSchema?: JSONSchema | undefined;
+  jsonSchema: JSONSchema | undefined;
   /**
    * Adds support for polymorphism. The discriminator is the schema property
    * name that is used to differentiate between other schema that inherit this
@@ -628,7 +628,7 @@ export interface Schema {
    */
   readOnly: boolean;
   /** Additional external documentation for this schema. */
-  externalDocs?: ExternalDocumentation | undefined;
+  externalDocs: ExternalDocumentation | undefined;
   /**
    * A free-form property to include an example of an instance for this schema in JSON.
    * This is copied verbatim to the output.
@@ -717,7 +717,7 @@ export interface JSONSchema {
   /** Items in `enum` must be unique https://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-5.5.1 */
   enum: string[];
   /** Additional field level properties used when generating the OpenAPI v2 file. */
-  fieldConfiguration?: JSONSchema_FieldConfiguration | undefined;
+  fieldConfiguration: JSONSchema_FieldConfiguration | undefined;
   /**
    * Custom properties that start with "x-" such as "x-foo" used to describe
    * extra functionality that is not covered by the standard OpenAPI Specification.
@@ -815,7 +815,7 @@ export interface JSONSchema_FieldConfiguration {
 
 export interface JSONSchema_ExtensionsEntry {
   key: string;
-  value?: any | undefined;
+  value: any | undefined;
 }
 
 /**
@@ -836,7 +836,7 @@ export interface Tag {
    */
   description: string;
   /** Additional external documentation for this tag. */
-  externalDocs?: ExternalDocumentation | undefined;
+  externalDocs: ExternalDocumentation | undefined;
   /**
    * Custom properties that start with "x-" such as "x-foo" used to describe
    * extra functionality that is not covered by the standard OpenAPI Specification.
@@ -847,7 +847,7 @@ export interface Tag {
 
 export interface Tag_ExtensionsEntry {
   key: string;
-  value?: any | undefined;
+  value: any | undefined;
 }
 
 /**
@@ -870,7 +870,7 @@ export interface SecurityDefinitions {
 
 export interface SecurityDefinitions_SecurityEntry {
   key: string;
-  value?: SecurityScheme | undefined;
+  value: SecurityScheme | undefined;
 }
 
 /**
@@ -925,7 +925,7 @@ export interface SecurityScheme {
    * The available scopes for the OAuth2 security scheme.
    * Valid for oauth2.
    */
-  scopes?: Scopes | undefined;
+  scopes: Scopes | undefined;
   /**
    * Custom properties that start with "x-" such as "x-foo" used to describe
    * extra functionality that is not covered by the standard OpenAPI Specification.
@@ -1080,7 +1080,7 @@ export function securityScheme_FlowToJSON(object: SecurityScheme_Flow): string {
 
 export interface SecurityScheme_ExtensionsEntry {
   key: string;
-  value?: any | undefined;
+  value: any | undefined;
 }
 
 /**
@@ -1119,7 +1119,7 @@ export interface SecurityRequirement_SecurityRequirementValue {
 
 export interface SecurityRequirement_SecurityRequirementEntry {
   key: string;
-  value?: SecurityRequirement_SecurityRequirementValue | undefined;
+  value: SecurityRequirement_SecurityRequirementValue | undefined;
 }
 
 /**
