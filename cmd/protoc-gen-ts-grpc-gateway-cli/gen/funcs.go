@@ -151,7 +151,13 @@ func (g *Generator) renderQueryString(r *tsutils.TSOption) func(method *protogen
 			}
 
 			getFieldSyntax := g.GetFieldSyntax(&g.TSOption, method.Input)("fullReq", param)
-			paramValue := fmt.Sprintf(`%s ? %s : undefined`, getFieldSyntax, g.FieldToJson(field)(g.TSRegistry, getFieldSyntax))
+			paramValue := getFieldSyntax
+			switch {
+			case field.Desc.IsList():
+				paramValue = g.FieldToJson(field)(g.TSRegistry, getFieldSyntax)
+			case field.Message != nil:
+				paramValue = fmt.Sprintf(`%s ? %s : undefined`, getFieldSyntax, g.FieldToJson(field)(g.TSRegistry, getFieldSyntax))
+			}
 
 			res = append(res, g.queryParam(param, paramValue))
 		}
