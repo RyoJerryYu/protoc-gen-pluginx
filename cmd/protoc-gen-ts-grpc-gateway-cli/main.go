@@ -15,6 +15,7 @@ import (
 var options gen.Options
 
 func init() {
+	flag.StringVar(&options.TSOption.TypeDefinition, "ts_type_definition", tsutils.Definition_TSProto, "use ts-proto or protobuf-es for type definition")
 	flag.BoolVar(&options.TSProto_KeySnakeToCamel, "ts_proto_key_snake_to_camel", true, "if ts-proto uses snakeToCamel for map keys")
 	flag.BoolVar(&options.MarshalUseProtoNames, "marshal_use_proto_names", false, "if server has UseProtoNames set to true")
 }
@@ -39,7 +40,7 @@ func main() {
 			Options:    options,
 			Generator:  genOpt,
 			TSRegistry: tsutils.NewTSRegistry(genOpt),
-			Definition: tsutils.TSProtoDefinition{},
+			Definition: tsutils.DefinitionFromOpts(options.TSOption),
 		}
 		return g.ApplyTemplate()
 	})

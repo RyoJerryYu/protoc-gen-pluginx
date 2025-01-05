@@ -245,10 +245,10 @@ func (g *Generator) applyClientIface(service *protogen.Service) {
 	g.P("export interface ", g.clientIfaceIdent(service), " {")
 	for _, method := range service.Methods {
 		if method.Desc.IsStreamingServer() {
-			g.Pf("%s(req: DeepPartial<%s>, options?: CallOptions): AsyncIterable<%s>;", g.methodName(method), g.TSIdentMsg(method.Input), g.TSIdentMsg(method.Output))
+			g.Pf("%s(req: DeepPartial<%s>, options?: CallOptions): AsyncIterable<%s>;", g.MethodName(method), g.TSIdentMsg(method.Input), g.TSIdentMsg(method.Output))
 			continue
 		}
-		g.Pf("%s(req: DeepPartial<%s>, options?: CallOptions): Promise<%s>;", g.methodName(method), g.TSIdentMsg(method.Input), g.TSIdentMsg(method.Output))
+		g.Pf("%s(req: DeepPartial<%s>, options?: CallOptions): Promise<%s>;", g.MethodName(method), g.TSIdentMsg(method.Input), g.TSIdentMsg(method.Output))
 	}
 	g.P("}")
 	g.P(service.Comments.Trailing)
@@ -275,7 +275,7 @@ func (g *Generator) applyMethod(method *protogen.Method) {
 	glog.V(3).Infof("method location: %s, %s", method.Location.SourceFile, method.Location.Path)
 
 	if method.Desc.IsStreamingServer() {
-		g.Pf("%s(", g.methodName(method))
+		g.Pf("%s(", g.MethodName(method))
 		g.Pf("  req: DeepPartial<%s>,", input)
 		g.Pf("  options?: CallOptions,")
 		g.Pf("): AsyncIterable<%s> {", output)
@@ -283,12 +283,12 @@ func (g *Generator) applyMethod(method *protogen.Method) {
 		g.Pf("},")
 
 	} else {
-		g.Pf("async %s(", g.methodName(method))
+		g.Pf("async %s(", g.MethodName(method))
 		g.Pf("  req: DeepPartial<%s>,", input)
 		g.Pf("  options?: CallOptions,")
 		g.Pf("): Promise<%s> {", output)
 		g.Pf("  const headers = options?.metadata ? metadataToHeaders(options.metadata) : undefined;")
-		g.Pf("  const fullReq = %s.fromPartial(req);", input)
+		g.Pf("  const fullReq = %s;", g.MsgFromPartial(method.Input)(g.TSRegistry, "req"))
 		// METHOD
 		methodMethod := g.httpOptions(method).Method
 		// path, return pathParams
@@ -323,7 +323,7 @@ func (g *Generator) applyMethod(method *protogen.Method) {
 			g.Pf("    body: %s,", g.jsonify("body"))
 		}
 		g.Pf("  });")
-		g.Pf("  return %s.fromJSON(res);", output)
+		g.Pf("  return %s;", g.MsgFromJson(method.Output)(g.TSRegistry, "res"))
 		g.Pf("},")
 	}
 	g.P(method.Comments.Trailing)

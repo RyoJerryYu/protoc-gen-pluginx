@@ -62,7 +62,7 @@ func (g *Generator) jsonify(in string) string {
 	return fmt.Sprintf(`JSON.stringify(%s)`, in)
 }
 
-func (g *Generator) methodName(method *protogen.Method) string {
+func (g *Generator) MethodName(method *protogen.Method) string {
 	return strcase.ToLowerCamel(string(method.GoName))
 }
 
