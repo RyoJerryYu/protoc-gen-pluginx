@@ -3,15 +3,15 @@ package main
 import (
 	"context"
 
+	"github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-ts-grpc-gateway-cli/integration-everything-simple/servergojson/proto/bodyjson"
 	"github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-ts-grpc-gateway-cli/integration-everything-simple/servergojson/proto/examplepb"
-	"github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-ts-grpc-gateway-cli/integration-everything-simple/servergojson/proto/querystring"
 )
 
 type QueryStringService struct {
-	querystring.UnimplementedQueryStringServiceServer
+	bodyjson.UnimplementedQueryStringServiceServer
 }
 
-var _ querystring.QueryStringServiceServer = (*QueryStringService)(nil)
+var _ bodyjson.QueryStringServiceServer = (*QueryStringService)(nil)
 
 // GetEnumQuerystring implements querystring.QueryStringServiceServer.
 func (q *QueryStringService) GetEnumQuerystring(ctx context.Context, req *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error) {
@@ -34,11 +34,11 @@ func (q *QueryStringService) GetStringQuerystring(ctx context.Context, req *exam
 }
 
 // GetTimestampQuerystring implements querystring.QueryStringServiceServer.
-func (q *QueryStringService) GetTimestampQuerystring(ctx context.Context, req *querystring.WellKnownTypesHolder) (*querystring.WellKnownTypesHolder, error) {
+func (q *QueryStringService) GetTimestampQuerystring(ctx context.Context, req *bodyjson.WellKnownTypesHolder) (*bodyjson.WellKnownTypesHolder, error) {
 	return req, nil
 }
 
 // GetWrapperQuerystring implements querystring.QueryStringServiceServer.
-func (q *QueryStringService) GetWrapperQuerystring(ctx context.Context, req *querystring.WellKnownTypesHolder) (*querystring.WellKnownTypesHolder, error) {
+func (q *QueryStringService) GetWrapperQuerystring(ctx context.Context, req *bodyjson.WellKnownTypesHolder) (*bodyjson.WellKnownTypesHolder, error) {
 	return req, nil
 }

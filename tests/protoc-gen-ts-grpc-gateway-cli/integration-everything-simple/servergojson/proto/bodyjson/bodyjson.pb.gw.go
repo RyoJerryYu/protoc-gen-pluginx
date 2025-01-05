@@ -226,6 +226,120 @@ func local_request_BodyJSONService_PostRepeatedStringBody_0(ctx context.Context,
 	return msg, metadata, err
 }
 
+var filter_BodyJSONService_PostMapMessageBody_0 = &utilities.DoubleArray{Encoding: map[string]int{"mapped_nested_value": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+
+func request_BodyJSONService_PostMapMessageBody_0(ctx context.Context, marshaler runtime.Marshaler, client BodyJSONServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq examplepb.ABitOfEverything
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.MappedNestedValue); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BodyJSONService_PostMapMessageBody_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := client.PostMapMessageBody(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_BodyJSONService_PostMapMessageBody_0(ctx context.Context, marshaler runtime.Marshaler, server BodyJSONServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq examplepb.ABitOfEverything
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.MappedNestedValue); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BodyJSONService_PostMapMessageBody_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.PostMapMessageBody(ctx, &protoReq)
+	return msg, metadata, err
+}
+
+var filter_BodyJSONService_PostMapEnumBody_0 = &utilities.DoubleArray{Encoding: map[string]int{"map_value": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+
+func request_BodyJSONService_PostMapEnumBody_0(ctx context.Context, marshaler runtime.Marshaler, client BodyJSONServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq examplepb.ABitOfEverything
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.MapValue); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BodyJSONService_PostMapEnumBody_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := client.PostMapEnumBody(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_BodyJSONService_PostMapEnumBody_0(ctx context.Context, marshaler runtime.Marshaler, server BodyJSONServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq examplepb.ABitOfEverything
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.MapValue); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BodyJSONService_PostMapEnumBody_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.PostMapEnumBody(ctx, &protoReq)
+	return msg, metadata, err
+}
+
+var filter_BodyJSONService_PostMapStringBody_0 = &utilities.DoubleArray{Encoding: map[string]int{"mapped_string_value": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+
+func request_BodyJSONService_PostMapStringBody_0(ctx context.Context, marshaler runtime.Marshaler, client BodyJSONServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq examplepb.ABitOfEverything
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.MappedStringValue); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BodyJSONService_PostMapStringBody_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := client.PostMapStringBody(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_BodyJSONService_PostMapStringBody_0(ctx context.Context, marshaler runtime.Marshaler, server BodyJSONServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq examplepb.ABitOfEverything
+		metadata runtime.ServerMetadata
+	)
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.MappedStringValue); err != nil && !errors.Is(err, io.EOF) {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_BodyJSONService_PostMapStringBody_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.PostMapStringBody(ctx, &protoReq)
+	return msg, metadata, err
+}
+
 var filter_BodyJSONService_PostTimestampBody_0 = &utilities.DoubleArray{Encoding: map[string]int{"timestamp": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 
 func request_BodyJSONService_PostTimestampBody_0(ctx context.Context, marshaler runtime.Marshaler, client BodyJSONServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -454,6 +568,198 @@ func local_request_BodyJSONService_PostWrapperBody_0(ctx context.Context, marsha
 	return msg, metadata, err
 }
 
+var filter_QueryStringService_GetEnumQuerystring_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+
+func request_QueryStringService_GetEnumQuerystring_0(ctx context.Context, marshaler runtime.Marshaler, client QueryStringServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq examplepb.ABitOfEverything
+		metadata runtime.ServerMetadata
+	)
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_QueryStringService_GetEnumQuerystring_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := client.GetEnumQuerystring(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_QueryStringService_GetEnumQuerystring_0(ctx context.Context, marshaler runtime.Marshaler, server QueryStringServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq examplepb.ABitOfEverything
+		metadata runtime.ServerMetadata
+	)
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_QueryStringService_GetEnumQuerystring_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.GetEnumQuerystring(ctx, &protoReq)
+	return msg, metadata, err
+}
+
+var filter_QueryStringService_GetStringQuerystring_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+
+func request_QueryStringService_GetStringQuerystring_0(ctx context.Context, marshaler runtime.Marshaler, client QueryStringServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq examplepb.ABitOfEverything
+		metadata runtime.ServerMetadata
+	)
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_QueryStringService_GetStringQuerystring_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := client.GetStringQuerystring(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_QueryStringService_GetStringQuerystring_0(ctx context.Context, marshaler runtime.Marshaler, server QueryStringServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq examplepb.ABitOfEverything
+		metadata runtime.ServerMetadata
+	)
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_QueryStringService_GetStringQuerystring_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.GetStringQuerystring(ctx, &protoReq)
+	return msg, metadata, err
+}
+
+var filter_QueryStringService_GetRepeatedEnumQuerystring_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+
+func request_QueryStringService_GetRepeatedEnumQuerystring_0(ctx context.Context, marshaler runtime.Marshaler, client QueryStringServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq examplepb.ABitOfEverything
+		metadata runtime.ServerMetadata
+	)
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_QueryStringService_GetRepeatedEnumQuerystring_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := client.GetRepeatedEnumQuerystring(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_QueryStringService_GetRepeatedEnumQuerystring_0(ctx context.Context, marshaler runtime.Marshaler, server QueryStringServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq examplepb.ABitOfEverything
+		metadata runtime.ServerMetadata
+	)
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_QueryStringService_GetRepeatedEnumQuerystring_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.GetRepeatedEnumQuerystring(ctx, &protoReq)
+	return msg, metadata, err
+}
+
+var filter_QueryStringService_GetRepeatedStringQuerystring_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+
+func request_QueryStringService_GetRepeatedStringQuerystring_0(ctx context.Context, marshaler runtime.Marshaler, client QueryStringServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq examplepb.ABitOfEverything
+		metadata runtime.ServerMetadata
+	)
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_QueryStringService_GetRepeatedStringQuerystring_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := client.GetRepeatedStringQuerystring(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_QueryStringService_GetRepeatedStringQuerystring_0(ctx context.Context, marshaler runtime.Marshaler, server QueryStringServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq examplepb.ABitOfEverything
+		metadata runtime.ServerMetadata
+	)
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_QueryStringService_GetRepeatedStringQuerystring_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.GetRepeatedStringQuerystring(ctx, &protoReq)
+	return msg, metadata, err
+}
+
+var filter_QueryStringService_GetTimestampQuerystring_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+
+func request_QueryStringService_GetTimestampQuerystring_0(ctx context.Context, marshaler runtime.Marshaler, client QueryStringServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq WellKnownTypesHolder
+		metadata runtime.ServerMetadata
+	)
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_QueryStringService_GetTimestampQuerystring_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := client.GetTimestampQuerystring(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_QueryStringService_GetTimestampQuerystring_0(ctx context.Context, marshaler runtime.Marshaler, server QueryStringServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq WellKnownTypesHolder
+		metadata runtime.ServerMetadata
+	)
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_QueryStringService_GetTimestampQuerystring_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.GetTimestampQuerystring(ctx, &protoReq)
+	return msg, metadata, err
+}
+
+var filter_QueryStringService_GetWrapperQuerystring_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+
+func request_QueryStringService_GetWrapperQuerystring_0(ctx context.Context, marshaler runtime.Marshaler, client QueryStringServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq WellKnownTypesHolder
+		metadata runtime.ServerMetadata
+	)
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_QueryStringService_GetWrapperQuerystring_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := client.GetWrapperQuerystring(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_QueryStringService_GetWrapperQuerystring_0(ctx context.Context, marshaler runtime.Marshaler, server QueryStringServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq WellKnownTypesHolder
+		metadata runtime.ServerMetadata
+	)
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_QueryStringService_GetWrapperQuerystring_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	msg, err := server.GetWrapperQuerystring(ctx, &protoReq)
+	return msg, metadata, err
+}
+
 // RegisterBodyJSONServiceHandlerServer registers the http handlers for service BodyJSONService to "mux".
 // UnaryRPC     :call BodyJSONServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
@@ -559,6 +865,66 @@ func RegisterBodyJSONServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 			return
 		}
 		forward_BodyJSONService_PostRepeatedStringBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodPost, pattern_BodyJSONService_PostMapMessageBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostMapMessageBody", runtime.WithHTTPPathPattern("/v1/bodyjson/mapmessagebody"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_BodyJSONService_PostMapMessageBody_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_BodyJSONService_PostMapMessageBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodPost, pattern_BodyJSONService_PostMapEnumBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostMapEnumBody", runtime.WithHTTPPathPattern("/v1/bodyjson/mapenumbody"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_BodyJSONService_PostMapEnumBody_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_BodyJSONService_PostMapEnumBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodPost, pattern_BodyJSONService_PostMapStringBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostMapStringBody", runtime.WithHTTPPathPattern("/v1/bodyjson/mapstringbody"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_BodyJSONService_PostMapStringBody_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_BodyJSONService_PostMapStringBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
 	mux.Handle(http.MethodPost, pattern_BodyJSONService_PostTimestampBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
@@ -679,6 +1045,136 @@ func RegisterBodyJSONServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 			return
 		}
 		forward_BodyJSONService_PostWrapperBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+
+	return nil
+}
+
+// RegisterQueryStringServiceHandlerServer registers the http handlers for service QueryStringService to "mux".
+// UnaryRPC     :call QueryStringServiceServer directly.
+// StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
+// Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterQueryStringServiceHandlerFromEndpoint instead.
+// GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
+func RegisterQueryStringServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server QueryStringServiceServer) error {
+	mux.Handle(http.MethodGet, pattern_QueryStringService_GetEnumQuerystring_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.bodyjson.QueryStringService/GetEnumQuerystring", runtime.WithHTTPPathPattern("/v1/querystring/enumquerystring"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_QueryStringService_GetEnumQuerystring_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_QueryStringService_GetEnumQuerystring_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodGet, pattern_QueryStringService_GetStringQuerystring_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.bodyjson.QueryStringService/GetStringQuerystring", runtime.WithHTTPPathPattern("/v1/querystring/stringquerystring"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_QueryStringService_GetStringQuerystring_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_QueryStringService_GetStringQuerystring_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodGet, pattern_QueryStringService_GetRepeatedEnumQuerystring_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.bodyjson.QueryStringService/GetRepeatedEnumQuerystring", runtime.WithHTTPPathPattern("/v1/querystring/repeatedenumquerystring"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_QueryStringService_GetRepeatedEnumQuerystring_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_QueryStringService_GetRepeatedEnumQuerystring_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodGet, pattern_QueryStringService_GetRepeatedStringQuerystring_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.bodyjson.QueryStringService/GetRepeatedStringQuerystring", runtime.WithHTTPPathPattern("/v1/querystring/repeatedstringquerystring"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_QueryStringService_GetRepeatedStringQuerystring_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_QueryStringService_GetRepeatedStringQuerystring_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodGet, pattern_QueryStringService_GetTimestampQuerystring_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.bodyjson.QueryStringService/GetTimestampQuerystring", runtime.WithHTTPPathPattern("/v1/querystring/timestampquerystring"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_QueryStringService_GetTimestampQuerystring_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_QueryStringService_GetTimestampQuerystring_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodGet, pattern_QueryStringService_GetWrapperQuerystring_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.bodyjson.QueryStringService/GetWrapperQuerystring", runtime.WithHTTPPathPattern("/v1/querystring/wrapperquerystring"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_QueryStringService_GetWrapperQuerystring_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_QueryStringService_GetWrapperQuerystring_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
 
 	return nil
@@ -805,6 +1301,57 @@ func RegisterBodyJSONServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 		forward_BodyJSONService_PostRepeatedStringBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodPost, pattern_BodyJSONService_PostMapMessageBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostMapMessageBody", runtime.WithHTTPPathPattern("/v1/bodyjson/mapmessagebody"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_BodyJSONService_PostMapMessageBody_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_BodyJSONService_PostMapMessageBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodPost, pattern_BodyJSONService_PostMapEnumBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostMapEnumBody", runtime.WithHTTPPathPattern("/v1/bodyjson/mapenumbody"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_BodyJSONService_PostMapEnumBody_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_BodyJSONService_PostMapEnumBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodPost, pattern_BodyJSONService_PostMapStringBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/proto.bodyjson.BodyJSONService/PostMapStringBody", runtime.WithHTTPPathPattern("/v1/bodyjson/mapstringbody"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_BodyJSONService_PostMapStringBody_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_BodyJSONService_PostMapStringBody_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 	mux.Handle(http.MethodPost, pattern_BodyJSONService_PostTimestampBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -916,6 +1463,9 @@ var (
 	pattern_BodyJSONService_PostRepeatedMessageBody_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "bodyjson", "repeatedmessagebody"}, ""))
 	pattern_BodyJSONService_PostRepeatedEnumBody_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "bodyjson", "repeatedenumbody"}, ""))
 	pattern_BodyJSONService_PostRepeatedStringBody_0  = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "bodyjson", "repeatedstringbody"}, ""))
+	pattern_BodyJSONService_PostMapMessageBody_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "bodyjson", "mapmessagebody"}, ""))
+	pattern_BodyJSONService_PostMapEnumBody_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "bodyjson", "mapenumbody"}, ""))
+	pattern_BodyJSONService_PostMapStringBody_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "bodyjson", "mapstringbody"}, ""))
 	pattern_BodyJSONService_PostTimestampBody_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "bodyjson", "timestampbody"}, ""))
 	pattern_BodyJSONService_PostFieldMaskBody_0       = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "bodyjson", "fieldmaskbody"}, ""))
 	pattern_BodyJSONService_PostStructBody_0          = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "bodyjson", "structbody"}, ""))
@@ -930,10 +1480,172 @@ var (
 	forward_BodyJSONService_PostRepeatedMessageBody_0 = runtime.ForwardResponseMessage
 	forward_BodyJSONService_PostRepeatedEnumBody_0    = runtime.ForwardResponseMessage
 	forward_BodyJSONService_PostRepeatedStringBody_0  = runtime.ForwardResponseMessage
+	forward_BodyJSONService_PostMapMessageBody_0      = runtime.ForwardResponseMessage
+	forward_BodyJSONService_PostMapEnumBody_0         = runtime.ForwardResponseMessage
+	forward_BodyJSONService_PostMapStringBody_0       = runtime.ForwardResponseMessage
 	forward_BodyJSONService_PostTimestampBody_0       = runtime.ForwardResponseMessage
 	forward_BodyJSONService_PostFieldMaskBody_0       = runtime.ForwardResponseMessage
 	forward_BodyJSONService_PostStructBody_0          = runtime.ForwardResponseMessage
 	forward_BodyJSONService_PostValueBody_0           = runtime.ForwardResponseMessage
 	forward_BodyJSONService_PostListValueBody_0       = runtime.ForwardResponseMessage
 	forward_BodyJSONService_PostWrapperBody_0         = runtime.ForwardResponseMessage
+)
+
+// RegisterQueryStringServiceHandlerFromEndpoint is same as RegisterQueryStringServiceHandler but
+// automatically dials to "endpoint" and closes the connection when "ctx" gets done.
+func RegisterQueryStringServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
+	conn, err := grpc.NewClient(endpoint, opts...)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if err != nil {
+			if cerr := conn.Close(); cerr != nil {
+				grpclog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
+			}
+			return
+		}
+		go func() {
+			<-ctx.Done()
+			if cerr := conn.Close(); cerr != nil {
+				grpclog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
+			}
+		}()
+	}()
+	return RegisterQueryStringServiceHandler(ctx, mux, conn)
+}
+
+// RegisterQueryStringServiceHandler registers the http handlers for service QueryStringService to "mux".
+// The handlers forward requests to the grpc endpoint over "conn".
+func RegisterQueryStringServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+	return RegisterQueryStringServiceHandlerClient(ctx, mux, NewQueryStringServiceClient(conn))
+}
+
+// RegisterQueryStringServiceHandlerClient registers the http handlers for service QueryStringService
+// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "QueryStringServiceClient".
+// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "QueryStringServiceClient"
+// doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
+// "QueryStringServiceClient" to call the correct interceptors. This client ignores the HTTP middlewares.
+func RegisterQueryStringServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client QueryStringServiceClient) error {
+	mux.Handle(http.MethodGet, pattern_QueryStringService_GetEnumQuerystring_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/proto.bodyjson.QueryStringService/GetEnumQuerystring", runtime.WithHTTPPathPattern("/v1/querystring/enumquerystring"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_QueryStringService_GetEnumQuerystring_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_QueryStringService_GetEnumQuerystring_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodGet, pattern_QueryStringService_GetStringQuerystring_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/proto.bodyjson.QueryStringService/GetStringQuerystring", runtime.WithHTTPPathPattern("/v1/querystring/stringquerystring"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_QueryStringService_GetStringQuerystring_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_QueryStringService_GetStringQuerystring_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodGet, pattern_QueryStringService_GetRepeatedEnumQuerystring_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/proto.bodyjson.QueryStringService/GetRepeatedEnumQuerystring", runtime.WithHTTPPathPattern("/v1/querystring/repeatedenumquerystring"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_QueryStringService_GetRepeatedEnumQuerystring_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_QueryStringService_GetRepeatedEnumQuerystring_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodGet, pattern_QueryStringService_GetRepeatedStringQuerystring_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/proto.bodyjson.QueryStringService/GetRepeatedStringQuerystring", runtime.WithHTTPPathPattern("/v1/querystring/repeatedstringquerystring"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_QueryStringService_GetRepeatedStringQuerystring_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_QueryStringService_GetRepeatedStringQuerystring_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodGet, pattern_QueryStringService_GetTimestampQuerystring_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/proto.bodyjson.QueryStringService/GetTimestampQuerystring", runtime.WithHTTPPathPattern("/v1/querystring/timestampquerystring"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_QueryStringService_GetTimestampQuerystring_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_QueryStringService_GetTimestampQuerystring_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodGet, pattern_QueryStringService_GetWrapperQuerystring_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/proto.bodyjson.QueryStringService/GetWrapperQuerystring", runtime.WithHTTPPathPattern("/v1/querystring/wrapperquerystring"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_QueryStringService_GetWrapperQuerystring_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_QueryStringService_GetWrapperQuerystring_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	return nil
+}
+
+var (
+	pattern_QueryStringService_GetEnumQuerystring_0           = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "querystring", "enumquerystring"}, ""))
+	pattern_QueryStringService_GetStringQuerystring_0         = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "querystring", "stringquerystring"}, ""))
+	pattern_QueryStringService_GetRepeatedEnumQuerystring_0   = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "querystring", "repeatedenumquerystring"}, ""))
+	pattern_QueryStringService_GetRepeatedStringQuerystring_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "querystring", "repeatedstringquerystring"}, ""))
+	pattern_QueryStringService_GetTimestampQuerystring_0      = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "querystring", "timestampquerystring"}, ""))
+	pattern_QueryStringService_GetWrapperQuerystring_0        = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "querystring", "wrapperquerystring"}, ""))
+)
+
+var (
+	forward_QueryStringService_GetEnumQuerystring_0           = runtime.ForwardResponseMessage
+	forward_QueryStringService_GetStringQuerystring_0         = runtime.ForwardResponseMessage
+	forward_QueryStringService_GetRepeatedEnumQuerystring_0   = runtime.ForwardResponseMessage
+	forward_QueryStringService_GetRepeatedStringQuerystring_0 = runtime.ForwardResponseMessage
+	forward_QueryStringService_GetTimestampQuerystring_0      = runtime.ForwardResponseMessage
+	forward_QueryStringService_GetWrapperQuerystring_0        = runtime.ForwardResponseMessage
 )

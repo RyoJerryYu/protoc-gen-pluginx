@@ -58,3 +58,16 @@ plugins:
       - outputJsonMethods=true
       - stringEnums=true # this is different from the caseDefaultConfig
       - useExactTypes=false
+  
+  # client, caseProtobufES
+  - local: protoc-gen-ts-grpc-gateway-cli
+    out: ../caseProtobufES
+    opt:
+      - paths=source_relative
+      - ts_type_definition=protobuf-es
+  - remote: buf.build/bufbuild/es
+    out: ../caseProtobufES
+    include_imports: true
+    opt:
+      - target=ts
+      - json_types=true

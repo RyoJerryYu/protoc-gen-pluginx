@@ -38,6 +38,21 @@ func (b *BodyJSONService) PostStringBody(ctx context.Context, req *examplepb.ABi
 	return req, nil
 }
 
+// PostMapEnumBody implements bodyjson.BodyJSONServiceServer.
+func (b *BodyJSONService) PostMapEnumBody(ctx context.Context, req *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error) {
+	return req, nil
+}
+
+// PostMapMessageBody implements bodyjson.BodyJSONServiceServer.
+func (b *BodyJSONService) PostMapMessageBody(ctx context.Context, req *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error) {
+	return req, nil
+}
+
+// PostMapStringBody implements bodyjson.BodyJSONServiceServer.
+func (b *BodyJSONService) PostMapStringBody(ctx context.Context, req *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error) {
+	return req, nil
+}
+
 // PostFieldMaskBody implements bodyjson.BodyJSONServiceServer.
 func (b *BodyJSONService) PostFieldMaskBody(ctx context.Context, req *bodyjson.WellKnownTypesHolder) (*bodyjson.WellKnownTypesHolder, error) {
 	return req, nil

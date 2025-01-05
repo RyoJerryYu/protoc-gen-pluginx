@@ -77,26 +77,26 @@ service BodyJSONService {
 
   // map fields
 
-  // rpc PostMapMessageBody(examplepb.ABitOfEverything) returns (examplepb.ABitOfEverything) {
-  //   option (google.api.http) = {
-  //     post: "/v1/bodyjson/mapmessagebody"
-  //     body: "mapped_nested_value"
-  //   };
-  // }
+  rpc PostMapMessageBody(examplepb.ABitOfEverything) returns (examplepb.ABitOfEverything) {
+    option (google.api.http) = {
+      post: "/v1/bodyjson/mapmessagebody"
+      body: "mapped_nested_value"
+    };
+  }
 
-  // rpc PostMapEnumBody(examplepb.ABitOfEverything) returns (examplepb.ABitOfEverything) {
-  //   option (google.api.http) = {
-  //     post: "/v1/bodyjson/mapenumbody"
-  //     body: "map_value"
-  //   };
-  // }
+  rpc PostMapEnumBody(examplepb.ABitOfEverything) returns (examplepb.ABitOfEverything) {
+    option (google.api.http) = {
+      post: "/v1/bodyjson/mapenumbody"
+      body: "map_value"
+    };
+  }
 
-  // rpc PostMapStringBody(examplepb.ABitOfEverything) returns (examplepb.ABitOfEverything) {
-  //   option (google.api.http) = {
-  //     post: "/v1/bodyjson/mapstringbody"
-  //     body: "mapped_string_value"
-  //   };
-  // }
+  rpc PostMapStringBody(examplepb.ABitOfEverything) returns (examplepb.ABitOfEverything) {
+    option (google.api.http) = {
+      post: "/v1/bodyjson/mapstringbody"
+      body: "mapped_string_value"
+    };
+  }
 
   // well-known types
 
@@ -140,5 +140,27 @@ service BodyJSONService {
       post: "/v1/bodyjson/wrapperbody"
       body: "int64_value"
     };
+  }
+}
+
+service QueryStringService {
+  rpc GetEnumQuerystring(examplepb.ABitOfEverything) returns (examplepb.ABitOfEverything) {
+    option (google.api.http) = {get: "/v1/querystring/enumquerystring"};
+  }
+  rpc GetStringQuerystring(examplepb.ABitOfEverything) returns (examplepb.ABitOfEverything) {
+    option (google.api.http) = {get: "/v1/querystring/stringquerystring"};
+  }
+  rpc GetRepeatedEnumQuerystring(examplepb.ABitOfEverything) returns (examplepb.ABitOfEverything) {
+    option (google.api.http) = {get: "/v1/querystring/repeatedenumquerystring"};
+  }
+  rpc GetRepeatedStringQuerystring(examplepb.ABitOfEverything) returns (examplepb.ABitOfEverything) {
+    option (google.api.http) = {get: "/v1/querystring/repeatedstringquerystring"};
+  }
+
+  rpc GetTimestampQuerystring(WellKnownTypesHolder) returns (WellKnownTypesHolder) {
+    option (google.api.http) = {get: "/v1/querystring/timestampquerystring"};
+  }
+  rpc GetWrapperQuerystring(WellKnownTypesHolder) returns (WellKnownTypesHolder) {
+    option (google.api.http) = {get: "/v1/querystring/wrapperquerystring"};
   }
 }
