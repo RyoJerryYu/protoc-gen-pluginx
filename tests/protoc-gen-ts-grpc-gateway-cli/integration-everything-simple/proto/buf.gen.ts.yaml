@@ -7,8 +7,6 @@ plugins:
     out: ../caseDefaultConfig
     opt:
       - paths=source_relative
-      - logtostderr=true
-      - v=1
   - remote: buf.build/community/stephenh-ts-proto
     out: ../caseDefaultConfig
     opt:
