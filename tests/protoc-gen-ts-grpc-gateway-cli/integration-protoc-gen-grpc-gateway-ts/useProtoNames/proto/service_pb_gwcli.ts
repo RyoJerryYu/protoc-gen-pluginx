@@ -1,12 +1,8 @@
 import { Empty } from "../google/protobuf/empty";
-import { Base64 } from "js-base64";
-import { CallOptions, Metadata } from "nice-grpc-common";
 import { ExternalRequest, ExternalResponse } from "./msg";
 import {
   BinaryRequest,
   BinaryResponse,
-  CounterServiceClient,
-  DeepPartial,
   HTTPGetWithURLSearchParamsRequest,
   HTTPGetWithURLSearchParamsResponse,
   HTTPGetWithZeroValueURLSearchParamsRequest,
@@ -29,53 +25,16 @@ import {
   UnaryResponse,
 } from "./service";
 
-type Primitive = string | boolean | number | Date | Uint8Array;
-type RequestPayload = Record<string, unknown>;
-type FlattenedRequestPayload = Record<string, Primitive | Primitive[]>;
-
-/**
- * Checks if given value is a plain object
- * Logic copied and adapted from below source:
- * https://github.com/char0n/ramda-adjunct/blob/master/src/isPlainObj.js
- */
-function isPlainObject(value: unknown): boolean {
-  const isObject =
-    Object.prototype.toString.call(value).slice(8, -1) === "Object";
-  const isObjLike = value !== null && isObject;
-
-  if (!isObjLike || !isObject) {
-    return false;
-  }
-
-  const proto: unknown = Object.getPrototypeOf(value);
-
-  const hasObjectConstructor = !!(
-    proto &&
-    typeof proto === "object" &&
-    proto.constructor === Object.prototype.constructor
-  );
-
-  return hasObjectConstructor;
-}
-
-/**
- * Checks if given value is of a primitive type
- */
-function isPrimitive(value: unknown): boolean {
-  if (["string", "number", "boolean"].some((t) => typeof value === t)) {
-    return true;
-  }
-
-  if (value instanceof Date) {
-    return true;
-  }
-
-  if (value instanceof Uint8Array) {
-    return true;
-  }
-
-  return false;
-}
+type Primitive = string | boolean | number | Date | Uint8Array | bigint;
+export type DeepPartial<T> = T extends Primitive
+  ? T
+  : T extends Array<infer U>
+    ? Array<DeepPartial<U>>
+    : T extends ReadonlyArray<infer U>
+      ? ReadonlyArray<DeepPartial<U>>
+      : T extends {}
+        ? { [K in keyof T]?: DeepPartial<T[K]> }
+        : Partial<T>;
 
 /**
  * Convert a primitive value to a string that can be used in a URL search parameter
@@ -107,61 +66,18 @@ function pathStr(param: Primitive | Primitive[]): string {
 }
 
 /**
- * Flattens a deeply nested request payload and returns an object
- * with only primitive values and non-empty array of primitive values
- * as per https://github.com/googleapis/googleapis/blob/master/google/api/http.proto
+ * Convert a key-value pair to a URL search parameter
  */
-function flattenRequestPayload<T extends RequestPayload>(
-  requestPayload: T,
-  path = "",
-): FlattenedRequestPayload {
-  return Object.keys(requestPayload).reduce((acc: T, key: string): T => {
-    const value = requestPayload[key];
-    const newPath = path ? [path, key].join(".") : key;
-
-    const isNonEmptyPrimitiveArray =
-      Array.isArray(value) &&
-      value.every((v) => isPrimitive(v)) &&
-      value.length > 0;
-
-    let objectToMerge = {};
-
-    if (isPlainObject(value)) {
-      objectToMerge = flattenRequestPayload(value as RequestPayload, newPath);
-    } else if (isPrimitive(value) || isNonEmptyPrimitiveArray) {
-      objectToMerge = { [newPath]: value };
-    }
-
-    return { ...acc, ...objectToMerge };
-  }, {} as T) as FlattenedRequestPayload;
-}
-
-/**
- * Renders a deeply nested request payload into a string of URL search
- * parameters by first flattening the request payload and then removing keys
- * which are already present in the URL path.
- */
-function renderURLSearchParams<T extends RequestPayload>(
-  requestPayload: T,
-  urlPathParams: string[] = [],
+function queryParam(
+  key: string,
+  value: Primitive | Primitive[] | undefined | null,
 ): string[][] {
-  const flattenedRequestPayload = flattenRequestPayload(requestPayload);
-
-  const urlSearchParams = Object.keys(flattenedRequestPayload).reduce(
-    (acc: string[][], key: string): string[][] => {
-      // key should not be present in the url path as a parameter
-      const value = flattenedRequestPayload[key];
-      if (urlPathParams.find((f) => f === key)) {
-        return acc;
-      }
-      return Array.isArray(value)
-        ? [...acc, ...value.map((m) => [key, toStr(m)])]
-        : (acc = [...acc, [key, toStr(value)]]);
-    },
-    [] as string[][],
-  );
-
-  return urlSearchParams;
+  if (value === undefined || value === null) {
+    return [];
+  }
+  return Array.isArray(value)
+    ? value.map((v) => [key, toStr(v)])
+    : [[key, toStr(value)]];
 }
 
 /**
@@ -192,19 +108,87 @@ export type Transport = {
   call(params: CallParams): Promise<any>;
 };
 
+/**
+ * Metadata is a type that represents the metadata that can be passed to a call
+ */
+export type Metadata = Headers;
+
+/**
+ * Client is a type that represents the interface of a client object
+ */
+export type CallOptions = {
+  metadata?: Metadata;
+};
+
 function metadataToHeaders(metadata: Metadata): Headers {
   const headers = new Headers();
 
   for (const [key, values] of metadata) {
     for (const value of values) {
-      headers.append(
-        key,
-        typeof value === "string" ? value : Base64.fromUint8Array(value),
-      );
+      headers.append("Grpc-Metadata-" + key, value);
     }
   }
 
   return headers;
+}
+
+export interface CounterServiceClient {
+  increment(
+    req: DeepPartial<UnaryRequest>,
+    options?: CallOptions,
+  ): Promise<UnaryResponse>;
+  streamingIncrements(
+    req: DeepPartial<StreamingRequest>,
+    options?: CallOptions,
+  ): AsyncIterable<StreamingResponse>;
+  failingIncrement(
+    req: DeepPartial<UnaryRequest>,
+    options?: CallOptions,
+  ): Promise<UnaryResponse>;
+  echoBinary(
+    req: DeepPartial<BinaryRequest>,
+    options?: CallOptions,
+  ): Promise<BinaryResponse>;
+  httpget(
+    req: DeepPartial<HttpGetRequest>,
+    options?: CallOptions,
+  ): Promise<HttpGetResponse>;
+  httppostWithNestedBodyPath(
+    req: DeepPartial<HttpPostRequest>,
+    options?: CallOptions,
+  ): Promise<HttpPostResponse>;
+  httppostWithStarBodyPath(
+    req: DeepPartial<HttpPostRequest>,
+    options?: CallOptions,
+  ): Promise<HttpPostResponse>;
+  httppatch(
+    req: DeepPartial<HttpPatchRequest>,
+    options?: CallOptions,
+  ): Promise<HttpPatchResponse>;
+  httpdelete(
+    req: DeepPartial<HttpDeleteRequest>,
+    options?: CallOptions,
+  ): Promise<Empty>;
+  httpdeleteWithParams(
+    req: DeepPartial<HttpDeleteWithParamsRequest>,
+    options?: CallOptions,
+  ): Promise<HttpDeleteWithParamsResponse>;
+  externalMessage(
+    req: DeepPartial<ExternalRequest>,
+    options?: CallOptions,
+  ): Promise<ExternalResponse>;
+  httpgetWithUrlsearchParams(
+    req: DeepPartial<HTTPGetWithURLSearchParamsRequest>,
+    options?: CallOptions,
+  ): Promise<HTTPGetWithURLSearchParamsResponse>;
+  httpgetWithZeroValueUrlsearchParams(
+    req: DeepPartial<HTTPGetWithZeroValueURLSearchParamsRequest>,
+    options?: CallOptions,
+  ): Promise<HTTPGetWithZeroValueURLSearchParamsResponse>;
+  httpgetWithOptionalFields(
+    req: DeepPartial<OptionalFieldsRequest>,
+    options?: CallOptions,
+  ): Promise<OptionalFieldsResponse>;
 }
 
 export function newCounterService(transport: Transport): CounterServiceClient {
@@ -270,7 +254,7 @@ export function newCounterService(transport: Transport): CounterServiceClient {
       return BinaryResponse.fromJSON(res);
     },
 
-    async hTTPGet(
+    async httpget(
       req: DeepPartial<HttpGetRequest>,
       options?: CallOptions,
     ): Promise<HttpGetResponse> {
@@ -282,12 +266,11 @@ export function newCounterService(transport: Transport): CounterServiceClient {
         path: `/api/${pathStr(must(fullReq.num_to_increase))}`,
         method: "GET",
         headers: headers,
-        queryParams: renderURLSearchParams(req, ["num_to_increase"]),
       });
       return HttpGetResponse.fromJSON(res);
     },
 
-    async hTTPPostWithNestedBodyPath(
+    async httppostWithNestedBodyPath(
       req: DeepPartial<HttpPostRequest>,
       options?: CallOptions,
     ): Promise<HttpPostResponse> {
@@ -295,19 +278,19 @@ export function newCounterService(transport: Transport): CounterServiceClient {
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = HttpPostRequest.fromPartial(req);
+      const queryParams = [...queryParam("c", fullReq.c)];
       const body: any = PostRequest.toJSON(must(fullReq.req));
-      delete body.a;
       const res = await transport.call({
         path: `/post/${pathStr(must(fullReq.a))}`,
         method: "POST",
         headers: headers,
-        queryParams: renderURLSearchParams(req, ["a", "req"]),
+        queryParams: queryParams,
         body: JSON.stringify(body),
       });
       return HttpPostResponse.fromJSON(res);
     },
 
-    async hTTPPostWithStarBodyPath(
+    async httppostWithStarBodyPath(
       req: DeepPartial<HttpPostRequest>,
       options?: CallOptions,
     ): Promise<HttpPostResponse> {
@@ -315,9 +298,12 @@ export function newCounterService(transport: Transport): CounterServiceClient {
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = HttpPostRequest.fromPartial(req);
-      const body: any = HttpPostRequest.toJSON(fullReq);
-      delete body.a;
-      delete body.c;
+      const body: any = (() => {
+        const body: any = HttpPostRequest.toJSON(fullReq);
+        delete body.a;
+        delete body.c;
+        return body;
+      })();
       const res = await transport.call({
         path: `/post/${pathStr(must(fullReq.a))}/${pathStr(must(fullReq.c))}`,
         method: "POST",
@@ -327,7 +313,7 @@ export function newCounterService(transport: Transport): CounterServiceClient {
       return HttpPostResponse.fromJSON(res);
     },
 
-    async hTTPPatch(
+    async httppatch(
       req: DeepPartial<HttpPatchRequest>,
       options?: CallOptions,
     ): Promise<HttpPatchResponse> {
@@ -345,7 +331,7 @@ export function newCounterService(transport: Transport): CounterServiceClient {
       return HttpPatchResponse.fromJSON(res);
     },
 
-    async hTTPDelete(
+    async httpdelete(
       req: DeepPartial<HttpDeleteRequest>,
       options?: CallOptions,
     ): Promise<Empty> {
@@ -357,12 +343,11 @@ export function newCounterService(transport: Transport): CounterServiceClient {
         path: `/delete/${pathStr(must(fullReq.a))}`,
         method: "DELETE",
         headers: headers,
-        queryParams: renderURLSearchParams(req, ["a"]),
       });
       return Empty.fromJSON(res);
     },
 
-    async hTTPDeleteWithParams(
+    async httpdeleteWithParams(
       req: DeepPartial<HttpDeleteWithParamsRequest>,
       options?: CallOptions,
     ): Promise<HttpDeleteWithParamsResponse> {
@@ -370,11 +355,12 @@ export function newCounterService(transport: Transport): CounterServiceClient {
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = HttpDeleteWithParamsRequest.fromPartial(req);
+      const queryParams = [...queryParam("reason", fullReq.reason)];
       const res = await transport.call({
         path: `/delete/${pathStr(must(fullReq.id))}`,
         method: "DELETE",
         headers: headers,
-        queryParams: renderURLSearchParams(req, ["id"]),
+        queryParams: queryParams,
       });
       return HttpDeleteWithParamsResponse.fromJSON(res);
     },
@@ -397,7 +383,7 @@ export function newCounterService(transport: Transport): CounterServiceClient {
       return ExternalResponse.fromJSON(res);
     },
 
-    async hTTPGetWithURLSearchParams(
+    async httpgetWithUrlsearchParams(
       req: DeepPartial<HTTPGetWithURLSearchParamsRequest>,
       options?: CallOptions,
     ): Promise<HTTPGetWithURLSearchParamsResponse> {
@@ -405,16 +391,24 @@ export function newCounterService(transport: Transport): CounterServiceClient {
         ? metadataToHeaders(options.metadata)
         : undefined;
       const fullReq = HTTPGetWithURLSearchParamsRequest.fromPartial(req);
+      const queryParams = [
+        ...queryParam("b.b", fullReq.b?.b),
+        ...queryParam(
+          "c",
+          fullReq.c.map((e) => e),
+        ),
+        ...queryParam("d.d", fullReq.d?.d),
+      ];
       const res = await transport.call({
         path: `/api/query/${pathStr(must(fullReq.a))}`,
         method: "GET",
         headers: headers,
-        queryParams: renderURLSearchParams(req, ["a"]),
+        queryParams: queryParams,
       });
       return HTTPGetWithURLSearchParamsResponse.fromJSON(res);
     },
 
-    async hTTPGetWithZeroValueURLSearchParams(
+    async httpgetWithZeroValueUrlsearchParams(
       req: DeepPartial<HTTPGetWithZeroValueURLSearchParamsRequest>,
       options?: CallOptions,
     ): Promise<HTTPGetWithZeroValueURLSearchParamsResponse> {
@@ -423,16 +417,26 @@ export function newCounterService(transport: Transport): CounterServiceClient {
         : undefined;
       const fullReq =
         HTTPGetWithZeroValueURLSearchParamsRequest.fromPartial(req);
+      const queryParams = [
+        ...queryParam("a", fullReq.a),
+        ...queryParam("b", fullReq.b),
+        ...queryParam("c.c", fullReq.c?.c),
+        ...queryParam(
+          "c.d",
+          (fullReq.c?.d).map((e) => e),
+        ),
+        ...queryParam("c.e", fullReq.c?.e),
+      ];
       const res = await transport.call({
         path: `/path/query`,
         method: "GET",
         headers: headers,
-        queryParams: renderURLSearchParams(req, []),
+        queryParams: queryParams,
       });
       return HTTPGetWithZeroValueURLSearchParamsResponse.fromJSON(res);
     },
 
-    async hTTPGetWithOptionalFields(
+    async httpgetWithOptionalFields(
       req: DeepPartial<OptionalFieldsRequest>,
       options?: CallOptions,
     ): Promise<OptionalFieldsResponse> {
@@ -444,7 +448,6 @@ export function newCounterService(transport: Transport): CounterServiceClient {
         path: `/optional`,
         method: "GET",
         headers: headers,
-        queryParams: renderURLSearchParams(req, []),
       });
       return OptionalFieldsResponse.fromJSON(res);
     },

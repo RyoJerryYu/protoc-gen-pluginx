@@ -4,14 +4,14 @@ import (
 	"context"
 
 	"github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-ts-grpc-gateway-cli/integration-everything-simple/server/proto/examplepb"
-	"github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-ts-grpc-gateway-cli/integration-everything-simple/server/proto/querystring"
+	"github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-ts-grpc-gateway-cli/integration-everything-simple/server/proto/paramtest"
 )
 
 type QueryStringService struct {
-	querystring.UnimplementedQueryStringServiceServer
+	paramtest.UnimplementedQueryStringServiceServer
 }
 
-var _ querystring.QueryStringServiceServer = (*QueryStringService)(nil)
+var _ paramtest.QueryStringServiceServer = (*QueryStringService)(nil)
 
 // GetEnumQuerystring implements querystring.QueryStringServiceServer.
 func (q *QueryStringService) GetEnumQuerystring(ctx context.Context, req *examplepb.ABitOfEverything) (*examplepb.ABitOfEverything, error) {
@@ -34,11 +34,11 @@ func (q *QueryStringService) GetStringQuerystring(ctx context.Context, req *exam
 }
 
 // GetTimestampQuerystring implements querystring.QueryStringServiceServer.
-func (q *QueryStringService) GetTimestampQuerystring(ctx context.Context, req *querystring.WellKnownTypesHolder) (*querystring.WellKnownTypesHolder, error) {
+func (q *QueryStringService) GetTimestampQuerystring(ctx context.Context, req *paramtest.WellKnownTypesHolder) (*paramtest.WellKnownTypesHolder, error) {
 	return req, nil
 }
 
 // GetWrapperQuerystring implements querystring.QueryStringServiceServer.
-func (q *QueryStringService) GetWrapperQuerystring(ctx context.Context, req *querystring.WellKnownTypesHolder) (*querystring.WellKnownTypesHolder, error) {
+func (q *QueryStringService) GetWrapperQuerystring(ctx context.Context, req *paramtest.WellKnownTypesHolder) (*paramtest.WellKnownTypesHolder, error) {
 	return req, nil
 }

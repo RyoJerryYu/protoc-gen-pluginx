@@ -8,6 +8,7 @@ import (
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils"
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils/tsutils"
 	"github.com/golang/glog"
+	"github.com/iancoleman/strcase"
 	"google.golang.org/protobuf/compiler/protogen"
 )
 
@@ -45,20 +46,29 @@ var (
 	pathParamRegexp = regexp.MustCompile(`{([^=}/]+)(?:=([^}]+))?}`)
 )
 
-func (g *Generator) must(rootName string, path string) string {
-	fieldName := tsutils.FieldName(&g.TSOption)(path)
-	fields := strings.Split(fieldName, ".")
-	fieldName = strings.Join(fields, "?.")
-
-	return fmt.Sprintf(`must(%s.%s)`, rootName, fieldName)
+func (g *Generator) must(rootName string, rootMsg *protogen.Message, path string) string {
+	syntax := g.GetFieldSyntax(&g.TSOption, rootMsg)(rootName, path)
+	return fmt.Sprintf(`must(%s)`, syntax)
 }
 
 func (g *Generator) pathStr(in string) string {
 	return fmt.Sprintf(`pathStr(%s)`, in)
 }
 
+func (g *Generator) queryParam(rootMsg *protogen.Message, key string, value string) string {
+	key = g.JsonFieldPath(&g.TSOption, rootMsg)(key)
+	return fmt.Sprintf(`queryParam("%s", %s)`, key, value)
+}
+
 func (g *Generator) jsonify(in string) string {
 	return fmt.Sprintf(`JSON.stringify(%s)`, in)
+}
+func (g Generator) statementify(in string) string {
+	return fmt.Sprintf("(()=>{\n%s\n})()", in)
+}
+
+func (g *Generator) MethodName(method *protogen.Method) string {
+	return strcase.ToLowerCamel(string(method.GoName))
 }
 
 // return (URL string, pathParams)
@@ -74,7 +84,7 @@ func (g *Generator) renderPath(r *tsutils.TSOption) func(method *protogen.Method
 				expToReplace := m[0]
 				fieldNameRaw := m[1]
 				// fieldValuePattern := m[2]
-				part := fmt.Sprintf(`${%s}`, g.pathStr(g.must("fullReq", fieldNameRaw)))
+				part := fmt.Sprintf(`${%s}`, g.pathStr(g.must("fullReq", method.Input, fieldNameRaw)))
 				methodURL = strings.ReplaceAll(methodURL, expToReplace, part)
 				fieldsInPath = append(fieldsInPath, fieldNameRaw)
 			}
@@ -85,49 +95,114 @@ func (g *Generator) renderPath(r *tsutils.TSOption) func(method *protogen.Method
 }
 
 // return (body jsonify string, bodyParam)
-func (g *Generator) renderBody(r *tsutils.TSOption) func(method *protogen.Method) (string, string) {
-	return func(method *protogen.Method) (string, string) {
+func (g *Generator) renderBody(r *tsutils.TSOption) func(method *protogen.Method, pathParams []string) (string, string) {
+	return func(method *protogen.Method, pathParams []string) (string, string) {
 		httpOpts := g.httpOptions(method)
-		httpBody := httpOpts.Body
+		httpBody := "*"         // for unpopulated method, body is always "*"
+		bodyMsg := method.Input // Unpopulated rpc, or body == "*", jsonify the whole message
+		if httpOpts.Body != nil {
+			httpBody = *httpOpts.Body
+		}
 
-		if httpBody == nil || *httpBody == "*" { // Unpopulated rpc, or body == "*", jsonify the whole message
-			bodyMsg := method.Input
-			// method.Input should always be a message
-			return tsutils.TSProtoMessageToJson(bodyMsg)(g.TSRegistry, "fullReq"), "*"
-		} else if *httpBody == "" {
+		if httpBody == "" {
+			// only when httpOption exists on method, but body is not specified
 			return "", ""
 		}
 
-		// body in a field
-		bodyField := pluginutils.FindFieldByTextName(method.Input, *httpBody)
-		return tsutils.TSProtoFieldToJson(bodyField)(g.TSRegistry, g.must("fullReq", *httpBody)), *httpBody
+		toJsonStatement := ""
+		if httpBody != "*" {
+			// body in a field, must found
+			bodyField := pluginutils.GetField(method.Input, httpBody)
+			toJsonStatement = g.FieldToJson(bodyField)(g.TSRegistry, g.must("fullReq", method.Input, httpBody))
+			bodyMsg = bodyField.Message // may be nil
+		} else {
+			// method.Input should always be a message
+			toJsonStatement = g.MessageToJson(method.Input)(g.TSRegistry, "fullReq")
+		}
+
+		if bodyMsg == nil {
+			// non-message body, no need to deal with path params
+			// early return
+			return toJsonStatement, httpBody
+		}
+
+		deleteStatements := make([]string, 0, len(pathParams))
+		for _, pathParam := range pathParams {
+			fieldOnBody := pathParam
+			if httpBody != "*" {
+				if !strings.HasPrefix(pathParam, httpBody+".") {
+					// not a param in body, skip
+					continue
+				}
+				fieldOnBody = strings.TrimPrefix(pathParam, httpBody+".")
+			}
+
+			deleteStatement := fmt.Sprintf(`delete body.%s;`, g.JsonFieldPath(r, bodyMsg)(fieldOnBody))
+			deleteStatements = append(deleteStatements, deleteStatement)
+		}
+
+		if len(deleteStatements) == 0 {
+			// early return
+			return toJsonStatement, httpBody
+		}
+
+		buildBody := fmt.Sprintf(`const body: any = %s;
+%s;
+return body;`, toJsonStatement, strings.Join(deleteStatements, "\n"))
+
+		return g.statementify(buildBody), httpBody
 	}
 }
 
-func (g *Generator) renderQueryString(r *tsutils.TSOption) func(method *protogen.Method, pathParams []string, bodyParam string) string {
-	return func(method *protogen.Method, urlPathParams []string, bodyParam string) string {
+func (g *Generator) renderQueryString(r *tsutils.TSOption) func(method *protogen.Method, pathParams []string, bodyParam string) []string {
+	return func(method *protogen.Method, urlPathParams []string, bodyParam string) []string {
 		// allow query params for all methods, not just GET and DELETE
 		// httpOpts := g.httpOptions(method)
 		// methodMethod := httpOpts.Method
 
 		if method.Desc.IsStreamingClient() {
-			return ""
+			return nil
 		}
 		if bodyParam == "*" {
-			return "" // all fields are in the body, there will be no query params
+			return nil // all fields are in the body, there will be no query params
 		}
 
 		usedParams := urlPathParams[:]
 		if bodyParam != "" {
 			usedParams = append(usedParams, bodyParam)
 		}
-		usedParamStrs := make([]string, 0, len(usedParams))
-		for _, param := range usedParams {
-			param = tsutils.FieldName(&g.TSOption)(param)
-			usedParamStrs = append(usedParamStrs, fmt.Sprintf(`"%s"`, param))
+
+		allFieldPaths := pluginutils.ListPaths("", method.Input.Desc, pluginutils.EndWithJsonScalar)
+		queryParams := pluginutils.Substract(allFieldPaths, usedParams)
+		var res []string // [ [param, fieldSyntax] ]
+		for _, param := range queryParams {
+			field := pluginutils.GetField(method.Input, param)
+			if field == nil {
+				glog.V(1).Infof("field not found: %s", param)
+				continue
+			}
+
+			if field.Desc.IsMap() {
+				glog.V(1).Infof("not supporting map fields in query params: %s", param)
+				continue
+			}
+			if field.Message != nil && !g.MsgScalarable(field.Message) {
+				glog.V(1).Infof("not supporting message fields in query params: %s", param)
+				continue
+			}
+
+			getFieldSyntax := g.GetFieldSyntax(r, method.Input)("fullReq", param)
+			paramValue := getFieldSyntax
+			switch {
+			case field.Desc.IsList():
+				paramValue = g.FieldToJson(field)(g.TSRegistry, getFieldSyntax)
+			case field.Message != nil:
+				paramValue = fmt.Sprintf(`%s ? %s : undefined`, getFieldSyntax, g.FieldToJson(field)(g.TSRegistry, getFieldSyntax))
+			}
+
+			res = append(res, g.queryParam(method.Input, param, paramValue))
 		}
-		urlPathParamStr := fmt.Sprintf("[%s]", strings.Join(usedParamStrs, ", "))
-		renderURLSearchParams := fmt.Sprintf("renderURLSearchParams(req, %s)", urlPathParamStr)
-		return renderURLSearchParams
+
+		return res
 	}
 }

@@ -5,7 +5,6 @@
 // source: proto/examplepb/a_bit_of_everything.proto
 
 /* eslint-disable */
-import { type CallContext, type CallOptions } from "nice-grpc-common";
 import { Duration } from "../../google/protobuf/duration";
 import { Empty } from "../../google/protobuf/empty";
 import { FieldMask } from "../../google/protobuf/field_mask";
@@ -149,7 +148,7 @@ export function snakeCase0EnumToJSON(object: snakeCase0Enum): string {
 
 export interface ErrorResponse {
   correlationId: string;
-  error?: ErrorObject | undefined;
+  error: ErrorObject | undefined;
 }
 
 export interface ErrorObject {
@@ -159,7 +158,7 @@ export interface ErrorObject {
 
 /** Intentionally complicated message type to cover many features of Protobuf. */
 export interface ABitOfEverything {
-  singleNested?: ABitOfEverything_Nested | undefined;
+  singleNested: ABitOfEverything_Nested | undefined;
   uuid: string;
   nested: ABitOfEverything_Nested[];
   floatValue: number;
@@ -187,7 +186,7 @@ export interface ABitOfEverything {
   mappedStringValue: { [key: string]: string };
   mappedNestedValue: { [key: string]: ABitOfEverything_Nested };
   nonConventionalNameValue: string;
-  timestampValue?: Date | undefined;
+  timestampValue: Date | undefined;
   /** repeated enum value. it is comma-separated in query */
   repeatedEnumValue: NumericEnum[];
   /** repeated numeric enum comment (This comment is overridden by the field annotation) */
@@ -199,7 +198,7 @@ export interface ABitOfEverything {
   /** repeated nested object comment (This comment is overridden by the field annotation) */
   repeatedNestedAnnotation: ABitOfEverything_Nested[];
   /** nested object comments (This comment is overridden by the field annotation) */
-  nestedAnnotation?: ABitOfEverything_Nested | undefined;
+  nestedAnnotation: ABitOfEverything_Nested | undefined;
   int64OverrideType: number;
   /** mark a field as required in Open API definition */
   requiredStringViaFieldBehaviorAnnotation: string;
@@ -292,7 +291,7 @@ export interface ABitOfEverything_MappedStringValueEntry {
 
 export interface ABitOfEverything_MappedNestedValueEntry {
   key: string;
-  value?: ABitOfEverything_Nested | undefined;
+  value: ABitOfEverything_Nested | undefined;
 }
 
 /** ABitOfEverythingRepeated is used to validate repeated path parameter functionality */
@@ -317,7 +316,7 @@ export interface ABitOfEverythingRepeated {
 }
 
 export interface CheckStatusResponse {
-  status?: Status | undefined;
+  status: Status | undefined;
 }
 
 export interface Body {
@@ -326,14 +325,14 @@ export interface Body {
 
 export interface MessageWithBody {
   id: string;
-  data?: Body | undefined;
+  data: Body | undefined;
 }
 
 /** UpdateV2Request request for update includes the message and the update mask */
 export interface UpdateV2Request {
-  abe?: ABitOfEverything | undefined;
+  abe: ABitOfEverything | undefined;
   /** The paths to update. */
-  updateMask?: string[] | undefined;
+  updateMask: string[] | undefined;
 }
 
 /**
@@ -354,7 +353,7 @@ export interface Book {
   /** Output only. The book's ID. */
   id: string;
   /** Output only. Creation time of the book. */
-  createTime?: Date | undefined;
+  createTime: Date | undefined;
 }
 
 /**
@@ -374,7 +373,7 @@ export interface CreateBookRequest {
    */
   parent: string;
   /** The book to create. */
-  book?: Book | undefined;
+  book: Book | undefined;
   /**
    * The ID to use for the book.
    *
@@ -395,9 +394,9 @@ export interface UpdateBookRequest {
    * The book's `name` field is used to identify the book to be updated.
    * Format: publishers/{publisher}/books/{book}
    */
-  book?: Book | undefined;
+  book: Book | undefined;
   /** The list of fields to be updated. */
-  updateMask?: string[] | undefined;
+  updateMask: string[] | undefined;
   /**
    * If set to true, and the book is not found, a new book will be created.
    * In this situation, `update_mask` is ignored.
@@ -419,11 +418,11 @@ export interface SnakeEnumResponse {}
  */
 export interface RequiredMessageTypeRequest {
   id: string;
-  foo?: Foo | undefined;
+  foo: Foo | undefined;
 }
 
 export interface Foo {
-  bar?: Bar | undefined;
+  bar: Bar | undefined;
 }
 
 export interface Bar {
@@ -2536,274 +2535,6 @@ export const ABitOfEverythingServiceDefinition = {
   },
 } as const;
 
-export interface ABitOfEverythingServiceImplementation<CallContextExt = {}> {
-  /**
-   * Create a new ABitOfEverything
-   *
-   * This API creates a new ABitOfEverything
-   */
-  create(
-    request: ABitOfEverything,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<ABitOfEverything>>;
-  createBody(
-    request: ABitOfEverything,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<ABitOfEverything>>;
-  /** Create a book. */
-  createBook(
-    request: CreateBookRequest,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<Book>>;
-  updateBook(
-    request: UpdateBookRequest,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<Book>>;
-  lookup(
-    request: IdMessage,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<ABitOfEverything>>;
-  custom(
-    request: ABitOfEverything,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<ABitOfEverything>>;
-  doubleColon(
-    request: ABitOfEverything,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<ABitOfEverything>>;
-  update(
-    request: ABitOfEverything,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<Empty>>;
-  updateV2(
-    request: UpdateV2Request,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<Empty>>;
-  delete(
-    request: IdMessage,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<Empty>>;
-  getQuery(
-    request: ABitOfEverything,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<Empty>>;
-  getRepeatedQuery(
-    request: ABitOfEverythingRepeated,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<ABitOfEverythingRepeated>>;
-  /**
-   * Echo allows posting a StringMessage value.
-   *
-   * It also exposes multiple bindings.
-   *
-   * This makes it useful when validating that the OpenAPI v2 API
-   * description exposes documentation correctly on all paths
-   * defined as additional_bindings in the proto.
-   */
-  echo(
-    request: StringMessage,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<StringMessage>>;
-  deepPathEcho(
-    request: ABitOfEverything,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<ABitOfEverything>>;
-  noBindings(
-    request: Duration,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<Empty>>;
-  timeout(
-    request: Empty,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<Empty>>;
-  errorWithDetails(
-    request: Empty,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<Empty>>;
-  getMessageWithBody(
-    request: MessageWithBody,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<Empty>>;
-  postWithEmptyBody(
-    request: Body,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<Empty>>;
-  checkGetQueryParams(
-    request: ABitOfEverything,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<ABitOfEverything>>;
-  checkNestedEnumGetQueryParams(
-    request: ABitOfEverything,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<ABitOfEverything>>;
-  checkPostQueryParams(
-    request: ABitOfEverything,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<ABitOfEverything>>;
-  overwriteRequestContentType(
-    request: Body,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<Empty>>;
-  overwriteResponseContentType(
-    request: Empty,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<StringValue>>;
-  checkExternalPathEnum(
-    request: MessageWithPathEnum,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<Empty>>;
-  checkExternalNestedPathEnum(
-    request: MessageWithNestedPathEnum,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<Empty>>;
-  checkStatus(
-    request: Empty,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<CheckStatusResponse>>;
-  postOneofEnum(
-    request: OneofEnumMessage,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<Empty>>;
-  postRequiredMessageType(
-    request: RequiredMessageTypeRequest,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<Empty>>;
-}
-
-export interface ABitOfEverythingServiceClient<CallOptionsExt = {}> {
-  /**
-   * Create a new ABitOfEverything
-   *
-   * This API creates a new ABitOfEverything
-   */
-  create(
-    request: DeepPartial<ABitOfEverything>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<ABitOfEverything>;
-  createBody(
-    request: DeepPartial<ABitOfEverything>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<ABitOfEverything>;
-  /** Create a book. */
-  createBook(
-    request: DeepPartial<CreateBookRequest>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<Book>;
-  updateBook(
-    request: DeepPartial<UpdateBookRequest>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<Book>;
-  lookup(
-    request: DeepPartial<IdMessage>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<ABitOfEverything>;
-  custom(
-    request: DeepPartial<ABitOfEverything>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<ABitOfEverything>;
-  doubleColon(
-    request: DeepPartial<ABitOfEverything>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<ABitOfEverything>;
-  update(
-    request: DeepPartial<ABitOfEverything>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<Empty>;
-  updateV2(
-    request: DeepPartial<UpdateV2Request>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<Empty>;
-  delete(
-    request: DeepPartial<IdMessage>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<Empty>;
-  getQuery(
-    request: DeepPartial<ABitOfEverything>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<Empty>;
-  getRepeatedQuery(
-    request: DeepPartial<ABitOfEverythingRepeated>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<ABitOfEverythingRepeated>;
-  /**
-   * Echo allows posting a StringMessage value.
-   *
-   * It also exposes multiple bindings.
-   *
-   * This makes it useful when validating that the OpenAPI v2 API
-   * description exposes documentation correctly on all paths
-   * defined as additional_bindings in the proto.
-   */
-  echo(
-    request: DeepPartial<StringMessage>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<StringMessage>;
-  deepPathEcho(
-    request: DeepPartial<ABitOfEverything>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<ABitOfEverything>;
-  noBindings(
-    request: DeepPartial<Duration>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<Empty>;
-  timeout(
-    request: DeepPartial<Empty>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<Empty>;
-  errorWithDetails(
-    request: DeepPartial<Empty>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<Empty>;
-  getMessageWithBody(
-    request: DeepPartial<MessageWithBody>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<Empty>;
-  postWithEmptyBody(
-    request: DeepPartial<Body>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<Empty>;
-  checkGetQueryParams(
-    request: DeepPartial<ABitOfEverything>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<ABitOfEverything>;
-  checkNestedEnumGetQueryParams(
-    request: DeepPartial<ABitOfEverything>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<ABitOfEverything>;
-  checkPostQueryParams(
-    request: DeepPartial<ABitOfEverything>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<ABitOfEverything>;
-  overwriteRequestContentType(
-    request: DeepPartial<Body>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<Empty>;
-  overwriteResponseContentType(
-    request: DeepPartial<Empty>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<StringValue>;
-  checkExternalPathEnum(
-    request: DeepPartial<MessageWithPathEnum>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<Empty>;
-  checkExternalNestedPathEnum(
-    request: DeepPartial<MessageWithNestedPathEnum>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<Empty>;
-  checkStatus(
-    request: DeepPartial<Empty>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<CheckStatusResponse>;
-  postOneofEnum(
-    request: DeepPartial<OneofEnumMessage>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<Empty>;
-  postRequiredMessageType(
-    request: DeepPartial<RequiredMessageTypeRequest>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<Empty>;
-}
-
 /**
  * // camelCase and lowercase service names are valid but not recommended (use TitleCase instead)
  * service camelCaseServiceName {
@@ -2828,22 +2559,6 @@ export const AnotherServiceWithNoBindingsDefinition = {
     },
   },
 } as const;
-
-export interface AnotherServiceWithNoBindingsServiceImplementation<
-  CallContextExt = {},
-> {
-  noBindings(
-    request: Empty,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<Empty>>;
-}
-
-export interface AnotherServiceWithNoBindingsClient<CallOptionsExt = {}> {
-  noBindings(
-    request: DeepPartial<Empty>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<Empty>;
-}
 
 export type SnakeEnumServiceDefinition = typeof SnakeEnumServiceDefinition;
 export const SnakeEnumServiceDefinition = {
@@ -2870,20 +2585,6 @@ export const SnakeEnumServiceDefinition = {
     },
   },
 } as const;
-
-export interface SnakeEnumServiceImplementation<CallContextExt = {}> {
-  snakeEnum(
-    request: SnakeEnumRequest,
-    context: CallContext & CallContextExt,
-  ): Promise<DeepPartial<SnakeEnumResponse>>;
-}
-
-export interface SnakeEnumServiceClient<CallOptionsExt = {}> {
-  snakeEnum(
-    request: DeepPartial<SnakeEnumRequest>,
-    options?: CallOptions & CallOptionsExt,
-  ): Promise<SnakeEnumResponse>;
-}
 
 function bytesFromBase64(b64: string): Uint8Array {
   const bin = globalThis.atob(b64);

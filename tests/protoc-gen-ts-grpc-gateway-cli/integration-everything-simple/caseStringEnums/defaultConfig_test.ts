@@ -9,7 +9,6 @@ import {
   ABitOfEverything,
   ABitOfEverything_Nested_DeepEnum,
   ABitOfEverythingRepeated,
-  ABitOfEverythingServiceClient,
   Body,
   Book,
   CheckStatusResponse,
@@ -27,10 +26,12 @@ import { Empty } from "./google/protobuf/empty";
 import { Status } from "./google/rpc/status";
 import { ExampleEnum, OneofEnumMessage } from "./proto/oneofenum/oneof_enum";
 import { StringMessage } from "./proto/sub/message";
-import { newBodyJSONService } from "./proto/bodyjson/bodyjson_pb_gwcli";
-import { WellKnownTypesHolder } from "./proto/bodyjson/bodyjson";
+import {
+  newBodyJSONService,
+  newQueryStringService,
+} from "./proto/paramtest/bodyjson_pb_gwcli";
+import { WellKnownTypesHolder } from "./proto/paramtest/bodyjson";
 import { Any } from "./google/protobuf/any";
-import { newQueryStringService } from "./proto/querystring/querystring_pb_gwcli";
 
 function fetchTransport(
   baseUrl: string,
@@ -245,8 +246,8 @@ describe("ABitOfEverythingService", () => {
       optionalStringField: "string",
       requiredStringField1: "string",
       requiredStringField2: "string",
-      // requiredFieldBehaviorJsonName: "string",
-      // requiredFieldSchemaJsonName: "string",
+      requiredFieldBehaviorJsonName: "string",
+      requiredFieldSchemaJsonName: "string",
       trailingOnly: "string",
       trailingOnlyDot: "string",
       trailingBoth: "string",

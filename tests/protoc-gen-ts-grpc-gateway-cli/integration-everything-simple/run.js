@@ -66,7 +66,25 @@ const testCases = [
     testDir: "caseStringEnums",
     serverDir: "./servergojson",
     cases: defaultConfigCases,
-  }
+  },
+  {
+    name: "protobufES_defaultConfig",
+    testDir: "caseProtobufES",
+    serverDir: "./server",
+    cases: defaultConfigCases,
+  },
+  {
+    name: "protobufES_useProtoNames",
+    testDir: "caseProtobufES",
+    serverDir: "./server",
+    cases: useProtoNameCases,
+  },
+  {
+    name: "protobufES_servergojson",
+    testDir: "caseProtobufES",
+    serverDir: "./servergojson",
+    cases: defaultConfigCases,
+  },
 ]
 
 import kill from "tree-kill";

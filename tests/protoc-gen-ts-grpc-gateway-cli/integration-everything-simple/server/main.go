@@ -9,9 +9,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-ts-grpc-gateway-cli/integration-everything-simple/server/proto/bodyjson"
 	"github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-ts-grpc-gateway-cli/integration-everything-simple/server/proto/examplepb"
-	"github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-ts-grpc-gateway-cli/integration-everything-simple/server/proto/querystring"
+	"github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-ts-grpc-gateway-cli/integration-everything-simple/server/proto/paramtest"
 	"github.com/go-chi/chi/v5"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	httpSwagger "github.com/swaggo/http-swagger"
@@ -73,8 +72,8 @@ func main() {
 
 	grpcServer := grpc.NewServer()
 	examplepb.RegisterABitOfEverythingServiceServer(grpcServer, &ABitOfEverythingService{})
-	bodyjson.RegisterBodyJSONServiceServer(grpcServer, &BodyJSONService{})
-	querystring.RegisterQueryStringServiceServer(grpcServer, &QueryStringService{})
+	paramtest.RegisterBodyJSONServiceServer(grpcServer, &BodyJSONService{})
+	paramtest.RegisterQueryStringServiceServer(grpcServer, &QueryStringService{})
 
 	gateway := runtime.NewServeMux(runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.HTTPBodyMarshaler{
 		Marshaler: &runtime.JSONPb{
@@ -89,13 +88,13 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	err = bodyjson.RegisterBodyJSONServiceHandlerFromEndpoint(ctx, gateway, grpcEndpoint, []grpc.DialOption{
+	err = paramtest.RegisterBodyJSONServiceHandlerFromEndpoint(ctx, gateway, grpcEndpoint, []grpc.DialOption{
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	})
 	if err != nil {
 		panic(err)
 	}
-	err = querystring.RegisterQueryStringServiceHandlerFromEndpoint(ctx, gateway, grpcEndpoint, []grpc.DialOption{
+	err = paramtest.RegisterQueryStringServiceHandlerFromEndpoint(ctx, gateway, grpcEndpoint, []grpc.DialOption{
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	})
 	if err != nil {

@@ -11,6 +11,12 @@ importers:
       '@bufbuild/protobuf':
         specifier: ^2.2.3
         version: 2.2.3
+      '@connectrpc/connect':
+        specifier: ^2.0.0
+        version: 2.0.0(@bufbuild/protobuf@2.2.3)
+      '@connectrpc/connect-web':
+        specifier: ^2.0.0
+        version: 2.0.0(@bufbuild/protobuf@2.2.3)(@connectrpc/connect@2.0.0(@bufbuild/protobuf@2.2.3))
       js-base64:
         specifier: ^3.7.7
         version: 3.7.7
@@ -67,6 +73,17 @@ packages:
 
   '@bufbuild/protobuf@2.2.3':
     resolution: {integrity: sha512-tFQoXHJdkEOSwj5tRIZSPNUuXK3RaR7T1nUrPgbYX1pUbvqqaaZAsfo+NXBPsz5rZMSKVFrgK1WL8Q/MSLvprg==}
+
+  '@connectrpc/connect-web@2.0.0':
+    resolution: {integrity: sha512-oeCxqHXLXlWJdmcvp9L3scgAuK+FjNSn+twyhUxc8yvDbTumnt5Io+LnBzSYxAdUdYqTw5yHfTSCJ4hj0QID0g==}
+    peerDependencies:
+      '@bufbuild/protobuf': ^2.2.0
+      '@connectrpc/connect': 2.0.0
+
+  '@connectrpc/connect@2.0.0':
+    resolution: {integrity: sha512-Usm8jgaaULANJU8vVnhWssSA6nrZ4DJEAbkNtXSoZay2YD5fDyMukCxu8NEhCvFzfHvrhxhcjttvgpyhOM7xAQ==}
+    peerDependencies:
+      '@bufbuild/protobuf': ^2.2.0
 
   '@esbuild/aix-ppc64@0.24.2':
     resolution: {integrity: sha512-thpVCb/rhxE/BnMLQ7GReQLLN8q9qbHmI55F4489/ByVg2aQaQ6kbcLb6FHkocZzQhxc4gx0sCk0tJkKBFzDhA==}
@@ -1958,6 +1975,15 @@ snapshots:
   '@babel/helper-validator-identifier@7.25.9': {}
 
   '@bufbuild/protobuf@2.2.3': {}
+
+  '@connectrpc/connect-web@2.0.0(@bufbuild/protobuf@2.2.3)(@connectrpc/connect@2.0.0(@bufbuild/protobuf@2.2.3))':
+    dependencies:
+      '@bufbuild/protobuf': 2.2.3
+      '@connectrpc/connect': 2.0.0(@bufbuild/protobuf@2.2.3)
+
+  '@connectrpc/connect@2.0.0(@bufbuild/protobuf@2.2.3)':
+    dependencies:
+      '@bufbuild/protobuf': 2.2.3
 
   '@esbuild/aix-ppc64@0.24.2':
     optional: true

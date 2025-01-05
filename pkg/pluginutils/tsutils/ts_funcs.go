@@ -139,6 +139,8 @@ type TSOption struct {
 	// // TSImportRootAliasParamsKey contains the key for common_import_root_alias in parameters
 	// TSImportRootAliases string
 
+	// use ts-proto or protobuf-es to generate typescript code
+	TypeDefinition string
 	// if TSProto `snakeToCamel` flags contains `key`
 	TSProto_KeySnakeToCamel bool
 	// if server marshal options has MarshalUseProtoNames set to true

@@ -4,7 +4,10 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/descriptorx"
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/protobufx"
+	"github.com/golang/glog"
+	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
@@ -188,12 +191,28 @@ func lessPath(x, y string) bool {
 	return len(x) < len(y)
 }
 
-func GetField(md protoreflect.MessageDescriptor, path string) protoreflect.FieldDescriptor {
+func GetField(msg *protogen.Message, path string) *protogen.Field {
+	res := getField(descriptorx.WrapProtogenMessage(msg), path)
+	if res == nil {
+		return nil
+	}
+	return res.(descriptorx.FieldDescriptorProtogenAdaptor).In
+}
+
+func GetFieldProtoreflect(md protoreflect.MessageDescriptor, path string) protoreflect.FieldDescriptor {
+	res := getField(descriptorx.WrapReflectMessage(md), path)
+	if res == nil {
+		return nil
+	}
+	return res.(descriptorx.FieldDescriptorProtoreflectAdaptor).In
+}
+
+func getField(md descriptorx.MessageDescriptor, path string) descriptorx.FieldDescriptor {
 	if path == "" {
 		return nil
 	}
-	var field protoreflect.FieldDescriptor
-	valid := rangeFields(path, func(f string) bool {
+	var field descriptorx.FieldDescriptor
+	valid := RangeFieldPath(path, func(f, _ string) bool {
 		if md == nil {
 			return false
 		}
@@ -218,9 +237,9 @@ func GetField(md protoreflect.MessageDescriptor, path string) protoreflect.Field
 	return field
 }
 
-// rangeFields is like strings.Split(path, "."), but avoids allocations by
+// RangeFieldPath is like strings.Split(path, "."), but avoids allocations by
 // iterating over each field in place and calling a iterator function.
-func rangeFields(path string, f func(field string) bool) bool {
+func RangeFieldPath(path string, f func(field string, restPath string) bool) bool {
 	for {
 		var field string
 		if i := strings.IndexByte(path, '.'); i >= 0 {
@@ -229,7 +248,7 @@ func rangeFields(path string, f func(field string) bool) bool {
 			field, path = path, ""
 		}
 
-		if !f(field) {
+		if !f(field, path) {
 			return false
 		}
 
@@ -237,5 +256,52 @@ func rangeFields(path string, f func(field string) bool) bool {
 			return true
 		}
 		path = strings.TrimPrefix(path, ".")
+	}
+}
+
+func RangeField(msg descriptorx.MessageDescriptor, path string, fn func(field descriptorx.FieldDescriptor, restPath string) bool) bool {
+	if path == "" {
+		return false
+	}
+	var fd descriptorx.FieldDescriptor
+	md := msg
+	valid := RangeFieldPath(path, func(f, rest string) bool {
+		if md == nil {
+			return false
+		}
+
+		fd = md.Fields().ByName(protoreflect.Name(f))
+		if fd == nil {
+			return false
+		}
+
+		// Identify the next message to search within.
+		md = fd.Message() // may be nil
+
+		// Repeated fields are only allowed at the last position.
+		if fd.IsList() || fd.IsMap() {
+			md = nil
+		}
+
+		return fn(fd, rest)
+	})
+	return valid
+}
+
+func JsonFieldPath(rootMsg *protogen.Message) func(path string) string {
+	return func(path string) string {
+		syntax := strings.Builder{}
+		rootMsgDesc := descriptorx.WrapReflectMessage(rootMsg.Desc)
+		valid := RangeField(rootMsgDesc, path, func(fd descriptorx.FieldDescriptor, _ string) bool {
+			if syntax.Len() > 0 {
+				syntax.WriteByte('.')
+			}
+			syntax.WriteString(fd.JSONName())
+			return true
+		})
+		if !valid {
+			glog.V(1).Infof("field invalid: %s", path)
+		}
+		return syntax.String()
 	}
 }

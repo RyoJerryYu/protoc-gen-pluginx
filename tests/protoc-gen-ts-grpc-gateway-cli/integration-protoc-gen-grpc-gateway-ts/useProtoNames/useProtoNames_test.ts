@@ -48,12 +48,12 @@ describe("test with original proto names", () => {
   );
   it("http get check request", async () => {
     const req = { num_to_increase: 10 } as HttpGetRequest;
-    const result = await CounterService.hTTPGet(req);
+    const result = await CounterService.httpget(req);
     expect(result.result).to.equal(11);
   });
 
   it("http post body check request with nested body path", async () => {
-    const result = await CounterService.hTTPPostWithNestedBodyPath({
+    const result = await CounterService.httppostWithNestedBodyPath({
       a: 10,
       req: { b: 15 },
       c: 0,
@@ -62,7 +62,7 @@ describe("test with original proto names", () => {
   });
 
   it("http post body check request with star in path", async () => {
-    const result = await CounterService.hTTPPostWithStarBodyPath({
+    const result = await CounterService.httppostWithStarBodyPath({
       a: 10,
       req: { b: 15 },
       c: 23,
@@ -71,17 +71,17 @@ describe("test with original proto names", () => {
   });
 
   it("http patch request with star in path", async () => {
-    const result = await CounterService.hTTPPatch({ a: 10, c: 23 });
+    const result = await CounterService.httppatch({ a: 10, c: 23 });
     expect(result.patch_result).to.equal(33);
   });
 
   it("http delete check request", async () => {
-    const result = await CounterService.hTTPDelete({ a: 10 });
+    const result = await CounterService.httpdelete({ a: 10 });
     expect(result).to.be.empty;
   });
 
   it("http get request with url search parameters", async () => {
-    const result = await CounterService.hTTPGetWithURLSearchParams({
+    const result = await CounterService.httpgetWithUrlsearchParams({
       a: 10,
       b: { b: 0 },
       c: [23, 25],
@@ -91,7 +91,7 @@ describe("test with original proto names", () => {
   });
 
   it("http get request with zero value url search parameters", async () => {
-    const result = await CounterService.hTTPGetWithZeroValueURLSearchParams({
+    const result = await CounterService.httpgetWithZeroValueUrlsearchParams({
       a: "A",
       b: "",
       c: { c: 1, d: [1, 0, 2], e: false },
@@ -104,7 +104,7 @@ describe("test with original proto names", () => {
   });
 
   it("http get request with optional fields", async () => {
-    const result = await CounterService.hTTPGetWithOptionalFields({});
+    const result = await CounterService.httpgetWithOptionalFields({});
 
     const expectResult: OptionalFieldsResponse = {
       // all empty fields will be excluded.

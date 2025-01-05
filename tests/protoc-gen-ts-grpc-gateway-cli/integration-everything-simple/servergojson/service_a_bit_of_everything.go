@@ -150,6 +150,15 @@ func (a *ABitOfEverythingService) DeepPathEcho(ctx context.Context, req *example
 	return req, nil
 }
 
+// NoBindings implements examplepb.ABitOfEverythingServiceServer.
+func (a *ABitOfEverythingService) NoBindings(ctx context.Context, req *durationpb.Duration) (*emptypb.Empty, error) {
+	if req.Seconds != 100 {
+		return nil, assertErrf("expected req.Seconds is 100, got %d", req.Seconds)
+	}
+
+	return &emptypb.Empty{}, nil
+}
+
 // ErrorWithDetails implements examplepb.ABitOfEverythingServiceServer.
 func (a *ABitOfEverythingService) ErrorWithDetails(ctx context.Context, req *emptypb.Empty) (*emptypb.Empty, error) {
 	sts := status.New(codes.PermissionDenied, "permission denied")
@@ -269,11 +278,6 @@ func (a *ABitOfEverythingService) PostRequiredMessageType(ctx context.Context, r
 
 // GetQuery implements examplepb.ABitOfEverythingServiceServer.
 func (a *ABitOfEverythingService) GetQuery(ctx context.Context, req *examplepb.ABitOfEverything) (*emptypb.Empty, error) {
-	panic("unimplemented")
-}
-
-// NoBindings implements examplepb.ABitOfEverythingServiceServer.
-func (a *ABitOfEverythingService) NoBindings(ctx context.Context, req *durationpb.Duration) (*emptypb.Empty, error) {
 	panic("unimplemented")
 }
 

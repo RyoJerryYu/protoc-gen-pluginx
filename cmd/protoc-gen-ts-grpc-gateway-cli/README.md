@@ -4,7 +4,7 @@ This is a CLI tool for generating TypeScript gRPC Gateway client code from gRPC 
 
 This plugin focuses on generating client code for gRPC Gateway, do not care about the openapi specifiction, or the field_behavior option.
 
-This plugin do not fully responsible for the protobuf message marshal/unmarshal, instead, it depends on the `ts_proto` plugin to generate the marshal/unmarshal code.
+This plugin do not fully responsible for the protobuf message marshal/unmarshal, instead, it depends on the [`ts_proto`](https://github.com/stephenh/ts-proto) plugin or [`protobuf-es`](https://github.com/bufbuild/protobuf-es) plugin to generate the marshal/unmarshal code.
 
 This plugin designed to implement the Service Client stubs for gRPC gateway, so it do not support multiple HTTP methods for one RPC (That means it do not care about `google.api.http.additional_bindings` option).
 
@@ -13,7 +13,6 @@ This plugin designed to implement the Service Client stubs for gRPC gateway, so 
 This plugin depends on some flags of ts_proto:
 
 - `outputJsonMethods`: Should be set to true. This plugin depends on that json methods.
-- `outputServices`: ts_proto allow set this flag multiple times. Should include `nice-grpc` . This plugin depends on nice-grpc service interface.
 - `stringEnums`: protoc_grpc_gateway only allow unmarshal number value when the whole body, or a query param or a path param, is just an enum value or repeated enum value. stringEnums should set to `false` for this case.
 
 Some flags of ts_proto should be set depends on Server Config:
@@ -62,6 +61,10 @@ gateway := runtime.NewServeMux(runtime.WithMarshalerOption(runtime.MIMEWildcard,
 
 </details>
 
+## Work with protobuf-es
+
+This plugin can work well with protobuf-es, without any special flags.
+
 ## Flags
 
 ### `marshal_use_proto_names`
@@ -69,8 +72,11 @@ gateway := runtime.NewServeMux(runtime.WithMarshalerOption(runtime.MIMEWildcard,
 Whether to use proto names when marshal and unmarshal JSON or not.
 
 Default to `false` . 
+
 When `MarshalOptions.UseProtoNames` was `true` on serverside, this flag should be `true`,
 and `snakeToCamel` flag for ts_proto should be `keys` or `false`.
+
+You do not need to set this flag when working with protobuf-es.
 
 ### `ts_proto_key_snake_to_camel`
 
@@ -80,6 +86,7 @@ Default to `true` .
 
 Usually it should not be change unless `snakeToCamel` flag for ts_proto was manualy set to `false` or `json`.
 
+You do not need to set this flag when working with protobuf-es.
 
 ## TODO: 
 
@@ -100,12 +107,13 @@ Usually it should not be change unless `snakeToCamel` flag for ts_proto was manu
 
 ### low priority:
 - [x] GetRepeatedQuery: path param do not work well with bytes, required base64
+- [x] post map type as body
 - [x] Create: query param do not work well with well known types
 - [x] Create: query params for bytes field do not work well
 - [ ] Create: query params for map field do not work well
 - [ ] Create: query params for repeated message field do not work well
 - [ ] Create: query params for empty message field do not work well
-- [ ] Create: query params for `json_name` do not work well
+- [x] Create: query params for `json_name` do not work well
 - [ ] CheckGetQueryParams, CheckNestedEnumGetQueryParams: repeated nested query params did not pass to server
 
 ### no plan:
@@ -117,14 +125,17 @@ Usually it should not be change unless `snakeToCamel` flag for ts_proto was manu
 
 ### Features that do not support
 
-Do not support `grpc.gateway.protoc_gen_openapiv2.options`, so that:
+- Do not support `grpc.gateway.protoc_gen_openapiv2.options`, so that:
 
-- Do not support overwrite request content type and response content type.
+  - Do not support overwrite request content type and response content type.
 
-Do not support `google.api.field_behavior` , so that:
+- Do not support `google.api.field_behavior` , so that:
 
-- Do not support `[(google.api.field_behavior) = REQUIRED]` option and `[(google.api.field_behavior) = OUTPUT_ONLY]` option
+  - Do not support `[(google.api.field_behavior) = REQUIRED]` option and `[(google.api.field_behavior) = OUTPUT_ONLY]` option
 
-Do not support what ts_proto is conflict with protojson, so that:
+- Do not support what `ts_proto` is conflict with protojson, so that:
 
-- json_name do not support when useProtoNames: protojson will ignore json_name when `UseProtoNames=true` , but ts_proto do not ignore it.
+  - json_name do not support when useProtoNames: protojson will ignore json_name when `UseProtoNames=true` , but ts_proto do not ignore it.
+  - `google.protobuf.Duration` do not support: `ts_proto` do not support JSON format for Duration.
+
+  These two features are supported when working with `protobuf-es` .
