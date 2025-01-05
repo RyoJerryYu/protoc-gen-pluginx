@@ -41,7 +41,7 @@ func (d TSProtoDefinition) GetFieldSyntax(opt *TSOption, rootMsg *protogen.Messa
 		var fd protoreflect.FieldDescriptor
 		md := rootMsg.Desc
 		syntax := &strings.Builder{}
-		valid := pluginutils.RangeFields(path, func(field string) bool {
+		valid := pluginutils.RangeFields(path, func(field, _ string) bool {
 			if md == nil {
 				return false
 			}

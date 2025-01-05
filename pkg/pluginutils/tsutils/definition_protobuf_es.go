@@ -7,6 +7,7 @@ import (
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils"
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/protobufx"
 	"github.com/golang/glog"
+	"github.com/iancoleman/strcase"
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
@@ -53,7 +54,9 @@ func (d ProtobufESDefinition) tsIdentEnumSchema(enum *protogen.Enum) TSIdent {
 }
 
 func (d ProtobufESDefinition) GetFieldSyntax(opt *TSOption, rootMsg *protogen.Message) func(rootVar, path string) string {
-	fieldCase := JSONCamelCase
+	fieldCase := func(name protoreflect.Name) string {
+		return strcase.ToLowerCamel(string(name))
+	}
 	return func(rootVar string, path string) string {
 		if path == "" {
 			return ""
@@ -61,19 +64,44 @@ func (d ProtobufESDefinition) GetFieldSyntax(opt *TSOption, rootMsg *protogen.Me
 		var fd protoreflect.FieldDescriptor
 		md := rootMsg.Desc
 		syntax := &strings.Builder{}
-		valid := pluginutils.RangeFields(path, func(field string) bool {
+		syntax.WriteString(rootVar)
+		isFirst := true
+		pluginutils.RangeFields(path, func(field string, restPath string) bool {
 			if md == nil {
 				return false
 			}
-
-			syntax.WriteString("?.")
+			if isFirst {
+				isFirst = false
+				syntax.WriteString(".")
+			} else {
+				syntax.WriteString("?.")
+			}
 
 			fd = md.Fields().ByTextName(field)
 			if fd == nil {
 				return false
 			}
 
-			_, err := syntax.WriteString(fieldCase(fd.TextName()))
+			if oneof := fd.ContainingOneof(); oneof != nil && !oneof.IsSynthetic() {
+				// fd is oneof field and is not optional synthetic oneof
+				syntax.WriteString(fieldCase(oneof.Name()))
+				prefixSyntax := syntax.String() // the prefix from root to oneof field
+				syntax.Reset()
+				oneofMatch := fmt.Sprintf(`%s.case === "%s"`, prefixSyntax, fieldCase(fd.Name()))
+				oneofValue := fmt.Sprintf(`%s.value`, prefixSyntax)
+				innerSyntax := oneofValue
+				if restPath != "" {
+					innerSyntax = d.GetFieldSyntax(opt, rootMsg)(oneofValue, restPath)
+				}
+				syntax.WriteString(fmt.Sprintf(
+					`(%s ? %s : undefined)`,
+					oneofMatch,
+					innerSyntax,
+				))
+				return false
+			}
+
+			_, err := syntax.WriteString(fieldCase(fd.Name()))
 			if err != nil {
 				glog.Errorf("failed to write field syntax: %v", err)
 				return false
@@ -87,10 +115,7 @@ func (d ProtobufESDefinition) GetFieldSyntax(opt *TSOption, rootMsg *protogen.Me
 
 			return true
 		})
-		if !valid {
-			return ""
-		}
-		return rootVar + strings.TrimPrefix(syntax.String(), "?")
+		return syntax.String()
 	}
 }
 

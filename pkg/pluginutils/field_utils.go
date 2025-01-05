@@ -211,7 +211,7 @@ func getField(md descriptorx.MessageDescriptor, path string) descriptorx.FieldDe
 		return nil
 	}
 	var field descriptorx.FieldDescriptor
-	valid := RangeFields(path, func(f string) bool {
+	valid := RangeFields(path, func(f, _ string) bool {
 		if md == nil {
 			return false
 		}
@@ -238,7 +238,7 @@ func getField(md descriptorx.MessageDescriptor, path string) descriptorx.FieldDe
 
 // RangeFields is like strings.Split(path, "."), but avoids allocations by
 // iterating over each field in place and calling a iterator function.
-func RangeFields(path string, f func(field string) bool) bool {
+func RangeFields(path string, f func(field string, restPath string) bool) bool {
 	for {
 		var field string
 		if i := strings.IndexByte(path, '.'); i >= 0 {
@@ -247,7 +247,7 @@ func RangeFields(path string, f func(field string) bool) bool {
 			field, path = path, ""
 		}
 
-		if !f(field) {
+		if !f(field, path) {
 			return false
 		}
 
