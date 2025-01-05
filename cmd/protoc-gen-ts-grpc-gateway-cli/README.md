@@ -99,6 +99,7 @@ Usually it should not be change unless `snakeToCamel` flag for ts_proto was manu
 
 ### low priority:
 - [x] GetRepeatedQuery: path param do not work well with bytes, required base64
+- [x] post map type as body
 - [x] Create: query param do not work well with well known types
 - [x] Create: query params for bytes field do not work well
 - [ ] Create: query params for map field do not work well
