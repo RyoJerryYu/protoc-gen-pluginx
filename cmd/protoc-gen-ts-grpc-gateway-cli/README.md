@@ -125,14 +125,17 @@ You do not need to set this flag when working with protobuf-es.
 
 ### Features that do not support
 
-Do not support `grpc.gateway.protoc_gen_openapiv2.options`, so that:
+- Do not support `grpc.gateway.protoc_gen_openapiv2.options`, so that:
 
-- Do not support overwrite request content type and response content type.
+  - Do not support overwrite request content type and response content type.
 
-Do not support `google.api.field_behavior` , so that:
+- Do not support `google.api.field_behavior` , so that:
 
-- Do not support `[(google.api.field_behavior) = REQUIRED]` option and `[(google.api.field_behavior) = OUTPUT_ONLY]` option
+  - Do not support `[(google.api.field_behavior) = REQUIRED]` option and `[(google.api.field_behavior) = OUTPUT_ONLY]` option
 
-Do not support what ts_proto is conflict with protojson, so that:
+- Do not support what `ts_proto` is conflict with protojson, so that:
 
-- json_name do not support when useProtoNames: protojson will ignore json_name when `UseProtoNames=true` , but ts_proto do not ignore it.
+  - json_name do not support when useProtoNames: protojson will ignore json_name when `UseProtoNames=true` , but ts_proto do not ignore it.
+  - `google.protobuf.Duration` do not support: `ts_proto` do not support JSON format for Duration.
+
+  These two features are supported when working with `protobuf-es` .
