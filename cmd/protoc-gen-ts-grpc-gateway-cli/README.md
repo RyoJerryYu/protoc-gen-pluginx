@@ -4,7 +4,7 @@ This is a CLI tool for generating TypeScript gRPC Gateway client code from gRPC 
 
 This plugin focuses on generating client code for gRPC Gateway, do not care about the openapi specifiction, or the field_behavior option.
 
-This plugin do not fully responsible for the protobuf message marshal/unmarshal, instead, it depends on the `ts_proto` plugin to generate the marshal/unmarshal code.
+This plugin do not fully responsible for the protobuf message marshal/unmarshal, instead, it depends on the [`ts_proto`](https://github.com/stephenh/ts-proto) plugin or [`protobuf-es`](https://github.com/bufbuild/protobuf-es) plugin to generate the marshal/unmarshal code.
 
 This plugin designed to implement the Service Client stubs for gRPC gateway, so it do not support multiple HTTP methods for one RPC (That means it do not care about `google.api.http.additional_bindings` option).
 
@@ -61,6 +61,10 @@ gateway := runtime.NewServeMux(runtime.WithMarshalerOption(runtime.MIMEWildcard,
 
 </details>
 
+## Work with protobuf-es
+
+This plugin can work well with protobuf-es, without any special flags.
+
 ## Flags
 
 ### `marshal_use_proto_names`
@@ -68,8 +72,11 @@ gateway := runtime.NewServeMux(runtime.WithMarshalerOption(runtime.MIMEWildcard,
 Whether to use proto names when marshal and unmarshal JSON or not.
 
 Default to `false` . 
+
 When `MarshalOptions.UseProtoNames` was `true` on serverside, this flag should be `true`,
 and `snakeToCamel` flag for ts_proto should be `keys` or `false`.
+
+You do not need to set this flag when working with protobuf-es.
 
 ### `ts_proto_key_snake_to_camel`
 
@@ -79,6 +86,7 @@ Default to `true` .
 
 Usually it should not be change unless `snakeToCamel` flag for ts_proto was manualy set to `false` or `json`.
 
+You do not need to set this flag when working with protobuf-es.
 
 ## TODO: 
 
