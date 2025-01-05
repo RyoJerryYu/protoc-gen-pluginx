@@ -4,7 +4,9 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/descriptorx"
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/protobufx"
+	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
@@ -188,11 +190,27 @@ func lessPath(x, y string) bool {
 	return len(x) < len(y)
 }
 
-func GetField(md protoreflect.MessageDescriptor, path string) protoreflect.FieldDescriptor {
+func GetField(msg *protogen.Message, path string) *protogen.Field {
+	res := getField(descriptorx.WrapProtogenMessage(msg), path)
+	if res == nil {
+		return nil
+	}
+	return res.(descriptorx.FieldDescriptorProtogenAdaptor).In
+}
+
+func GetFieldProtoreflect(md protoreflect.MessageDescriptor, path string) protoreflect.FieldDescriptor {
+	res := getField(descriptorx.WrapReflectMessage(md), path)
+	if res == nil {
+		return nil
+	}
+	return res.(descriptorx.FieldDescriptorProtoreflectAdaptor).In
+}
+
+func getField(md descriptorx.MessageDescriptor, path string) descriptorx.FieldDescriptor {
 	if path == "" {
 		return nil
 	}
-	var field protoreflect.FieldDescriptor
+	var field descriptorx.FieldDescriptor
 	valid := rangeFields(path, func(f string) bool {
 		if md == nil {
 			return false

@@ -4,6 +4,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
 func TestCombine(t *testing.T) {
@@ -126,4 +128,14 @@ func TestCombine(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestGetField(t *testing.T) {
+	require.NotPanics(t, func() {
+		in := wrapperspb.Bool(true)
+		res1 := GetFieldProtoreflect(in.ProtoReflect().Descriptor(), "value")
+		assert.NotNil(t, res1)
+		res2 := GetFieldProtoreflect(in.ProtoReflect().Descriptor(), "value.abc")
+		assert.Nil(t, res2)
+	})
 }

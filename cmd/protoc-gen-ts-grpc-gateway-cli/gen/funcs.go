@@ -142,27 +142,25 @@ func (g *Generator) renderQueryString(r *tsutils.TSOption) func(method *protogen
 		queryParams := pluginutils.Substract(allFieldPaths, usedParams)
 		var res []string // [ [param, fieldSyntax] ]
 		for _, param := range queryParams {
-			field := pluginutils.GetField(method.Input.Desc, param)
+			field := pluginutils.GetField(method.Input, param)
 			if field == nil {
 				glog.V(1).Infof("field not found: %s", param)
 				continue
 			}
 
-			syntax := g.getFieldSyntax("fullReq", param)
-
-			if field.IsMap() {
+			if field.Desc.IsMap() {
 				glog.V(1).Infof("not supporting map fields in query params: %s", param)
 				continue
 			}
-			// if field.Kind() == protoreflect.MessageKind && field.IsList() {
-			// 	glog.V(1).Infof("not supporting repeated message fields in query params: %s", param)
-			// 	continue
-			// }
-			if field.Kind() == protoreflect.MessageKind && !g.isQueryParamSupportedMessage(field.Message()) {
+			if field.Message != nil && !g.isQueryParamSupportedMessage(field.Message.Desc) {
 				glog.V(1).Infof("not supporting message fields in query params: %s", param)
 				continue
 			}
-			res = append(res, g.queryParam(param, syntax))
+
+			getFieldSyntax := g.getFieldSyntax("fullReq", param)
+			paramValue := fmt.Sprintf(`%s ? %s : undefined`, getFieldSyntax, g.FieldToJson(field)(g.TSRegistry, getFieldSyntax))
+
+			res = append(res, g.queryParam(param, paramValue))
 		}
 
 		return res

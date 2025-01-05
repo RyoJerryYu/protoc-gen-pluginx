@@ -70,6 +70,7 @@ func (d TSProtoDefinition) MessageToJson(msgTyp *protogen.Message) func(g *TSReg
 			return d.fieldMaskToJson(msgTyp)
 		case protobufx.BoolValue_message_name,
 			protobufx.StringValue_message_name,
+			protobufx.BytesValue_message_name,
 			protobufx.DoubleValue_message_name,
 			protobufx.FloatValue_message_name,
 			protobufx.Int32Value_message_name,
@@ -133,6 +134,6 @@ func (d TSProtoDefinition) fieldMaskToJson(msgTyp *protogen.Message) func(g *TSR
 	return func(g *TSRegistry, in string) string {
 		// in is type of FieldMask
 		ident := g.QualifiedTSIdent(d.TSIdentMsg(msgTyp))
-		return fmt.Sprintf(`%s.toJSON(%s.wrap(%s))`, ident, ident, in)
+		return fmt.Sprintf(`%s.toJSON(%s.wrap(%s)) as string`, ident, ident, in)
 	}
 }
