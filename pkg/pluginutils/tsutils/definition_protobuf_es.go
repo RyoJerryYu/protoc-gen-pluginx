@@ -152,6 +152,7 @@ func (d ProtobufESDefinition) MessageToJson(msg *protogen.Message) func(g *TSReg
 			return d.ScalarToJson()
 		case protobufx.BoolValue_message_name,
 			protobufx.StringValue_message_name,
+			protobufx.BytesValue_message_name,
 			protobufx.DoubleValue_message_name,
 			protobufx.FloatValue_message_name,
 			protobufx.Int32Value_message_name,
