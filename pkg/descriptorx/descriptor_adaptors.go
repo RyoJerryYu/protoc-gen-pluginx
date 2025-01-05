@@ -14,6 +14,7 @@ type FieldDescriptor interface {
 	Kind() protoreflect.Kind
 	IsList() bool
 	IsMap() bool
+	JSONName() string
 	TextName() string
 }
 

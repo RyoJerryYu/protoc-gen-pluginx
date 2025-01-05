@@ -7,11 +7,9 @@ import (
 
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils"
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils/tsutils"
-	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/protobufx"
 	"github.com/golang/glog"
 	"github.com/iancoleman/strcase"
 	"google.golang.org/protobuf/compiler/protogen"
-	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 type httpOptions struct {
@@ -57,13 +55,16 @@ func (g *Generator) pathStr(in string) string {
 	return fmt.Sprintf(`pathStr(%s)`, in)
 }
 
-func (g *Generator) queryParam(key string, value string) string {
-	key = g.JsonFieldPath(&g.TSOption)(key)
+func (g *Generator) queryParam(rootMsg *protogen.Message, key string, value string) string {
+	key = g.JsonFieldPath(&g.TSOption, rootMsg)(key)
 	return fmt.Sprintf(`queryParam("%s", %s)`, key, value)
 }
 
 func (g *Generator) jsonify(in string) string {
 	return fmt.Sprintf(`JSON.stringify(%s)`, in)
+}
+func (g Generator) statementify(in string) string {
+	return fmt.Sprintf("(()=>{\n%s\n})()", in)
 }
 
 func (g *Generator) MethodName(method *protogen.Method) string {
@@ -94,22 +95,62 @@ func (g *Generator) renderPath(r *tsutils.TSOption) func(method *protogen.Method
 }
 
 // return (body jsonify string, bodyParam)
-func (g *Generator) renderBody(r *tsutils.TSOption) func(method *protogen.Method) (string, string) {
-	return func(method *protogen.Method) (string, string) {
+func (g *Generator) renderBody(r *tsutils.TSOption) func(method *protogen.Method, pathParams []string) (string, string) {
+	return func(method *protogen.Method, pathParams []string) (string, string) {
 		httpOpts := g.httpOptions(method)
-		httpBody := httpOpts.Body
+		httpBody := "*"         // for unpopulated method, body is always "*"
+		bodyMsg := method.Input // Unpopulated rpc, or body == "*", jsonify the whole message
+		if httpOpts.Body != nil {
+			httpBody = *httpOpts.Body
+		}
 
-		if httpBody == nil || *httpBody == "*" { // Unpopulated rpc, or body == "*", jsonify the whole message
-			bodyMsg := method.Input
-			// method.Input should always be a message
-			return g.MessageToJson(bodyMsg)(g.TSRegistry, "fullReq"), "*"
-		} else if *httpBody == "" {
+		if httpBody == "" {
+			// only when httpOption exists on method, but body is not specified
 			return "", ""
 		}
 
-		// body in a field
-		bodyField := pluginutils.FindFieldByTextName(method.Input, *httpBody)
-		return g.FieldToJson(bodyField)(g.TSRegistry, g.must("fullReq", method.Input, *httpBody)), *httpBody
+		toJsonStatement := ""
+		if httpBody != "*" {
+			// body in a field, must found
+			bodyField := pluginutils.GetField(method.Input, httpBody)
+			toJsonStatement = g.FieldToJson(bodyField)(g.TSRegistry, g.must("fullReq", method.Input, httpBody))
+			bodyMsg = bodyField.Message // may be nil
+		} else {
+			// method.Input should always be a message
+			toJsonStatement = g.MessageToJson(method.Input)(g.TSRegistry, "fullReq")
+		}
+
+		if bodyMsg == nil {
+			// non-message body, no need to deal with path params
+			// early return
+			return toJsonStatement, httpBody
+		}
+
+		deleteStatements := make([]string, 0, len(pathParams))
+		for _, pathParam := range pathParams {
+			fieldOnBody := pathParam
+			if httpBody != "*" {
+				if !strings.HasPrefix(pathParam, httpBody+".") {
+					// not a param in body, skip
+					continue
+				}
+				fieldOnBody = strings.TrimPrefix(pathParam, httpBody+".")
+			}
+
+			deleteStatement := fmt.Sprintf(`delete body.%s;`, g.JsonFieldPath(r, bodyMsg)(fieldOnBody))
+			deleteStatements = append(deleteStatements, deleteStatement)
+		}
+
+		if len(deleteStatements) == 0 {
+			// early return
+			return toJsonStatement, httpBody
+		}
+
+		buildBody := fmt.Sprintf(`const body: any = %s;
+%s;
+return body;`, toJsonStatement, strings.Join(deleteStatements, "\n"))
+
+		return g.statementify(buildBody), httpBody
 	}
 }
 
@@ -150,7 +191,7 @@ func (g *Generator) renderQueryString(r *tsutils.TSOption) func(method *protogen
 				continue
 			}
 
-			getFieldSyntax := g.GetFieldSyntax(&g.TSOption, method.Input)("fullReq", param)
+			getFieldSyntax := g.GetFieldSyntax(r, method.Input)("fullReq", param)
 			paramValue := getFieldSyntax
 			switch {
 			case field.Desc.IsList():
@@ -159,28 +200,9 @@ func (g *Generator) renderQueryString(r *tsutils.TSOption) func(method *protogen
 				paramValue = fmt.Sprintf(`%s ? %s : undefined`, getFieldSyntax, g.FieldToJson(field)(g.TSRegistry, getFieldSyntax))
 			}
 
-			res = append(res, g.queryParam(param, paramValue))
+			res = append(res, g.queryParam(method.Input, param, paramValue))
 		}
 
 		return res
 	}
-}
-
-func (g *Generator) isQueryParamSupportedMessage(msg protoreflect.MessageDescriptor) bool {
-	if !protobufx.IsWellKnownType(msg) {
-		return false
-	}
-	notSupportedMessage := []protoreflect.FullName{
-		protobufx.Any_message_fullname,
-		protobufx.Empty_message_fullname,
-		protobufx.Struct_message_fullname,
-		protobufx.Value_message_fullname,
-		protobufx.ListValue_message_fullname,
-	}
-	for _, n := range notSupportedMessage {
-		if msg.FullName() == n {
-			return false
-		}
-	}
-	return true
 }

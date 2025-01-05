@@ -113,7 +113,7 @@ You do not need to set this flag when working with protobuf-es.
 - [ ] Create: query params for map field do not work well
 - [ ] Create: query params for repeated message field do not work well
 - [ ] Create: query params for empty message field do not work well
-- [ ] Create: query params for `json_name` do not work well
+- [x] Create: query params for `json_name` do not work well
 - [ ] CheckGetQueryParams, CheckNestedEnumGetQueryParams: repeated nested query params did not pass to server
 
 ### no plan:

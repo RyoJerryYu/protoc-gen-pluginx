@@ -41,7 +41,7 @@ func (d TSProtoDefinition) GetFieldSyntax(opt *TSOption, rootMsg *protogen.Messa
 		var fd protoreflect.FieldDescriptor
 		md := rootMsg.Desc
 		syntax := &strings.Builder{}
-		valid := pluginutils.RangeFields(path, func(field, _ string) bool {
+		valid := pluginutils.RangeFieldPath(path, func(field, _ string) bool {
 			if md == nil {
 				return false
 			}
@@ -74,17 +74,13 @@ func (d TSProtoDefinition) GetFieldSyntax(opt *TSOption, rootMsg *protogen.Messa
 	}
 }
 
-func (d TSProtoDefinition) JsonFieldPath(opt *TSOption) func(path string) string {
-	return func(path string) string {
-		if opt.MarshalUseProtoNames {
+func (d TSProtoDefinition) JsonFieldPath(opt *TSOption, rootMsg *protogen.Message) func(path string) string {
+	if opt.MarshalUseProtoNames {
+		return func(path string) string {
 			return path
 		}
-		fields := strings.Split(path, ".")
-		for i, field := range fields {
-			fields[i] = JSONCamelCase(field)
-		}
-		return strings.Join(fields, ".")
 	}
+	return pluginutils.JsonFieldPath(rootMsg)
 }
 
 func (d TSProtoDefinition) MsgScalarable(msg *protogen.Message) bool {

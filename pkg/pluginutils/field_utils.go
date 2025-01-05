@@ -6,6 +6,7 @@ import (
 
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/descriptorx"
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/protobufx"
+	"github.com/golang/glog"
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
@@ -211,7 +212,7 @@ func getField(md descriptorx.MessageDescriptor, path string) descriptorx.FieldDe
 		return nil
 	}
 	var field descriptorx.FieldDescriptor
-	valid := RangeFields(path, func(f, _ string) bool {
+	valid := RangeFieldPath(path, func(f, _ string) bool {
 		if md == nil {
 			return false
 		}
@@ -236,9 +237,9 @@ func getField(md descriptorx.MessageDescriptor, path string) descriptorx.FieldDe
 	return field
 }
 
-// RangeFields is like strings.Split(path, "."), but avoids allocations by
+// RangeFieldPath is like strings.Split(path, "."), but avoids allocations by
 // iterating over each field in place and calling a iterator function.
-func RangeFields(path string, f func(field string, restPath string) bool) bool {
+func RangeFieldPath(path string, f func(field string, restPath string) bool) bool {
 	for {
 		var field string
 		if i := strings.IndexByte(path, '.'); i >= 0 {
@@ -255,5 +256,52 @@ func RangeFields(path string, f func(field string, restPath string) bool) bool {
 			return true
 		}
 		path = strings.TrimPrefix(path, ".")
+	}
+}
+
+func RangeField(msg descriptorx.MessageDescriptor, path string, fn func(field descriptorx.FieldDescriptor, restPath string) bool) bool {
+	if path == "" {
+		return false
+	}
+	var fd descriptorx.FieldDescriptor
+	md := msg
+	valid := RangeFieldPath(path, func(f, rest string) bool {
+		if md == nil {
+			return false
+		}
+
+		fd = md.Fields().ByName(protoreflect.Name(f))
+		if fd == nil {
+			return false
+		}
+
+		// Identify the next message to search within.
+		md = fd.Message() // may be nil
+
+		// Repeated fields are only allowed at the last position.
+		if fd.IsList() || fd.IsMap() {
+			md = nil
+		}
+
+		return fn(fd, rest)
+	})
+	return valid
+}
+
+func JsonFieldPath(rootMsg *protogen.Message) func(path string) string {
+	return func(path string) string {
+		syntax := strings.Builder{}
+		rootMsgDesc := descriptorx.WrapReflectMessage(rootMsg.Desc)
+		valid := RangeField(rootMsgDesc, path, func(fd descriptorx.FieldDescriptor, _ string) bool {
+			if syntax.Len() > 0 {
+				syntax.WriteByte('.')
+			}
+			syntax.WriteString(fd.JSONName())
+			return true
+		})
+		if !valid {
+			glog.V(1).Infof("field invalid: %s", path)
+		}
+		return syntax.String()
 	}
 }

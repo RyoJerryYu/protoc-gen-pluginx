@@ -66,7 +66,7 @@ func (d ProtobufESDefinition) GetFieldSyntax(opt *TSOption, rootMsg *protogen.Me
 		syntax := &strings.Builder{}
 		syntax.WriteString(rootVar)
 		isFirst := true
-		pluginutils.RangeFields(path, func(field string, restPath string) bool {
+		pluginutils.RangeFieldPath(path, func(field string, restPath string) bool {
 			if md == nil {
 				return false
 			}
@@ -119,14 +119,8 @@ func (d ProtobufESDefinition) GetFieldSyntax(opt *TSOption, rootMsg *protogen.Me
 	}
 }
 
-func (d ProtobufESDefinition) JsonFieldPath(opt *TSOption) func(path string) string {
-	return func(path string) string {
-		fields := strings.Split(path, ".")
-		for i, field := range fields {
-			fields[i] = JSONCamelCase(field)
-		}
-		return strings.Join(fields, ".")
-	}
+func (d ProtobufESDefinition) JsonFieldPath(opt *TSOption, rootMsg *protogen.Message) func(path string) string {
+	return pluginutils.JsonFieldPath(rootMsg)
 }
 
 func (d ProtobufESDefinition) MsgScalarable(msg *protogen.Message) bool {

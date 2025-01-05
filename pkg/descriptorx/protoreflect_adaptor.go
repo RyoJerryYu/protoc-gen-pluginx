@@ -47,6 +47,7 @@ func (f FieldDescriptorProtoreflectAdaptor) Message() MessageDescriptor {
 func (f FieldDescriptorProtoreflectAdaptor) Kind() protoreflect.Kind { return f.In.Kind() }
 func (f FieldDescriptorProtoreflectAdaptor) IsList() bool            { return f.In.IsList() }
 func (f FieldDescriptorProtoreflectAdaptor) IsMap() bool             { return f.In.IsMap() }
+func (f FieldDescriptorProtoreflectAdaptor) JSONName() string        { return f.In.JSONName() }
 func (f FieldDescriptorProtoreflectAdaptor) TextName() string        { return f.In.TextName() }
 
 type MessageDescriptorProtoreflectAdaptor struct {

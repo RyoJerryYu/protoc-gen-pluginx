@@ -1,8 +1,6 @@
 package gen
 
 import (
-	"strings"
-
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils"
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils/tsutils"
 	"github.com/golang/glog"
@@ -202,7 +200,7 @@ func (g *Generator) applyMethod(method *protogen.Method) {
 		// path, return pathParams
 		renderedPath, pathParams := g.renderPath(&g.TSOption)(method)
 		// body
-		renderedBody, bodyParam := g.renderBody(&g.TSOption)(method)
+		renderedBody, bodyParam := g.renderBody(&g.TSOption)(method, pathParams)
 		// renderedQuery
 		renderedQuery := g.renderQueryString(&g.TSOption)(method, pathParams, bodyParam)
 
@@ -214,18 +212,8 @@ func (g *Generator) applyMethod(method *protogen.Method) {
 			g.Pf("  ];")
 		}
 
-		if renderedBody != "" {
+		if bodyParam != "" {
 			g.Pf("  const body: any = %s;", renderedBody)
-			// body jsonify special case
-			// remove the path params from the body
-			for _, pathParam := range pathParams {
-				fieldOnBody := pathParam
-				if bodyParam != "*" {
-					fieldOnBody = strings.TrimPrefix(pathParam, bodyParam+".")
-				}
-				// it must exist because it's a path param
-				g.Pf("  delete body.%s;", g.JsonFieldPath(&g.TSOption)(fieldOnBody))
-			}
 		}
 
 		g.Pf("  const res = await transport.call({")

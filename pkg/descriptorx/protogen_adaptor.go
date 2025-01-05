@@ -71,6 +71,11 @@ func (f FieldDescriptorProtogenAdaptor) Message() MessageDescriptor {
 	return MessageDescriptorProtogenAdaptor{In: f.In.Message}
 }
 
+// JSONName implements FieldDescriptor.
+func (f FieldDescriptorProtogenAdaptor) JSONName() string {
+	return f.In.Desc.JSONName()
+}
+
 // TextName implements FieldDescriptor.
 func (f FieldDescriptorProtogenAdaptor) TextName() string {
 	return f.In.Desc.TextName()
