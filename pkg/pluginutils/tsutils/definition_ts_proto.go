@@ -74,6 +74,23 @@ func (d TSProtoDefinition) GetFieldSyntax(opt *TSOption, rootMsg *protogen.Messa
 	}
 }
 
+func (d TSProtoDefinition) MsgScalarable(msg *protogen.Message) bool {
+	if !protobufx.IsWellKnownType(msg.Desc) {
+		return false
+	}
+
+	switch msg.Desc.FullName() {
+	case protobufx.Any_message_fullname,
+		protobufx.Empty_message_fullname,
+		protobufx.Struct_message_fullname,
+		protobufx.Value_message_fullname,
+		protobufx.ListValue_message_fullname,
+		protobufx.Duration_message_fullname:
+		return false
+	}
+	return true
+}
+
 func (d TSProtoDefinition) MsgFromPartial(msg *protogen.Message) func(g *TSRegistry, in string) string {
 	return func(g *TSRegistry, in string) string {
 		ident := g.QualifiedTSIdent(d.TSIdentMsg(msg))

@@ -145,7 +145,7 @@ func (g *Generator) renderQueryString(r *tsutils.TSOption) func(method *protogen
 				glog.V(1).Infof("not supporting map fields in query params: %s", param)
 				continue
 			}
-			if field.Message != nil && !g.isQueryParamSupportedMessage(field.Message.Desc) {
+			if field.Message != nil && !g.MsgScalarable(field.Message) {
 				glog.V(1).Infof("not supporting message fields in query params: %s", param)
 				continue
 			}
@@ -176,7 +176,6 @@ func (g *Generator) isQueryParamSupportedMessage(msg protoreflect.MessageDescrip
 		protobufx.Struct_message_fullname,
 		protobufx.Value_message_fullname,
 		protobufx.ListValue_message_fullname,
-		protobufx.Duration_message_fullname,
 	}
 	for _, n := range notSupportedMessage {
 		if msg.FullName() == n {
