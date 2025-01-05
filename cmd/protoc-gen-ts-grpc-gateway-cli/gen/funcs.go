@@ -58,7 +58,7 @@ func (g *Generator) pathStr(in string) string {
 }
 
 func (g *Generator) queryParam(key string, value string) string {
-	key = tsutils.JsonFieldName(&g.TSOption)(key)
+	key = g.JsonFieldPath(&g.TSOption)(key)
 	return fmt.Sprintf(`queryParam("%s", %s)`, key, value)
 }
 

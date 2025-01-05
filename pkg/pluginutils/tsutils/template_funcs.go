@@ -1,9 +1,5 @@
 package tsutils
 
-import (
-	"strings"
-)
-
 //////
 // String
 //////
@@ -30,22 +26,4 @@ func JSONCamelCase(s string) string {
 
 func isASCIILower(c byte) bool {
 	return 'a' <= c && c <= 'z'
-}
-
-////////////////
-// Template
-////////////////
-
-func JsonFieldName(opt *TSOption) func(name string) string {
-	return func(name string) string {
-		if opt.MarshalUseProtoNames {
-			return name
-		}
-
-		fields := strings.Split(name, ".")
-		for i, field := range fields {
-			fields[i] = JSONCamelCase(field)
-		}
-		return strings.Join(fields, ".")
-	}
 }

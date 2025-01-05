@@ -74,6 +74,19 @@ func (d TSProtoDefinition) GetFieldSyntax(opt *TSOption, rootMsg *protogen.Messa
 	}
 }
 
+func (d TSProtoDefinition) JsonFieldPath(opt *TSOption) func(path string) string {
+	return func(path string) string {
+		if opt.MarshalUseProtoNames {
+			return path
+		}
+		fields := strings.Split(path, ".")
+		for i, field := range fields {
+			fields[i] = JSONCamelCase(field)
+		}
+		return strings.Join(fields, ".")
+	}
+}
+
 func (d TSProtoDefinition) MsgScalarable(msg *protogen.Message) bool {
 	if !protobufx.IsWellKnownType(msg.Desc) {
 		return false

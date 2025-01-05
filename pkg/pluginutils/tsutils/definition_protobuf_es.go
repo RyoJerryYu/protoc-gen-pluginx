@@ -119,6 +119,16 @@ func (d ProtobufESDefinition) GetFieldSyntax(opt *TSOption, rootMsg *protogen.Me
 	}
 }
 
+func (d ProtobufESDefinition) JsonFieldPath(opt *TSOption) func(path string) string {
+	return func(path string) string {
+		fields := strings.Split(path, ".")
+		for i, field := range fields {
+			fields[i] = JSONCamelCase(field)
+		}
+		return strings.Join(fields, ".")
+	}
+}
+
 func (d ProtobufESDefinition) MsgScalarable(msg *protogen.Message) bool {
 	if !protobufx.IsWellKnownType(msg.Desc) {
 		return false

@@ -224,7 +224,7 @@ func (g *Generator) applyMethod(method *protogen.Method) {
 					fieldOnBody = strings.TrimPrefix(pathParam, bodyParam+".")
 				}
 				// it must exist because it's a path param
-				g.Pf("  delete body.%s;", tsutils.JsonFieldName(&g.TSOption)(fieldOnBody))
+				g.Pf("  delete body.%s;", g.JsonFieldPath(&g.TSOption)(fieldOnBody))
 			}
 		}
 
