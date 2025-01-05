@@ -48,16 +48,9 @@ var (
 	pathParamRegexp = regexp.MustCompile(`{([^=}/]+)(?:=([^}]+))?}`)
 )
 
-func (g *Generator) getFieldSyntax(rootName string, path string) string {
-	fieldName := tsutils.FieldName(&g.TSOption)(path)
-	fields := strings.Split(fieldName, ".")
-	fieldName = strings.Join(fields, "?.")
-
-	return fmt.Sprintf(`%s.%s`, rootName, fieldName)
-}
-
-func (g *Generator) must(rootName string, path string) string {
-	return fmt.Sprintf(`must(%s)`, g.getFieldSyntax(rootName, path))
+func (g *Generator) must(rootName string, rootMsg *protogen.Message, path string) string {
+	syntax := g.GetFieldSyntax(&g.TSOption, rootMsg)(rootName, path)
+	return fmt.Sprintf(`must(%s)`, syntax)
 }
 
 func (g *Generator) pathStr(in string) string {
@@ -90,7 +83,7 @@ func (g *Generator) renderPath(r *tsutils.TSOption) func(method *protogen.Method
 				expToReplace := m[0]
 				fieldNameRaw := m[1]
 				// fieldValuePattern := m[2]
-				part := fmt.Sprintf(`${%s}`, g.pathStr(g.must("fullReq", fieldNameRaw)))
+				part := fmt.Sprintf(`${%s}`, g.pathStr(g.must("fullReq", method.Input, fieldNameRaw)))
 				methodURL = strings.ReplaceAll(methodURL, expToReplace, part)
 				fieldsInPath = append(fieldsInPath, fieldNameRaw)
 			}
@@ -116,7 +109,7 @@ func (g *Generator) renderBody(r *tsutils.TSOption) func(method *protogen.Method
 
 		// body in a field
 		bodyField := pluginutils.FindFieldByTextName(method.Input, *httpBody)
-		return g.FieldToJson(bodyField)(g.TSRegistry, g.must("fullReq", *httpBody)), *httpBody
+		return g.FieldToJson(bodyField)(g.TSRegistry, g.must("fullReq", method.Input, *httpBody)), *httpBody
 	}
 }
 
@@ -157,7 +150,7 @@ func (g *Generator) renderQueryString(r *tsutils.TSOption) func(method *protogen
 				continue
 			}
 
-			getFieldSyntax := g.getFieldSyntax("fullReq", param)
+			getFieldSyntax := g.GetFieldSyntax(&g.TSOption, method.Input)("fullReq", param)
 			paramValue := fmt.Sprintf(`%s ? %s : undefined`, getFieldSyntax, g.FieldToJson(field)(g.TSRegistry, getFieldSyntax))
 
 			res = append(res, g.queryParam(param, paramValue))

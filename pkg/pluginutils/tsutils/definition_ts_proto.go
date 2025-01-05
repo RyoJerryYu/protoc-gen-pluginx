@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils"
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/protobufx"
+	"github.com/golang/glog"
 	"github.com/iancoleman/strcase"
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -25,6 +27,51 @@ func (d TSProtoDefinition) TSModule(file protoreflect.FileDescriptor) TSModule {
 
 func (d TSProtoDefinition) TSIdentMsg(msg *protogen.Message) TSIdent {
 	return d.TSModule(msg.Desc.ParentFile()).Ident(msg.GoIdent.GoName)
+}
+
+func (d TSProtoDefinition) GetFieldSyntax(opt *TSOption, rootMsg *protogen.Message) func(rootVar string, path string) string {
+	fieldCase := JSONCamelCase
+	if !opt.TSProto_KeySnakeToCamel {
+		fieldCase = func(s string) string { return s } // no-op
+	}
+	return func(rootVar string, path string) string {
+		if path == "" {
+			return ""
+		}
+		var fd protoreflect.FieldDescriptor
+		md := rootMsg.Desc
+		syntax := &strings.Builder{}
+		valid := pluginutils.RangeFields(path, func(field string) bool {
+			if md == nil {
+				return false
+			}
+
+			syntax.WriteString("?.")
+
+			fd = md.Fields().ByTextName(field)
+			if fd == nil {
+				return false
+			}
+
+			_, err := syntax.WriteString(fieldCase(fd.TextName()))
+			if err != nil {
+				glog.Errorf("failed to write field syntax: %v", err)
+				return false
+			}
+
+			md = fd.Message() // may be nil
+
+			if fd.IsList() || fd.IsMap() {
+				md = nil
+			}
+
+			return true
+		})
+		if !valid {
+			return ""
+		}
+		return rootVar + strings.TrimPrefix(syntax.String(), "?")
+	}
 }
 
 func (d TSProtoDefinition) MsgFromPartial(msg *protogen.Message) func(g *TSRegistry, in string) string {
