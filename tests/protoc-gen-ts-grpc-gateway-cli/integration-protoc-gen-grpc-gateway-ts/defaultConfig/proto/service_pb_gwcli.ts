@@ -395,7 +395,7 @@ export function newCounterService(transport: Transport): CounterServiceClient {
         ...queryParam("b.b", fullReq.b?.b),
         ...queryParam(
           "c",
-          fullReq.c.map((e) => e),
+          fullReq.c?.map((e) => e),
         ),
         ...queryParam("d.d", fullReq.d?.d),
       ];
@@ -423,7 +423,7 @@ export function newCounterService(transport: Transport): CounterServiceClient {
         ...queryParam("c.c", fullReq.c?.c),
         ...queryParam(
           "c.d",
-          (fullReq.c?.d).map((e) => e),
+          fullReq.c?.d?.map((e) => e),
         ),
         ...queryParam("c.e", fullReq.c?.e),
       ];

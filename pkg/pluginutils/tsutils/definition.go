@@ -66,7 +66,7 @@ func fieldToJson(d toJsonable, field *protogen.Field) func(g *TSRegistry, in str
 	}
 	isList := field.Desc.IsList()
 	listify := func(in string, do func(string) string) string {
-		return fmt.Sprintf(`(%s).map((e)=>%s)`, in, do("e"))
+		return fmt.Sprintf(`(%s)?.map((e)=>%s)`, in, do("e"))
 	}
 	var toJsonFunc func(g *TSRegistry, in string) string
 	switch field.Desc.Kind() {
