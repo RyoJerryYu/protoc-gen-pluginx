@@ -1,0 +1,4 @@
+version: v2
+name: buf.build/protoc-gen-go-adapter/e2e
+deps:
+  - buf.build/googleapis/googleapis
