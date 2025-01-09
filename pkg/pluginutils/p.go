@@ -19,7 +19,16 @@ func (opt FileGenerator) P(v ...any) {
 
 // Pf is same as P, but with formatted string.
 func (opt FileGenerator) Pf(format string, v ...any) {
-	opt.W.P(fmt.Sprintf(format, v...))
+	newV := make([]any, len(v))
+	for i, x := range v {
+		switch x := x.(type) {
+		case protogen.GoIdent:
+			newV[i] = opt.W.QualifiedGoIdent(x)
+		default:
+			newV[i] = x
+		}
+	}
+	opt.P(fmt.Sprintf(format, newV...))
 }
 
 // PComment allows multiple lines string as comment.
