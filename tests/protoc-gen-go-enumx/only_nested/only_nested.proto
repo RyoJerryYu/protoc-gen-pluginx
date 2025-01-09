@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package only_nested;
+
+option go_package = "./only_nested;only_nested";
+
+message EnumParent {
+  enum EnumChild {
+    D = 0;
+    E = 1;
+    F = 2;
+  }
+
+  EnumChild enum = 1;
+}

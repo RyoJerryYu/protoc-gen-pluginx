@@ -29,10 +29,6 @@ func main() {
 		GenFileSuffix:     ".pb.enumx.go",
 		SupportedFeatures: uint64(pluginpb.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL),
 	}).ForEachFileThat(func(protoFile *protogen.File) bool {
-		if len(protoFile.Enums) == 0 {
-			glog.V(1).Infof("Skipping %s, no enums", protoFile.Desc.Path())
-			return false
-		}
 		return true
 	}).Run(func(genOpt pluginutils.GenerateOptions) error {
 		g := gen.Generator{
