@@ -64,7 +64,7 @@ func (g *Generator) applyStruct(svc *protogen.Service) {
 func (g *Generator) applyGRPC(svc *protogen.Service) {
 	structName := g.structName(svc)
 
-	g.Pf("func (r *%s) RegisterServer(server *%s) {", structName, grpcPkg.Ident("Server"))
+	g.Pf("func (r %s) RegisterServer(server *%s) {", structName, grpcPkg.Ident("Server"))
 	g.Pf("    Register%sServer(server, r.in())", svc.GoName)
 	g.Pf("}")
 }
@@ -72,16 +72,16 @@ func (g *Generator) applyGRPC(svc *protogen.Service) {
 func (g *Generator) applyGateway(svc *protogen.Service) {
 	structName := g.structName(svc)
 
-	g.P("func (r *", structName, ") RegisterGw(ctx ", ctxPkg.Ident("Context"), ", mux *", runtimePkg.Ident("ServeMux"), ", conn *", grpcPkg.Ident("ClientConn"), ") {")
+	g.P("func (r ", structName, ") RegisterGw(ctx ", ctxPkg.Ident("Context"), ", mux *", runtimePkg.Ident("ServeMux"), ", conn *", grpcPkg.Ident("ClientConn"), ") {")
 	g.Pf("    Register%s%s(ctx, mux, conn)", svc.GoName, g.Options.GWRegisterFuncSuffix)
 	g.Pf("}")
-	g.P("func (r *", structName, ") RegisterGwServer(ctx ", ctxPkg.Ident("Context"), ", mux *", runtimePkg.Ident("ServeMux"), ") {")
+	g.P("func (r ", structName, ") RegisterGwServer(ctx ", ctxPkg.Ident("Context"), ", mux *", runtimePkg.Ident("ServeMux"), ") {")
 	g.Pf("    Register%s%sServer(ctx, mux, r.in())", svc.GoName, g.Options.GWRegisterFuncSuffix)
 	g.Pf("}")
-	g.P("func (r *", structName, ") RegisterGwFromEndpoint(ctx ", ctxPkg.Ident("Context"), ", mux *", runtimePkg.Ident("ServeMux"), ", endpoint string, opts []", grpcPkg.Ident("DialOption"), ") {")
+	g.P("func (r ", structName, ") RegisterGwFromEndpoint(ctx ", ctxPkg.Ident("Context"), ", mux *", runtimePkg.Ident("ServeMux"), ", endpoint string, opts []", grpcPkg.Ident("DialOption"), ") {")
 	g.Pf("    Register%s%sFromEndpoint(ctx, mux, endpoint, opts)", svc.GoName, g.Options.GWRegisterFuncSuffix)
 	g.Pf("}")
-	g.P("func (r *", structName, ") RegisterGwClient(ctx ", ctxPkg.Ident("Context"), ", mux *", runtimePkg.Ident("ServeMux"), ", client ", svc.GoName, "Client) {")
+	g.P("func (r ", structName, ") RegisterGwClient(ctx ", ctxPkg.Ident("Context"), ", mux *", runtimePkg.Ident("ServeMux"), ", client ", svc.GoName, "Client) {")
 	g.Pf("    Register%s%sClient(ctx, mux, client)", svc.GoName, g.Options.GWRegisterFuncSuffix)
 	g.Pf("}")
 }

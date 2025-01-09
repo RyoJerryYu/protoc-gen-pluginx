@@ -20,18 +20,18 @@ type GreeterRegistar struct {
 func NewGreeterRegistar(in func() GreeterServer) GreeterRegistar {
 	return GreeterRegistar{in: in}
 }
-func (r *GreeterRegistar) RegisterServer(server *grpc.Server) {
+func (r GreeterRegistar) RegisterServer(server *grpc.Server) {
 	RegisterGreeterServer(server, r.in())
 }
-func (r *GreeterRegistar) RegisterGw(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) {
+func (r GreeterRegistar) RegisterGw(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) {
 	RegisterGreeterHandler(ctx, mux, conn)
 }
-func (r *GreeterRegistar) RegisterGwServer(ctx context.Context, mux *runtime.ServeMux) {
+func (r GreeterRegistar) RegisterGwServer(ctx context.Context, mux *runtime.ServeMux) {
 	RegisterGreeterHandlerServer(ctx, mux, r.in())
 }
-func (r *GreeterRegistar) RegisterGwFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) {
+func (r GreeterRegistar) RegisterGwFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) {
 	RegisterGreeterHandlerFromEndpoint(ctx, mux, endpoint, opts)
 }
-func (r *GreeterRegistar) RegisterGwClient(ctx context.Context, mux *runtime.ServeMux, client GreeterClient) {
+func (r GreeterRegistar) RegisterGwClient(ctx context.Context, mux *runtime.ServeMux, client GreeterClient) {
 	RegisterGreeterHandlerClient(ctx, mux, client)
 }
