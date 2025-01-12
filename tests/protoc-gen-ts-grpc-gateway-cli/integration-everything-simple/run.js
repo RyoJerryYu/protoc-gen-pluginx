@@ -130,7 +130,7 @@ function runTest(testCase) {
       // Run the tests synchronously.
       const spawnReturn = spawnSync(
         "npx",
-        ["web-test-runner",`./${testCase.testDir}/*_test.ts`, "--node-resolve", "--puppeteer"],
+        ["web-test-runner",`./${testCase.testDir}/*_test.ts`, "--node-resolve"],
         { stdio: "inherit" }
       );
       if ( spawnReturn.status !== 0 ) {
