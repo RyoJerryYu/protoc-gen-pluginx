@@ -10,8 +10,13 @@ type PlainTextMarshaler struct {
 	runtime.Marshaler
 }
 
-func (m *PlainTextMarshaler) ContentType(_ interface{}) string {
-	return MIMETextPlain
+func (m *PlainTextMarshaler) ContentType(v interface{}) string {
+	switch v.(type) {
+	case string, []byte:
+		return MIMETextPlain
+	default:
+		return m.Marshaler.ContentType(v)
+	}
 }
 
 func (m *PlainTextMarshaler) Marshal(v interface{}) ([]byte, error) {
