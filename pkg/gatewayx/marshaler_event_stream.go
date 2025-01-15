@@ -16,7 +16,7 @@ type EventStreamMarshaler struct {
 }
 
 func (m *EventStreamMarshaler) ContentType(_ interface{}) string {
-	return "text/event-stream"
+	return MIMETextEventStream
 }
 
 func (m *EventStreamMarshaler) Marshal(v interface{}) ([]byte, error) {
@@ -53,7 +53,7 @@ type UnwrapEventStreamMarshaler struct {
 }
 
 func (m *UnwrapEventStreamMarshaler) ContentType(_ interface{}) string {
-	return "text/event-stream"
+	return MIMETextEventStream
 }
 
 func (m *UnwrapEventStreamMarshaler) Marshal(v interface{}) ([]byte, error) {

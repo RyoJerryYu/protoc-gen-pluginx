@@ -11,7 +11,7 @@ type PlainTextMarshaler struct {
 }
 
 func (m *PlainTextMarshaler) ContentType(_ interface{}) string {
-	return "text/plain"
+	return MIMETextPlain
 }
 
 func (m *PlainTextMarshaler) Marshal(v interface{}) ([]byte, error) {
