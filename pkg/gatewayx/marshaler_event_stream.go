@@ -7,6 +7,10 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 )
 
+// EventStreamMarshaler is a marshaler that returns each stream message as:
+// data: {"result": {...result}}
+// This will impliment the MDN EventStream for gRPC-Gateway server stream methods.
+// spec: https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events
 type EventStreamMarshaler struct {
 	runtime.Marshaler
 }
@@ -39,6 +43,11 @@ func (m EventStreamMarshaler) NewEncoder(w io.Writer) runtime.Encoder {
 	})
 }
 
+// UnwrapEventStreamMarshaler is a marshaler that unwraps the result or error field from the response
+// it will return the result as:
+// data: {...result}
+// instead of:
+// data: {"result": {...result}}
 type UnwrapEventStreamMarshaler struct {
 	runtime.Marshaler
 }
