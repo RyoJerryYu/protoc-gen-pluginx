@@ -2,5 +2,5 @@
 version: v2
 deps:
   - name: buf.build/ryojerryyu/protoc-gen-pluginx
-    commit: fdd14fbc1f164ecf9196dee1fcea184f
-    digest: b5:18b4efa6b008b6a20bed9d1d1e61c5ef8b0e10d5be5deea0ed479dbac5556ed7df190ecb0d0b608c9af48d59cb9082c355cd53b7fc8ee5c868d93f881692364e
+    commit: 4735a7a4a5064c618dd1ef7a6ac97240
+    digest: b5:8e5f8fb40a6339a69e6a62ac5fc824cd175e0f069609731772c67287aeeb54da5d17e3f3b4d1d92bf8bccd25a1decadc7ad14706cccb04f0047cae80526e4146
