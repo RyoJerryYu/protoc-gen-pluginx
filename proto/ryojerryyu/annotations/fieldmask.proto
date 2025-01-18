@@ -1,10 +1,17 @@
 syntax = "proto3";
 
 package ryojerryyu.annotations;
+
+import "google/protobuf/descriptor.proto";
+
 option go_package = "github.com/RyoJerryYu/protoc-gen-pluginx/proto/ryojerryyu/annotations";
 
 message FieldMaskFieldOptions {
-    // end of the field mask, 
-    // generated code will not allow to get the inner field mask for this field
-    bool end = 1;
+  // end of the field mask,
+  // generated code will not allow to get the inner field mask for this field
+  bool end = 1;
+}
+
+extend google.protobuf.FieldOptions {
+  optional FieldMaskFieldOptions field_mask = 51010;
 }

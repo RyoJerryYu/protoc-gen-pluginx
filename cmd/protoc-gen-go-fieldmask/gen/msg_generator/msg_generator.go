@@ -62,14 +62,11 @@ func defaultExtension() *annotations.FieldMaskFieldOptions {
 }
 
 func getExtension(field *protogen.Field) *annotations.FieldMaskFieldOptions {
-	fieldExt, ok := proto.GetExtension(field.Desc.Options(), annotations.E_Field).(*annotations.FieldOptions)
+	fieldExt, ok := proto.GetExtension(field.Desc.Options(), annotations.E_FieldMask).(*annotations.FieldMaskFieldOptions)
 	if !ok {
 		return defaultExtension()
 	}
-	if fieldExt.GetFieldMask() == nil {
-		return defaultExtension()
-	}
-	return fieldExt.FieldMask
+	return fieldExt
 }
 
 type GeneratorCtx struct {

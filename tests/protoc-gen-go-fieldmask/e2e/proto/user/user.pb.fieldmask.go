@@ -17,7 +17,7 @@ type IUserPathBuilder interface {
 	Name() fieldmask.IEndPathBuilder
 	Icon() IIconPathBuilder
 	Password() IUserPasswordPathBuilder
-	CreatedAt() fieldmask.IEndPathBuilder
+	CreatedAt() fieldmask.ITimestampPathBuilder
 }
 
 // userPathBuilder is the implementation for the field path of User
@@ -48,8 +48,8 @@ func (x userPathBuilder) Icon() IIconPathBuilder { return NewIconPathBuilder(x.p
 func (x userPathBuilder) Password() IUserPasswordPathBuilder {
 	return NewUserPasswordPathBuilder(x.prefix + "password")
 }
-func (x userPathBuilder) CreatedAt() fieldmask.IEndPathBuilder {
-	return fieldmask.NewEndPathBuilder(x.prefix + "created_at")
+func (x userPathBuilder) CreatedAt() fieldmask.ITimestampPathBuilder {
+	return fieldmask.NewTimestampPathBuilder(x.prefix + "created_at")
 }
 
 // PathBuilder returns the field path for User
@@ -64,7 +64,7 @@ type IIconPathBuilder interface {
 	Url() fieldmask.IEndPathBuilder
 	CreatedAt() fieldmask.ITimestampPathBuilder
 	Nested() IIcon_NestedPathBuilder
-	NestedAnother() fieldmask.IEndPathBuilder
+	NestedAnother() IIcon_NestedPathBuilder
 }
 
 // iconPathBuilder is the implementation for the field path of Icon
@@ -97,8 +97,8 @@ func (x iconPathBuilder) CreatedAt() fieldmask.ITimestampPathBuilder {
 func (x iconPathBuilder) Nested() IIcon_NestedPathBuilder {
 	return NewIcon_NestedPathBuilder(x.prefix + "nested")
 }
-func (x iconPathBuilder) NestedAnother() fieldmask.IEndPathBuilder {
-	return fieldmask.NewEndPathBuilder(x.prefix + "nested_another")
+func (x iconPathBuilder) NestedAnother() IIcon_NestedPathBuilder {
+	return NewIcon_NestedPathBuilder(x.prefix + "nested_another")
 }
 
 // PathBuilder returns the field path for Icon
