@@ -1,4 +1,4 @@
 version: v2
 name: buf.build/tests/protoc-gen-pluginx
 deps:
-  - buf.build/ryojerryyu/protoc-gen-pluginx
+  - buf.build/googleapis/googleapis
