@@ -2,31 +2,34 @@ syntax = "proto3";
 
 package api.v1.user;
 
-option go_package = "github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-go-fieldmask/e2e/proto/user";
-
 import "google/protobuf/timestamp.proto";
 import "proto/user/user_password.proto";
 import "ryojerryyu/annotations/annotations.proto";
 
+option go_package = "github.com/RyoJerryYu/protoc-gen-pluginx/tests/protoc-gen-go-fieldmask/e2e/proto/user";
+
 message User {
-    string id = 1;
-    string name = 2;
-    Icon icon = 3;
-    UserPassword password = 4;
-    google.protobuf.Timestamp created_at = 5[(ryojerryyu.annotations.field) = {field_mask:{end: true}}];
+  string id = 1;
+  string name = 2;
+  Icon icon = 3;
+  UserPassword password = 4;
+  google.protobuf.Timestamp created_at = 5 [(ryojerryyu.annotations.field_mask) = {
+    field_mask: {end: true}
+  }];
 }
 
 message Icon {
-    string id = 1;
-    string url = 2;
-    google.protobuf.Timestamp created_at = 3;
+  string id = 1;
+  string url = 2;
+  google.protobuf.Timestamp created_at = 3;
 
+  message Nested {
+    string some_field = 1;
+  }
 
-    message Nested {
-        string some_field = 1;
-    }
+  Nested nested = 4;
 
-    Nested nested = 4;
-
-    Nested nested_another = 5[(ryojerryyu.annotations.field) = {field_mask:{end: true}}];
+  Nested nested_another = 5 [(ryojerryyu.annotations.field_mask) = {
+    field_mask: {end: true}
+  }];
 }

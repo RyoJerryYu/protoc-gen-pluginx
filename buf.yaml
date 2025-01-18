@@ -3,3 +3,5 @@ modules:
   - name: buf.build/ryojerryyu/protoc-gen-pluginx
     path: proto
 
+deps:
+  - buf.build/googleapis/googleapis
