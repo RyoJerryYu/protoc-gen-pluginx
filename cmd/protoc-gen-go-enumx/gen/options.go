@@ -65,7 +65,7 @@ func (g *Generator) applyToInt(e *protogen.Enum) {
 	}
 	for _, m := range interMethods {
 		g.Pf(`func (x %s) %s() %s {return %s(x)}`,
-			e.GoIdent.GoName, m.name, m.typ, m.typ)
+			e.GoIdent, m.name, m.typ, m.typ)
 	}
 }
 func (g *Generator) applyFromInt(e *protogen.Enum) {
@@ -76,8 +76,8 @@ func %sFrom[T %s | %s](s T) %s {
 		e.GoIdent.GoName,
 		e.GoIdent.GoName,
 		e.GoIdent.GoName,
-		g.W.QualifiedGoIdent(constraints.Ident("Integer")),
-		g.W.QualifiedGoIdent(constraints.Ident("Float")),
+		constraints.Ident("Integer"),
+		constraints.Ident("Float"),
 		e.GoIdent.GoName,
 		e.GoIdent.GoName,
 	)
@@ -90,8 +90,8 @@ func %sFromValid[T %s | %s](s T) (%s, bool) {
 		e.GoIdent.GoName,
 		e.GoIdent.GoName,
 		e.GoIdent.GoName,
-		g.W.QualifiedGoIdent(constraints.Ident("Integer")),
-		g.W.QualifiedGoIdent(constraints.Ident("Float")),
+		constraints.Ident("Integer"),
+		constraints.Ident("Float"),
 		e.GoIdent.GoName,
 		e.GoIdent.GoName,
 		e.GoIdent.GoName,
