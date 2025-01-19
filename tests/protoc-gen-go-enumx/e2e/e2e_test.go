@@ -156,9 +156,9 @@ func TestEnumAll(t *testing.T) {
 	}
 
 	cases := []testCase{
-		{Enum_A, "Enum_A", 0},
-		{Enum_B, "Enum_B", 1},
-		{Enum_C, "Enum_C", 2},
+		{Enum_A, "A", 0},
+		{Enum_B, "B", 1},
+		{Enum_C, "C", 2},
 	}
 
 	for _, c := range cases {
@@ -166,6 +166,89 @@ func TestEnumAll(t *testing.T) {
 		assert.True(t, isInAllName(EnumAllName(), c.name))
 		assert.True(t, isInAllValue(EnumAllValue(), c.value))
 	}
+}
+
+func TestEnumAll_Valid(t *testing.T) {
+	t.Run("Enum", func(t *testing.T) {
+		for _, v := range EnumAll() {
+			vStr := v.String()
+			vIn32 := v.Int32()
+			strV := EnumFromStr(vStr)
+			intV := EnumFrom(vIn32)
+			assert.Equal(t, v, strV)
+			assert.Equal(t, v, intV)
+		}
+		for _, vStr := range EnumAllName() {
+			v, valid := EnumFromValidStr(vStr)
+			assert.True(t, valid)
+			assert.Equal(t, vStr, v.String())
+		}
+		for _, vIn32 := range EnumAllValue() {
+			v, valid := EnumFromValid(vIn32)
+			assert.True(t, valid)
+			assert.Equal(t, vIn32, v.Int32())
+		}
+	})
+	t.Run("EnumParent_EnumChild", func(t *testing.T) {
+		for _, v := range EnumParent_EnumChildAll() {
+			vStr := v.String()
+			vIn32 := v.Int32()
+			strV := EnumParent_EnumChildFromStr(vStr)
+			intV := EnumParent_EnumChildFrom(vIn32)
+			assert.Equal(t, v, strV)
+			assert.Equal(t, v, intV)
+		}
+		for _, vStr := range EnumParent_EnumChildAllName() {
+			v, valid := EnumParent_EnumChildFromValidStr(vStr)
+			assert.True(t, valid)
+			assert.Equal(t, vStr, v.String())
+		}
+		for _, vIn32 := range EnumParent_EnumChildAllValue() {
+			v, valid := EnumParent_EnumChildFromValid(vIn32)
+			assert.True(t, valid)
+			assert.Equal(t, vIn32, v.Int32())
+		}
+	})
+	t.Run("EnumParent2_Enum", func(t *testing.T) {
+		for _, v := range EnumParent2_EnumAll() {
+			vStr := v.String()
+			vIn32 := v.Int32()
+			strV := EnumParent2_EnumFromStr(vStr)
+			intV := EnumParent2_EnumFrom(vIn32)
+			assert.Equal(t, v, strV)
+			assert.Equal(t, v, intV)
+		}
+		for _, vStr := range EnumParent2_EnumAllName() {
+			v, valid := EnumParent2_EnumFromValidStr(vStr)
+			assert.True(t, valid)
+			assert.Equal(t, vStr, v.String())
+		}
+		for _, vIn32 := range EnumParent2_EnumAllValue() {
+			v, valid := EnumParent2_EnumFromValid(vIn32)
+			assert.True(t, valid)
+			assert.Equal(t, vIn32, v.Int32())
+		}
+	})
+	t.Run("EnumParent3_Enum", func(t *testing.T) {
+		for _, v := range EnumParent3_EnumAll() {
+			vStr := v.String()
+			vIn32 := v.Int32()
+			strV := EnumParent3_EnumFromStr(vStr)
+			intV := EnumParent3_EnumFrom(vIn32)
+			assert.Equal(t, v, strV)
+			assert.Equal(t, v, intV)
+		}
+		for _, vStr := range EnumParent3_EnumAllName() {
+			v, valid := EnumParent3_EnumFromValidStr(vStr)
+			assert.True(t, valid)
+			assert.Equal(t, vStr, v.String())
+		}
+		for _, vIn32 := range EnumParent3_EnumAllValue() {
+			v, valid := EnumParent3_EnumFromValid(vIn32)
+			assert.True(t, valid)
+			assert.Equal(t, vIn32, v.Int32())
+		}
+	})
 }
 
 func TestNested(t *testing.T) {

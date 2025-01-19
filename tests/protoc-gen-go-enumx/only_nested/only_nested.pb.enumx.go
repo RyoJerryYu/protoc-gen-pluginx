@@ -45,9 +45,9 @@ var _EnumParent_EnumChild_all = []EnumParent_EnumChild{
 	EnumParent_F,
 }
 var _EnumParent_EnumChild_allName = []string{
-	"EnumParent_D",
-	"EnumParent_E",
-	"EnumParent_F",
+	"D",
+	"E",
+	"F",
 }
 var _EnumParent_EnumChild_allValue = []int32{
 	0,

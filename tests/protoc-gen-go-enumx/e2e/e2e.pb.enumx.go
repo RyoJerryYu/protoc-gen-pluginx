@@ -45,9 +45,9 @@ var _Enum_all = []Enum{
 	Enum_C,
 }
 var _Enum_allName = []string{
-	"Enum_A",
-	"Enum_B",
-	"Enum_C",
+	"A",
+	"B",
+	"C",
 }
 var _Enum_allValue = []int32{
 	0,
@@ -105,9 +105,9 @@ var _EnumParent_EnumChild_all = []EnumParent_EnumChild{
 	EnumParent_F,
 }
 var _EnumParent_EnumChild_allName = []string{
-	"EnumParent_D",
-	"EnumParent_E",
-	"EnumParent_F",
+	"D",
+	"E",
+	"F",
 }
 var _EnumParent_EnumChild_allValue = []int32{
 	0,
@@ -165,9 +165,9 @@ var _EnumParent2_Enum_all = []EnumParent2_Enum{
 	EnumParent2_I,
 }
 var _EnumParent2_Enum_allName = []string{
-	"EnumParent2_G",
-	"EnumParent2_H",
-	"EnumParent2_I",
+	"G",
+	"H",
+	"I",
 }
 var _EnumParent2_Enum_allValue = []int32{
 	0,
@@ -225,9 +225,9 @@ var _EnumParent3_Enum_all = []EnumParent3_Enum{
 	EnumParent3_L,
 }
 var _EnumParent3_Enum_allName = []string{
-	"EnumParent3_J",
-	"EnumParent3_K",
-	"EnumParent3_L",
+	"J",
+	"K",
+	"L",
 }
 var _EnumParent3_Enum_allValue = []int32{
 	0,
