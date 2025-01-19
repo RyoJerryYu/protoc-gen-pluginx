@@ -1,0 +1,28 @@
+syntax = "proto3";
+package ryojerryyu.annotations;
+
+import "google/protobuf/descriptor.proto";
+import "google/rpc/code.proto";
+
+option go_package = "github.com/RyoJerryYu/protoc-gen-pluginx/proto/ryojerryyu/annotations";
+
+extend google.protobuf.EnumOptions {
+  // errorx_is_code is a enum level option to indicate that this enum is an error code
+  optional bool errorx_is_code = 52013;
+}
+
+extend google.protobuf.EnumValueOptions {
+  // code describes the gRPC status code for this error code
+  // when using with grpc-gateway, http status code will be defined by this code
+  optional google.rpc.Code errorx_code = 52014;
+}
+
+extend google.protobuf.MessageOptions {
+  // errorx is a message level option to indicate that this message is an error message
+  optional bool errorx_is_error = 51015;
+}
+
+extend google.protobuf.OneofOptions {
+  // errorx is a oneof level option to indicate that this oneof is an error oneof
+  optional bool errorx_is_payload = 52016;
+}

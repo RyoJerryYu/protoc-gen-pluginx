@@ -1,0 +1,4 @@
+version: v2
+name: buf.build/tests/protoc-gen-pluginx
+deps:
+  - buf.build/googleapis/googleapis
