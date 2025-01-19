@@ -135,7 +135,7 @@ func (g *Generator) applyAlls(e *protogen.Enum) {
 
 	g.Pf(`var _%s_allName = []string{`, e.GoIdent.GoName)
 	for _, v := range e.Values {
-		g.Pf("%q,", v.GoIdent.GoName)
+		g.Pf("%q,", v.Desc.Name())
 	}
 	g.Pf("}")
 
