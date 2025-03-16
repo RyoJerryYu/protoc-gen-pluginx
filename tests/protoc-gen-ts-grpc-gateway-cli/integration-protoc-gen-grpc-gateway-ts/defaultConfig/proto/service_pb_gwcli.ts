@@ -123,11 +123,9 @@ export type CallOptions = {
 function metadataToHeaders(metadata: Metadata): Headers {
   const headers = new Headers();
 
-  for (const [key, values] of metadata) {
-    for (const value of values) {
-      headers.append("Grpc-Metadata-" + key, value);
-    }
-  }
+  metadata.forEach((value, key) => {
+    headers.append("Grpc-Metadata-" + key, value);
+  });
 
   return headers;
 }
