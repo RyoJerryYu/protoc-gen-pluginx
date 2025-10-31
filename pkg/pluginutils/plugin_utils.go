@@ -12,7 +12,6 @@ type PluginInfo struct {
 	VersionStr        string
 	GenFileSuffix     string
 	SupportedFeatures uint64
-	GoImportPath      protogen.GoImportPath
 }
 
 type FileGenerator struct {

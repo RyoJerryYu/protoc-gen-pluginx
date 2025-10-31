@@ -7,7 +7,6 @@ import (
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils"
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/version"
 	"github.com/golang/glog"
-	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/types/pluginpb"
 )
 
@@ -28,8 +27,6 @@ func main() {
 		VersionStr:        version.Version,
 		GenFileSuffix:     ".pb.enumx.go",
 		SupportedFeatures: uint64(pluginpb.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL),
-	}).ForEachFileThat(func(protoFile *protogen.File) bool {
-		return true
 	}).Run(func(genOpt pluginutils.GenerateOptions) error {
 		g := gen.Generator{
 			Options:         options,
