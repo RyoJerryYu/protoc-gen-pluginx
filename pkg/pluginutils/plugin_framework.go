@@ -51,7 +51,12 @@ func (pr forEachFileRunner) Run(fn func(genOpt GenerateOptions) error) {
 			glog.V(1).Infof("Processing %s", f.Desc.Path())
 			glog.V(2).Infof("Generating %s\n", f.GeneratedFilenamePrefix)
 
-			gf := p.NewGeneratedFile(f.GeneratedFilenamePrefix+pr.info.GenFileSuffix, f.GoImportPath)
+			goImportPath := pr.info.GoImportPath
+			if goImportPath == "" {
+				goImportPath = f.GoImportPath
+			}
+
+			gf := p.NewGeneratedFile(f.GeneratedFilenamePrefix+pr.info.GenFileSuffix, goImportPath)
 
 			plgOpt := GenerateOptions{
 				PluginInfo: pr.info,
