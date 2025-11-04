@@ -5,7 +5,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils"
+	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils/fieldpath"
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/protobufx"
 	"github.com/golang/glog"
 	"github.com/iancoleman/strcase"
@@ -50,7 +50,7 @@ func (d TSProtoDefinition) GetFieldSyntax(opt *TSOption, rootMsg *protogen.Messa
 		var fd protoreflect.FieldDescriptor
 		md := rootMsg.Desc
 		syntax := &strings.Builder{}
-		valid := pluginutils.RangeFieldPath(path, func(field, _ string) bool {
+		valid := fieldpath.RangeFieldPath(path, func(field, _ string) bool {
 			if md == nil {
 				return false
 			}
@@ -89,7 +89,7 @@ func (d TSProtoDefinition) JsonFieldPath(opt *TSOption, rootMsg *protogen.Messag
 			return path
 		}
 	}
-	return pluginutils.JsonFieldPath(rootMsg)
+	return fieldpath.JsonFieldPath(rootMsg)
 }
 
 func (d TSProtoDefinition) MsgScalarable(msg *protogen.Message) bool {

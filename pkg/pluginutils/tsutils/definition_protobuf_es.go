@@ -5,7 +5,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils"
+	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils/fieldpath"
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/protobufx"
 	"github.com/golang/glog"
 	"github.com/iancoleman/strcase"
@@ -75,7 +75,7 @@ func (d ProtobufESDefinition) GetFieldSyntax(opt *TSOption, rootMsg *protogen.Me
 		syntax := &strings.Builder{}
 		syntax.WriteString(rootVar)
 		isFirst := true
-		pluginutils.RangeFieldPath(path, func(field string, restPath string) bool {
+		fieldpath.RangeFieldPath(path, func(field string, restPath string) bool {
 			if md == nil {
 				return false
 			}
@@ -129,7 +129,7 @@ func (d ProtobufESDefinition) GetFieldSyntax(opt *TSOption, rootMsg *protogen.Me
 }
 
 func (d ProtobufESDefinition) JsonFieldPath(opt *TSOption, rootMsg *protogen.Message) func(path string) string {
-	return pluginutils.JsonFieldPath(rootMsg)
+	return fieldpath.JsonFieldPath(rootMsg)
 }
 
 func (d ProtobufESDefinition) MsgScalarable(msg *protogen.Message) bool {
