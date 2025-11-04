@@ -9,8 +9,9 @@ import (
 )
 
 type forEachFileRunner struct {
-	info       PluginInfo
-	fileFilter func(protoFile *protogen.File) ForEachFileCheckResult
+	info        PluginInfo
+	fileFilter  func(protoFile *protogen.File) ForEachFileCheckResult
+	beforeAllFn func(p *protogen.Plugin) error
 }
 
 type ForEachFileCheckResult struct {
@@ -19,6 +20,7 @@ type ForEachFileCheckResult struct {
 }
 
 type ForEachFileRunner interface {
+	BeforeAll(fn func(p *protogen.Plugin) error) ForEachFileRunner
 	ForEachFileThat(fn func(protoFile *protogen.File) ForEachFileCheckResult) ForEachFileRunner
 	Run(fn func(genOpt GenerateOptions) error)
 }
@@ -26,6 +28,11 @@ type ForEachFileRunner interface {
 // ForEachFileRunner helps to generate one file for each file that is being generated
 func NewForEachFileRunner(info PluginInfo) ForEachFileRunner {
 	return forEachFileRunner{info: info}
+}
+
+func (pr forEachFileRunner) BeforeAll(fn func(p *protogen.Plugin) error) ForEachFileRunner {
+	pr.beforeAllFn = fn
+	return pr
 }
 
 // if fn returns false, the file will be skipped
@@ -38,6 +45,13 @@ func (pr forEachFileRunner) Run(fn func(genOpt GenerateOptions) error) {
 	protogen.Options{
 		ParamFunc: flag.CommandLine.Set,
 	}.Run(func(p *protogen.Plugin) error {
+		if pr.beforeAllFn != nil {
+			err := pr.beforeAllFn(p)
+			if err != nil {
+				return err
+			}
+		}
+
 		if pr.info.SupportedFeatures != 0 {
 			p.SupportedFeatures = pr.info.SupportedFeatures
 		}
