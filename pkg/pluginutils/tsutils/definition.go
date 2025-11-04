@@ -31,12 +31,12 @@ const (
 func DefinitionFromOpts(opts TSOption) Definition {
 	switch opts.TypeDefinition {
 	case Definition_ProtobufES:
-		return ProtobufESDefinition{}
+		return ProtobufESDefinition{ProtoGenRoot: opts.ProtoGenRoot}
 	case Definition_TSProto:
-		return TSProtoDefinition{}
+		return TSProtoDefinition{ProtoGenRoot: opts.ProtoGenRoot}
 	default:
 		// default to ts-proto
-		return TSProtoDefinition{}
+		return TSProtoDefinition{ProtoGenRoot: opts.ProtoGenRoot}
 	}
 }
 

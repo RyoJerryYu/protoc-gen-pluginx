@@ -134,8 +134,6 @@ func GetModuleName(file protoreflect.FileDescriptor) string {
 }
 
 type TSOption struct {
-	// // TSImportRootParamsKey contains the key for common_import_root in parameters
-	// TSImportRoots string
 	// // TSImportRootAliasParamsKey contains the key for common_import_root_alias in parameters
 	// TSImportRootAliases string
 
@@ -145,4 +143,8 @@ type TSOption struct {
 	TSProto_KeySnakeToCamel bool
 	// if server marshal options has MarshalUseProtoNames set to true
 	MarshalUseProtoNames bool
+	// ProtoGenRoot is the root path of the generated protobuf definition files
+	// if not set, means the generated file is in the generated root directory
+	// and then will calculate the relative path for the import statement
+	ProtoGenRoot string
 }

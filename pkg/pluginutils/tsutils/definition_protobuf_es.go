@@ -2,6 +2,7 @@ package tsutils
 
 import (
 	"fmt"
+	"path"
 	"strings"
 
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils"
@@ -12,7 +13,9 @@ import (
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
-type ProtobufESDefinition struct{}
+type ProtobufESDefinition struct {
+	ProtoGenRoot string
+}
 
 func (d ProtobufESDefinition) TSModule(file protoreflect.FileDescriptor) TSModule {
 	if file.Package() == protobufx.GoogleProtobuf_package {
@@ -20,11 +23,17 @@ func (d ProtobufESDefinition) TSModule(file protoreflect.FileDescriptor) TSModul
 		return d.wktModule()
 	}
 	protoPath := file.Path()
-	return TSModule{
+	module := TSModule{
 		ModuleName: GetModuleName(file),
 		Path:       strings.TrimSuffix(protoPath, ".proto") + "_pb.ts",
 		Relative:   true,
 	}
+
+	if d.ProtoGenRoot != "" {
+		module.Path = path.Join(d.ProtoGenRoot, module.Path)
+		module.Relative = false
+	}
+	return module
 }
 
 func (d ProtobufESDefinition) protobufModule() TSModule {

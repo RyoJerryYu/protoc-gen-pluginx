@@ -2,6 +2,7 @@ package tsutils
 
 import (
 	"fmt"
+	"path"
 	"strings"
 
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils"
@@ -14,15 +15,23 @@ import (
 
 // Work with protoc-gen-ts_proto: https://github.com/stephenh/ts-proto
 
-type TSProtoDefinition struct{}
+type TSProtoDefinition struct {
+	ProtoGenRoot string
+}
 
 func (d TSProtoDefinition) TSModule(file protoreflect.FileDescriptor) TSModule {
 	protoPath := file.Path()
-	return TSModule{
+	module := TSModule{
 		ModuleName: GetModuleName(file),
 		Path:       strings.TrimSuffix(protoPath, ".proto") + ".ts",
 		Relative:   true,
 	}
+
+	if d.ProtoGenRoot != "" {
+		module.Path = path.Join(d.ProtoGenRoot, module.Path)
+		module.Relative = false
+	}
+	return module
 }
 
 func (d TSProtoDefinition) TSIdentMsg(msg *protogen.Message) TSIdent {

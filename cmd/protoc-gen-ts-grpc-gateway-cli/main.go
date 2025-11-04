@@ -18,6 +18,7 @@ func init() {
 	flag.StringVar(&options.TSOption.TypeDefinition, "ts_type_definition", tsutils.Definition_TSProto, "use ts-proto or protobuf-es for type definition")
 	flag.BoolVar(&options.TSProto_KeySnakeToCamel, "ts_proto_key_snake_to_camel", true, "if ts-proto uses snakeToCamel for map keys")
 	flag.BoolVar(&options.MarshalUseProtoNames, "marshal_use_proto_names", false, "if server has UseProtoNames set to true")
+	flag.StringVar(&options.TSOption.ProtoGenRoot, "proto_gen_root", "", "the root path of the generated protobuf definition files")
 }
 
 func main() {
