@@ -4,28 +4,38 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"path/filepath"
 	"strings"
 	"text/template"
 
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils"
 	sprig "github.com/go-task/slim-sprig/v3"
-	"github.com/iancoleman/strcase"
 	"google.golang.org/protobuf/compiler/protogen"
-	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 type TSRegistry struct {
-	buf          bytes.Buffer
-	GenOpts      pluginutils.GenerateOptions
-	ImportIdents map[string][]TSIdent // map<module_path, TSIdent>
+	buf            bytes.Buffer
+	ThisModulePath string
+	GenOpts        pluginutils.GenerateOptions
+	ImportIdents   map[string][]TSIdent // map<module_path, TSIdent>
 }
 
-func NewTSRegistry(opts pluginutils.GenerateOptions) *TSRegistry {
-	return &TSRegistry{
+type TSRegistryOption func(*TSRegistry)
+
+func WithThisModulePath(path string) TSRegistryOption {
+	return func(r *TSRegistry) {
+		r.ThisModulePath = path
+	}
+}
+
+func NewTSRegistry(opts pluginutils.GenerateOptions, options ...TSRegistryOption) *TSRegistry {
+	r := &TSRegistry{
 		GenOpts:      opts,
 		ImportIdents: make(map[string][]TSIdent),
 	}
+	for _, option := range options {
+		option(r)
+	}
+	return r
 }
 
 func (g *TSRegistry) Apply(w io.Writer) error {
@@ -112,25 +122,6 @@ func (r *TSRegistry) QualifiedTSIdent(ident TSIdent) string {
 	}
 	r.ImportIdents[ident.Path] = append(r.ImportIdents[ident.Path], ident)
 	return ident.Name
-}
-
-//////
-// File
-//////
-
-// GetModuleName returns module name = package name + base file name to be the
-// unique identifier for source file in a ts file. Package name and base file
-// name are converted to camel case, special characters like dot, dash and
-// underscore are removed.
-// packageName: memos.api.v1
-// fileName: memos.proto
-func GetModuleName(file protoreflect.FileDescriptor) string {
-	packageName, fileName := string(file.Package()), string(file.Path())
-	baseName := filepath.Base(fileName)
-	ext := filepath.Ext(fileName)
-	name := baseName[0 : len(baseName)-len(ext)]
-
-	return strcase.ToCamel(packageName) + strcase.ToCamel(name)
 }
 
 type TSOption struct {

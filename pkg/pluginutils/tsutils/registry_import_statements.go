@@ -3,6 +3,7 @@ package tsutils
 import (
 	"fmt"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strings"
 
@@ -27,6 +28,8 @@ type TSIdent struct {
 	Name string
 }
 
+var fileSuffixRegex = regexp.MustCompile(`\.(ts|tsx|js|jsx|mjs|cjs|json|vue)$`)
+
 func tsRelativeImportPath(thisPath string, modulePath string) string {
 	thisDir := filepath.Dir(thisPath)
 	relativePath, err := filepath.Rel(thisDir, modulePath)
@@ -37,10 +40,14 @@ func tsRelativeImportPath(thisPath string, modulePath string) string {
 	if !strings.Contains(relativePath, "/") && !strings.HasPrefix(relativePath, ".") {
 		relativePath = "./" + relativePath
 	}
-	return strings.TrimSuffix(relativePath, ".ts")
+	return fileSuffixRegex.ReplaceAllString(relativePath, "")
 }
 
 func (g *TSRegistry) thisModulePath() string {
+	if g.ThisModulePath != "" {
+		return g.ThisModulePath
+	}
+	// default to treat as in the generated proto definition directory
 	protoPath := g.GenOpts.FileGenerator.F.Desc.Path()
 	return strings.TrimSuffix(protoPath, ".proto") + ".ts"
 }

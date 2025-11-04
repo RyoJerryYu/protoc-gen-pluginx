@@ -1,5 +1,12 @@
 package tsutils
 
+import (
+	"path/filepath"
+
+	"github.com/iancoleman/strcase"
+	"google.golang.org/protobuf/reflect/protoreflect"
+)
+
 //////
 // String
 //////
@@ -26,4 +33,23 @@ func JSONCamelCase(s string) string {
 
 func isASCIILower(c byte) bool {
 	return 'a' <= c && c <= 'z'
+}
+
+//////
+// File
+//////
+
+// GetModuleName returns module name = package name + base file name to be the
+// unique identifier for source file in a ts file. Package name and base file
+// name are converted to camel case, special characters like dot, dash and
+// underscore are removed.
+// packageName: memos.api.v1
+// fileName: memos.proto
+func GetModuleName(file protoreflect.FileDescriptor) string {
+	packageName, fileName := string(file.Package()), string(file.Path())
+	baseName := filepath.Base(fileName)
+	ext := filepath.Ext(fileName)
+	name := baseName[0 : len(baseName)-len(ext)]
+
+	return strcase.ToCamel(packageName) + strcase.ToCamel(name)
 }
