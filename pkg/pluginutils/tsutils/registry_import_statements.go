@@ -28,8 +28,6 @@ type TSIdent struct {
 	Name string
 }
 
-var fileSuffixRegex = regexp.MustCompile(`\.(ts|tsx|js|jsx|mjs)$`)
-
 func tsRelativeImportPath(thisPath string, modulePath string) string {
 	thisDir := filepath.Dir(thisPath)
 	relativePath, err := filepath.Rel(thisDir, modulePath)
@@ -40,7 +38,7 @@ func tsRelativeImportPath(thisPath string, modulePath string) string {
 	if !strings.Contains(relativePath, "/") && !strings.HasPrefix(relativePath, ".") {
 		relativePath = "./" + relativePath
 	}
-	return fileSuffixRegex.ReplaceAllString(relativePath, "")
+	return relativePath
 }
 
 func (g *TSRegistry) thisModulePath() string {
@@ -65,6 +63,9 @@ func (g *TSRegistry) ImportSegments() string {
 	})
 
 	for _, modulePath := range modulePaths {
+		if modulePath == thisModulePath {
+			continue
+		}
 		idents := g.ImportIdents[modulePath]
 		module := idents[0].TSModule
 		importPath := module.Path
@@ -76,6 +77,8 @@ func (g *TSRegistry) ImportSegments() string {
 	}
 	return strings.Join(imports, "\n")
 }
+
+var fileSuffixRegex = regexp.MustCompile(`\.(ts|tsx|js|jsx|mjs)$`)
 
 func (g *TSRegistry) importSegmentDirect(importPath string, idents []TSIdent) string {
 	identNames := make([]string, 0, len(idents))
@@ -93,6 +96,7 @@ func (g *TSRegistry) importSegmentDirect(importPath string, idents []TSIdent) st
 	sort.Slice(identNames, func(i, j int) bool {
 		return identNames[i] < identNames[j]
 	})
+	importPath = fileSuffixRegex.ReplaceAllString(importPath, "")
 	return fmt.Sprintf(`import { %s } from "%s";`,
 		strings.Join(identNames, ", "), importPath)
 }

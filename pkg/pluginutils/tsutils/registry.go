@@ -27,6 +27,13 @@ func WithThisModulePath(path string) TSRegistryOption {
 	}
 }
 
+func WithFileSuffix(suffix string) TSRegistryOption {
+	return func(r *TSRegistry) {
+		protoPath := r.GenOpts.FileGenerator.F.Desc.Path()
+		r.ThisModulePath = strings.TrimSuffix(protoPath, ".proto") + suffix
+	}
+}
+
 func NewTSRegistry(opts pluginutils.GenerateOptions, options ...TSRegistryOption) *TSRegistry {
 	r := &TSRegistry{
 		GenOpts:      opts,

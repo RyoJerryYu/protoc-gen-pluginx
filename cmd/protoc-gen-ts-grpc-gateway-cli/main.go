@@ -44,7 +44,7 @@ func main() {
 		g := gen.Generator{
 			Options:    options,
 			Generator:  genOpt,
-			TSRegistry: tsutils.NewTSRegistry(genOpt),
+			TSRegistry: tsutils.NewTSRegistry(genOpt, tsutils.WithFileSuffix(genOpt.GenFileSuffix)),
 			Definition: tsutils.DefinitionFromOpts(options.TSOption),
 		}
 		return g.ApplyTemplate()
