@@ -28,7 +28,7 @@ type TSIdent struct {
 	Name string
 }
 
-var fileSuffixRegex = regexp.MustCompile(`\.(ts|tsx|js|jsx|mjs|cjs|json|vue)$`)
+var fileSuffixRegex = regexp.MustCompile(`\.(ts|tsx|js|jsx|mjs)$`)
 
 func tsRelativeImportPath(thisPath string, modulePath string) string {
 	thisDir := filepath.Dir(thisPath)

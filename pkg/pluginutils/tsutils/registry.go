@@ -39,7 +39,7 @@ func NewTSRegistry(opts pluginutils.GenerateOptions, options ...TSRegistryOption
 }
 
 func (g *TSRegistry) Apply(w io.Writer) error {
-	if !strings.HasSuffix(g.GenOpts.GenFileSuffix, ".ts") {
+	if !fileSuffixRegex.MatchString(g.GenOpts.GenFileSuffix) {
 		_, err := io.Copy(w, &g.buf)
 		return err
 	}
