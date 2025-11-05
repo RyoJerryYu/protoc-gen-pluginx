@@ -11,6 +11,7 @@ import (
 type Definition interface {
 	TSModule(file protoreflect.FileDescriptor) TSModule
 	TSIdentMsg(msg *protogen.Message) TSIdent
+	TSIdentService(service *protogen.Service) TSIdent
 	GetFieldSyntax(opt *TSOption, rootMsg *protogen.Message) func(rootVar, path string) string // text_name format path
 	JsonFieldPath(opt *TSOption, rootMsg *protogen.Message) func(path string) string           // text_name format path to json_name format path
 	MsgScalarable(msg *protogen.Message) bool                                                  // if the message type can be into json scalar

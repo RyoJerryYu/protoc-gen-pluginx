@@ -38,6 +38,10 @@ func (d TSProtoDefinition) TSIdentMsg(msg *protogen.Message) TSIdent {
 	return d.TSModule(msg.Desc.ParentFile()).Ident(msg.GoIdent.GoName)
 }
 
+func (d TSProtoDefinition) TSIdentService(service *protogen.Service) TSIdent {
+	return d.TSModule(service.Desc.ParentFile()).Ident(service.GoName)
+}
+
 func (d TSProtoDefinition) GetFieldSyntax(opt *TSOption, rootMsg *protogen.Message) func(rootVar string, path string) string {
 	fieldCase := JSONCamelCase
 	if !opt.TSProto_KeySnakeToCamel {

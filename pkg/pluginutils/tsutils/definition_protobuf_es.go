@@ -55,6 +55,9 @@ func (d ProtobufESDefinition) wktModule() TSModule {
 func (d ProtobufESDefinition) TSIdentMsg(msg *protogen.Message) TSIdent {
 	return d.TSModule(msg.Desc.ParentFile()).Ident(msg.GoIdent.GoName)
 }
+func (d ProtobufESDefinition) TSIdentService(service *protogen.Service) TSIdent {
+	return d.TSModule(service.Desc.ParentFile()).Ident(service.GoName)
+}
 func (d ProtobufESDefinition) TSIdentMsgSchema(msg *protogen.Message) TSIdent {
 	return d.TSModule(msg.Desc.ParentFile()).Ident(msg.GoIdent.GoName + "Schema")
 }
