@@ -32,11 +32,11 @@ func main() {
 			return false
 		}
 		return true
-	}).Run(func(genOpt pluginutils.GenerateOptions) error {
+	}).Generate(func(genOpt pluginutils.GenerateOptions) error {
 		g := gen.Generator{
 			Options:         options,
 			GenerateOptions: genOpt,
 		}
 		return g.ApplyTemplate()
-	})
+	}).Run()
 }
