@@ -25,8 +25,8 @@ func (opt GenerateOptions) PHeader(p *protogen.Plugin) {
 
 	opt.P()
 }
-func (opt GenerateOptions) PPackage() {
-	opt.Pf("package %s", opt.F.GoPackageName)
+func (opt GenerateOptions) PPackage(goPackageName protogen.GoPackageName) {
+	opt.Pf("package %s", goPackageName)
 	opt.P()
 }
 

@@ -12,6 +12,7 @@ import (
 type RunArgs struct {
 	GoImportPath            protogen.GoImportPath
 	GeneratedFilenamePrefix string
+	GoPackageName           protogen.GoPackageName
 }
 
 type RunArgsOption func(protoFile *protogen.File, out *RunArgs)
@@ -119,6 +120,7 @@ func (pr forEachFileRunner) Run() {
 				runArgs := RunArgs{
 					GoImportPath:            f.GoImportPath,
 					GeneratedFilenamePrefix: f.GeneratedFilenamePrefix,
+					GoPackageName:           f.GoPackageName,
 				}
 				genFnWithArgs.argsOption(f, &runArgs)
 
@@ -133,7 +135,7 @@ func (pr forEachFileRunner) Run() {
 				}
 				if strings.HasSuffix(pr.info.GenFileSuffix, ".go") {
 					plgOpt.PHeader(p)
-					plgOpt.PPackage()
+					plgOpt.PPackage(runArgs.GoPackageName)
 				}
 
 				err := genFnWithArgs.genFn(plgOpt)
@@ -147,6 +149,9 @@ func (pr forEachFileRunner) Run() {
 
 		for _, reduceFnWithArgs := range pr.reduceFns {
 			runArgs := reduceFnWithArgs.argsOption()
+			if runArgs.GoPackageName == "" {
+				runArgs.GoPackageName = protogen.GoPackageName(path.Base(string(runArgs.GoImportPath)))
+			}
 
 			gf := p.NewGeneratedFile(runArgs.GeneratedFilenamePrefix+pr.info.GenFileSuffix, runArgs.GoImportPath)
 
@@ -159,7 +164,7 @@ func (pr forEachFileRunner) Run() {
 					},
 				}
 				genOpt.PHeader(p)
-				genOpt.P("package " + path.Base(string(runArgs.GoImportPath)))
+				genOpt.PPackage(runArgs.GoPackageName)
 			}
 
 			err := reduceFnWithArgs.reduceFn(ReduceOptions{
