@@ -30,22 +30,16 @@ func main() {
 		VersionStr:        version.Version,
 		GenFileSuffix:     ".pb.registar.go",
 		SupportedFeatures: uint64(pluginpb.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL),
-	}).ForEachFileThat(func(protoFile *protogen.File) pluginutils.ForEachFileCheckResult {
+	}).Filter(func(protoFile *protogen.File) bool {
 		if options.NotGenGRPC && !options.GenGateway {
 			glog.V(1).Infof("Skipping %s, no service to generate", protoFile.Desc.Path())
-			return pluginutils.ForEachFileCheckResult{
-				Skip: true,
-			}
+			return false
 		}
 		if len(protoFile.Services) == 0 {
 			glog.V(1).Infof("Skipping %s, no services", protoFile.Desc.Path())
-			return pluginutils.ForEachFileCheckResult{
-				Skip: true,
-			}
+			return false
 		}
-		return pluginutils.ForEachFileCheckResult{
-			Skip: false,
-		}
+		return true
 	}).Run(func(genOpt pluginutils.GenerateOptions) error {
 		g := gen.Generator{
 			Options:         options,

@@ -10,18 +10,13 @@ import (
 
 type forEachFileRunner struct {
 	info        PluginInfo
-	fileFilter  func(protoFile *protogen.File) ForEachFileCheckResult
+	fileFilter  func(protoFile *protogen.File) bool
 	beforeAllFn func(p *protogen.Plugin) error
-}
-
-type ForEachFileCheckResult struct {
-	Skip         bool
-	GoImportPath protogen.GoImportPath
 }
 
 type ForEachFileRunner interface {
 	BeforeAll(fn func(p *protogen.Plugin) error) ForEachFileRunner
-	ForEachFileThat(fn func(protoFile *protogen.File) ForEachFileCheckResult) ForEachFileRunner
+	Filter(fn func(protoFile *protogen.File) bool) ForEachFileRunner
 	Run(fn func(genOpt GenerateOptions) error)
 }
 
@@ -36,9 +31,14 @@ func (pr forEachFileRunner) BeforeAll(fn func(p *protogen.Plugin) error) ForEach
 }
 
 // if fn returns false, the file will be skipped
-func (pr forEachFileRunner) ForEachFileThat(fn func(protoFile *protogen.File) ForEachFileCheckResult) ForEachFileRunner {
+func (pr forEachFileRunner) Filter(fn func(protoFile *protogen.File) bool) ForEachFileRunner {
 	pr.fileFilter = fn
 	return pr
+}
+
+type RunArgs struct {
+	GoImportPath            protogen.GoImportPath
+	GeneratedFilenamePrefix string
 }
 
 func (pr forEachFileRunner) Run(fn func(genOpt GenerateOptions) error) {
@@ -59,13 +59,7 @@ func (pr forEachFileRunner) Run(fn func(genOpt GenerateOptions) error) {
 		// only process the files that are being generated
 		for _, name := range p.Request.FileToGenerate {
 			f := p.FilesByPath[name]
-			preCheckResult := ForEachFileCheckResult{
-				Skip: false,
-			}
-			if pr.fileFilter != nil {
-				preCheckResult = pr.fileFilter(f)
-			}
-			if preCheckResult.Skip {
+			if pr.fileFilter != nil && !pr.fileFilter(f) {
 				glog.V(1).Infof("Skipping %s", f.Desc.Path())
 				continue
 			}
@@ -73,12 +67,21 @@ func (pr forEachFileRunner) Run(fn func(genOpt GenerateOptions) error) {
 			glog.V(1).Infof("Processing %s", f.Desc.Path())
 			glog.V(2).Infof("Generating %s\n", f.GeneratedFilenamePrefix)
 
-			goImportPath := preCheckResult.GoImportPath
+			runArgs := RunArgs{
+				GoImportPath:            f.GoImportPath,
+				GeneratedFilenamePrefix: f.GeneratedFilenamePrefix,
+			}
+
+			goImportPath := runArgs.GoImportPath
 			if goImportPath == "" {
 				goImportPath = f.GoImportPath
 			}
+			generatedFilenamePrefix := runArgs.GeneratedFilenamePrefix
+			if generatedFilenamePrefix == "" {
+				generatedFilenamePrefix = f.GeneratedFilenamePrefix
+			}
 
-			gf := p.NewGeneratedFile(f.GeneratedFilenamePrefix+pr.info.GenFileSuffix, goImportPath)
+			gf := p.NewGeneratedFile(generatedFilenamePrefix+pr.info.GenFileSuffix, goImportPath)
 
 			plgOpt := GenerateOptions{
 				PluginInfo: pr.info,
