@@ -20,11 +20,19 @@ type genFnWithArgs struct {
 	argsOption RunArgsOption
 }
 
+type ReduceArgsOption func() *RunArgs
+
+type reduceFnWithArgs struct {
+	reduceFn   func(reduceOpt ReduceOptions, genFiles []*protogen.File) error
+	argsOption ReduceArgsOption
+}
+
 type forEachFileRunner struct {
 	info        PluginInfo
 	beforeAllFn func(p *protogen.Plugin) error
 	filterFn    func(protoFile *protogen.File) bool
 	genFns      []genFnWithArgs
+	reduceFns   []reduceFnWithArgs
 }
 
 type ForEachFileRunner interface {
@@ -32,6 +40,7 @@ type ForEachFileRunner interface {
 	Filter(fn func(protoFile *protogen.File) bool) ForEachFileRunner
 	Generate(fn func(genOpt GenerateOptions) error) ForEachFileRunner
 	GenerateWithArgs(argsOption RunArgsOption, genFn func(genOpt GenerateOptions) error) ForEachFileRunner
+	Reduce(argsOption ReduceArgsOption, reduceFn func(reduceOpt ReduceOptions, genFiles []*protogen.File) error) ForEachFileRunner
 	Run()
 }
 
@@ -68,6 +77,14 @@ func (pr forEachFileRunner) GenerateWithArgs(argsOption RunArgsOption, genFn fun
 	return pr
 }
 
+func (pr forEachFileRunner) Reduce(argsOption ReduceArgsOption, reduceFn func(reduceOpt ReduceOptions, genFiles []*protogen.File) error) ForEachFileRunner {
+	pr.reduceFns = append(pr.reduceFns, reduceFnWithArgs{
+		reduceFn:   reduceFn,
+		argsOption: argsOption,
+	})
+	return pr
+}
+
 func (pr forEachFileRunner) Run() {
 	protogen.Options{
 		ParamFunc: flag.CommandLine.Set,
@@ -83,6 +100,7 @@ func (pr forEachFileRunner) Run() {
 			p.SupportedFeatures = pr.info.SupportedFeatures
 		}
 
+		genFiles := make([]*protogen.File, 0)
 		// only process the files that are being generated
 		for _, name := range p.Request.FileToGenerate {
 			f := p.FilesByPath[name]
@@ -90,6 +108,8 @@ func (pr forEachFileRunner) Run() {
 				glog.V(1).Infof("Skipping %s", f.Desc.Path())
 				continue
 			}
+
+			genFiles = append(genFiles, f)
 
 			glog.V(1).Infof("Processing %s", f.Desc.Path())
 			glog.V(2).Infof("Generating %s\n", f.GeneratedFilenamePrefix)
@@ -122,9 +142,23 @@ func (pr forEachFileRunner) Run() {
 					continue
 				}
 			}
-
 		}
 
+		for _, reduceFnWithArgs := range pr.reduceFns {
+			runArgs := reduceFnWithArgs.argsOption()
+
+			gf := p.NewGeneratedFile(runArgs.GeneratedFilenamePrefix+pr.info.GenFileSuffix, runArgs.GoImportPath)
+
+			err := reduceFnWithArgs.reduceFn(ReduceOptions{
+				GeneratedFile: gf,
+				PluginInfo:    pr.info,
+			}, genFiles)
+			if err != nil {
+				gf.Skip()
+				p.Error(err)
+				continue
+			}
+		}
 		return nil
 	})
 

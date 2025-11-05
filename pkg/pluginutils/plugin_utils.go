@@ -7,6 +7,11 @@ type GenerateOptions struct {
 	PluginInfo
 }
 
+type ReduceOptions struct {
+	*protogen.GeneratedFile
+	PluginInfo
+}
+
 type PluginInfo struct {
 	PluginName        string
 	VersionStr        string
