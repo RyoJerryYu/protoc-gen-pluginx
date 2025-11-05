@@ -8,17 +8,30 @@ import (
 	"google.golang.org/protobuf/compiler/protogen"
 )
 
+type RunArgs struct {
+	GoImportPath            protogen.GoImportPath
+	GeneratedFilenamePrefix string
+}
+
+type RunArgsOption func(protoFile *protogen.File) *RunArgs
+
+type genFnWithArgs struct {
+	genFn      func(genOpt GenerateOptions) error
+	argsOption RunArgsOption
+}
+
 type forEachFileRunner struct {
 	info        PluginInfo
 	beforeAllFn func(p *protogen.Plugin) error
 	filterFn    func(protoFile *protogen.File) bool
-	genFns      []func(genOpt GenerateOptions) error
+	genFns      []genFnWithArgs
 }
 
 type ForEachFileRunner interface {
 	BeforeAll(fn func(p *protogen.Plugin) error) ForEachFileRunner
 	Filter(fn func(protoFile *protogen.File) bool) ForEachFileRunner
 	Generate(fn func(genOpt GenerateOptions) error) ForEachFileRunner
+	GenerateWithArgs(argsOption RunArgsOption, genFn func(genOpt GenerateOptions) error) ForEachFileRunner
 	Run()
 }
 
@@ -38,15 +51,25 @@ func (pr forEachFileRunner) Filter(fn func(protoFile *protogen.File) bool) ForEa
 	return pr
 }
 
-type RunArgs struct {
-	GoImportPath            protogen.GoImportPath
-	GeneratedFilenamePrefix string
+func (pr forEachFileRunner) Generate(fn func(genOpt GenerateOptions) error) ForEachFileRunner {
+	defaultArgsOption := func(protoFile *protogen.File) *RunArgs {
+		return &RunArgs{
+			GoImportPath:            protoFile.GoImportPath,
+			GeneratedFilenamePrefix: protoFile.GeneratedFilenamePrefix,
+		}
+	}
+	pr.genFns = append(pr.genFns, genFnWithArgs{
+		genFn:      fn,
+		argsOption: defaultArgsOption,
+	})
+	return pr
 }
 
-type RunArgsOption func(protoFile *protogen.File) *RunArgs
-
-func (pr forEachFileRunner) Generate(fn func(genOpt GenerateOptions) error) ForEachFileRunner {
-	pr.genFns = append(pr.genFns, fn)
+func (pr forEachFileRunner) GenerateWithArgs(argsOption RunArgsOption, genFn func(genOpt GenerateOptions) error) ForEachFileRunner {
+	pr.genFns = append(pr.genFns, genFnWithArgs{
+		genFn:      genFn,
+		argsOption: argsOption,
+	})
 	return pr
 }
 
@@ -76,23 +99,11 @@ func (pr forEachFileRunner) Run() {
 			glog.V(1).Infof("Processing %s", f.Desc.Path())
 			glog.V(2).Infof("Generating %s\n", f.GeneratedFilenamePrefix)
 
-			for _, genFn := range pr.genFns {
+			for _, genFnWithArgs := range pr.genFns {
 
-				runArgs := RunArgs{
-					GoImportPath:            f.GoImportPath,
-					GeneratedFilenamePrefix: f.GeneratedFilenamePrefix,
-				}
+				runArgs := genFnWithArgs.argsOption(f)
 
-				goImportPath := runArgs.GoImportPath
-				if goImportPath == "" {
-					goImportPath = f.GoImportPath
-				}
-				generatedFilenamePrefix := runArgs.GeneratedFilenamePrefix
-				if generatedFilenamePrefix == "" {
-					generatedFilenamePrefix = f.GeneratedFilenamePrefix
-				}
-
-				gf := p.NewGeneratedFile(generatedFilenamePrefix+pr.info.GenFileSuffix, goImportPath)
+				gf := p.NewGeneratedFile(runArgs.GeneratedFilenamePrefix+pr.info.GenFileSuffix, runArgs.GoImportPath)
 
 				plgOpt := GenerateOptions{
 					PluginInfo: pr.info,
@@ -106,7 +117,7 @@ func (pr forEachFileRunner) Run() {
 					plgOpt.PPackage()
 				}
 
-				err := genFn(plgOpt)
+				err := genFnWithArgs.genFn(plgOpt)
 				if err != nil {
 					gf.Skip()
 					p.Error(err)
