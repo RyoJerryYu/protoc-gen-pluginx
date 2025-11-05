@@ -2,6 +2,7 @@ package pluginutils
 
 import (
 	"flag"
+	"path"
 	"strings"
 
 	"github.com/golang/glog"
@@ -148,6 +149,18 @@ func (pr forEachFileRunner) Run() {
 			runArgs := reduceFnWithArgs.argsOption()
 
 			gf := p.NewGeneratedFile(runArgs.GeneratedFilenamePrefix+pr.info.GenFileSuffix, runArgs.GoImportPath)
+
+			if strings.HasSuffix(pr.info.GenFileSuffix, ".go") {
+				// temporary GenerateOptions for header and package comments
+				genOpt := GenerateOptions{
+					PluginInfo: pr.info,
+					FileGenerator: FileGenerator{
+						W: gf,
+					},
+				}
+				genOpt.PHeader(p)
+				genOpt.P("package " + path.Base(string(runArgs.GoImportPath)))
+			}
 
 			err := reduceFnWithArgs.reduceFn(ReduceOptions{
 				GeneratedFile: gf,
