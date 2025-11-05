@@ -13,7 +13,7 @@ type RunArgs struct {
 	GeneratedFilenamePrefix string
 }
 
-type RunArgsOption func(protoFile *protogen.File) *RunArgs
+type RunArgsOption func(protoFile *protogen.File, out *RunArgs)
 
 type genFnWithArgs struct {
 	genFn      func(genOpt GenerateOptions) error
@@ -52,12 +52,7 @@ func (pr forEachFileRunner) Filter(fn func(protoFile *protogen.File) bool) ForEa
 }
 
 func (pr forEachFileRunner) Generate(fn func(genOpt GenerateOptions) error) ForEachFileRunner {
-	defaultArgsOption := func(protoFile *protogen.File) *RunArgs {
-		return &RunArgs{
-			GoImportPath:            protoFile.GoImportPath,
-			GeneratedFilenamePrefix: protoFile.GeneratedFilenamePrefix,
-		}
-	}
+	defaultArgsOption := func(protoFile *protogen.File, out *RunArgs) {}
 	pr.genFns = append(pr.genFns, genFnWithArgs{
 		genFn:      fn,
 		argsOption: defaultArgsOption,
@@ -100,8 +95,11 @@ func (pr forEachFileRunner) Run() {
 			glog.V(2).Infof("Generating %s\n", f.GeneratedFilenamePrefix)
 
 			for _, genFnWithArgs := range pr.genFns {
-
-				runArgs := genFnWithArgs.argsOption(f)
+				runArgs := RunArgs{
+					GoImportPath:            f.GoImportPath,
+					GeneratedFilenamePrefix: f.GeneratedFilenamePrefix,
+				}
+				genFnWithArgs.argsOption(f, &runArgs)
 
 				gf := p.NewGeneratedFile(runArgs.GeneratedFilenamePrefix+pr.info.GenFileSuffix, runArgs.GoImportPath)
 
