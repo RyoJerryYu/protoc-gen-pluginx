@@ -13,6 +13,7 @@ type RunArgs struct {
 	GoImportPath            protogen.GoImportPath
 	GeneratedFilenamePrefix string
 	GoPackageName           protogen.GoPackageName
+	GenFileSuffix           string // this GenFileSuffix will override the PluginInfo.GenFileSuffix
 }
 
 type RunArgsOption func(protoFile *protogen.File, out *RunArgs)
@@ -121,19 +122,22 @@ func (pr forEachFileRunner) Run() {
 					GoImportPath:            f.GoImportPath,
 					GeneratedFilenamePrefix: f.GeneratedFilenamePrefix,
 					GoPackageName:           f.GoPackageName,
+					GenFileSuffix:           pr.info.GenFileSuffix,
 				}
 				genFnWithArgs.argsOption(f, &runArgs)
 
-				gf := p.NewGeneratedFile(runArgs.GeneratedFilenamePrefix+pr.info.GenFileSuffix, runArgs.GoImportPath)
+				gf := p.NewGeneratedFile(runArgs.GeneratedFilenamePrefix+runArgs.GenFileSuffix, runArgs.GoImportPath)
 
+				plgInfo := pr.info
+				plgInfo.GenFileSuffix = runArgs.GenFileSuffix
 				plgOpt := GenerateOptions{
-					PluginInfo: pr.info,
+					PluginInfo: plgInfo,
 					FileGenerator: FileGenerator{
 						W: gf,
 						F: f,
 					},
 				}
-				if strings.HasSuffix(pr.info.GenFileSuffix, ".go") {
+				if strings.HasSuffix(runArgs.GenFileSuffix, ".go") {
 					plgOpt.PHeader(p)
 					plgOpt.PPackage(runArgs.GoPackageName)
 				}
@@ -152,13 +156,18 @@ func (pr forEachFileRunner) Run() {
 			if runArgs.GoPackageName == "" {
 				runArgs.GoPackageName = protogen.GoPackageName(path.Base(string(runArgs.GoImportPath)))
 			}
+			if runArgs.GenFileSuffix == "" {
+				runArgs.GenFileSuffix = pr.info.GenFileSuffix
+			}
+			plgInfo := pr.info
+			plgInfo.GenFileSuffix = runArgs.GenFileSuffix
 
-			gf := p.NewGeneratedFile(runArgs.GeneratedFilenamePrefix+pr.info.GenFileSuffix, runArgs.GoImportPath)
+			gf := p.NewGeneratedFile(runArgs.GeneratedFilenamePrefix+runArgs.GenFileSuffix, runArgs.GoImportPath)
 
-			if strings.HasSuffix(pr.info.GenFileSuffix, ".go") {
+			if strings.HasSuffix(runArgs.GenFileSuffix, ".go") {
 				// temporary GenerateOptions for header and package comments
 				genOpt := GenerateOptions{
-					PluginInfo: pr.info,
+					PluginInfo: plgInfo,
 					FileGenerator: FileGenerator{
 						W: gf,
 					},
@@ -169,7 +178,7 @@ func (pr forEachFileRunner) Run() {
 
 			err := reduceFnWithArgs.reduceFn(ReduceOptions{
 				GeneratedFile: gf,
-				PluginInfo:    pr.info,
+				PluginInfo:    plgInfo,
 			}, genFiles)
 			if err != nil {
 				gf.Skip()
