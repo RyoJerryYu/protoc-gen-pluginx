@@ -12,6 +12,19 @@ import (
 // If it returns pointer=true, the struct field is a pointer to the type.
 // https://github.com/protocolbuffers/protobuf-go/blob/3b78ca86bdbb47b135364f251bde7db55fc7130d/cmd/protoc-gen-go/internal_gengo/main.go#L727-L768
 func FieldGoType(g *protogen.GeneratedFile, field *protogen.Field) (goType string, pointer bool) {
+	goType, pointer = FieldPrimitiveType(g, field)
+	switch {
+	case field.Desc.IsList():
+		return "[]" + goType, false
+	case field.Desc.IsMap():
+		keyType, _ := FieldGoType(g, field.Message.Fields[0])
+		valType, _ := FieldGoType(g, field.Message.Fields[1])
+		return fmt.Sprintf("map[%v]%v", keyType, valType), false
+	}
+	return goType, pointer
+}
+
+func FieldPrimitiveType(g *protogen.GeneratedFile, field *protogen.Field) (goType string, pointer bool) {
 	if field.Desc.IsWeak() {
 		return "struct{}", false
 	}
@@ -42,14 +55,6 @@ func FieldGoType(g *protogen.GeneratedFile, field *protogen.Field) (goType strin
 	case protoreflect.MessageKind, protoreflect.GroupKind:
 		goType = "*" + g.QualifiedGoIdent(field.Message.GoIdent)
 		pointer = false // pointer captured as part of the type
-	}
-	switch {
-	case field.Desc.IsList():
-		return "[]" + goType, false
-	case field.Desc.IsMap():
-		keyType, _ := FieldGoType(g, field.Message.Fields[0])
-		valType, _ := FieldGoType(g, field.Message.Fields[1])
-		return fmt.Sprintf("map[%v]%v", keyType, valType), false
 	}
 	return goType, pointer
 }
