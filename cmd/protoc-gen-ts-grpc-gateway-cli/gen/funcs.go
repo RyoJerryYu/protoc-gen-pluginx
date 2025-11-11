@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils"
+	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils/fieldpath"
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils/tsutils"
 	"github.com/golang/glog"
 	"github.com/iancoleman/strcase"
@@ -112,7 +112,7 @@ func (g *Generator) renderBody(r *tsutils.TSOption) func(method *protogen.Method
 		toJsonStatement := ""
 		if httpBody != "*" {
 			// body in a field, must found
-			bodyField := pluginutils.GetField(method.Input, httpBody)
+			bodyField := fieldpath.GetField(method.Input, httpBody)
 			toJsonStatement = g.FieldToJson(bodyField)(g.TSRegistry, g.must("fullReq", method.Input, httpBody))
 			bodyMsg = bodyField.Message // may be nil
 		} else {
@@ -172,11 +172,11 @@ func (g *Generator) renderQueryString(r *tsutils.TSOption) func(method *protogen
 			usedParams = append(usedParams, bodyParam)
 		}
 
-		allFieldPaths := pluginutils.ListPaths("", method.Input.Desc, pluginutils.EndWithJsonScalar)
-		queryParams := pluginutils.Substract(allFieldPaths, usedParams)
+		allFieldPaths := fieldpath.ListPaths("", method.Input.Desc, fieldpath.EndWithJsonScalar)
+		queryParams := fieldpath.Substract(allFieldPaths, usedParams)
 		var res []string // [ [param, fieldSyntax] ]
 		for _, param := range queryParams {
-			field := pluginutils.GetField(method.Input, param)
+			field := fieldpath.GetField(method.Input, param)
 			if field == nil {
 				glog.V(1).Infof("field not found: %s", param)
 				continue

@@ -12,16 +12,21 @@ func (opt GenerateOptions) PHeader(p *protogen.Plugin) {
 	opt.PCommentf("- %s %s", opt.PluginName, opt.VersionStr)
 	opt.PCommentf("- protoc %s", opt.protocVersion(p))
 
-	if opt.F.Proto.GetOptions().GetDeprecated() {
-		opt.PCommentf("%s is a deprecated file.", opt.F.Desc.Path())
-	} else {
-		opt.PCommentf("source: %s", opt.F.Desc.Path())
+	// if is generating a single file,
+	// it will use GenerateOptions for generating the header and package comments
+	// and it will have no FileGenerator.F
+	if opt.F != nil {
+		if opt.F.Proto.GetOptions().GetDeprecated() {
+			opt.PCommentf("%s is a deprecated file.", opt.F.Desc.Path())
+		} else {
+			opt.PCommentf("source: %s", opt.F.Desc.Path())
+		}
 	}
 
 	opt.P()
 }
-func (opt GenerateOptions) PPackage() {
-	opt.Pf("package %s", opt.F.GoPackageName)
+func (opt GenerateOptions) PPackage(goPackageName protogen.GoPackageName) {
+	opt.Pf("package %s", goPackageName)
 	opt.P()
 }
 

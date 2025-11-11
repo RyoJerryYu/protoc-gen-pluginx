@@ -8,7 +8,6 @@ import (
 	"text/template"
 
 	sprig "github.com/go-task/slim-sprig/v3"
-
 	"google.golang.org/protobuf/compiler/protogen"
 )
 
@@ -44,7 +43,6 @@ func (opt FileGenerator) PCommentf(format string, args ...interface{}) {
 
 func (opt FileGenerator) PTmpl(tmpl *template.Template, data interface{}, funcs ...template.FuncMap) {
 	t := tmpl
-	t.Funcs(sprig.TxtFuncMap())
 	for _, fMap := range funcs {
 		t.Funcs(fMap)
 	}
@@ -54,6 +52,10 @@ func (opt FileGenerator) PTmpl(tmpl *template.Template, data interface{}, funcs 
 func (opt FileGenerator) PTmplStr(tmpl string, data interface{}, funcs ...template.FuncMap) {
 
 	t := template.New("tmpl")
+	t.Funcs(sprig.TxtFuncMap())
+	t.Funcs(template.FuncMap{
+		"qualified": opt.W.QualifiedGoIdent,
+	})
 	for _, fMap := range funcs {
 		t.Funcs(fMap)
 	}

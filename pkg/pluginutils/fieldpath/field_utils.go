@@ -1,4 +1,4 @@
-package pluginutils
+package fieldpath
 
 import (
 	"sort"

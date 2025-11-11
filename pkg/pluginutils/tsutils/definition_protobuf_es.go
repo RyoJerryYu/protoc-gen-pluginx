@@ -2,9 +2,10 @@ package tsutils
 
 import (
 	"fmt"
+	"path"
 	"strings"
 
-	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils"
+	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils/fieldpath"
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/protobufx"
 	"github.com/golang/glog"
 	"github.com/iancoleman/strcase"
@@ -12,7 +13,9 @@ import (
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
-type ProtobufESDefinition struct{}
+type ProtobufESDefinition struct {
+	ProtoGenRoot string
+}
 
 func (d ProtobufESDefinition) TSModule(file protoreflect.FileDescriptor) TSModule {
 	if file.Package() == protobufx.GoogleProtobuf_package {
@@ -20,11 +23,17 @@ func (d ProtobufESDefinition) TSModule(file protoreflect.FileDescriptor) TSModul
 		return d.wktModule()
 	}
 	protoPath := file.Path()
-	return TSModule{
+	module := TSModule{
 		ModuleName: GetModuleName(file),
 		Path:       strings.TrimSuffix(protoPath, ".proto") + "_pb.ts",
 		Relative:   true,
 	}
+
+	if d.ProtoGenRoot != "" {
+		module.Path = path.Join(d.ProtoGenRoot, module.Path)
+		module.Relative = false
+	}
+	return module
 }
 
 func (d ProtobufESDefinition) protobufModule() TSModule {
@@ -46,10 +55,13 @@ func (d ProtobufESDefinition) wktModule() TSModule {
 func (d ProtobufESDefinition) TSIdentMsg(msg *protogen.Message) TSIdent {
 	return d.TSModule(msg.Desc.ParentFile()).Ident(msg.GoIdent.GoName)
 }
-func (d ProtobufESDefinition) tsIdentMsgSchema(msg *protogen.Message) TSIdent {
+func (d ProtobufESDefinition) TSIdentService(service *protogen.Service) TSIdent {
+	return d.TSModule(service.Desc.ParentFile()).Ident(service.GoName)
+}
+func (d ProtobufESDefinition) TSIdentMsgSchema(msg *protogen.Message) TSIdent {
 	return d.TSModule(msg.Desc.ParentFile()).Ident(msg.GoIdent.GoName + "Schema")
 }
-func (d ProtobufESDefinition) tsIdentEnumSchema(enum *protogen.Enum) TSIdent {
+func (d ProtobufESDefinition) TSIdentEnumSchema(enum *protogen.Enum) TSIdent {
 	return d.TSModule(enum.Desc.ParentFile()).Ident(enum.GoIdent.GoName + "Schema")
 }
 
@@ -66,7 +78,7 @@ func (d ProtobufESDefinition) GetFieldSyntax(opt *TSOption, rootMsg *protogen.Me
 		syntax := &strings.Builder{}
 		syntax.WriteString(rootVar)
 		isFirst := true
-		pluginutils.RangeFieldPath(path, func(field string, restPath string) bool {
+		fieldpath.RangeFieldPath(path, func(field string, restPath string) bool {
 			if md == nil {
 				return false
 			}
@@ -120,7 +132,7 @@ func (d ProtobufESDefinition) GetFieldSyntax(opt *TSOption, rootMsg *protogen.Me
 }
 
 func (d ProtobufESDefinition) JsonFieldPath(opt *TSOption, rootMsg *protogen.Message) func(path string) string {
-	return pluginutils.JsonFieldPath(rootMsg)
+	return fieldpath.JsonFieldPath(rootMsg)
 }
 
 func (d ProtobufESDefinition) MsgScalarable(msg *protogen.Message) bool {
@@ -141,7 +153,7 @@ func (d ProtobufESDefinition) MsgScalarable(msg *protogen.Message) bool {
 
 func (d ProtobufESDefinition) MsgFromPartial(msg *protogen.Message) func(g *TSRegistry, in string) string {
 	return func(g *TSRegistry, in string) string {
-		msgSchema := g.QualifiedTSIdent(d.tsIdentMsgSchema(msg))
+		msgSchema := g.QualifiedTSIdent(d.TSIdentMsgSchema(msg))
 		createFn := g.QualifiedTSIdent(d.protobufModule().Ident("create"))
 		messageInitShape := g.QualifiedTSIdent(d.protobufModule().Ident("MessageInitShape"))
 		// return `create(msgSchema, in as MessageInitShape<typeof msgSchema>)`
@@ -151,7 +163,7 @@ func (d ProtobufESDefinition) MsgFromPartial(msg *protogen.Message) func(g *TSRe
 
 func (d ProtobufESDefinition) MsgFromJson(msg *protogen.Message) func(g *TSRegistry, in string) string {
 	return func(g *TSRegistry, in string) string {
-		msgSchema := g.QualifiedTSIdent(d.tsIdentMsgSchema(msg))
+		msgSchema := g.QualifiedTSIdent(d.TSIdentMsgSchema(msg))
 		fromJsonFn := g.QualifiedTSIdent(d.protobufModule().Ident("fromJson"))
 		// return `fromJson(msgSchema, in)`
 		return fmt.Sprintf(`%s(%s, %s)`, fromJsonFn, msgSchema, in)
@@ -193,7 +205,7 @@ func (d ProtobufESDefinition) MessageToJson(msg *protogen.Message) func(g *TSReg
 
 func (d ProtobufESDefinition) commonMessageToJson(msg *protogen.Message) func(g *TSRegistry, in string) string {
 	return func(g *TSRegistry, in string) string {
-		msgSchema := g.QualifiedTSIdent(d.tsIdentMsgSchema(msg))
+		msgSchema := g.QualifiedTSIdent(d.TSIdentMsgSchema(msg))
 		toJsonFn := g.QualifiedTSIdent(d.protobufModule().Ident("toJson"))
 		return fmt.Sprintf(`%s(%s, %s)`, toJsonFn, msgSchema, in)
 	}
@@ -201,7 +213,7 @@ func (d ProtobufESDefinition) commonMessageToJson(msg *protogen.Message) func(g 
 
 func (d ProtobufESDefinition) EnumToJson(enum *protogen.Enum) func(g *TSRegistry, in string) string {
 	return func(g *TSRegistry, in string) string {
-		enumSchema := g.QualifiedTSIdent(d.tsIdentEnumSchema(enum))
+		enumSchema := g.QualifiedTSIdent(d.TSIdentEnumSchema(enum))
 		toJsonFn := g.QualifiedTSIdent(d.protobufModule().Ident("toJson"))
 		return fmt.Sprintf(`%s(%s, %s)`, toJsonFn, enumSchema, in)
 	}
@@ -217,7 +229,7 @@ func (d ProtobufESDefinition) wrapperToJson(msg *protogen.Message) func(g *TSReg
 	return func(g *TSRegistry, in string) string {
 		// first convert to wrapper message type,
 		// then message to JSON
-		msgSchema := g.QualifiedTSIdent(d.tsIdentMsgSchema(msg))
+		msgSchema := g.QualifiedTSIdent(d.TSIdentMsgSchema(msg))
 		createFn := g.QualifiedTSIdent(d.protobufModule().Ident("create"))
 		// create(msgSchema, {value: in})
 		wrapperMsg := fmt.Sprintf(`%s(%s, {value: %s})`, createFn, msgSchema, in)

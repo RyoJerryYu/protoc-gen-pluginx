@@ -2,9 +2,10 @@ package tsutils
 
 import (
 	"fmt"
+	"path"
 	"strings"
 
-	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils"
+	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/pluginutils/fieldpath"
 	"github.com/RyoJerryYu/protoc-gen-pluginx/pkg/protobufx"
 	"github.com/golang/glog"
 	"github.com/iancoleman/strcase"
@@ -14,19 +15,31 @@ import (
 
 // Work with protoc-gen-ts_proto: https://github.com/stephenh/ts-proto
 
-type TSProtoDefinition struct{}
+type TSProtoDefinition struct {
+	ProtoGenRoot string
+}
 
 func (d TSProtoDefinition) TSModule(file protoreflect.FileDescriptor) TSModule {
 	protoPath := file.Path()
-	return TSModule{
+	module := TSModule{
 		ModuleName: GetModuleName(file),
 		Path:       strings.TrimSuffix(protoPath, ".proto") + ".ts",
 		Relative:   true,
 	}
+
+	if d.ProtoGenRoot != "" {
+		module.Path = path.Join(d.ProtoGenRoot, module.Path)
+		module.Relative = false
+	}
+	return module
 }
 
 func (d TSProtoDefinition) TSIdentMsg(msg *protogen.Message) TSIdent {
 	return d.TSModule(msg.Desc.ParentFile()).Ident(msg.GoIdent.GoName)
+}
+
+func (d TSProtoDefinition) TSIdentService(service *protogen.Service) TSIdent {
+	return d.TSModule(service.Desc.ParentFile()).Ident(service.GoName)
 }
 
 func (d TSProtoDefinition) GetFieldSyntax(opt *TSOption, rootMsg *protogen.Message) func(rootVar string, path string) string {
@@ -41,7 +54,7 @@ func (d TSProtoDefinition) GetFieldSyntax(opt *TSOption, rootMsg *protogen.Messa
 		var fd protoreflect.FieldDescriptor
 		md := rootMsg.Desc
 		syntax := &strings.Builder{}
-		valid := pluginutils.RangeFieldPath(path, func(field, _ string) bool {
+		valid := fieldpath.RangeFieldPath(path, func(field, _ string) bool {
 			if md == nil {
 				return false
 			}
@@ -80,7 +93,7 @@ func (d TSProtoDefinition) JsonFieldPath(opt *TSOption, rootMsg *protogen.Messag
 			return path
 		}
 	}
-	return pluginutils.JsonFieldPath(rootMsg)
+	return fieldpath.JsonFieldPath(rootMsg)
 }
 
 func (d TSProtoDefinition) MsgScalarable(msg *protogen.Message) bool {
