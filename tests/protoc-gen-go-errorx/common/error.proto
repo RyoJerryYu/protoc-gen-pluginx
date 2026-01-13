@@ -1,0 +1,73 @@
+syntax = "proto3";
+package common;
+
+import "google/protobuf/descriptor.proto";
+import "ryojerryyu/annotations/errorx.proto";
+
+option go_package = "./common;common";
+
+extend google.protobuf.FieldOptions {
+  optional BizErrorCode errcode = 41013;
+}
+
+enum BizErrorCode {
+  option (ryojerryyu.annotations.errorx_is_code) = true;
+
+  OK = 0 [(ryojerryyu.annotations.errorx_code) = OK];
+  CANCELLED = 1 [(ryojerryyu.annotations.errorx_code) = CANCELLED];
+  UNKNOWN = 2 [(ryojerryyu.annotations.errorx_code) = UNKNOWN];
+  INVALID_ARGUMENT = 3 [(ryojerryyu.annotations.errorx_code) = INVALID_ARGUMENT];
+  DEADLINE_EXCEEDED = 4 [(ryojerryyu.annotations.errorx_code) = DEADLINE_EXCEEDED];
+  NOT_FOUND = 5 [(ryojerryyu.annotations.errorx_code) = NOT_FOUND];
+  ALREADY_EXISTS = 6 [(ryojerryyu.annotations.errorx_code) = ALREADY_EXISTS];
+  PERMISSION_DENIED = 7 [(ryojerryyu.annotations.errorx_code) = PERMISSION_DENIED];
+  UNAUTHENTICATED = 16 [(ryojerryyu.annotations.errorx_code) = UNAUTHENTICATED];
+  RESOURCE_EXHAUSTED = 8 [(ryojerryyu.annotations.errorx_code) = RESOURCE_EXHAUSTED];
+  FAILED_PRECONDITION = 9 [(ryojerryyu.annotations.errorx_code) = FAILED_PRECONDITION];
+  ABORTED = 10 [(ryojerryyu.annotations.errorx_code) = ABORTED];
+  OUT_OF_RANGE = 11 [(ryojerryyu.annotations.errorx_code) = OUT_OF_RANGE];
+  UNIMPLEMENTED = 12 [(ryojerryyu.annotations.errorx_code) = UNIMPLEMENTED];
+  INTERNAL = 13 [(ryojerryyu.annotations.errorx_code) = INTERNAL];
+  UNAVAILABLE = 14 [(ryojerryyu.annotations.errorx_code) = UNAVAILABLE];
+  DATA_LOSS = 15 [(ryojerryyu.annotations.errorx_code) = DATA_LOSS];
+
+  /*
+     self defined codes
+  */
+  VERIFICATION_INVALID = 101 [(ryojerryyu.annotations.errorx_code) = INVALID_ARGUMENT];
+  VERIFICATION_ALREADY_BOUND = 102 [(ryojerryyu.annotations.errorx_code) = ALREADY_EXISTS];
+}
+
+/*
+    业务错误
+    存在于 google.rpc.Status.details 中
+    即， JSON 表示为：
+
+    ```jsonc
+     {
+       "code": 16, // gRPC status code
+       "message": "unauthenticated", // gRPC status message
+       "details": [
+         {
+           "@type": "type.googleapis.com/api.v1.base.BizError", // ignore
+           "code": "UNAUTHENTICATED", // 业务错误码, 即 BizErrorCode
+           "message": "登录信息已过期，请重新登录" // 业务错误 payload ，这里是 oneof 里的 message
+         }
+       ]
+     }
+     ```
+
+   业务约定：
+
+   - details 中有且仅有一个元素，为 BizError
+*/
+message BizError {
+  option (ryojerryyu.annotations.errorx_is_error) = true;
+  // 错误码
+  BizErrorCode code = 1;
+  oneof payload {
+    option (ryojerryyu.annotations.errorx_is_payload) = true;
+    // 简单错误信息
+    string message = 2 [(errcode) = OK];
+  }
+}

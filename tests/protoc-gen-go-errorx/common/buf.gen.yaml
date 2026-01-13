@@ -1,0 +1,20 @@
+version: v2
+inputs:
+  - directory: .
+    exclude_paths:
+      - "ryojerryyu/annotations/fieldmask.proto"
+      - "ryojerryyu/annotations/errorx.proto"
+managed:
+  enabled: true
+  disable:
+    - file_option: go_package
+      module: buf.build/googleapis/googleapis
+plugins:
+  - local: protoc-gen-go
+    out: .
+    opt:
+      - paths=source_relative
+  # - local: protoc-gen-go-errorx
+  #   out: .
+  #   opt:
+  #     - paths=source_relative
